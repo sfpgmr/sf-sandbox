@@ -1,0 +1,52 @@
+﻿<!DOCTYPE html>
+<html vocab="http://schema.org" lang="ja">
+<head>
+  <title>Three.jsによるアニメーション</title>
+  <meta charset="utf-8" />
+  <meta name="description" content="SVGアニメーションのテスト" />
+  <meta name="keywords" content="Youtube,d3.js,Q.js,jquery" />
+  <meta name="author" content="sfpgmr" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+  <script src="https://d3js.org/d3.v5.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/102/three.js"></script>
+  <script src="https://threejs.org/examples/js/shaders/CopyShader.js"></script>
+		<script src="https://threejs.org/examples/js/shaders/DigitalGlitch.js"></script>
+    <script src="https://threejs.org/examples/js/shaders/DotScreenShader.js"></script>
+		<script src="https://threejs.org/examples/js/shaders/RGBShiftShader.js"></script>
+
+		<script src="https://threejs.org/examples/js/postprocessing/EffectComposer.js"></script>
+		<script src="https://threejs.org/examples/js/postprocessing/RenderPass.js"></script>
+		<script src="https://threejs.org/examples/js/postprocessing/MaskPass.js"></script>
+    <script src="https://threejs.org/examples/js/postprocessing/ShaderPass.js"></script>
+    <script src="https://threejs.org/examples/js/loaders/SVGLoader.js"></script>
+		<script src="https://threejs.org/examples/js/loaders/GLTFLoader.js"></script>
+
+	<!--  <script type="text/javascript" src="./AudioAnalyser.js"></script> -->
+  <script type="text/javascript" src="./dsp.js"></script>
+  <!--<script type="text/javascript" src="./graphics.js"></script> -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/3.0.2/normalize.min.css" />
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+    }
+
+    #svg {
+      display: none;
+    }
+
+    #stat {
+      position: absolute;
+      color:white;
+      font-size:20px;
+    }
+  </style>
+
+</head>
+<body>
+  <div id="stat"></div>
+  <div id="content"></div>
+  <script type="text/javascript" src="index.js"></script>
+</body>
+</html>
