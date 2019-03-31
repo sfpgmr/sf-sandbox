@@ -17,7 +17,9 @@
   },
   "homepage": "https://github.com/sfpgmr/sandbox#readme",
   "devDependencies": {
-    "rollup": "^1.7.4"
+    "rollup": "^1.7.4",
+    "rollup-plugin-commonjs": "^9.2.2",
+    "rollup-plugin-node-resolve": "^4.0.1"
   },
   "dependencies": {
     "fs-extra": "^7.0.1"

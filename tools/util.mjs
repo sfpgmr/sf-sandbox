@@ -1,12 +1,15 @@
 #!/bin/sh
 ":" //# ; exec /usr/bin/env node --no-warnings --experimental-modules "$0" "$@"
 import fs from 'fs-extra';
+import nodeResolve from 'rollup-plugin-node-resolve';
+import commonjs from 'rollup-plugin-commonjs';
 import rollup from 'rollup';
 import resolveHome from './resolveHome';
-const outputBase = resolveHome('~/pj/www/html/contents/sandbox/');
-const inputBase = resolveHome('../src/');
+import path from 'path';
+const releaseBaseDir = resolveHome('~/pj/www/html/contents/sandbox/');
+const sandboxDir = resolveHome('~/pj/sandbox/');
 
-let projectName,srcPath,destPath;
+let projectName,releaseName,srcPath,destPath;
 const helpMessage =
 `
 -p,--project-name プロジェクト名を指定（必須）
@@ -25,15 +28,26 @@ try {
       const param = args.shift();
       switch (param){
         case '-p':
-        // projectName の指定
-        if(args.length){
-          projectName = args.shift();
-        } else {
-          throw error(param);
+        case '--project-name':
+        {
+          // projectName の指定
+          if(args.length){
+            projectName = args.shift();
+          } else {
+            throw error(param);
+          }
         }
         break;
         case '-r':
-        // release 
+        case '--release':
+        {
+          // release 
+          if(args.length && !args[0].match(/^-{1,2}/)){
+            releaseName = args.shift();
+          } else {
+            releaseName = '/current/';
+          }
+        }
         break;
         case '--help':
         case '-h':
@@ -46,14 +60,18 @@ try {
 
     if(!projectName){
       throw new Error('プロジェクト名の指定がありません。');
-
     }
     
     console.info(`projectName:${projectName}をビルドします。`);
+    // ビルド処理
+    
+    let projectPath = path.join(sandboxDir,projectName);
+    console.log(projectPath);
+    
    
   })();
 } catch (e) {
-  console.log(`Error:`,e.description);
+  console.log(`Error:`,e);
   process.abort();
 }
 
