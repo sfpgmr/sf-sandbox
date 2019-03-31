@@ -27,15 +27,15 @@
 
 //import denodeify from '../denodeify'; 
 import TWEEN from 'tween.js';
-import TimeLine  from '../TimeLine';
+import TimeLine  from './timeline.mjs';
 //import sharp  from 'sharp';
-import QueryString  from '../QueryString';
-//import SF8Pass from '../SF8Pass';
-//import SFShaderPass from '../SFShaderPass';
-import HorseAnim from '../HorseAnim.mjs';
+import QueryString  from './QueryString.mjs';
+//import SF8Pass from './SF8Pass.mjs';
+//import SFShaderPass from './SFShaderPass.mjs';
+import HorseAnim from './HorseAnim.mjs';
 
 //import SFCapturePass from '../SFCapturePass';
-import SFRydeen from '../SFRydeen';
+import SFRydeen from './SFRydeen.mjs';
 //import SFGpGpuPass from '../SFGpGpuPass';
 //import GlitchPass from '../GlitchPass';
 //import { hostname } from 'os';

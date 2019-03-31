@@ -1,879 +1,11 @@
-(function () {
+(function (TWEEN) {
 	'use strict';
 
-	var commonjsGlobal = typeof window !== 'undefined' ? window : typeof global !== 'undefined' ? global : typeof self !== 'undefined' ? self : {};
+	var TWEEN__default = 'default' in TWEEN ? TWEEN['default'] : TWEEN;
 
 	function createCommonjsModule(fn, module) {
 		return module = { exports: {} }, fn(module, module.exports), module.exports;
 	}
-
-	var Tween = createCommonjsModule(function (module, exports) {
-	/**
-	 * Tween.js - Licensed under the MIT license
-	 * https://github.com/tweenjs/tween.js
-	 * ----------------------------------------------
-	 *
-	 * See https://github.com/tweenjs/tween.js/graphs/contributors for the full list of contributors.
-	 * Thank you all, you're awesome!
-	 */
-
-	var TWEEN = TWEEN || (function () {
-
-		var _tweens = [];
-
-		return {
-
-			getAll: function () {
-
-				return _tweens;
-
-			},
-
-			removeAll: function () {
-
-				_tweens = [];
-
-			},
-
-			add: function (tween) {
-
-				_tweens.push(tween);
-
-			},
-
-			remove: function (tween) {
-
-				var i = _tweens.indexOf(tween);
-
-				if (i !== -1) {
-					_tweens.splice(i, 1);
-				}
-
-			},
-
-			update: function (time, preserve) {
-
-				if (_tweens.length === 0) {
-					return false;
-				}
-
-				var i = 0;
-
-				time = time !== undefined ? time : TWEEN.now();
-
-				while (i < _tweens.length) {
-
-					if (_tweens[i].update(time) || preserve) {
-						i++;
-					} else {
-						_tweens.splice(i, 1);
-					}
-
-				}
-
-				return true;
-
-			}
-		};
-
-	})();
-
-
-	// Include a performance.now polyfill.
-	// In node.js, use process.hrtime.
-	if (typeof (window) === 'undefined' && typeof (process) !== 'undefined') {
-		TWEEN.now = function () {
-			var time = process.hrtime();
-
-			// Convert [seconds, nanoseconds] to milliseconds.
-			return time[0] * 1000 + time[1] / 1000000;
-		};
-	}
-	// In a browser, use window.performance.now if it is available.
-	else if (typeof (window) !== 'undefined' &&
-	         window.performance !== undefined &&
-			 window.performance.now !== undefined) {
-		// This must be bound, because directly assigning this function
-		// leads to an invocation exception in Chrome.
-		TWEEN.now = window.performance.now.bind(window.performance);
-	}
-	// Use Date.now if it is available.
-	else if (Date.now !== undefined) {
-		TWEEN.now = Date.now;
-	}
-	// Otherwise, use 'new Date().getTime()'.
-	else {
-		TWEEN.now = function () {
-			return new Date().getTime();
-		};
-	}
-
-
-	TWEEN.Tween = function (object) {
-
-		var _object = object;
-		var _valuesStart = {};
-		var _valuesEnd = {};
-		var _valuesStartRepeat = {};
-		var _duration = 1000;
-		var _repeat = 0;
-		var _repeatDelayTime;
-		var _yoyo = false;
-		var _isPlaying = false;
-		var _delayTime = 0;
-		var _startTime = null;
-		var _easingFunction = TWEEN.Easing.Linear.None;
-		var _interpolationFunction = TWEEN.Interpolation.Linear;
-		var _chainedTweens = [];
-		var _onStartCallback = null;
-		var _onStartCallbackFired = false;
-		var _onUpdateCallback = null;
-		var _onCompleteCallback = null;
-		var _onStopCallback = null;
-
-		this.to = function (properties, duration) {
-
-			_valuesEnd = properties;
-
-			if (duration !== undefined) {
-				_duration = duration;
-			}
-
-			return this;
-
-		};
-
-		this.start = function (time) {
-
-			TWEEN.add(this);
-
-			_isPlaying = true;
-
-			_onStartCallbackFired = false;
-
-			_startTime = time !== undefined ? time : TWEEN.now();
-			_startTime += _delayTime;
-
-			for (var property in _valuesEnd) {
-
-				// Check if an Array was provided as property value
-				if (_valuesEnd[property] instanceof Array) {
-
-					if (_valuesEnd[property].length === 0) {
-						continue;
-					}
-
-					// Create a local copy of the Array with the start value at the front
-					_valuesEnd[property] = [_object[property]].concat(_valuesEnd[property]);
-
-				}
-
-				// If `to()` specifies a property that doesn't exist in the source object,
-				// we should not set that property in the object
-				if (_object[property] === undefined) {
-					continue;
-				}
-
-				// Save the starting value.
-				_valuesStart[property] = _object[property];
-
-				if ((_valuesStart[property] instanceof Array) === false) {
-					_valuesStart[property] *= 1.0; // Ensures we're using numbers, not strings
-				}
-
-				_valuesStartRepeat[property] = _valuesStart[property] || 0;
-
-			}
-
-			return this;
-
-		};
-
-		this.stop = function () {
-
-			if (!_isPlaying) {
-				return this;
-			}
-
-			TWEEN.remove(this);
-			_isPlaying = false;
-
-			if (_onStopCallback !== null) {
-				_onStopCallback.call(_object, _object);
-			}
-
-			this.stopChainedTweens();
-			return this;
-
-		};
-
-		this.end = function () {
-
-			this.update(_startTime + _duration);
-			return this;
-
-		};
-
-		this.stopChainedTweens = function () {
-
-			for (var i = 0, numChainedTweens = _chainedTweens.length; i < numChainedTweens; i++) {
-				_chainedTweens[i].stop();
-			}
-
-		};
-
-		this.delay = function (amount) {
-
-			_delayTime = amount;
-			return this;
-
-		};
-
-		this.repeat = function (times) {
-
-			_repeat = times;
-			return this;
-
-		};
-
-		this.repeatDelay = function (amount) {
-
-			_repeatDelayTime = amount;
-			return this;
-
-		};
-
-		this.yoyo = function (yoyo) {
-
-			_yoyo = yoyo;
-			return this;
-
-		};
-
-
-		this.easing = function (easing) {
-
-			_easingFunction = easing;
-			return this;
-
-		};
-
-		this.interpolation = function (interpolation) {
-
-			_interpolationFunction = interpolation;
-			return this;
-
-		};
-
-		this.chain = function () {
-
-			_chainedTweens = arguments;
-			return this;
-
-		};
-
-		this.onStart = function (callback) {
-
-			_onStartCallback = callback;
-			return this;
-
-		};
-
-		this.onUpdate = function (callback) {
-
-			_onUpdateCallback = callback;
-			return this;
-
-		};
-
-		this.onComplete = function (callback) {
-
-			_onCompleteCallback = callback;
-			return this;
-
-		};
-
-		this.onStop = function (callback) {
-
-			_onStopCallback = callback;
-			return this;
-
-		};
-
-		this.update = function (time) {
-
-			var property;
-			var elapsed;
-			var value;
-
-			if (time < _startTime) {
-				return true;
-			}
-
-			if (_onStartCallbackFired === false) {
-
-				if (_onStartCallback !== null) {
-					_onStartCallback.call(_object, _object);
-				}
-
-				_onStartCallbackFired = true;
-			}
-
-			elapsed = (time - _startTime) / _duration;
-			elapsed = elapsed > 1 ? 1 : elapsed;
-
-			value = _easingFunction(elapsed);
-
-			for (property in _valuesEnd) {
-
-				// Don't update properties that do not exist in the source object
-				if (_valuesStart[property] === undefined) {
-					continue;
-				}
-
-				var start = _valuesStart[property] || 0;
-				var end = _valuesEnd[property];
-
-				if (end instanceof Array) {
-
-					_object[property] = _interpolationFunction(end, value);
-
-				} else {
-
-					// Parses relative end values with start as base (e.g.: +10, -3)
-					if (typeof (end) === 'string') {
-
-						if (end.charAt(0) === '+' || end.charAt(0) === '-') {
-							end = start + parseFloat(end);
-						} else {
-							end = parseFloat(end);
-						}
-					}
-
-					// Protect against non numeric properties.
-					if (typeof (end) === 'number') {
-						_object[property] = start + (end - start) * value;
-					}
-
-				}
-
-			}
-
-			if (_onUpdateCallback !== null) {
-				_onUpdateCallback.call(_object, value);
-			}
-
-			if (elapsed === 1) {
-
-				if (_repeat > 0) {
-
-					if (isFinite(_repeat)) {
-						_repeat--;
-					}
-
-					// Reassign starting values, restart by making startTime = now
-					for (property in _valuesStartRepeat) {
-
-						if (typeof (_valuesEnd[property]) === 'string') {
-							_valuesStartRepeat[property] = _valuesStartRepeat[property] + parseFloat(_valuesEnd[property]);
-						}
-
-						if (_yoyo) {
-							var tmp = _valuesStartRepeat[property];
-
-							_valuesStartRepeat[property] = _valuesEnd[property];
-							_valuesEnd[property] = tmp;
-						}
-
-						_valuesStart[property] = _valuesStartRepeat[property];
-
-					}
-
-					if (_repeatDelayTime !== undefined) {
-						_startTime = time + _repeatDelayTime;
-					} else {
-						_startTime = time + _delayTime;
-					}
-
-					return true;
-
-				} else {
-
-					if (_onCompleteCallback !== null) {
-
-						_onCompleteCallback.call(_object, _object);
-					}
-
-					for (var i = 0, numChainedTweens = _chainedTweens.length; i < numChainedTweens; i++) {
-						// Make the chained tweens start exactly at the time they should,
-						// even if the `update()` method was called way past the duration of the tween
-						_chainedTweens[i].start(_startTime + _duration);
-					}
-
-					return false;
-
-				}
-
-			}
-
-			return true;
-
-		};
-
-	};
-
-
-	TWEEN.Easing = {
-
-		Linear: {
-
-			None: function (k) {
-
-				return k;
-
-			}
-
-		},
-
-		Quadratic: {
-
-			In: function (k) {
-
-				return k * k;
-
-			},
-
-			Out: function (k) {
-
-				return k * (2 - k);
-
-			},
-
-			InOut: function (k) {
-
-				if ((k *= 2) < 1) {
-					return 0.5 * k * k;
-				}
-
-				return - 0.5 * (--k * (k - 2) - 1);
-
-			}
-
-		},
-
-		Cubic: {
-
-			In: function (k) {
-
-				return k * k * k;
-
-			},
-
-			Out: function (k) {
-
-				return --k * k * k + 1;
-
-			},
-
-			InOut: function (k) {
-
-				if ((k *= 2) < 1) {
-					return 0.5 * k * k * k;
-				}
-
-				return 0.5 * ((k -= 2) * k * k + 2);
-
-			}
-
-		},
-
-		Quartic: {
-
-			In: function (k) {
-
-				return k * k * k * k;
-
-			},
-
-			Out: function (k) {
-
-				return 1 - (--k * k * k * k);
-
-			},
-
-			InOut: function (k) {
-
-				if ((k *= 2) < 1) {
-					return 0.5 * k * k * k * k;
-				}
-
-				return - 0.5 * ((k -= 2) * k * k * k - 2);
-
-			}
-
-		},
-
-		Quintic: {
-
-			In: function (k) {
-
-				return k * k * k * k * k;
-
-			},
-
-			Out: function (k) {
-
-				return --k * k * k * k * k + 1;
-
-			},
-
-			InOut: function (k) {
-
-				if ((k *= 2) < 1) {
-					return 0.5 * k * k * k * k * k;
-				}
-
-				return 0.5 * ((k -= 2) * k * k * k * k + 2);
-
-			}
-
-		},
-
-		Sinusoidal: {
-
-			In: function (k) {
-
-				return 1 - Math.cos(k * Math.PI / 2);
-
-			},
-
-			Out: function (k) {
-
-				return Math.sin(k * Math.PI / 2);
-
-			},
-
-			InOut: function (k) {
-
-				return 0.5 * (1 - Math.cos(Math.PI * k));
-
-			}
-
-		},
-
-		Exponential: {
-
-			In: function (k) {
-
-				return k === 0 ? 0 : Math.pow(1024, k - 1);
-
-			},
-
-			Out: function (k) {
-
-				return k === 1 ? 1 : 1 - Math.pow(2, - 10 * k);
-
-			},
-
-			InOut: function (k) {
-
-				if (k === 0) {
-					return 0;
-				}
-
-				if (k === 1) {
-					return 1;
-				}
-
-				if ((k *= 2) < 1) {
-					return 0.5 * Math.pow(1024, k - 1);
-				}
-
-				return 0.5 * (- Math.pow(2, - 10 * (k - 1)) + 2);
-
-			}
-
-		},
-
-		Circular: {
-
-			In: function (k) {
-
-				return 1 - Math.sqrt(1 - k * k);
-
-			},
-
-			Out: function (k) {
-
-				return Math.sqrt(1 - (--k * k));
-
-			},
-
-			InOut: function (k) {
-
-				if ((k *= 2) < 1) {
-					return - 0.5 * (Math.sqrt(1 - k * k) - 1);
-				}
-
-				return 0.5 * (Math.sqrt(1 - (k -= 2) * k) + 1);
-
-			}
-
-		},
-
-		Elastic: {
-
-			In: function (k) {
-
-				if (k === 0) {
-					return 0;
-				}
-
-				if (k === 1) {
-					return 1;
-				}
-
-				return -Math.pow(2, 10 * (k - 1)) * Math.sin((k - 1.1) * 5 * Math.PI);
-
-			},
-
-			Out: function (k) {
-
-				if (k === 0) {
-					return 0;
-				}
-
-				if (k === 1) {
-					return 1;
-				}
-
-				return Math.pow(2, -10 * k) * Math.sin((k - 0.1) * 5 * Math.PI) + 1;
-
-			},
-
-			InOut: function (k) {
-
-				if (k === 0) {
-					return 0;
-				}
-
-				if (k === 1) {
-					return 1;
-				}
-
-				k *= 2;
-
-				if (k < 1) {
-					return -0.5 * Math.pow(2, 10 * (k - 1)) * Math.sin((k - 1.1) * 5 * Math.PI);
-				}
-
-				return 0.5 * Math.pow(2, -10 * (k - 1)) * Math.sin((k - 1.1) * 5 * Math.PI) + 1;
-
-			}
-
-		},
-
-		Back: {
-
-			In: function (k) {
-
-				var s = 1.70158;
-
-				return k * k * ((s + 1) * k - s);
-
-			},
-
-			Out: function (k) {
-
-				var s = 1.70158;
-
-				return --k * k * ((s + 1) * k + s) + 1;
-
-			},
-
-			InOut: function (k) {
-
-				var s = 1.70158 * 1.525;
-
-				if ((k *= 2) < 1) {
-					return 0.5 * (k * k * ((s + 1) * k - s));
-				}
-
-				return 0.5 * ((k -= 2) * k * ((s + 1) * k + s) + 2);
-
-			}
-
-		},
-
-		Bounce: {
-
-			In: function (k) {
-
-				return 1 - TWEEN.Easing.Bounce.Out(1 - k);
-
-			},
-
-			Out: function (k) {
-
-				if (k < (1 / 2.75)) {
-					return 7.5625 * k * k;
-				} else if (k < (2 / 2.75)) {
-					return 7.5625 * (k -= (1.5 / 2.75)) * k + 0.75;
-				} else if (k < (2.5 / 2.75)) {
-					return 7.5625 * (k -= (2.25 / 2.75)) * k + 0.9375;
-				} else {
-					return 7.5625 * (k -= (2.625 / 2.75)) * k + 0.984375;
-				}
-
-			},
-
-			InOut: function (k) {
-
-				if (k < 0.5) {
-					return TWEEN.Easing.Bounce.In(k * 2) * 0.5;
-				}
-
-				return TWEEN.Easing.Bounce.Out(k * 2 - 1) * 0.5 + 0.5;
-
-			}
-
-		}
-
-	};
-
-	TWEEN.Interpolation = {
-
-		Linear: function (v, k) {
-
-			var m = v.length - 1;
-			var f = m * k;
-			var i = Math.floor(f);
-			var fn = TWEEN.Interpolation.Utils.Linear;
-
-			if (k < 0) {
-				return fn(v[0], v[1], f);
-			}
-
-			if (k > 1) {
-				return fn(v[m], v[m - 1], m - f);
-			}
-
-			return fn(v[i], v[i + 1 > m ? m : i + 1], f - i);
-
-		},
-
-		Bezier: function (v, k) {
-
-			var b = 0;
-			var n = v.length - 1;
-			var pw = Math.pow;
-			var bn = TWEEN.Interpolation.Utils.Bernstein;
-
-			for (var i = 0; i <= n; i++) {
-				b += pw(1 - k, n - i) * pw(k, i) * v[i] * bn(n, i);
-			}
-
-			return b;
-
-		},
-
-		CatmullRom: function (v, k) {
-
-			var m = v.length - 1;
-			var f = m * k;
-			var i = Math.floor(f);
-			var fn = TWEEN.Interpolation.Utils.CatmullRom;
-
-			if (v[0] === v[m]) {
-
-				if (k < 0) {
-					i = Math.floor(f = m * (1 + k));
-				}
-
-				return fn(v[(i - 1 + m) % m], v[i], v[(i + 1) % m], v[(i + 2) % m], f - i);
-
-			} else {
-
-				if (k < 0) {
-					return v[0] - (fn(v[0], v[0], v[1], v[1], -f) - v[0]);
-				}
-
-				if (k > 1) {
-					return v[m] - (fn(v[m], v[m], v[m - 1], v[m - 1], f - m) - v[m]);
-				}
-
-				return fn(v[i ? i - 1 : 0], v[i], v[m < i + 1 ? m : i + 1], v[m < i + 2 ? m : i + 2], f - i);
-
-			}
-
-		},
-
-		Utils: {
-
-			Linear: function (p0, p1, t) {
-
-				return (p1 - p0) * t + p0;
-
-			},
-
-			Bernstein: function (n, i) {
-
-				var fc = TWEEN.Interpolation.Utils.Factorial;
-
-				return fc(n) / fc(i) / fc(n - i);
-
-			},
-
-			Factorial: (function () {
-
-				var a = [1];
-
-				return function (n) {
-
-					var s = 1;
-
-					if (a[n]) {
-						return a[n];
-					}
-
-					for (var i = n; i > 1; i--) {
-						s *= i;
-					}
-
-					a[n] = s;
-					return s;
-
-				};
-
-			})(),
-
-			CatmullRom: function (p0, p1, p2, p3, t) {
-
-				var v0 = (p2 - p0) * 0.5;
-				var v1 = (p3 - p1) * 0.5;
-				var t2 = t * t;
-				var t3 = t * t2;
-
-				return (2 * p1 - 2 * p2 + v0 + v1) * t3 + (- 3 * p1 + 3 * p2 - 2 * v0 - v1) * t2 + v0 * t + p1;
-
-			}
-
-		}
-
-	};
-
-	// UMD (Universal Module Definition)
-	(function (root) {
-
-		{
-
-			// Node.js
-			module.exports = TWEEN;
-
-		}
-
-	})(commonjsGlobal);
-	});
 
 	var eventemitter3 = createCommonjsModule(function (module) {
 
@@ -885,7 +17,7 @@
 	 * An `Events` instance is a plain object whose properties are event names.
 	 *
 	 * @constructor
-	 * @api private
+	 * @private
 	 */
 	function Events() {}
 
@@ -910,10 +42,10 @@
 	 * Representation of a single event listener.
 	 *
 	 * @param {Function} fn The listener function.
-	 * @param {Mixed} context The context to invoke the listener with.
+	 * @param {*} context The context to invoke the listener with.
 	 * @param {Boolean} [once=false] Specify if the listener is a one-time listener.
 	 * @constructor
-	 * @api private
+	 * @private
 	 */
 	function EE(fn, context, once) {
 	  this.fn = fn;
@@ -922,11 +54,49 @@
 	}
 
 	/**
+	 * Add a listener for a given event.
+	 *
+	 * @param {EventEmitter} emitter Reference to the `EventEmitter` instance.
+	 * @param {(String|Symbol)} event The event name.
+	 * @param {Function} fn The listener function.
+	 * @param {*} context The context to invoke the listener with.
+	 * @param {Boolean} once Specify if the listener is a one-time listener.
+	 * @returns {EventEmitter}
+	 * @private
+	 */
+	function addListener(emitter, event, fn, context, once) {
+	  if (typeof fn !== 'function') {
+	    throw new TypeError('The listener must be a function');
+	  }
+
+	  var listener = new EE(fn, context || emitter, once)
+	    , evt = prefix ? prefix + event : event;
+
+	  if (!emitter._events[evt]) emitter._events[evt] = listener, emitter._eventsCount++;
+	  else if (!emitter._events[evt].fn) emitter._events[evt].push(listener);
+	  else emitter._events[evt] = [emitter._events[evt], listener];
+
+	  return emitter;
+	}
+
+	/**
+	 * Clear event by name.
+	 *
+	 * @param {EventEmitter} emitter Reference to the `EventEmitter` instance.
+	 * @param {(String|Symbol)} evt The Event name.
+	 * @private
+	 */
+	function clearEvent(emitter, evt) {
+	  if (--emitter._eventsCount === 0) emitter._events = new Events();
+	  else delete emitter._events[evt];
+	}
+
+	/**
 	 * Minimal `EventEmitter` interface that is molded against the Node.js
 	 * `EventEmitter` interface.
 	 *
 	 * @constructor
-	 * @api public
+	 * @public
 	 */
 	function EventEmitter() {
 	  this._events = new Events();
@@ -938,7 +108,7 @@
 	 * listeners.
 	 *
 	 * @returns {Array}
-	 * @api public
+	 * @public
 	 */
 	EventEmitter.prototype.eventNames = function eventNames() {
 	  var names = []
@@ -961,32 +131,46 @@
 	/**
 	 * Return the listeners registered for a given event.
 	 *
-	 * @param {String|Symbol} event The event name.
-	 * @param {Boolean} exists Only check if there are listeners.
-	 * @returns {Array|Boolean}
-	 * @api public
+	 * @param {(String|Symbol)} event The event name.
+	 * @returns {Array} The registered listeners.
+	 * @public
 	 */
-	EventEmitter.prototype.listeners = function listeners(event, exists) {
+	EventEmitter.prototype.listeners = function listeners(event) {
 	  var evt = prefix ? prefix + event : event
-	    , available = this._events[evt];
+	    , handlers = this._events[evt];
 
-	  if (exists) return !!available;
-	  if (!available) return [];
-	  if (available.fn) return [available.fn];
+	  if (!handlers) return [];
+	  if (handlers.fn) return [handlers.fn];
 
-	  for (var i = 0, l = available.length, ee = new Array(l); i < l; i++) {
-	    ee[i] = available[i].fn;
+	  for (var i = 0, l = handlers.length, ee = new Array(l); i < l; i++) {
+	    ee[i] = handlers[i].fn;
 	  }
 
 	  return ee;
 	};
 
 	/**
+	 * Return the number of listeners listening to a given event.
+	 *
+	 * @param {(String|Symbol)} event The event name.
+	 * @returns {Number} The number of listeners.
+	 * @public
+	 */
+	EventEmitter.prototype.listenerCount = function listenerCount(event) {
+	  var evt = prefix ? prefix + event : event
+	    , listeners = this._events[evt];
+
+	  if (!listeners) return 0;
+	  if (listeners.fn) return 1;
+	  return listeners.length;
+	};
+
+	/**
 	 * Calls each of the listeners registered for a given event.
 	 *
-	 * @param {String|Symbol} event The event name.
+	 * @param {(String|Symbol)} event The event name.
 	 * @returns {Boolean} `true` if the event had listeners, else `false`.
-	 * @api public
+	 * @public
 	 */
 	EventEmitter.prototype.emit = function emit(event, a1, a2, a3, a4, a5) {
 	  var evt = prefix ? prefix + event : event;
@@ -1043,60 +227,45 @@
 	/**
 	 * Add a listener for a given event.
 	 *
-	 * @param {String|Symbol} event The event name.
+	 * @param {(String|Symbol)} event The event name.
 	 * @param {Function} fn The listener function.
-	 * @param {Mixed} [context=this] The context to invoke the listener with.
+	 * @param {*} [context=this] The context to invoke the listener with.
 	 * @returns {EventEmitter} `this`.
-	 * @api public
+	 * @public
 	 */
 	EventEmitter.prototype.on = function on(event, fn, context) {
-	  var listener = new EE(fn, context || this)
-	    , evt = prefix ? prefix + event : event;
-
-	  if (!this._events[evt]) this._events[evt] = listener, this._eventsCount++;
-	  else if (!this._events[evt].fn) this._events[evt].push(listener);
-	  else this._events[evt] = [this._events[evt], listener];
-
-	  return this;
+	  return addListener(this, event, fn, context, false);
 	};
 
 	/**
 	 * Add a one-time listener for a given event.
 	 *
-	 * @param {String|Symbol} event The event name.
+	 * @param {(String|Symbol)} event The event name.
 	 * @param {Function} fn The listener function.
-	 * @param {Mixed} [context=this] The context to invoke the listener with.
+	 * @param {*} [context=this] The context to invoke the listener with.
 	 * @returns {EventEmitter} `this`.
-	 * @api public
+	 * @public
 	 */
 	EventEmitter.prototype.once = function once(event, fn, context) {
-	  var listener = new EE(fn, context || this, true)
-	    , evt = prefix ? prefix + event : event;
-
-	  if (!this._events[evt]) this._events[evt] = listener, this._eventsCount++;
-	  else if (!this._events[evt].fn) this._events[evt].push(listener);
-	  else this._events[evt] = [this._events[evt], listener];
-
-	  return this;
+	  return addListener(this, event, fn, context, true);
 	};
 
 	/**
 	 * Remove the listeners of a given event.
 	 *
-	 * @param {String|Symbol} event The event name.
+	 * @param {(String|Symbol)} event The event name.
 	 * @param {Function} fn Only remove the listeners that match this function.
-	 * @param {Mixed} context Only remove the listeners that have this context.
+	 * @param {*} context Only remove the listeners that have this context.
 	 * @param {Boolean} once Only remove one-time listeners.
 	 * @returns {EventEmitter} `this`.
-	 * @api public
+	 * @public
 	 */
 	EventEmitter.prototype.removeListener = function removeListener(event, fn, context, once) {
 	  var evt = prefix ? prefix + event : event;
 
 	  if (!this._events[evt]) return this;
 	  if (!fn) {
-	    if (--this._eventsCount === 0) this._events = new Events();
-	    else delete this._events[evt];
+	    clearEvent(this, evt);
 	    return this;
 	  }
 
@@ -1104,19 +273,18 @@
 
 	  if (listeners.fn) {
 	    if (
-	         listeners.fn === fn
-	      && (!once || listeners.once)
-	      && (!context || listeners.context === context)
+	      listeners.fn === fn &&
+	      (!once || listeners.once) &&
+	      (!context || listeners.context === context)
 	    ) {
-	      if (--this._eventsCount === 0) this._events = new Events();
-	      else delete this._events[evt];
+	      clearEvent(this, evt);
 	    }
 	  } else {
 	    for (var i = 0, events = [], length = listeners.length; i < length; i++) {
 	      if (
-	           listeners[i].fn !== fn
-	        || (once && !listeners[i].once)
-	        || (context && listeners[i].context !== context)
+	        listeners[i].fn !== fn ||
+	        (once && !listeners[i].once) ||
+	        (context && listeners[i].context !== context)
 	      ) {
 	        events.push(listeners[i]);
 	      }
@@ -1126,8 +294,7 @@
 	    // Reset the array, or remove it completely if we have no more listeners.
 	    //
 	    if (events.length) this._events[evt] = events.length === 1 ? events[0] : events;
-	    else if (--this._eventsCount === 0) this._events = new Events();
-	    else delete this._events[evt];
+	    else clearEvent(this, evt);
 	  }
 
 	  return this;
@@ -1136,19 +303,16 @@
 	/**
 	 * Remove all listeners, or those of the specified event.
 	 *
-	 * @param {String|Symbol} [event] The event name.
+	 * @param {(String|Symbol)} [event] The event name.
 	 * @returns {EventEmitter} `this`.
-	 * @api public
+	 * @public
 	 */
 	EventEmitter.prototype.removeAllListeners = function removeAllListeners(event) {
 	  var evt;
 
 	  if (event) {
 	    evt = prefix ? prefix + event : event;
-	    if (this._events[evt]) {
-	      if (--this._eventsCount === 0) this._events = new Events();
-	      else delete this._events[evt];
-	    }
+	    if (this._events[evt]) clearEvent(this, evt);
 	  } else {
 	    this._events = new Events();
 	    this._eventsCount = 0;
@@ -1162,13 +326,6 @@
 	//
 	EventEmitter.prototype.off = EventEmitter.prototype.removeListener;
 	EventEmitter.prototype.addListener = EventEmitter.prototype.on;
-
-	//
-	// This function doesn't apply anymore.
-	//
-	EventEmitter.prototype.setMaxListeners = function setMaxListeners() {
-	  return this;
-	};
 
 	//
 	// Expose the prefix.
@@ -1411,7 +568,7 @@
 	 */
 
 
-	const vs = 
+	const vs$1 = 
 `
 #define USE_MAP
 #include <common>
@@ -1467,7 +624,7 @@ void main() {
 	// }
 	// `;
 
-	const fs = 
+	const fs$1 = 
 `
 #define USE_MAP
 uniform sampler2D map;
@@ -1488,19 +645,19 @@ void main(){
   c2 = texture2D(map, vUv);
   c2 = mapTexelToLinear( c2 );
   c2.a = opacity;
-  //gl_FragColor = c2;
+  gl_FragColor = c2;
   
-  if(length(c2.xyz) > 0.0 ) 
-  {
-    gl_FragColor = clamp(c2 + c1,0.0,1.0);
-  } else {
-    if(length(c1.xyz) > 0.0){
-      gl_FragColor = vec4(0.25 - c1.rgb * 0.25,c1.a);
-    } else {
-      discard;
-    }
-        //gl_FragColor = c1 * 0.2;
-  }  
+  // if(length(c2.xyz) > 0.0 ) 
+  // {
+  //   gl_FragColor = clamp(c2 + c1,0.0,1.0);
+  // } else {
+  //   if(length(c1.xyz) > 0.0){
+  //     gl_FragColor = vec4(0.25 - c1.rgb * 0.25,c1.a);
+  //   } else {
+  //     discard;
+  //   }
+  //       //gl_FragColor = c1 * 0.2;
+  // }  
 }
 `	;
 
@@ -1589,8 +746,8 @@ void main(){
 	    this.fftgeometry = fftgeometry;
 
 	    const fftmaterial = this.fftmaterial = new THREE.ShaderMaterial({
-	      vertexShader: vs,
-	      fragmentShader: fs,
+	      vertexShader: vs$1,
+	      fragmentShader: fs$1,
 	      uniforms: {
 	        map: { value : ffttexture2} ,
 	        tDiffuse: { value: new THREE.Texture() },
@@ -1630,8 +787,8 @@ void main(){
 	    this.wgeometry = wgeometry;
 
 	    const fftmaterial2 = this.fftmaterial2 = new THREE.ShaderMaterial({
-	      vertexShader: vs,
-	      fragmentShader: fs,
+	      vertexShader: vs$1,
+	      fragmentShader: fs$1,
 	      uniforms: {
 	        map: { type: 't', value: ffttexture },
 	        tDiffuse: { type: 't', value: null },
@@ -1883,7 +1040,7 @@ void main(){
 
 	  // 馬のフェードイン・フェードアウト
 	  horseFadein() {
-	    let fadein = new Tween.Tween({ opacity: 0.001 });
+	    let fadein = new TWEEN__default.Tween({ opacity: 0.001 });
 	    let self = this;
 	    fadein.to({ opacity: 1.0 }, 5000);
 	    fadein.onUpdate(function () {
@@ -1899,7 +1056,7 @@ void main(){
 	  }
 
 	  horseFadeout() {
-	    let fadeout = new Tween.Tween({ opacity: 1.0 });
+	    let fadeout = new TWEEN__default.Tween({ opacity: 1.0 });
 	    let self = this;
 	    fadeout.to({ opacity: 0.001 }, 3000);
 	    fadeout.onUpdate(function () {
@@ -1916,7 +1073,7 @@ void main(){
 
 	  // シリンダーの回転
 	  rotateCilynder() {
-	    let rotateCilynder = new Tween.Tween({ time: 0 });
+	    let rotateCilynder = new TWEEN__default.Tween({ time: 0 });
 	    let self = this;
 	    rotateCilynder
 	      .to({ time: self.endTime }, 1000 * self.endTime)
@@ -1930,7 +1087,7 @@ void main(){
 	  // カメラワーク
 
 	  cameraTween() {
-	    let cameraTween = new Tween.Tween({ x: 0, y: 0, z: 1000, opacity: 1.0 });
+	    let cameraTween = new TWEEN__default.Tween({ x: 0, y: 0, z: 1000, opacity: 1.0 });
 	    cameraTween.to({ x: 0, z: this.radius, y: 2000, opacity: 0.0 }, 1000);
 	    self = this;
 	    //cameraTween.delay(20.140 * 1000 - 1500);
@@ -1948,7 +1105,7 @@ void main(){
 	    cameraTween.onComplete(function () {
 	      self.wmesh.visible = false;
 	    });
-	    var cameraTween11 = new Tween.Tween({ theta: 0 });
+	    var cameraTween11 = new TWEEN__default.Tween({ theta: 0 });
 	    cameraTween11.to({ theta: -2 * Math.PI }, 11587);
 	    cameraTween11.onUpdate(function () {
 	      self.camera.position.x = Math.sin(this.theta) * self.radius;
@@ -1959,7 +1116,7 @@ void main(){
 	  }
 
 	  cameraTween2() {
-	    let cameraTween2 = new Tween.Tween({ x: 0, y: 2000, z: 1000, opacity: 0.0 });
+	    let cameraTween2 = new TWEEN__default.Tween({ x: 0, y: 2000, z: 1000, opacity: 0.0 });
 	    let self = this;
 	    cameraTween2.to({ x: 0, y: 0, opacity: 1.0 }, 1000);
 	    cameraTween2.onUpdate(function () {
@@ -1980,14 +1137,14 @@ void main(){
 	  }
 
 	  cameraTween4() {
-	    let cameraTween4 = new Tween.Tween({ x: 0, y: 2000, z: 1000, opacity: 1.0 });
+	    let cameraTween4 = new TWEEN__default.Tween({ x: 0, y: 2000, z: 1000, opacity: 1.0 });
 	    let self = this;
 	    cameraTween4.to({ x: 0, y: 1000, z: 1000 }, 1000);
 	    cameraTween4.onUpdate(function () {
 	      self.camera.position.x = this.x;
 	      self.camera.position.y = this.y;
 	    });
-	    var cameraTween41 = new Tween.Tween({ theta: 0 });
+	    var cameraTween41 = new TWEEN__default.Tween({ theta: 0 });
 	    cameraTween41.to({ theta: 2 * Math.PI }, 18300);
 	    cameraTween41.onUpdate(function () {
 	      self.camera.position.x = Math.sin(this.theta) * self.radius;
@@ -2170,7 +1327,7 @@ void main(){
 	  var delay = delay !== undefined ? delay : 0;
 	  particle.position.set(Math.random() * 500 - 250, Math.random() * 500 - 250, -4000);
 	  particle.scale.x = particle.scale.y = Math.random() * 500 + 50;
-	  new Tween.Tween(particle)
+	  new TWEEN__default.Tween(particle)
 	    .delay(delay)
 	    .to({}, 5000)
 	    .onComplete(this.initParticle.bind(this,particle,0))
@@ -2179,13 +1336,13 @@ void main(){
 	    })
 	    .start(timeMs);
 
-	  new Tween.Tween(particle.position)
+	  new TWEEN__default.Tween(particle.position)
 	    .delay(delay)
 	    .to({ x: Math.random() * 500 - 250, y: Math.random() * 500 - 250, z: Math.random() * 1000 + 500 }, 10000)
 	    .to({ z: Math.random() * 1000 + 500 }, 5000)
 	    .start(timeMs);
 
-	  new Tween.Tween(particle.scale)
+	  new TWEEN__default.Tween(particle.scale)
 	    .delay(delay)
 	    .to({ x: 0.01, y: 0.01 }, 5000)
 	    .start(timeMs);
@@ -2565,7 +1722,7 @@ void main(){
 	    // }
 	    let timeMs = time * 1000;
 	    timeline.update(timeMs);
-	    Tween.update(timeMs);
+	    TWEEN__default.update(timeMs);
 	    // プレビュー
 	    requestAnimationFrame(render.bind(null, preview));
 	  }
@@ -2589,4 +1746,4 @@ void main(){
 
 	});
 
-}());
+}(TWEEN));
