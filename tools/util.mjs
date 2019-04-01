@@ -114,18 +114,39 @@ try {
       for (const p of config.copyFiles) {
         const src = path.normalize(path.join(projectPath, p));
         const dest = path.normalize(path.join(currentBuildPath, path.basename(src)));
+        fse.stat(src);
         console.info(src,'=>',dest);
         await fse.copy(src, dest);
       }
     }
 
-    // リリースディレクトリへのコピー
+    if(config.symlinkFiles){
+      for (const p of config.symlinkFiles) {
+        const src = path.normalize(path.join(projectPath, p));
+        const dest = path.normalize(path.join(currentBuildPath, path.basename(src)));
+        try {
+          const stat = await fse.stat(dest);
+          console.info('symlink already exists:',src,'=>',dest);
+        } catch (e) {
+          if(e.code == 'ENOENT'){
+            console.info('symlink:',src,'=>',dest);
+            await fse.symlink(src, dest);
+          } else {
+            throw e;
+          }
+        }
+      }
+    }
+
+    // リリースディレクトリへのコピー/リンク
     if (releasePath) {
       const releaseSrcPath = path.join(releasePath, 'src');
       await fse.ensureDir(releaseSrcPath);
       await fse.copy(currentBuildPath, releasePath, { preserveTimestamps: true });
       await fse.copy(currentSrcPath, releaseSrcPath, { preserveTimestamps: true });
     }
+
+    //fs.constants.S_IFLNK
 
     // wwwレポジトリへのデプロイ
     if (deploy) {
@@ -138,7 +159,7 @@ try {
   })();
 } catch (e) {
   console.log(`Error:`, e);
-  //process.abort();
+  process.abort();
 }
 
 

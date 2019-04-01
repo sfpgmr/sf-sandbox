@@ -1,8 +1,10 @@
 {
   "rollup":"./rollup.config.js",
   "copyFiles":[
-  "./current/src/html/index.html",
-  "../common/media/horse.glb",
-  "../common/media/horse07-2.svg"
+  "./current/src/html/index.html"
+  ],
+  "symlinkFiles":[
+    "../common/media/horse.glb",
+    "../common/media/horse07-2.svg"
   ]
 }
