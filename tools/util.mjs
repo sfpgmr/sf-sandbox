@@ -1,7 +1,7 @@
 #!/bin/sh
 ":" //# ; exec /usr/bin/env node --experimental-modules "$0" "$@"
 import fse from 'fs-extra';
-import fs from 'fs';
+import fs, { access } from 'fs';
 import nodeResolve from 'rollup-plugin-node-resolve';
 import commonjs from 'rollup-plugin-commonjs';
 import rollup from 'rollup';
@@ -116,7 +116,9 @@ try {
         const dest = path.normalize(path.join(currentBuildPath, path.basename(src)));
         fse.stat(src);
         console.info(src,'=>',dest);
-        await fse.copy(src, dest);
+        if(src != dest){
+          await fse.copy(src, dest);
+        }
       }
     }
 
@@ -150,10 +152,50 @@ try {
 
     // wwwレポジトリへのデプロイ
     if (deploy) {
+      if(releaseName){
+        console.log('wwwレポジトリへのデプロイ');
       const deployDir = path.join(deployBaseDir, projectName, releaseName);
       await fse.ensureDir(deployDir);
-      await fse.copy(releasePath, deployDir, { overwrite: true, preserveTimestamps: true });
-      // TODO:解説用のmdをあれば自動生成したい
+      // ファイルコピー
+      if (config.copyFiles) {
+        for (const p of config.copyFiles) {
+          const src = path.normalize(path.join(projectDir, p));
+          const dest = path.normalize(path.join(deployDir, path.basename(src)));
+          console.info(src,'=>',dest);
+          if(src != dest){
+            await fse.copy(src, dest);
+          }
+        }
+      }
+      // ファイルリンク
+      if (config.symlinks){
+        for (const p of config.symlinkFiles) {
+          const src = path.normalize(path.join(deployDir, p));
+          const dest = path.normalize(path.join(deployDir,projectName,releaseName, path.basename(src)));
+          try {
+            await fse.access(src,fs.constants.F_OK);
+          } catch (e){
+            const origin = path.normalize(path.join(projectDir,p));
+            await fse.copy(origin,src,{dereference:true,preserveTimestamps:true});
+          }
+
+          try {
+            const stat = await fse.stat(dest);
+            console.info('symlink already exists:',src,'=>',dest);
+          } catch (e) {
+            if(e.code == 'ENOENT'){
+              console.info('symlink:',src,'=>',dest);
+              await fse.symlink(src, dest);
+            } else {
+              throw e;
+            }
+          }
+        }
+      }
+      //await fse.copy(releasePath, deployDir, { overwrite: true, preserveTimestamps: true });
+      } else {
+        throw new Error('release名の指定がありません。-r <release name>');
+      }
     }
 
   })();
