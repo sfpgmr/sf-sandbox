@@ -1,11 +1,12 @@
 {
-  "rollup":"./rollup.config.js",
+  "buildCommands":[
+    "rollup -c ./rollup.config.js"
+  ],
   "copyFiles":[
   "./current/src/html/index.html",
   "./current/build/index.js"
   ],
   "symlinkFiles":[
-    "../common/media/horse.glb",
     "../common/media/horse07-2.svg"
   ]
 }

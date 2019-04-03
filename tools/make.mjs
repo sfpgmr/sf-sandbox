@@ -12,7 +12,7 @@ import util from 'util';
 
 const exec = util.promisify(exec_);
 
-const deployBaseDir = resolveHome('~/pj/www/html/contents/sandbox/');
+const deployBasePath = resolveHome('~/www/html/contents/sandbox/');
 const sandboxDir = resolveHome('~/pj/sandbox/');
 
 let projectName, releaseName, srcPath, destPath, deploy;
@@ -84,7 +84,7 @@ try {
     if (releaseName) {
       releasePath = path.join(projectPath, 'releases', releaseName);
       await fse.ensureDir(releasePath);
-      fse.copy(currentPath, releasePath, { overwrite: true });
+      //fse.copy(currentPath, releasePath, { overwrite: true });
     }
 
     const currentBuildPath = path.join(currentPath, 'build');
@@ -100,13 +100,22 @@ try {
         throw e;
       }
     }
-    console.log(config);
 
-    // rollupによるバンドル
-    if (config.rollup) {
-      console.log('bundle処理実行中');
-      const output = await exec(`rollup -c ${config.rollup}`, { cwd: projectPath, maxBuffer: 16384 });
-      output.stderr && console.log(output.stderr);
+    //console.log(config);
+
+    // ビルド
+    if (config.buildCommands) {
+      console.log('ビルド処理実行中');
+      let commands = config.buildCommands;
+      // 配列に正規化
+      if (!(commands instanceof Array)) {
+        commands = [commands];
+      }
+      for (const command of config.buildCommands) {
+        const output = await exec(command, { cwd: projectPath, maxBuffer: 500 * 1024 });
+        output.stdout && console.info(output.stdout);
+        output.stderr && console.error(output.stderr);
+      }
     }
 
     // 成果物のコピー
@@ -115,23 +124,23 @@ try {
         const src = path.normalize(path.join(projectPath, p));
         const dest = path.normalize(path.join(currentBuildPath, path.basename(src)));
         fse.stat(src);
-        console.info(src,'=>',dest);
-        if(src != dest){
+        console.info(src, '=>', dest);
+        if (src != dest) {
           await fse.copy(src, dest);
         }
       }
     }
 
-    if(config.symlinkFiles){
+    if (config.symlinkFiles) {
       for (const p of config.symlinkFiles) {
         const src = path.normalize(path.join(projectPath, p));
         const dest = path.normalize(path.join(currentBuildPath, path.basename(src)));
         try {
           const stat = await fse.stat(dest);
-          console.info('symlink already exists:',src,'=>',dest);
+          console.info('symlink already exists:', src, '=>', dest);
         } catch (e) {
-          if(e.code == 'ENOENT'){
-            console.info('symlink:',src,'=>',dest);
+          if (e.code == 'ENOENT') {
+            console.info('symlink:', src, '=>', dest);
             await fse.symlink(src, dest);
           } else {
             throw e;
@@ -142,49 +151,34 @@ try {
 
     // リリースディレクトリへのコピー/リンク
     if (releasePath) {
+      console.log('releaseディレクトリへのコピー')
       const releaseSrcPath = path.join(releasePath, 'src');
+      const currentSrcPath = path.join(currentPath,'src');
+
       await fse.ensureDir(releaseSrcPath);
-      await fse.copy(currentBuildPath, releasePath, { preserveTimestamps: true });
-      await fse.copy(currentSrcPath, releaseSrcPath, { preserveTimestamps: true });
-    }
-
-    //fs.constants.S_IFLNK
-
-    // wwwレポジトリへのデプロイ
-    if (deploy) {
-      if(releaseName){
-        console.log('wwwレポジトリへのデプロイ');
-      const deployDir = path.join(deployBaseDir, projectName, releaseName);
-      await fse.ensureDir(deployDir);
-      // ファイルコピー
+      // 成果物のコピー
       if (config.copyFiles) {
         for (const p of config.copyFiles) {
-          const src = path.normalize(path.join(projectDir, p));
-          const dest = path.normalize(path.join(deployDir, path.basename(src)));
-          console.info(src,'=>',dest);
-          if(src != dest){
+          const src = path.normalize(path.join(projectPath, p));
+          const dest = path.normalize(path.join(releasePath, path.basename(src)));
+          fse.stat(src);
+          console.info(src, '=>', dest);
+          if (src != dest) {
             await fse.copy(src, dest);
           }
         }
       }
-      // ファイルリンク
-      if (config.symlinks){
-        for (const p of config.symlinkFiles) {
-          const src = path.normalize(path.join(deployDir, p));
-          const dest = path.normalize(path.join(deployDir,projectName,releaseName, path.basename(src)));
-          try {
-            await fse.access(src,fs.constants.F_OK);
-          } catch (e){
-            const origin = path.normalize(path.join(projectDir,p));
-            await fse.copy(origin,src,{dereference:true,preserveTimestamps:true});
-          }
 
+      if (config.symlinkFiles) {
+        for (const p of config.symlinkFiles) {
+          const src = path.normalize(path.join(projectPath, p));
+          const dest = path.normalize(path.join(releasePath, path.basename(src)));
           try {
             const stat = await fse.stat(dest);
-            console.info('symlink already exists:',src,'=>',dest);
+            console.info('symlink already exists:', src, '=>', dest);
           } catch (e) {
-            if(e.code == 'ENOENT'){
-              console.info('symlink:',src,'=>',dest);
+            if (e.code == 'ENOENT') {
+              console.info('symlink:', src, '=>', dest);
               await fse.symlink(src, dest);
             } else {
               throw e;
@@ -192,7 +186,62 @@ try {
           }
         }
       }
-      //await fse.copy(releasePath, deployDir, { overwrite: true, preserveTimestamps: true });
+      // ソースファイルのコピー
+      fse.copy(currentSrcPath,releaseSrcPath,{preserveTimestamps:true});
+    }
+
+    //fs.constants.S_IFLNK
+
+    // wwwレポジトリへのデプロイ
+    if (deploy) {
+      if (releaseName) {
+        const releaseSrcPath = path.join(releasePath,'src');
+ 
+        console.log('wwwレポジトリへのデプロイ');
+        const deployPath = path.join(deployBasePath, projectName, releaseName);
+        await fse.ensureDir(deployPath);
+        const deploySrcPath = path.join(deployPath, 'src');
+        // ファイルコピー
+        if (config.copyFiles) {
+          for (const p of config.copyFiles) {
+            const src = path.normalize(path.join(projectPath, p));
+            const dest = path.normalize(path.join(deployPath, path.basename(src)));
+            console.info(src, '=>', dest);
+            if (src != dest) {
+              await fse.copy(src, dest);
+            }
+          }
+        }
+        // ファイルリンク
+        if (config.symlinkFiles) {
+          for (const p of config.symlinkFiles) {
+            const src = path.normalize(path.join(deployBasePath,projectName, p));
+            const dest = path.normalize(path.join(deployPath,  path.basename(src)));
+            try {
+              await fse.access(src, fs.constants.F_OK);
+            } catch (e) {
+              console.log(e);
+              const origin = path.normalize(path.join(projectPath, p));
+              console.log(origin,'=>',src);
+              await fse.copy(origin, src, { dereference: true, preserveTimestamps: true });
+            }
+
+            try {
+              const stat = await fse.stat(dest);
+              console.info('symlink already exists:', src, '=>', dest);
+            } catch (e) {
+              if (e.code == 'ENOENT') {
+                console.info('symlink:', src, '=>', dest);
+                await fse.symlink(src, dest);
+              } else {
+                throw e;
+              }
+            }
+          }
+        }
+
+        // ソースコード
+        await fse.copy(releaseSrcPath, deploySrcPath, { overwrite: true, preserveTimestamps: true });
       } else {
         throw new Error('release名の指定がありません。-r <release name>');
       }
