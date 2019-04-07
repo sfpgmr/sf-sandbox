@@ -15,7 +15,7 @@ const exec = util.promisify(exec_);
 const deployBasePath = resolveHome('~/www/html/contents/sandbox/');
 const sandboxDir = resolveHome('~/pj/sandbox/');
 
-let projectName, releaseName, srcPath, destPath, deploy;
+let projectName, releaseName, srcPath, destPath, deploy,newProject;
 const helpMessage =
   `
 -p,--project-name プロジェクト名を指定（必須）
@@ -63,6 +63,14 @@ try {
         case '-h':
           console.info(helpMessage);
           break;
+        case '-n':
+        case '--new':
+          if (args.length && !args[0].match(/^-{1,2}/)) {
+            newProject = args.shift();
+          } else {
+            newProject = 'default';
+          }
+        break;
         default:
           throw error(param, '不明なパラメータです。');
       }
@@ -72,11 +80,24 @@ try {
       throw new Error('プロジェクト名の指定がありません。');
     }
 
-    console.info(`projectName:${projectName}をビルドします。`);
 
     // ビルド処理
     const projectPath = path.join(sandboxDir, projectName);
     const currentPath = path.join(projectPath, 'current');
+
+    if(newProject){
+      const templateDir = path.join(sandboxDir, 'templates',newProject);
+      if(await fse.pathExists(projectPath)){
+        throw new Error(`${projectName}はすでに存在しています。`);
+      }
+      await fse.ensureDir(projectPath);
+      await fse.copy(templateDir,projectPath);
+      return;
+    }
+
+
+
+    console.info(`projectName:${projectName}をビルドします。`);
 
 
     let releasePath;
