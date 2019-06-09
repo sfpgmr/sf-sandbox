@@ -12,10 +12,10 @@ import util from 'util';
 
 const exec = util.promisify(exec_);
 
-const deployBasePath = resolveHome('~/www/html/contents/sandbox/');
+let deployBasePath = resolveHome('~/www/html/contents/sandbox/');
 const sandboxDir = resolveHome('~/pj/sandbox/');
 
-let projectName, releaseName, srcPath, destPath, deploy,newProject;
+let projectName, releaseName, srcPath, destPath, deploy,newProject,deployPath;
 const helpMessage =
   `
 -p,--project-name プロジェクト名を指定（必須）
@@ -58,6 +58,9 @@ try {
         case '--deploy':
         case '-d':
           deploy = true;
+          if(args.length && !args[0].match(/^-{1,2}/)){
+            deployBasePath = resolveHome(args.shift());
+          }
           break;
         case '--help':
         case '-h':
@@ -96,7 +99,7 @@ try {
     }
 
 
-
+   
     console.info(`projectName:${projectName}をビルドします。`);
 
 
@@ -113,16 +116,17 @@ try {
 
     let config;
     try {
-      config = await fse.readJSON(path.join(projectPath, 'build-config.json'));
+      config = (await import(path.join(projectPath, 'build-config.mjs'))).default;
+      //config = await fse.readJSON(path.join(projectPath, 'build-config.json'));
     } catch (e) {
       if (e.code === 'ENOENT') {
-        throw new Error('build-config.jsonファイルが見つかりません。');
+        throw new Error('build-config.mjsファイルが見つかりません。');
       } else {
         throw e;
       }
     }
 
-    //console.log(config);
+    console.log(config);
 
     // ビルド
     if (config.buildCommands) {
@@ -133,9 +137,16 @@ try {
         commands = [commands];
       }
       for (const command of config.buildCommands) {
-        const output = await exec(command, { cwd: projectPath, maxBuffer: 500 * 1024 });
-        output.stdout && console.info(output.stdout);
-        output.stderr && console.error(output.stderr);
+        if(command instanceof Function){
+          let bkp = process.cwd();
+          process.chdir(projectPath);
+          await command(); 
+          process.chdir(bkp);
+        } else if(command instanceof String){
+          const output = await exec(command, { cwd: projectPath, maxBuffer: 500 * 1024 });
+          output.stdout && console.info(output.stdout);
+          output.stderr && console.error(output.stderr);
+        }
       }
     }
 
