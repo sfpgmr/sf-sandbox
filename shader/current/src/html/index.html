@@ -47,12 +47,57 @@
       color:white;
       font-size:20px;
     }
+    #playbutton 
+   {
+      position:absolute;
+      border:none;
+      background:none;
+      color:white;
+      font-size:50px;
+      top:0;
+      left:0;
+      height:100%;
+      width:100%;
+    }
+
+    #playbutton:hover{
+      cursor: hand;
+    }
+
+    .active {
+      opacity: 1;
+    }
+
+    .active1 {
+      animation: anime2 5s;
+      opacity: 0.0;
+      border:0;
+    }
+
+    .hidden {
+      animation: anime1 2s;
+      opacity:0.0;
+    }
+
+
+@keyframes anime1 {
+0% {opacity:1.0;}
+100% {opacity:0.0;}
+}
+
+@keyframes anime2 {
+0% {opacity:1.0;}
+80% {opacity: 1.0;}
+100% {opacity:0.0;}
+}    
   </style>
 
 </head>
 <body>
   <div id="stat"></div>
-  <div id="content"></div>
+  <div id="content">
+    <button id="playbutton" class="active">play</button>
+  </div>
   <script src="./index.js"></script>
 </body>
 </html>

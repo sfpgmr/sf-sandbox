@@ -24,17 +24,30 @@
 
 "use strict";
 
+let display = true;
+let play = false;
 // メイン
 window.addEventListener('load', async ()=>{
 
   var WIDTH = window.innerWidth , HEIGHT = window.innerHeight;
 
-  window.addEventListener( 'resize', ()=>{
-        WIDTH = window.innerWidth;
-        HEIGHT = window.innerHeight;
-				renderer.setSize(WIDTH,HEIGHT);
-        composer.setSize(WIDTH,HEIGHT)
-  }
-  , false );
-  
+  let playButton = document.getElementById('playbutton');
+  playButton.addEventListener('click',function(){
+
+    if(display){
+      play = !play;
+      if(play){
+        playButton.setAttribute('class','hidden');
+        playButton.innerHTML = 'stop';
+        display = false;
+      } else {
+        playButton.setAttribute('class','active');
+        playButton.innerHTML = 'play';
+      }
+    } else {
+      playButton.setAttribute('class','active1');
+      display = true;
+    }    
+  });
+
 });
