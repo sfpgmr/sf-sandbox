@@ -1,7 +1,7 @@
 'use strict';
 //import * as text from './text.js';
 import EventEmitter from './eventEmitter3.js';
-import  {vec3} from '../../gl-matrix/gl-matrix.js';
+import  {vec3} from './gl-matrix/gl-matrix.js';
 //import * as twgl from '../../twgl/twgl-full.js';
 import GL2 from './gl2.js';
 import Screen from './screen.js';

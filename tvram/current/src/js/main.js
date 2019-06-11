@@ -1,13 +1,39 @@
 'use strict';
 
 import {Console} from './console.js';
-import {Model,SceneNode } from './vscreen.js';
-import { vec3 } from '../../gl-matrix/gl-matrix.js';
 import Sprite from './sprite.js';
 
+// let display = true;
+let play = false;
 
-window.addEventListener('load',async ()=>{
-  const con = new Console();
+window.addEventListener('load',()=>{
+
+  let playButton = document.getElementById('playbutton');
+  playButton.addEventListener('click',function(){
+
+    //if(display){
+      //play = !play;
+      if(!play){
+        playButton.setAttribute('class','hidden');
+        //playButton.innerHTML = 'stop';
+        play = true;
+        //display = false;
+        start();
+      }
+      // } else {
+      //   playButton.setAttribute('class','active');
+      //   playButton.innerHTML = 'play';
+      // }
+    //} else {
+    //  playButton.setAttribute('class','active1');
+    //  display = true;
+    //}    
+  });
+ 
+});
+
+async function start(){
+  const con = new Console(160,100);
   con.initConsole();
   const gl = con.gl;
   const gl2 = con.gl2;
@@ -60,10 +86,10 @@ window.addEventListener('load',async ()=>{
         offset:0
       }
     ];
+
   }
 
-  const data = await fetch('../res/Myship3.json').then((r)=>r.json());
-  const spriteImg = await gl2.loadImage('../res/enemy.png');
+  const spriteImg = await gl2.loadImage('./enemy.png');
 
   const spriteTexture = gl.createTexture();
   gl.bindTexture(gl.TEXTURE_2D, spriteTexture);
@@ -170,11 +196,11 @@ window.addEventListener('load',async ()=>{
     alert(str);
   }
   
-  WebAssembly.instantiateStreaming(fetch("./wa/test.wasm"),exportToWasm).then(mod => {
-    const test = mod.instance.exports.test;
-    mem = new DataView(mod.instance.exports.memory.buffer);
-    test();
-  });
+  // WebAssembly.instantiateStreaming(fetch("./wa/test.wasm"),exportToWasm).then(mod => {
+  //   const test = mod.instance.exports.test;
+  //   mem = new DataView(mod.instance.exports.memory.buffer);
+  //   test();
+  // });
 
   let time = 0;
   function main(){
@@ -195,7 +221,7 @@ window.addEventListener('load',async ()=>{
       requestAnimationFrame(main);
   }
   main();
-});
+}
 
 function initSprite(sprite){
   const spriteBuffer = sprite.spriteBuffer;

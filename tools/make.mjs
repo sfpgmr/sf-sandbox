@@ -136,13 +136,13 @@ try {
       if (!(commands instanceof Array)) {
         commands = [commands];
       }
-      for (const command of config.buildCommands) {
+      for (const command of commands) {
         if(command instanceof Function){
           let bkp = process.cwd();
           process.chdir(projectPath);
           await command(); 
           process.chdir(bkp);
-        } else if(command instanceof String){
+        } else if(command instanceof String || typeof(command) == 'string'){
           const output = await exec(command, { cwd: projectPath, maxBuffer: 500 * 1024 });
           output.stdout && console.info(output.stdout);
           output.stderr && console.error(output.stderr);

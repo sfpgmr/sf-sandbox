@@ -7,7 +7,9 @@ export default {
   "./current/build/index.js",
   "./current/build/tvram.wasm"
   ],
-  "symlinkFiles":[],
+  "symlinkFiles":[
+    './common/enemy.png'
+  ],
   "schema":{
   }
 }

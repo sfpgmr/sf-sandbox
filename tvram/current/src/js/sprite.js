@@ -1,6 +1,6 @@
 'use strict';
 import { Node } from './scene.js';
-import { mat4, vec3, vec4 } from '../../gl-matrix/gl-matrix.js';
+import { mat4, vec3, vec4 } from './gl-matrix/gl-matrix.js';
 
 
 const vertexShader = `#version 300 es

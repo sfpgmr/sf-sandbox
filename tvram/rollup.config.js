@@ -5,7 +5,7 @@ import commonjs from 'rollup-plugin-commonjs';
 
 export default 
 {
-      input: './current/src/js/index.js',
+      input: './current/src/js/main.js',
       plugins: [
         nodeResolve({ jsnext: true }),
         commonjs()
@@ -14,7 +14,7 @@ export default
         'sharp','electron','events'
       ],
       output: {
-        file: './current/build/index.js',
+        file: './current/build/main.js',
         format: 'iife'
       }
   

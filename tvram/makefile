@@ -1,10 +1,10 @@
 
 
-SRC_FILES = ./current/src/js/index.js 
+SRC_FILES = ./current/src/js/main.js 
 MWASM_SRC = ./current/src/mwat/tvram.mwat
 MWASM_LIB = ./current/build/tvram.wasm
 
-TARGET = index.js
+TARGET = main.js
 TRACE = 
 
 $(TARGET): $(SRC_FILES) 

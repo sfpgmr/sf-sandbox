@@ -1,7 +1,7 @@
 'use strict';
 
 //import * as twgl from '../../twgl/twgl-full.js';
-import  { mat4, vec3} from '../../gl-matrix/gl-matrix.js';
+import  { mat4, vec3} from './gl-matrix/gl-matrix.js';
 //const m4 = twgl.m4;
 
 export class TRS {
