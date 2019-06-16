@@ -29,11 +29,25 @@ import sharp from 'sharp';
     const offsetX = bbx[2];
     const offsetY = bbx[3];
     ++index;//BITMAP
-    let bindex = offsetY;
+    let charData = [];
+
     while(!tokens[index].match(/ENDCHAR/)){
       let b = parseInt(tokens[index++],16);
-      bitmap[bindex++] = offsetX > 0 ? b >>> offsetX : b << (Math.abs(offsetX) | 0);
+      charData.push(offsetX > 0 ? b >>> offsetX : b << (Math.abs(offsetX) | 0));
     }
+
+    if(charData.length){
+      let bindex = 7 - offsetY - charData.length;
+      charData.map(d=>{
+        bitmap[bindex++] = d;
+      });
+    }
+
+    //let bindex = offsetY;
+    // while(!tokens[index].match(/ENDCHAR/)){
+    //   let b = parseInt(tokens[index++],16);
+    //   bitmap[bindex++] = offsetX > 0 ? b >>> offsetX : b << (Math.abs(offsetX) | 0);
+    // }
     out.push({
       encoding:encoding,
       bitmap:bitmap,
