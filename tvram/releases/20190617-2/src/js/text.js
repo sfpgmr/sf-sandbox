@@ -1,5 +1,11 @@
 'use strict';
+import { fontData } from './mz700fon.js';
 import { charCodes, canaCodes, hiraganaCodes } from './charCodes.js';
+//import * as twgl from '../../twgl/twgl-full.js';
+//import { glMatrix, mat2, mat2d, mat3, mat4, quat, vec2, vec3, vec4 } from '../../gl-matrix/gl-matrix.js';
+
+//import *  as gameobj from './gameobj';
+//import * as graphics from './graphics';
 
 // ビットのMSBとLSBを入れ替えるメソッド
 function rev(x) {
@@ -15,8 +21,8 @@ function rev(x) {
 
 const vs =
   `#version 300 es
-precision highp int;
-precision highp float;
+precision mediump int;
+precision mediump float;
 
 
 in vec2 position;
@@ -31,12 +37,12 @@ void main()	{
 
 const fs =
   `#version 300 es
-precision highp int;
-precision highp float;
-precision highp usampler2D;
+precision mediump int;
+precision mediump float;
 
 uniform bool blink;
-uniform usampler2D textBuffer;
+uniform sampler2D textBuffer;
+uniform sampler2D attrBuffer;
 uniform sampler2D font;
 uniform sampler2D pallet;
 uniform float vwidth;
@@ -48,77 +54,77 @@ out vec4 out_color;
 // 文字表示
 vec4 textPlane(void){
   // キャラクタコードを読み出し
-  ivec2 bpos = ivec2(gl_FragCoord.xy);//ivec2(int(vtexcoord.x * vwidth),int(vtexcoord.y * vheight));
-  ivec2 cpos = ivec2(bpos.x >> 3,bpos.y >> 3);
+  vec2 pos = vec2(vtexcoord.x, vtexcoord.y);
 
-  uint data = texelFetch(textBuffer,cpos,0).r;
-  // char codeの内容
-  // blink col bg-col alpha code point
-  // bccc 0bbb aaaa aaaa pppp pppp pppp pppp  
-  uint cc = data & 0xffffu;
-  uint attr = data & 0xffff0000u;
+  float cc = min(texture(textBuffer, pos).r,0.99609375);
 
+  // アトリビュートを読み出し
+
+  uint attr = uint(texture(attrBuffer, pos).r * 255.0);
+  
   // 表示対象の文字のビット位置を求める
-  uint x = 0x80u >> uint( bpos.x & 7);
+  uint x = uint(vtexcoord.x * vwidth);
+  x = 1u << (x & 7u);
 
   // 表示対象の文字のY位置を求める
-  int y = bpos.y & 7;
+  uint y = uint(vtexcoord.y * vheight);
+  y = y & 7u;
   
+  
+  // フォントセットの選択
+  uint fontAttr = (attr & 0x80u) >> 4u;
+
   // 文字色
   // uint ccolor = (attr & 0x70u) >> 4u;
-  uint ccolor = uint(texelFetch(pallet,ivec2(int((attr & 0x70000000u) >> 28u),0),0).r * 255.0);
-  //uint ccolor = 0x7u;
+  uint ccolor = uint(texture(pallet,vec2(float((attr & 0x70u) >> 4u) / 8.0,0.0)).r * 255.0);
  
-  float ccg = float((ccolor & 0x4u) >> 2u) ;// bit 6
-  float ccr = float((ccolor & 0x2u) >> 1u);// bit 5
-  float ccb = float((ccolor & 0x1u));// bit 4
+  uint ccg = (ccolor & 0x4u);// bit 6
+  uint ccr = (ccolor & 0x2u);// bit 5
+  uint ccb = (ccolor & 0x1u);// bit 4
 
   // ブリンク
-  bool attr_blink = (attr & 0x80000000u) > 0u;// bit 3
+  bool attr_blink =  (attr & 0x8u) > 0u;// bit 3
   
   // 背景色
-  uint bgcolor = uint(texelFetch(pallet,ivec2(int((attr & 0x7000000u) >> 24u),0),0).r * 255.0);
+  uint bgcolor = uint(texture(pallet,vec2(float(attr & 0x7u)/8.0,0.0)).r * 255.0);
 
-  float bgg = float((bgcolor & 0x4u) >> 2u);// bit 6
-  float bgr = float((bgcolor & 0x2u) >> 1u);// bit 5
-  float bgb = float((bgcolor & 0x1u));// bit 4
+  uint bgg = (bgcolor & 0x4u);// bit 6
+  uint bgr = (bgcolor & 0x2u);// bit 5
+  uint bgb = (bgcolor & 0x1u);// bit 4
 
   // フォント読み出し位置
-  ivec2 fontpos = ivec2(int(cc & 0xffu),y + int((cc & 0xff00u) >> 5u));
-  //vec2 fontpos = vec2(float(cc & 0xffu) / 256.0,float(y + int((cc >> 8u) & 0xffu)) / 2048.0);
+  vec2 fontpos = vec2(cc,float(y + fontAttr) / 16.0);
 
   // フォントデータの読み出し
-  uint pixByte = uint(texelFetch(font,fontpos,0).r * 256.0);
-  //uint pixByte = texture(font,fontpos).r & 0xffu;
+  uint pixByte = uint(texture(font,fontpos).x * 255.0);
   
   // 指定位置のビットが立っているかチェック
-  bool pixBit = (pixByte & x) != 0u;
-
+  bool  pixBit = (pixByte & x) > 0u;
+  
   // blinkの処理
   if(attr_blink && blink) return vec4(0.0);
 
   if(pixBit){
     // ビットが立っているときは、文字色を設定
-    float alpha = float((attr & 0xff0000u) >> 16u) / 255.0;
-    return vec4(ccr,ccg,ccb,alpha);
+    return vec4(ccr,ccg,ccb,1.0);
   }
 
   // ビットが立っていないときは背景色を設定
-  float alpha = (bgg + bgr + bgb) == 0.0 ? 0.0 : float((attr & 0xff0000u) >> 16u) / 255.0;
+  float alpha = (bgg + bgr + bgb) == 0u ? 0.0 : 1.0;
   if(alpha == 0.0) discard;
   return vec4(bgr,bgg,bgb,alpha);
-  return vec4(0.0);
 }
 
 void main(){
   out_color = textPlane();
+  //out_color = vec4(1.0,1.0,1.0,1.0);
+  //out_color = uintBitsToFloat(texture(textBuffer, vtexcoord));
 }
- 
 `;
 
 /// テキストプレーン
 export default class TextPlane {
-  constructor(gl2, vwidth = 320, vheight = 200,textBitmap) {
+  constructor(gl2, vwidth, vheight) {
 
     this.gl2 = gl2;
     const gl = this.gl = gl2.gl;
@@ -134,18 +140,15 @@ export default class TextPlane {
     this.blinkCount = 0;// ブリンク制御用
     this.blink = false;// ブリンク制御用
 
-    this.textBuffer = new Uint32Array(this.twidth * this.theight);// テキスト/アトリビュートVRAM
-    // テスト用
-    const s = '０１２３４５６７８９０美咲フォントで表示してみた！ABCDEFGHIJKLMNOPQRSTUVWXYZ!ＡＢＣＤＥＦ漢字もそれなりに表示できる.';
-    let si = 0;
+    this.textBuffer = new Uint8Array(this.twidth * this.theight);// テキスト用VRAM
+    this.attrBuffer = new Uint8Array(this.twidth * this.theight);// アトリビュート用VRAM
 
-    for(let i = 0,e =this.textBuffer.length;i < e;++i){
-      const c = ((i & 7) << 28) + ((7 - (i & 7)) << 24) /*+ (((i + (i / this.twidth)) & 1) << 31)*/ + (((i + 0x50) & 0xff ) << 16) ;
-      this.textBuffer[i] = s.codePointAt(si++) | c;
-      if(si >= s.length){
-        si = 0;
-      }
-    }
+    // for(let i = 0,e = this.textBuffer.length;i < e;++i){
+    //   this.textBuffer[i] = i & 0xff;
+    // }
+    //    this.textBuffer.fill(0x23);
+
+    //this.attrBuffer.fill(0x70);
 
     class TextTexture {
       constructor({ location, unitNo = 0, cpubuffer, width, height, internalFormat = gl.R8, format = gl.RED, type = gl.UNSIGNED_BYTE, sampler = null }) {
@@ -167,7 +170,7 @@ export default class TextPlane {
 
         gl.pixelStorei(gl.UNPACK_ALIGNMENT, 1);
         gl.bindTexture(gl.TEXTURE_2D, this.texture);
-        gl.texImage2D(gl.TEXTURE_2D, 0, internalFormat, width, height, 0, format, type, cpubuffer);
+        gl.texImage2D(gl.TEXTURE_2D, 0, internalFormat, width, height, 0, format, type, cpubuffer, 0);
         gl.bindTexture(gl.TEXTURE_2D, null);
       }
 
@@ -241,28 +244,37 @@ export default class TextPlane {
 
     this.blinkLocation = gl.getUniformLocation(program, 'blink');
     this.textBufferLocation = gl.getUniformLocation(program, 'textBuffer');
+    this.attrBufferLocation = gl.getUniformLocation(program, 'attrBuffer');
     this.fontLocation = gl.getUniformLocation(program, 'font');
     this.palletLocation = gl.getUniformLocation(program, 'pallet');
     this.vwidthLocation = gl.getUniformLocation(program, 'vwidth');
     this.vheightLocation = gl.getUniformLocation(program, 'vheight');
 
     // GPUにテキスト用VRAMを渡すためのテクスチャを作る
-    this.textBufferTexture = new TextTexture({
-       location: this.textBufferLocation,
-       unitNo: 0, 
-       cpubuffer: this.textBuffer, 
-       width: this.twidth, 
-       height: this.theight,
-       internalFormat:gl.R32UI, 
-       format:gl.RED_INTEGER, 
-       type:gl.UNSIGNED_INT
+    this.textBufferTexture = new TextTexture({ location: this.textBufferLocation, unitNo: 0, cpubuffer: this.textBuffer, width: this.twidth, height: this.theight });
 
-    });
+    // GPUにアトリビュート用VRAMを渡すためのテクスチャを作る
+
+    this.textAttrTexture = new TextTexture({ location: this.attrBufferLocation, unitNo: 1, cpubuffer: this.attrBuffer, width: this.twidth, height: this.theight });
 
     // フォントのセットアップ
-    this.fontTexWidth = 256;//256 * 8
-    this.fontTexHeight = textBitmap.length / 256 | 0;
-    this.fontBuffer = textBitmap;
+    this.fontTexWidth = 256;//128 * 2
+    this.fontTexHeight = 16;//8 * 16 * 2;
+    this.fontBuffer = new Uint8Array(this.fontTexWidth * this.fontTexHeight);
+
+    // フォントデータの読み込み
+    {
+      let idx = 0;
+      let offset = 0;
+      fontData.forEach((d, i) => {
+        offset = ((i / 256) | 0) * 8;
+        idx = i % 256;
+        d.forEach((byteChar, iy) => {
+          let byte = parseInt(byteChar.replace(/　/ig, '0').replace(/■/ig, '1'), 2);
+          this.fontBuffer[idx + (iy + offset) * 256] = rev(byte);
+        });
+      });
+    }
 
     // フォント用テクスチャの生成
 
@@ -281,7 +293,7 @@ export default class TextPlane {
   /// 画面消去
   cls() {
     this.textBuffer.fill(0);
-    //this.attrBuffer.fill(0);
+    this.attrBuffer.fill(0);
     this.needsUpdate = true;
 
   }
@@ -448,10 +460,6 @@ export default class TextPlane {
     this.blinkCount = (this.blinkCount + 1) & 0xf;
     if (!this.blinkCount) {
       this.blink = !this.blink;
-      for(let i = 0;i < 8;++i){
-        this.pallet[i] =  (this.pallet[i] + 1) & 7;
-      }
-      this.needsUpdate = true;
     }
     //this.uniforms.blink = this.blink;
     gl.useProgram(this.program);
@@ -461,8 +469,8 @@ export default class TextPlane {
       gl.pixelStorei(gl.UNPACK_ALIGNMENT, 1);
       this.textBufferTexture.bind();
       this.textBufferTexture.update();
-      // this.textAttrTexture.bind();
-      // this.textAttrTexture.update();
+      this.textAttrTexture.bind();
+      this.textAttrTexture.update();
       this.palletTexture.bind();
       this.palletTexture.update();
       this.textFontTexture.bind();
@@ -476,7 +484,7 @@ export default class TextPlane {
     gl.uniform1f(this.vheightLocation, this.vheight);
 
     this.textBufferTexture.activate();
-//    this.textAttrTexture.activate();
+    this.textAttrTexture.activate();
     this.textFontTexture.activate();
     this.palletTexture.activate();
 
