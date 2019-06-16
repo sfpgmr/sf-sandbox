@@ -4,11 +4,12 @@ export default {
   ],
   "copyFiles":[
   "./current/src/html/index.html",
-  "./current/build/index.js",
+  "./current/build/main.js",
   "./current/build/tvram.wasm"
   ],
   "symlinkFiles":[
-    './common/enemy.png'
+    './common/enemy.png',
+    './common/font.bin'
   ],
   "schema":{
   }

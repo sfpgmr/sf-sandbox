@@ -6,6 +6,9 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "bin": {
+    "make-proj": "./tools/make.mjs"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/sfpgmr/sandbox.git"

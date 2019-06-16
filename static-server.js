@@ -13,7 +13,8 @@ const http = require("http"),
     "js": "text/javascript",
     "mjs": "text/javascript",
     "css": "text/css",
-    "wasm":"application/wasm"
+    "wasm":"application/wasm",
+    "bin":"application/octet-stream"
   };
  
 http.createServer(function(request, response) {

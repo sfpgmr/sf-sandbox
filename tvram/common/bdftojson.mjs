@@ -1,4 +1,5 @@
 import fs from 'fs';
+import sharp from 'sharp';
 
 
 (async()=>{
@@ -49,9 +50,27 @@ import fs from 'fs';
       bitmaparray[offsetX + offsetY + (i<<8)] = c.bitmap[i];
     }
   }
+  let raw = new Uint8Array(256 * 8 * 256 * 8);
 
+  index = 0;
+  for(let y = 0,ey = 256 * 8;y < ey;++y){
+    for(let x = 0;x < 256;++x){
+      let d = bitmaparray[x + (y << 8)];
+      for(let i = 0;i < 8;++i){
+        raw[index++] = ((d << i) & 0x80) ? 255 : 0;
+      }
+    }
+  }
+
+  sharp(Buffer.from(raw.buffer),{
+    raw:{
+      width:2048,
+      height:2048,
+      channels:1
+    }
+  }).png().toFile('./font.png');
   //await fs.promises.writeFile('./font.json',JSON.stringify(out,null,1),'utf8');
-  await fs.promises.writeFile('./font-b.bin',bitmaparray);
+  await fs.promises.writeFile('./font.bin',bitmaparray);
 
 })();
 
