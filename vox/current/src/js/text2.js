@@ -1,5 +1,4 @@
 'use strict';
-import { charCodes, canaCodes, hiraganaCodes } from './charCodes.js';
 
 // ビットのMSBとLSBを入れ替えるメソッド
 function rev(x) {
@@ -136,16 +135,16 @@ export default class TextPlane {
 
     this.textBuffer = new Uint32Array(this.twidth * this.theight);// テキスト/アトリビュートVRAM
     // テスト用
-    const s = '０１２３４５６７８９０美咲フォントで表示してみた！ABCDEFGHIJKLMNOPQRSTUVWXYZ!ＡＢＣＤＥＦ漢字もそれなりに表示できる.';
-    let si = 0;
+    // const s = '０１２３４５６７８９０美咲フォントで表示してみた！ABCDEFGHIJKLMNOPQRSTUVWXYZ!ＡＢＣＤＥＦ漢字もそれなりに表示できる.';
+    // let si = 0;
 
-    for(let i = 0,e =this.textBuffer.length;i < e;++i){
-      const c = ((i & 7) << 28) + ((7 - (i & 7)) << 24) /*+ (((i + (i / this.twidth)) & 1) << 31)*/ + (((i + 0x50) & 0xff ) << 16) ;
-      this.textBuffer[i] = s.codePointAt(si++) | c;
-      if(si >= s.length){
-        si = 0;
-      }
-    }
+    // for(let i = 0,e =this.textBuffer.length;i < e;++i){
+    //   const c = ((i & 7) << 28) + ((7 - (i & 7)) << 24) /*+ (((i + (i / this.twidth)) & 1) << 31)*/ + (((i + 0x50) & 0xff ) << 16) ;
+    //   this.textBuffer[i] = s.codePointAt(si++) | c;
+    //   if(si >= s.length){
+    //     si = 0;
+    //   }
+    // }
 
     class TextTexture {
       constructor({ location, unitNo = 0, cpubuffer, width, height, internalFormat = gl.R8UI, format = gl.RED_INTEGER, type = gl.UNSIGNED_BYTE, sampler = null }) {
@@ -281,165 +280,113 @@ export default class TextPlane {
   /// 画面消去
   cls() {
     this.textBuffer.fill(0);
-    //this.attrBuffer.fill(0);
     this.needsUpdate = true;
-
   }
 
+  // print(x, y, str, blink = false, color = 7, bgcolor = 0) {
 
-  convertStr(str) {
-    let attrs = [];
-    let chars = [];
-    for (let i = 0, e = str.length; i < e; ++i) {
-      let code = str.charCodeAt(i);
-      // 全角ひらがな
-      if (code >= 0x3040 && code < 0x309f) {
-        code -= 0x3041;
-        const h = hiraganaCodes[code];
-        chars.push(h[0]);
-        attrs.push(0x80);
-        // 濁点など
-        if (h[1]) {
-          chars.push(h[1]);
-          attrs.push(0x80);
-        }
-      }
-      // 全角カタカナ
-      else if (code > 0x30A0 && code < 0x30FF) {
-        code -= 0x30A1;
-        const h = hiraganaCodes[code];
-        chars.push(h[0]);
-        attrs.push(0x00);
-        // 濁点など
-        if (h[1]) {
-          chars.push(h[1]);
-          attrs.push(0x00);
-        }
-      }
-      else if (code >= 0xff60 && code < 0xffa0) {
-        code -= 0xff60;
-        const kana = canaCodes[code];
-        chars.push(kana[0]);
-        attrs.push(0);
-      } else if (code < 0x80) {
-        const ch = charCodes[code];
-        chars.push(ch[0]);
-        attrs.push(ch[1]);
-      } else if (code < 0xff) {
-        chars.push(code);
-        attrs.push(0);
-      }
-    }
-    return {
-      chars: chars,
-      attrs: attrs
-    };
-  }
+  //   let { chars, attrs } = this.convertStr(str);
 
-  print(x, y, str, blink = false, color = 7, bgcolor = 0) {
+  //   if (x == this.CENTER) {
+  //     // センタリング
+  //     x = ((this.twidth - chars.length) / 2 + .5) | 0;
+  //   } else if (x == this.LEFT) {
+  //     // 左寄せ
+  //     x = 0;
+  //   } else if (x == this.RIGHT) {
+  //     // 右寄せ
+  //     x = this.twidth - chars.length;
+  //   }
 
-    let { chars, attrs } = this.convertStr(str);
-
-    if (x == this.CENTER) {
-      // センタリング
-      x = ((this.twidth - chars.length) / 2 + .5) | 0;
-    } else if (x == this.LEFT) {
-      // 左寄せ
-      x = 0;
-    } else if (x == this.RIGHT) {
-      // 右寄せ
-      x = this.twidth - chars.length;
-    }
-
-    let offset = x + y * this.twidth;
-    const attr = color << 4 | bgcolor | (blink ? 0x8 : 0);
+  //   let offset = x + y * this.twidth;
+  //   const attr = color << 4 | bgcolor | (blink ? 0x8 : 0);
 
 
-    for (let i = 0, e = chars.length; i < e; ++i) {
+  //   for (let i = 0, e = chars.length; i < e; ++i) {
 
-      let code = chars[i];
-      if (code == 0xa) {
-        y = this.addY(y);
-        offset = y * this.twidth;
-      }
+  //     let code = chars[i];
+  //     if (code == 0xa) {
+  //       y = this.addY(y);
+  //       offset = y * this.twidth;
+  //     }
 
-      this.textBuffer[offset] = chars[i];
-      this.attrBuffer[offset] = attr | attrs[i];
+  //     this.textBuffer[offset] = chars[i];
+  //     this.attrBuffer[offset] = attr | attrs[i];
 
-      ++offset;
-      ++x;
-      if (x == this.twidth) {
-        x = 0;
-        y = this.addY(y);
-        offset = x + y * this.twidth;
-      }
-    }
+  //     ++offset;
+  //     ++x;
+  //     if (x == this.twidth) {
+  //       x = 0;
+  //       y = this.addY(y);
+  //       offset = x + y * this.twidth;
+  //     }
+  //   }
 
-    this.needsUpdate = true;
+  //   this.needsUpdate = true;
 
 
-  }
+  // }
 
-  addY(y) {
-    ++y;
-    if (y == this.theight) {
-      this.scroll();
-      y = this.theight - 1;
-    }
-    return y;
-  }
+  // addY(y) {
+  //   ++y;
+  //   if (y == this.theight) {
+  //     this.scroll();
+  //     y = this.theight - 1;
+  //   }
+  //   return y;
+  // }
 
-  scroll() {
-    for (let y = (this.theight - 1) * this.twidth, ey = this.twidth; y > ey; ey += this.twidth) {
-      const desty = y - this.twidth;
-      for (let x = 0, ex = this.twidth; x < ex; ++x) {
-        this.textBuffer[x + desty] = this.textBuffer[x + y];
-        this.attrBuffer[x + desty] = this.attrBuffer[x + y];
-      }
-    }
-  }
+  // scroll() {
+  //   for (let y = (this.theight - 1) * this.twidth, ey = this.twidth; y > ey; ey += this.twidth) {
+  //     const desty = y - this.twidth;
+  //     for (let x = 0, ex = this.twidth; x < ex; ++x) {
+  //       this.textBuffer[x + desty] = this.textBuffer[x + y];
+  //       this.attrBuffer[x + desty] = this.attrBuffer[x + y];
+  //     }
+  //   }
+  // }
 
-  fillText(x, y, w, h, str, blink = false, color = 7, bgcolor = 0, fillSpace = true) {
+  // fillText(x, y, w, h, str, blink = false, color = 7, bgcolor = 0, fillSpace = true) {
 
-    let { chars, attrs } = this.convertStr(str);
+  //   let { chars, attrs } = this.convertStr(str);
 
-    let end = w * h;
+  //   let end = w * h;
 
-    const attr = color << 4 | bgcolor | (blink ? 0x8 : 0);
+  //   const attr = color << 4 | bgcolor | (blink ? 0x8 : 0);
 
-    if (fillSpace && chars.length < end) {
-      while (chars.length <= end) {
-        chars.push(0x00);
-        attrs.push(attr);
-      }
-    }
+  //   if (fillSpace && chars.length < end) {
+  //     while (chars.length <= end) {
+  //       chars.push(0x00);
+  //       attrs.push(attr);
+  //     }
+  //   }
 
-    let spos = 0;
-    end = chars.length;
+  //   let spos = 0;
+  //   end = chars.length;
 
-    let cx = x, cy = y;
-    let o = cy * this.twidth;
-    while (spos <= end) {
-      let code = chars[spos];
-      if (code == 0xa) {
-        ++cy;
-        o = cy * this.twidth;
-      } else {
-        this.textBuffer[cx + o] = chars[spos];
-        this.attrBuffer[cx + o] = attr | attrs[spos];
-      }
-      ++cx;
-      if (cx > (x + w)) {
-        cx = x;
-        ++cy;
-        o = cy * this.twidth;
-      }
-      ++spos;
-    }
+  //   let cx = x, cy = y;
+  //   let o = cy * this.twidth;
+  //   while (spos <= end) {
+  //     let code = chars[spos];
+  //     if (code == 0xa) {
+  //       ++cy;
+  //       o = cy * this.twidth;
+  //     } else {
+  //       this.textBuffer[cx + o] = chars[spos];
+  //       this.attrBuffer[cx + o] = attr | attrs[spos];
+  //     }
+  //     ++cx;
+  //     if (cx > (x + w)) {
+  //       cx = x;
+  //       ++cy;
+  //       o = cy * this.twidth;
+  //     }
+  //     ++spos;
+  //   }
 
-    this.needsUpdate = true;
+  //   this.needsUpdate = true;
 
-  }
+  // }
 
   /// テキストデータをもとにテクスチャーに描画する
   render() {
