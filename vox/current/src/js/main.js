@@ -2,7 +2,7 @@
 
 import {Console} from './console.js';
 import vox from './vox.js';
-import {Vox} from './voxscreen.js';
+import Vox from './voxscreen.js';
 
 // let display = true;
 let play = false;
@@ -32,10 +32,10 @@ async function start(){
   const gl = con.gl;
   const gl2 = con.gl2;
 
-  const vox = new Vox({gl2:gl2,voxelData:models});
+  const voxmodel = new Vox({gl2:gl2,voxelData:models});
 
   //const myship = new SceneNode(model);
-  con.vscreen.appendScene(vox);
+  con.vscreen.appendScene(voxmodel);
 
   // cube.source.translation[2] = 0;
   // //m4.scale(cube.localMatrix,[20,20,20],cube.localMatrix);

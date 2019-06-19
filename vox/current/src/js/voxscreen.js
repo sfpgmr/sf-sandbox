@@ -82,20 +82,18 @@ function checkEndian(buffer = new ArrayBuffer(2)) {
 class Vox extends Node {
   constructor({ gl2, voxelData}) {
     super();
-    let points = new ArrayBuffer(4 * 4 * voxelData.voxels.length);
+    let points = new DataView(new ArrayBuffer(4 * 4 * voxelData.voxels.length));
     let offset = 0;
     
     voxelData.voxels.forEach(d=>{
-      points[offset] = d.x / (data.size.x >> 1);
-      offset+=4;
-      points[offset+4] = (d.y / (data.size.y >> 1));
-      points[offset+8] = (d.z / (data.size.z >> 1));
+      points.setFloat32(offset,d.x / (data.size.x >> 1));
+      points.setFloat32(offset+4, d.y / (data.size.y >> 1));
+      points.setFloat32(offset+8, d.z / (data.size.z >> 1));
       let color = voxelData.pallet[d.colorIndex];
-      points[offset+12] = (color.r << 24) | (color.g << 16)  | ( color.b << 8) | 0xff;
+      points.setFloat32(offset+12, (color.r << 24) | (color.g << 16)  | ( color.b << 8) | 0xff);
       offset += 16;
     });
 
-    points
     
     // スプライト面の表示・非表示
     this.visible = visible;
@@ -119,22 +117,22 @@ class Vox extends Node {
 
     gl.bindBuffer(gl.ARRAY_BUFFER, this.buffer);
     // VBOにスプライトバッファの内容を転送
-    gl.bufferData(gl.ARRAY_BUFFER, voxBuffer, gl.STATIC_DRAW);
+    gl.bufferData(gl.ARRAY_BUFFER, points.buffer, gl.STATIC_DRAW);
 
     // 属性ロケーションIDの取得と保存
     this.positionLocation = gl.getAttribLocation(program, 'position');
     this.colorLocation = gl.getAttribLocation(program, 'color');
 
-    this.stride =16;
+    this.stride = 16;
 
     // 属性の有効化とシェーダー属性とバッファ位置の結び付け
     // 位置
     gl.enableVertexAttribArray(this.positionLocation);
-    gl.vertexAttribPointer(this.positionLocation, this.VoxBuffer.POSITION_SIZE, gl.FLOAT, true, this.stride, 0);
+    gl.vertexAttribPointer(this.positionLocation, 3, gl.FLOAT, true, this.stride, 0);
     
     // 色
     gl.enableVertexAttribArray(this.colorLocation);
-    gl.vertexAttribIPointer(this.colorLocation, this.VoxBuffer.COLOR_SIZE / 4, gl.UNSIGNED_INT, this.stride, 12);
+    gl.vertexAttribIPointer(this.colorLocation, 1, gl.UNSIGNED_INT, this.stride, 12);
 
     gl.bindVertexArray(null);
 
@@ -144,8 +142,6 @@ class Vox extends Node {
     this.viewProjectionLocation = gl.getUniformLocation(program, 'u_worldViewProjection');
     // 視点のZ位置
     this.eyeZLocation = gl.getUniformLocation(program, 'u_eye_z');
-    // テクスチャ
-    this.textureLocation = gl.getUniformLocation(program, 'u_texture');
     // ビュー・投影行列
     this.viewProjection = mat4.create();
   }
