@@ -1,6 +1,8 @@
 'use strict';
 
 import {Console} from './console.js';
+import vox from './vox.js';
+import {Vox} from './voxscreen.js';
 
 // let display = true;
 let play = false;
@@ -9,24 +11,11 @@ window.addEventListener('load',()=>{
 
   let playButton = document.getElementById('playbutton');
   playButton.addEventListener('click',function(){
-
-    //if(display){
-      //play = !play;
       if(!play){
         playButton.setAttribute('class','hidden');
-        //playButton.innerHTML = 'stop';
         play = true;
-        //display = false;
         start();
       }
-      // } else {
-      //   playButton.setAttribute('class','active');
-      //   playButton.innerHTML = 'play';
-      // }
-    //} else {
-    //  playButton.setAttribute('class','active1');
-    //  display = true;
-    //}    
   });
  
 });
@@ -37,95 +26,17 @@ async function start(){
   const textBitmap = new Uint8Array(
     await fetch('./font.bin')
       .then(r=>r.arrayBuffer()));
-
+  const  parser = new vox.Parser();
+  const models = await parser.parse('./test.bin');
   con.initConsole(textBitmap);
   const gl = con.gl;
   const gl2 = con.gl2;
 
-  const testData = {
-    position: [
-      1, 1, -1,
-      1, 1, 1,
-      1, -1, 1,
-      1, -1, -1, -1, 1, 1, -1, 1, -1, -1, -1, -1, -1, -1, 1, -1, 1, 1, 1, 1, 1, 1, 1, -1, -1, 1, -1, -1, -1, -1, 1, -1, -1, 1, -1, 1, -1, -1, 1, 1, 1, 1, -1, 1, 1, -1, -1, 1, 1, -1, 1, -1, 1, -1, 1, 1, -1, 1, -1, -1, -1, -1, -1],
-    // normal:   [1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, -1, 0, 0, -1, 0, 0, -1, 0, 0, -1, 0, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, -1, 0, 0, -1, 0, 0, -1, 0, 0, -1, 0, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, -1, 0, 0, -1, 0, 0, -1, 0, 0, -1],
-    texcoord: [1, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 1],
-    indices:  [0, 1, 2, 0, 2, 3, 4, 5, 6, 4, 6, 7, 8, 9, 10, 8, 10, 11, 12, 13, 14, 12, 14, 15, 16, 17, 18, 16, 18, 19, 20, 21, 22, 20, 22, 23],
-    'position_size': 3,
-    'stride': 20,
-    'texcoord_size': 2
-  };
+  const vox = new Vox({gl2:gl2,voxelData:models});
 
-  {
-    const len = testData.position.length / 3;
-    const d = [];
-    const p = testData.position;
-    const ind = testData.indices;
-    for(let i = 0;i < len;++i){
-      let pp = i * 3;
-      let tp = i * 2;
-      d.push(p[pp],p[pp+1],p[pp+2],ind[tp],ind[tp+1]);
-    }
-    
-    testData.data = d;
-    testData.drawInfos = [
-      {
-        count:testData.indices.length,
-        material:{
-          'u_diffuse': [
-            1.0,
-            1.0,
-            1.0,
-            1.0
-          ],
-          'u_shininess': 50,
-          'u_specular': [
-            1.0,
-            1.0,
-            1.0,
-            1.0
-          ],
-          'u_specularFactor': 1.0          
-        },
-        offset:0
-      }
-    ];
+  //const myship = new SceneNode(model);
+  con.vscreen.appendScene(vox);
 
-  }
-
-  // const spriteImg = await gl2.loadImage('./enemy.png');
-
-  // const spriteTexture = gl.createTexture();
-  // gl.bindTexture(gl.TEXTURE_2D, spriteTexture);
-  // gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, spriteImg);
-  // gl.generateMipmap(gl.TEXTURE_2D);
-  // gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
-  // gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
-  // gl.bindTexture(gl.TEXTURE_2D, null);
-
-  // con.vscreen.appendScene(sprite);
-
-  // const bufferInfo = twgl.createBufferInfoFromArrays(con, arrays);
-  // const uniforms = {
-  //   u_color:[1,1,1,1],
-  //   u_specular: [1, 1, 1, 1],
-  //   u_shininess: 50,
-  //   u_specularFactor: 1,
-  //   u_diffuse:[1,1,1,1],//  twgl.createTexture(gl, {
-  //   //   min: gl.NEAREST,
-  //   //   mag: gl.NEAREST,
-  //   //   src: [
-  //   //     192, 192, 96, 255,
-  //   //     255, 255, 255, 255,
-  //   //     192, 192, 192, 255,
-  //   //     192, 96, 96, 255,
-  //   //   ],
-  //   // }),
-  // };
-
-  // const model = new Model(con,data);
-
-  // const cube = new SceneNode(model);
   // cube.source.translation[2] = 0;
   // //m4.scale(cube.localMatrix,[20,20,20],cube.localMatrix);
   // cube.source.scale = vec3.fromValues(50,50,50);
