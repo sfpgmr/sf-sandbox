@@ -32,7 +32,7 @@ async function start(){
   const gl = con.gl;
   const gl2 = con.gl2;
 
-  const voxmodel = new Vox({gl2:gl2,voxelData:models});
+  const voxmodel = new Vox({gl2:gl2,data:models});
 
   //const myship = new SceneNode(model);
   con.vscreen.appendScene(voxmodel);

@@ -5,7 +5,7 @@ import  {vec3} from './gl-matrix/gl-matrix.js';
 //import * as twgl from '../../twgl/twgl-full.js';
 import GL2 from './gl2.js';
 import Screen from './screen.js';
-import VScreen from './voxscreen.js';
+import VScreen from './vscreen.js';
 import TextPlane from './text2.js';
 
 export class Console extends EventEmitter {

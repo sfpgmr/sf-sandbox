@@ -29,20 +29,24 @@ uniform float u_eye_z;// 視点のZ座標
 void main() {
   
   // 色情報の取り出し
-  v_color = vec4(float(color & 0xffu)/255.0,float((color >> 8) & 0xffu) /255.0,float((color >> 16) & 0xffu) / 255.0,float(color >> 24) / 255.0);
+  v_color = vec4(float(color & 0xffu)/255.0 ,float((color >> 8) & 0xffu) /255.0,float((color >> 16) & 0xffu) / 255.0,float(color >> 24) / 255.0);
 
   // 表示位置の計算
-  vec4 pos = u_worldViewProjection * vec4(position,1.0);
+  vec4 pos = u_worldViewProjection * vec4(position,1.0) ;
+  //vec4 pos = u_worldViewProjection * vec4(-79.0,1.0,0.0,1.0) ;
+  
+  v_color = v_color - pos.z / 900.0;
 
   gl_Position = pos;
   // セルサイズの計算
-  gl_PointSize = cell_w = clamp(1.0 - 1.0 * float(pos.z),1.0,128.0);
+  gl_PointSize = 1.0;//clamp(1.0,1.0,128.0);
 }
 `;
 
 const fragmentShader = `#version 300 es
-precision mediump float;
+precision highp float;
 precision highp int;
+
 
 // 頂点シェーダーからの情報
 flat in vec4 v_color;// スプライト色
@@ -80,19 +84,23 @@ function checkEndian(buffer = new ArrayBuffer(2)) {
 
 
 class Vox extends Node {
-  constructor({ gl2, voxelData}) {
+  constructor({ gl2, data,visible = true}) {
     super();
-    let points = new DataView(new ArrayBuffer(4 * 4 * voxelData.voxels.length));
+    let points = new DataView(new ArrayBuffer(4 * 4 * data.voxels.length));
     let offset = 0;
+    this.endian = checkEndian();
     
-    voxelData.voxels.forEach(d=>{
-      points.setFloat32(offset,d.x / (data.size.x >> 1));
-      points.setFloat32(offset+4, d.y / (data.size.y >> 1));
-      points.setFloat32(offset+8, d.z / (data.size.z >> 1));
-      let color = voxelData.pallet[d.colorIndex];
-      points.setFloat32(offset+12, (color.r << 24) | (color.g << 16)  | ( color.b << 8) | 0xff);
+    data.voxels.forEach(d=>{
+      points.setFloat32(offset,(d.x - (data.size.x >> 1)) ,this.endian);
+      points.setFloat32(offset+4, (d.y - (data.size.y >> 1)),this.endian);
+      points.setFloat32(offset+8, (d.z - (data.size.z >> 1)),this.endian);
+      let color = data.palette[d.colorIndex];
+      points.setUint32(offset+12, (color.r ) | (color.g << 8)  | ( color.b << 16) | (color.a << 24) ,this.endian);
       offset += 16;
     });
+
+    this.voxCount = data.voxels.length;
+    this.voxBuffer = points.buffer;
 
     
     // スプライト面の表示・非表示
@@ -117,11 +125,12 @@ class Vox extends Node {
 
     gl.bindBuffer(gl.ARRAY_BUFFER, this.buffer);
     // VBOにスプライトバッファの内容を転送
-    gl.bufferData(gl.ARRAY_BUFFER, points.buffer, gl.STATIC_DRAW);
+    gl.bufferData(gl.ARRAY_BUFFER, points.buffer, gl.DYNAMIC_DRAW);
 
     // 属性ロケーションIDの取得と保存
     this.positionLocation = gl.getAttribLocation(program, 'position');
     this.colorLocation = gl.getAttribLocation(program, 'color');
+    
 
     this.stride = 16;
 
@@ -144,6 +153,9 @@ class Vox extends Node {
     this.eyeZLocation = gl.getUniformLocation(program, 'u_eye_z');
     // ビュー・投影行列
     this.viewProjection = mat4.create();
+    this.count = 0;
+    
+ 
   }
 
   // スプライトを描画
@@ -155,17 +167,21 @@ class Vox extends Node {
 
     // VoxBufferの内容を更新
     gl.bindBuffer(gl.ARRAY_BUFFER,this.buffer);
-    //gl.bufferSubData(gl.ARRAY_BUFFER, 0, this.VoxBuffer.buffer);
+    //gl.bufferSubData(gl.ARRAY_BUFFER, 0, this.voxBuffer);
 
     // VAOをバインド
     gl.bindVertexArray(this.vao);
 
     // uniform変数を更新
-    gl.uniformMatrix4fv(this.viewProjectionLocation, false, mat4.multiply(this.viewProjection, screen.uniforms.viewProjection, this.worldMatrix));
+    const m = mat4.create();
+    mat4.rotateX(m,this.worldMatrix,this.count);
+//    mat4.rotateY(m,m,this.count);
+    this.count += 0.04;
+    gl.uniformMatrix4fv(this.viewProjectionLocation, false, mat4.multiply(this.viewProjection, screen.uniforms.viewProjection, m));
     gl.uniform1f(this.eyeZLocation, screen.console.CAMERA_Z);
 
     // 描画命令の発行
-    gl.drawArrays(gl.POINTS, 0, this.VoxBuffer.amount);
+    gl.drawArrays(gl.POINTS, 0,this.voxCount);
   }
 
 }

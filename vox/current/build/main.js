@@ -282,6 +282,14 @@
   LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
   THE SOFTWARE. */
+
+  /**
+   * Common utilities
+   * @module glMatrix
+   */
+
+  // Configuration Constants
+  const EPSILON = 0.000001;
   let ARRAY_TYPE = (typeof Float32Array !== 'undefined') ? Float32Array : Array;
 
   const degree = Math.PI / 180;
@@ -472,6 +480,60 @@
     out[13] = 0;
     out[14] = 0;
     out[15] = 1;
+    return out;
+  }
+
+  /**
+   * Inverts a mat4
+   *
+   * @param {mat4} out the receiving matrix
+   * @param {mat4} a the source matrix
+   * @returns {mat4} out
+   */
+  function invert$3(out, a) {
+    let a00 = a[0], a01 = a[1], a02 = a[2], a03 = a[3];
+    let a10 = a[4], a11 = a[5], a12 = a[6], a13 = a[7];
+    let a20 = a[8], a21 = a[9], a22 = a[10], a23 = a[11];
+    let a30 = a[12], a31 = a[13], a32 = a[14], a33 = a[15];
+
+    let b00 = a00 * a11 - a01 * a10;
+    let b01 = a00 * a12 - a02 * a10;
+    let b02 = a00 * a13 - a03 * a10;
+    let b03 = a01 * a12 - a02 * a11;
+    let b04 = a01 * a13 - a03 * a11;
+    let b05 = a02 * a13 - a03 * a12;
+    let b06 = a20 * a31 - a21 * a30;
+    let b07 = a20 * a32 - a22 * a30;
+    let b08 = a20 * a33 - a23 * a30;
+    let b09 = a21 * a32 - a22 * a31;
+    let b10 = a21 * a33 - a23 * a31;
+    let b11 = a22 * a33 - a23 * a32;
+
+    // Calculate the determinant
+    let det = b00 * b11 - b01 * b10 + b02 * b09 + b03 * b08 - b04 * b07 + b05 * b06;
+
+    if (!det) {
+      return null;
+    }
+    det = 1.0 / det;
+
+    out[0] = (a11 * b11 - a12 * b10 + a13 * b09) * det;
+    out[1] = (a02 * b10 - a01 * b11 - a03 * b09) * det;
+    out[2] = (a31 * b05 - a32 * b04 + a33 * b03) * det;
+    out[3] = (a22 * b04 - a21 * b05 - a23 * b03) * det;
+    out[4] = (a12 * b08 - a10 * b11 - a13 * b07) * det;
+    out[5] = (a00 * b11 - a02 * b08 + a03 * b07) * det;
+    out[6] = (a32 * b02 - a30 * b05 - a33 * b01) * det;
+    out[7] = (a20 * b05 - a22 * b02 + a23 * b01) * det;
+    out[8] = (a10 * b10 - a11 * b08 + a13 * b06) * det;
+    out[9] = (a01 * b08 - a00 * b10 - a03 * b06) * det;
+    out[10] = (a30 * b04 - a31 * b02 + a33 * b00) * det;
+    out[11] = (a21 * b02 - a20 * b04 - a23 * b00) * det;
+    out[12] = (a11 * b07 - a10 * b09 - a12 * b06) * det;
+    out[13] = (a00 * b09 - a01 * b07 + a02 * b06) * det;
+    out[14] = (a31 * b01 - a30 * b03 - a32 * b00) * det;
+    out[15] = (a20 * b03 - a21 * b01 + a22 * b00) * det;
+
     return out;
   }
 
@@ -706,6 +768,125 @@
     return out;
   }
 
+  /**
+   * Generates a perspective projection matrix with the given bounds
+   *
+   * @param {mat4} out mat4 frustum matrix will be written into
+   * @param {number} fovy Vertical field of view in radians
+   * @param {number} aspect Aspect ratio. typically viewport width/height
+   * @param {number} near Near bound of the frustum
+   * @param {number} far Far bound of the frustum
+   * @returns {mat4} out
+   */
+  function perspective(out, fovy, aspect, near, far) {
+    let f = 1.0 / Math.tan(fovy / 2);
+    let nf = 1 / (near - far);
+    out[0] = f / aspect;
+    out[1] = 0;
+    out[2] = 0;
+    out[3] = 0;
+    out[4] = 0;
+    out[5] = f;
+    out[6] = 0;
+    out[7] = 0;
+    out[8] = 0;
+    out[9] = 0;
+    out[10] = (far + near) * nf;
+    out[11] = -1;
+    out[12] = 0;
+    out[13] = 0;
+    out[14] = (2 * far * near) * nf;
+    out[15] = 0;
+    return out;
+  }
+
+  /**
+   * Generates a look-at matrix with the given eye position, focal point, and up axis
+   *
+   * @param {mat4} out mat4 frustum matrix will be written into
+   * @param {vec3} eye Position of the viewer
+   * @param {vec3} center Point the viewer is looking at
+   * @param {vec3} up vec3 pointing up
+   * @returns {mat4} out
+   */
+  function lookAt(out, eye, center, up) {
+    let x0, x1, x2, y0, y1, y2, z0, z1, z2, len;
+    let eyex = eye[0];
+    let eyey = eye[1];
+    let eyez = eye[2];
+    let upx = up[0];
+    let upy = up[1];
+    let upz = up[2];
+    let centerx = center[0];
+    let centery = center[1];
+    let centerz = center[2];
+
+    if (Math.abs(eyex - centerx) < EPSILON &&
+        Math.abs(eyey - centery) < EPSILON &&
+        Math.abs(eyez - centerz) < EPSILON) {
+      return identity$3(out);
+    }
+
+    z0 = eyex - centerx;
+    z1 = eyey - centery;
+    z2 = eyez - centerz;
+
+    len = 1 / Math.sqrt(z0 * z0 + z1 * z1 + z2 * z2);
+    z0 *= len;
+    z1 *= len;
+    z2 *= len;
+
+    x0 = upy * z2 - upz * z1;
+    x1 = upz * z0 - upx * z2;
+    x2 = upx * z1 - upy * z0;
+    len = Math.sqrt(x0 * x0 + x1 * x1 + x2 * x2);
+    if (!len) {
+      x0 = 0;
+      x1 = 0;
+      x2 = 0;
+    } else {
+      len = 1 / len;
+      x0 *= len;
+      x1 *= len;
+      x2 *= len;
+    }
+
+    y0 = z1 * x2 - z2 * x1;
+    y1 = z2 * x0 - z0 * x2;
+    y2 = z0 * x1 - z1 * x0;
+
+    len = Math.sqrt(y0 * y0 + y1 * y1 + y2 * y2);
+    if (!len) {
+      y0 = 0;
+      y1 = 0;
+      y2 = 0;
+    } else {
+      len = 1 / len;
+      y0 *= len;
+      y1 *= len;
+      y2 *= len;
+    }
+
+    out[0] = x0;
+    out[1] = y0;
+    out[2] = z0;
+    out[3] = 0;
+    out[4] = x1;
+    out[5] = y1;
+    out[6] = z1;
+    out[7] = 0;
+    out[8] = x2;
+    out[9] = y2;
+    out[10] = z2;
+    out[11] = 0;
+    out[12] = -(x0 * eyex + x1 * eyey + x2 * eyez);
+    out[13] = -(y0 * eyex + y1 * eyey + y2 * eyez);
+    out[14] = -(z0 * eyex + z1 * eyey + z2 * eyez);
+    out[15] = 1;
+
+    return out;
+  }
+
   /* Copyright (c) 2015, Brandon Jones, Colin MacKenzie IV.
 
   Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -907,6 +1088,24 @@
     out[1] = 0;
     out[2] = 0;
     out[3] = 0;
+    return out;
+  }
+
+  /**
+   * Creates a new vec4 initialized with the given values
+   *
+   * @param {Number} x X component
+   * @param {Number} y Y component
+   * @param {Number} z Z component
+   * @param {Number} w W component
+   * @returns {vec4} a new 4D vector
+   */
+  function fromValues$5(x, y, z, w) {
+    let out = new ARRAY_TYPE(4);
+    out[0] = x;
+    out[1] = y;
+    out[2] = z;
+    out[3] = w;
     return out;
   }
 
@@ -1840,156 +2039,153 @@ void main()
     }
   }
 
-  const vertexShader = `#version 300 es
-precision highp float;
-precision highp int;
-/**********************************************
-
-Vox オブジェクトの表示
-
-**********************************************/
-
-
-// 座標 X,Y,Z
-in vec3 position;
-// カラー
-in uint color;
-
-// フラグメント・シェーダーに渡す変数
-flat out vec4 v_color;// 色
-
-#define root2 1.414213562
-
-uniform mat4 u_worldViewProjection; // 変換行列
-uniform float u_eye_z;// 視点のZ座標
-
-void main() {
-  
-  // 色情報の取り出し
-  v_color = vec4(float(color & 0xffu)/255.0,float((color >> 8) & 0xffu) /255.0,float((color >> 16) & 0xffu) / 255.0,float(color >> 24) / 255.0);
-
-  // 表示位置の計算
-  vec4 pos = u_worldViewProjection * vec4(position,1.0);
-
-  gl_Position = pos;
-  // セルサイズの計算
-  gl_PointSize = cell_w = clamp(1.0 - 1.0 * float(pos.z),1.0,128.0);
-}
-`;
-
-  const fragmentShader = `#version 300 es
+  const vs =
+    `#version 300 es
 precision mediump float;
-precision highp int;
+uniform mat4 u_worldViewProjection;
+uniform vec3 u_lightWorldPos;
+uniform mat4 u_world;
+uniform mat4 u_viewInverse;
+//uniform mat4 u_worldInverseTranspose;
 
-// 頂点シェーダーからの情報
-flat in vec4 v_color;// スプライト色
+in vec3 position;
+//in vec3 normal;
+in vec2 texcoord;
 
-#define root2 1.414213562
-
-// 出力色
-out vec4 fcolor;
+out vec4 v_position;
+out vec2 v_texCoord;
+//flat out vec3 v_normal;
+out vec3 v_surfaceToLight;
+out vec3 v_surfaceToView;
 
 void main() {
-  fcolor = v_color;
+  v_texCoord = texcoord;
+  vec4 pos = vec4(position,1.0);
+  v_position = u_worldViewProjection * pos;
+  v_surfaceToLight = u_lightWorldPos - (u_world * pos).xyz;
+  v_surfaceToView = (u_viewInverse[3] - (u_world * pos)).xyz;
+  gl_Position = v_position;
 }
 `;
 
-  // プログラムを使いまわすためのキャッシュ
-  let programCache;
+  const fs =
+    `#version 300 es
+precision mediump float;
 
+in vec4 v_position;
+in vec2 v_texCoord;
+//flat in vec3 v_normal;
+in vec3 v_surfaceToLight;
+in vec3 v_surfaceToView;
 
-  class Vox extends Node {
-    constructor({ gl2, voxelData}) {
-      super();
-      let points = new DataView(new ArrayBuffer(4 * 4 * voxelData.voxels.length));
-      let offset = 0;
-      
-      voxelData.voxels.forEach(d=>{
-        points.setFloat32(offset,d.x / (data.size.x >> 1));
-        points.setFloat32(offset+4, d.y / (data.size.y >> 1));
-        points.setFloat32(offset+8, d.z / (data.size.z >> 1));
-        let color = voxelData.pallet[d.colorIndex];
-        points.setFloat32(offset+12, (color.r << 24) | (color.g << 16)  | ( color.b << 8) | 0xff);
-        offset += 16;
-      });
+//uniform vec4 u_color;
+uniform vec4 u_lightColor;
+uniform vec4 u_ambient;
+uniform vec4 u_diffuse;
+uniform vec4 u_specular;
+uniform float u_shininess;
+uniform float u_specularFactor;
 
-      
-      // スプライト面の表示・非表示
-      this.visible = visible;
+out vec4 out_color;
 
-      // webgl コンテキストの保存
-      const gl = this.gl = gl2.gl;
-      this.gl2 = gl2;
+vec4 lit(float l ,float h, float m) {
+  return vec4(1.0,
+              max(l, 0.0),
+              (l > 0.0) ? pow(max(0.0, h), m) : 0.0,
+              1.0);
+}
 
-      // プログラムの生成
-      if (!programCache) {
-        programCache = gl2.createProgram(vertexShader, fragmentShader);
-      }
-      const program = this.program = programCache;
+void main() {
+  vec4 diffuseColor = u_diffuse;//texture(u_diffuse, v_texCoord);
+  vec3 dx = dFdx(v_position.xyz);
+  vec3 dy = dFdy(v_position.xyz);
+  vec3 a_normal = normalize(cross(normalize(dx), normalize(dy)));
+  //vec3 a_normal = normalize(v_normal);
+  vec3 surfaceToLight = normalize(v_surfaceToLight);
+  vec3 surfaceToView = normalize(v_surfaceToView);
+  vec3 halfVector = normalize(surfaceToLight + surfaceToView);
+  vec4 litR = lit(dot(a_normal, surfaceToLight),
+                    dot(a_normal, halfVector), u_shininess);
+  vec4 outColor = vec4((
+  u_lightColor * (diffuseColor * litR.y + diffuseColor * u_ambient +
+                u_specular * litR.z * u_specularFactor) /* * u_color*/).rgb,
+      diffuseColor.a);
+  out_color = outColor;
+}
+`;
 
-      // アトリビュート
-      // VAOの生成とバインド
-      this.vao = gl.createVertexArray();
-      gl.bindVertexArray(this.vao);
-      // VBOの生成
-      this.buffer = gl.createBuffer();
+  class VScreen {
+    constructor(con) {
+      this.console = con;
+      this.gl = con.gl;
+      const gl2 = this.gl2 = con.gl2;
+      this.y = 0;
 
-      gl.bindBuffer(gl.ARRAY_BUFFER, this.buffer);
-      // VBOにスプライトバッファの内容を転送
-      gl.bufferData(gl.ARRAY_BUFFER, points.buffer, gl.STATIC_DRAW);
+      this.scene = new Node();
+      this.program = gl2.createProgram(vs, fs);
+      this.sceneNodes = [];
 
-      // 属性ロケーションIDの取得と保存
-      this.positionLocation = gl.getAttribLocation(program, 'position');
-      this.colorLocation = gl.getAttribLocation(program, 'color');
+      this.uniforms = {
+        u_lightWorldPos: fromValues$4(1, 108, 1000),
+        u_lightColor: fromValues$5(1.0, 1.0, 1.0, 1),
+        u_ambient: fromValues$5(0.2, 0.2, 0.2, 1.0)
+      };
 
-      this.stride = 16;
+      const fov = this.console.ANGLE_OF_VIEW * Math.PI / 180;
+      //const aspect = gl.canvas.clientWidth / gl.canvas.clientHeight;
+      const aspect = con.VIRTUAL_WIDTH / con.VIRTUAL_HEIGHT;
+      const zNear = 0.01;
+      const zFar = 100000;
+      const projection$$1 = perspective(create$3(), fov, aspect, zNear, zFar);
+      const eye = fromValues$4(0, 0, this.console.CAMERA_Z);
+      const target = create$4();
+      const up = fromValues$4(0, 1, 0);
 
-      // 属性の有効化とシェーダー属性とバッファ位置の結び付け
-      // 位置
-      gl.enableVertexAttribArray(this.positionLocation);
-      gl.vertexAttribPointer(this.positionLocation, 3, gl.FLOAT, true, this.stride, 0);
-      
-      // 色
-      gl.enableVertexAttribArray(this.colorLocation);
-      gl.vertexAttribIPointer(this.colorLocation, 1, gl.UNSIGNED_INT, this.stride, 12);
+      const view = lookAt(create$3(), eye, target, up);
+      const camera = invert$3(create$3(), view);
+      this.uniforms.viewProjection = multiply$3(create$3(), projection$$1, view);
 
-      gl.bindVertexArray(null);
+      this.uniforms.u_viewInverse = camera;
 
-      // uniform変数の位置の取得と保存
-
-      // ワールド・ビュー変換行列
-      this.viewProjectionLocation = gl.getUniformLocation(program, 'u_worldViewProjection');
-      // 視点のZ位置
-      this.eyeZLocation = gl.getUniformLocation(program, 'u_eye_z');
-      // ビュー・投影行列
-      this.viewProjection = create$3();
     }
 
-    // スプライトを描画
-    render(screen) {
-      const gl = this.gl;
+    appendScene(sceneNode, parent = this.scene) {
+      if (!(sceneNode instanceof Node)) throw new TypeError('');
+      sceneNode.setParent(parent);
+      this.sceneNodes.push(sceneNode);
+    }
 
-      // プログラムの指定
-      gl.useProgram(this.program);
+    removeScene(sceneNode) {
+      {
+        const ndx = sceneNode.parent.children.indexOf(sceneNode);
+        if (ndx >= 0) {
+          sceneNode.parent.children.splice(ndx, 1);
+        }
+      }
+      {
+        const ndx = this.sceneNodes.indexOf(sceneNode);
+        if (ndx >= 0) {
+          this.sceneNodes.splice(ndx, 1);
+        }
+      }
+    }
 
-      // VoxBufferの内容を更新
-      gl.bindBuffer(gl.ARRAY_BUFFER,this.buffer);
-      //gl.bufferSubData(gl.ARRAY_BUFFER, 0, this.VoxBuffer.buffer);
+    render() {
 
-      // VAOをバインド
-      gl.bindVertexArray(this.vao);
+      this.y += 0.006;
 
-      // uniform変数を更新
-      gl.uniformMatrix4fv(this.viewProjectionLocation, false, multiply$3(this.viewProjection, screen.uniforms.viewProjection, this.worldMatrix));
-      gl.uniform1f(this.eyeZLocation, screen.console.CAMERA_Z);
+      this.scene.updateWorldMatrix();
 
-      // 描画命令の発行
-      gl.drawArrays(gl.POINTS, 0, this.VoxBuffer.amount);
+      this.sceneNodes.forEach(n => {
+        if (n.visible) {
+          n.render(this);
+        }
+      });
     }
 
   }
 
-  const vs =
+  const vs$1 =
     `#version 300 es
 precision highp int;
 precision highp float;
@@ -2005,7 +2201,7 @@ void main()	{
 }
 `;
 
-  const fs =
+  const fs$1 =
     `#version 300 es
 precision highp int;
 precision highp float;
@@ -2172,7 +2368,7 @@ void main(){
       // シェーダーのセットアップ
 
       // this.programInfo = twgl.createProgramInfo(gl,[vs,fs]);
-      const program = this.program = gl2.createProgram(vs, fs);
+      const program = this.program = gl2.createProgram(vs$1, fs$1);
       gl.useProgram(program);
 
       this.positionLocation = gl.getAttribLocation(program, 'position');
@@ -2474,7 +2670,7 @@ void main(){
       gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
       gl.bindTexture(gl.TEXTURE_2D, null);
 
-      this.vscreen = new Vox(this);
+      this.vscreen = new VScreen(this);
       this.text = new TextPlane(gl2,this.VIRTUAL_WIDTH,this.VIRTUAL_HEIGHT,textBitmap);
       this.screen = new Screen(this,this.texture);
 
@@ -3849,6 +4045,189 @@ void main(){
   vox.md5 = MD5_hexhash;
   })();
 
+  const vertexShader = `#version 300 es
+precision highp float;
+precision highp int;
+/**********************************************
+
+Vox オブジェクトの表示
+
+**********************************************/
+
+
+// 座標 X,Y,Z
+in vec3 position;
+// カラー
+in uint color;
+
+// フラグメント・シェーダーに渡す変数
+flat out vec4 v_color;// 色
+
+#define root2 1.414213562
+
+uniform mat4 u_worldViewProjection; // 変換行列
+uniform float u_eye_z;// 視点のZ座標
+
+void main() {
+  
+  // 色情報の取り出し
+  v_color = vec4(float(color & 0xffu)/255.0 ,float((color >> 8) & 0xffu) /255.0,float((color >> 16) & 0xffu) / 255.0,float(color >> 24) / 255.0);
+
+  // 表示位置の計算
+  vec4 pos = u_worldViewProjection * vec4(position,1.0) ;
+  //vec4 pos = u_worldViewProjection * vec4(-79.0,1.0,0.0,1.0) ;
+  
+  v_color = v_color - pos.z / 900.0;
+
+  gl_Position = pos;
+  // セルサイズの計算
+  gl_PointSize = 1.0;//clamp(1.0,1.0,128.0);
+}
+`;
+
+  const fragmentShader = `#version 300 es
+precision highp float;
+precision highp int;
+
+
+// 頂点シェーダーからの情報
+flat in vec4 v_color;// スプライト色
+
+#define root2 1.414213562
+
+// 出力色
+out vec4 fcolor;
+
+void main() {
+  fcolor = v_color;
+}
+`;
+
+  // プログラムを使いまわすためのキャッシュ
+  let programCache;
+
+  // エンディアンを調べる関数
+  function checkEndian(buffer = new ArrayBuffer(2)) {
+
+    if (buffer.byteLength == 1) return false;
+
+    const ua = new Uint16Array(buffer);
+    const v = new DataView(buffer);
+    v.setUint16(0, 1);
+    // ArrayBufferとDataViewの読み出し結果が異なればリトル・エンディアンである
+    if (ua[0] != v.getUint16()) {
+      ua[0] = 0;
+      return true;
+    }
+    ua[0] = 0;
+    // ビッグ・エンディアン
+    return false;
+  }
+
+
+  class Vox extends Node {
+    constructor({ gl2, data,visible = true}) {
+      super();
+      let points = new DataView(new ArrayBuffer(4 * 4 * data.voxels.length));
+      let offset = 0;
+      this.endian = checkEndian();
+      
+      data.voxels.forEach(d=>{
+        points.setFloat32(offset,(d.x - (data.size.x >> 1)) ,this.endian);
+        points.setFloat32(offset+4, (d.y - (data.size.y >> 1)),this.endian);
+        points.setFloat32(offset+8, (d.z - (data.size.z >> 1)),this.endian);
+        let color = data.palette[d.colorIndex];
+        points.setUint32(offset+12, (color.r ) | (color.g << 8)  | ( color.b << 16) | (color.a << 24) ,this.endian);
+        offset += 16;
+      });
+
+      this.voxCount = data.voxels.length;
+      this.voxBuffer = points.buffer;
+
+      
+      // スプライト面の表示・非表示
+      this.visible = visible;
+
+      // webgl コンテキストの保存
+      const gl = this.gl = gl2.gl;
+      this.gl2 = gl2;
+
+      // プログラムの生成
+      if (!programCache) {
+        programCache = gl2.createProgram(vertexShader, fragmentShader);
+      }
+      const program = this.program = programCache;
+
+      // アトリビュート
+      // VAOの生成とバインド
+      this.vao = gl.createVertexArray();
+      gl.bindVertexArray(this.vao);
+      // VBOの生成
+      this.buffer = gl.createBuffer();
+
+      gl.bindBuffer(gl.ARRAY_BUFFER, this.buffer);
+      // VBOにスプライトバッファの内容を転送
+      gl.bufferData(gl.ARRAY_BUFFER, points.buffer, gl.DYNAMIC_DRAW);
+
+      // 属性ロケーションIDの取得と保存
+      this.positionLocation = gl.getAttribLocation(program, 'position');
+      this.colorLocation = gl.getAttribLocation(program, 'color');
+      
+
+      this.stride = 16;
+
+      // 属性の有効化とシェーダー属性とバッファ位置の結び付け
+      // 位置
+      gl.enableVertexAttribArray(this.positionLocation);
+      gl.vertexAttribPointer(this.positionLocation, 3, gl.FLOAT, true, this.stride, 0);
+      
+      // 色
+      gl.enableVertexAttribArray(this.colorLocation);
+      gl.vertexAttribIPointer(this.colorLocation, 1, gl.UNSIGNED_INT, this.stride, 12);
+
+      gl.bindVertexArray(null);
+
+      // uniform変数の位置の取得と保存
+
+      // ワールド・ビュー変換行列
+      this.viewProjectionLocation = gl.getUniformLocation(program, 'u_worldViewProjection');
+      // 視点のZ位置
+      this.eyeZLocation = gl.getUniformLocation(program, 'u_eye_z');
+      // ビュー・投影行列
+      this.viewProjection = create$3();
+      this.count = 0;
+      
+   
+    }
+
+    // スプライトを描画
+    render(screen) {
+      const gl = this.gl;
+
+      // プログラムの指定
+      gl.useProgram(this.program);
+
+      // VoxBufferの内容を更新
+      gl.bindBuffer(gl.ARRAY_BUFFER,this.buffer);
+      //gl.bufferSubData(gl.ARRAY_BUFFER, 0, this.voxBuffer);
+
+      // VAOをバインド
+      gl.bindVertexArray(this.vao);
+
+      // uniform変数を更新
+      const m = create$3();
+      rotateX(m,this.worldMatrix,this.count);
+  //    mat4.rotateY(m,m,this.count);
+      this.count += 0.04;
+      gl.uniformMatrix4fv(this.viewProjectionLocation, false, multiply$3(this.viewProjection, screen.uniforms.viewProjection, m));
+      gl.uniform1f(this.eyeZLocation, screen.console.CAMERA_Z);
+
+      // 描画命令の発行
+      gl.drawArrays(gl.POINTS, 0,this.voxCount);
+    }
+
+  }
+
   // let display = true;
   let play = false;
 
@@ -3876,7 +4255,7 @@ void main(){
     con.initConsole(textBitmap);
     const gl2 = con.gl2;
 
-    const voxmodel = new Vox({gl2:gl2,voxelData:models});
+    const voxmodel = new Vox({gl2:gl2,data:models});
 
     //const myship = new SceneNode(model);
     con.vscreen.appendScene(voxmodel);
