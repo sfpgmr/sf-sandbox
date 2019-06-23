@@ -116,7 +116,8 @@ export class Console extends EventEmitter {
     gl.bindFramebuffer(gl.DRAW_FRAMEBUFFER,frameBuffer);
     this.gl.viewport(0, 0, this.VIRTUAL_WIDTH, this.VIRTUAL_HEIGHT);
 
-    gl.enable(gl.DEPTH_TEST);
+    gl.enable(gl.DEPTH_TEST)
+    gl.depthFunc(gl.LEQUAL);
     gl.enable(gl.CULL_FACE);
     gl.clearColor(0,0,0,0.0);
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);

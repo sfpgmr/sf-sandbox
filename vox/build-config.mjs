@@ -12,7 +12,7 @@ export default {
     './common/enemy.png',
     './common/font.bin',
     './common/icon.png',
-    './common/test.bin'
+    './common/q1.bin'
   ],
   "schema":{
   }
