@@ -1,7 +1,6 @@
 'use strict';
 
 import {Console} from './console.js';
-import vox from './vox.js';
 import Vox from './voxscreen.js';
 
 // let display = true;
@@ -26,8 +25,6 @@ async function start(){
   const textBitmap = new Uint8Array(
     await fetch('./font.bin')
       .then(r=>r.arrayBuffer()));
-  const  parser = new vox.Parser();
-  const models = await parser.parse('./myship.bin');
   con.initConsole(textBitmap);
   const gl = con.gl;
   const gl2 = con.gl2;
