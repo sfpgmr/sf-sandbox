@@ -1,6 +1,7 @@
 'use strict';
 import { Node } from './scene.js';
 import { mat4, vec3, vec4 } from './gl-matrix/gl-matrix.js';
+import vox from './vox.js';
 
 
 const vertexShader = `#version 300 es
@@ -9,6 +10,7 @@ precision highp int;
 /**********************************************
 
 Vox オブジェクトの表示
+(なんちゃって3D)
 
 **********************************************/
 
@@ -33,7 +35,7 @@ uniform float u_scale;// 視点のZ座標
 void main() {
   
   // 表示位置の計算
-  vec4 pos = u_worldViewProjection * vec4( position * (sin(u_scale) + 1.25) * 10.0 ,1.0) ;
+  vec4 pos = u_worldViewProjection * vec4( position  ,1.0) ;
 
   // 色情報の取り出し
   v_color = vec4(float(color & 0xffu)/255.0 ,float((color >> 8) & 0xffu) /255.0,float((color >> 16) & 0xffu) / 255.0,float(color >> 24) / 255.0);
@@ -44,13 +46,13 @@ void main() {
   
   vec3 lv = normalize(position);
 
-  float diffuse = clamp(dot(lv , inv_light) , 0.5, 1.0);
+  float diffuse = clamp(dot(lv , inv_light) , 0.6, 1.0);
 
   v_color  = v_color * vec4(vec3(diffuse), 1.0);
 
   gl_Position = pos;
   // セルサイズの計算
-  gl_PointSize = clamp((128.0 - pos.z) / 6.0,1.0,128.0);
+  gl_PointSize = clamp((127.0 - pos.z) / 6.0,1.0,128.0);
 }
 `;
 
@@ -91,6 +93,69 @@ function checkEndian(buffer = new ArrayBuffer(2)) {
   ua[0] = 0;
   // ビッグ・エンディアン
   return false;
+}
+
+const voxCharacters = [];
+
+class VoxCharacter {
+  constructor({data}){
+    let offset = 0;
+    data.voxels.forEach(d=>{
+      points.setFloat32(offset,(d.x - (data.size.x >> 1)) ,this.endian);
+      points.setFloat32(offset+4, (d.y - (data.size.y >> 1)),this.endian);
+      points.setFloat32(offset+8, (d.z - (data.size.z >> 1)),this.endian);
+      let color = data.palette[d.colorIndex];
+      points.setUint32(offset+12, (color.r ) | (color.g << 8)  | ( color.b << 16) | (color.a << 24) ,this.endian);
+      offset += 16;
+    });
+
+    this.voxCount = data.voxels.length;
+    this.voxBuffer = points.buffer;
+  }
+
+  static async loadFromUrls(voxDataArray){
+    for(const url of voxDataArray){
+      const parser = new vox.Parser();
+      const data = await parser.parse(url);
+      voxCharacters.push(new VoxCharacter(data));
+    }
+  }
+}
+
+const SIZE_PARAM = 4;
+const VOX_MEMORY_STRIDE =  SIZE_PARAM * (3 /* xyz */ + 1 /* color */ + 3 /* rotate xyz */ + 3 /* scale xyz */ + 1 /* charNo */ + 1 /* attribute */ );
+const VOX_OBJ_POS = 0;
+const VOX_OBJ_POS_SIZE = 3 * SIZE_PARAM;
+const VOX_OBJ_COLOR = SIZE_PARAM * VOX_OBJ_POS_SIZE;
+const VOX_OBJ_COLOR_SIZE = SIZE_PARAM;
+const VOX_OBJ_ROTATE = VOX_OBJ_COLOR + VOX_OBJ_COLOR_SIZE;
+const VOX_OBJ_ROTATE_SIZE = SIZE_PARAM * 3;
+const VOX_OBJ_SCALE = VOX_OBJ_ROTATE + VOX_OBJ_ROTATE_SIZE;
+const VOX_OBJ_SCALE_SIZE = SIZE_PARAM * 3;
+const VOX_OBJ_CHAR_NO = VOX_OBJ_SCALE + VOX_OBJ_SCALE_SIZE;
+const VOX_OBJ_CHAR_NO_SIZE = SIZE_PARAM * 1;
+const VOX_OBJ_ATTR = VOX_OBJ_CHAR_NO + VOX_OBJ_CHAR_NO_SIZE;
+const VOX_OBJ_ATTR_SIZE = SIZE_PARAM * 1;
+
+const VOX_OBJ_MAX = 512;
+
+const voxScreenMemory = new ArrayBuffer(
+  VOX_MEMORY_STRIDE * VOX_OBJ_MAX
+);
+
+class VoxObj {
+  constructor({gl2,visible = true,x,y,z,
+  }){
+
+  }
+  
+  setUniforms(){
+
+  }
+
+  render(){
+
+  }
 }
 
 
@@ -243,8 +308,11 @@ class Vox extends Node {
     gl.bindVertexArray(this.vao);
 
     // uniform変数を更新
-    mat4.rotateX(this.m,this.worldMatrix,this.count);
-   mat4.rotateY(this.m,this.m,this.count);
+    let v = vec3.create();
+    vec3.set(v,-40,0,0);
+    mat4.translate(this.m,this.worldMatrix,v);
+    mat4.rotateX(this.m,this.m,this.count);
+    mat4.rotateY(this.m,this.m,this.count);
    //mat4.rotateX(this.m,this.m,this.count);
     //mat4.rotateZ(this.m,this.m,this.count);
 //    mat4.rotateY(m,m,this.count);

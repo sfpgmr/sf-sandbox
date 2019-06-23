@@ -27,7 +27,7 @@ async function start(){
     await fetch('./font.bin')
       .then(r=>r.arrayBuffer()));
   const  parser = new vox.Parser();
-  const models = await parser.parse('./q1.bin');
+  const models = await parser.parse('./myship.bin');
   con.initConsole(textBitmap);
   const gl = con.gl;
   const gl2 = con.gl2;

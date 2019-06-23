@@ -579,6 +579,43 @@
   }
 
   /**
+   * Translate a mat4 by the given vector
+   *
+   * @param {mat4} out the receiving matrix
+   * @param {mat4} a the matrix to translate
+   * @param {vec3} v vector to translate by
+   * @returns {mat4} out
+   */
+  function translate$2(out, a, v) {
+    let x = v[0], y = v[1], z = v[2];
+    let a00, a01, a02, a03;
+    let a10, a11, a12, a13;
+    let a20, a21, a22, a23;
+
+    if (a === out) {
+      out[12] = a[0] * x + a[4] * y + a[8] * z + a[12];
+      out[13] = a[1] * x + a[5] * y + a[9] * z + a[13];
+      out[14] = a[2] * x + a[6] * y + a[10] * z + a[14];
+      out[15] = a[3] * x + a[7] * y + a[11] * z + a[15];
+    } else {
+      a00 = a[0]; a01 = a[1]; a02 = a[2]; a03 = a[3];
+      a10 = a[4]; a11 = a[5]; a12 = a[6]; a13 = a[7];
+      a20 = a[8]; a21 = a[9]; a22 = a[10]; a23 = a[11];
+
+      out[0] = a00; out[1] = a01; out[2] = a02; out[3] = a03;
+      out[4] = a10; out[5] = a11; out[6] = a12; out[7] = a13;
+      out[8] = a20; out[9] = a21; out[10] = a22; out[11] = a23;
+
+      out[12] = a00 * x + a10 * y + a20 * z + a[12];
+      out[13] = a01 * x + a11 * y + a21 * z + a[13];
+      out[14] = a02 * x + a12 * y + a22 * z + a[14];
+      out[15] = a03 * x + a13 * y + a23 * z + a[15];
+    }
+
+    return out;
+  }
+
+  /**
    * Scales the mat4 by the dimensions in the given vec3 not using vectorization
    *
    * @param {mat4} out the receiving matrix
@@ -4068,6 +4105,7 @@ precision highp int;
 /**********************************************
 
 Vox オブジェクトの表示
+(なんちゃって3D)
 
 **********************************************/
 
@@ -4092,7 +4130,7 @@ uniform float u_scale;// 視点のZ座標
 void main() {
   
   // 表示位置の計算
-  vec4 pos = u_worldViewProjection * vec4( position * (sin(u_scale) + 1.25) * 10.0 ,1.0) ;
+  vec4 pos = u_worldViewProjection * vec4( position  ,1.0) ;
 
   // 色情報の取り出し
   v_color = vec4(float(color & 0xffu)/255.0 ,float((color >> 8) & 0xffu) /255.0,float((color >> 16) & 0xffu) / 255.0,float(color >> 24) / 255.0);
@@ -4103,13 +4141,13 @@ void main() {
   
   vec3 lv = normalize(position);
 
-  float diffuse = clamp(dot(lv , inv_light) , 0.5, 1.0);
+  float diffuse = clamp(dot(lv , inv_light) , 0.6, 1.0);
 
   v_color  = v_color * vec4(vec3(diffuse), 1.0);
 
   gl_Position = pos;
   // セルサイズの計算
-  gl_PointSize = clamp((128.0 - pos.z) / 6.0,1.0,128.0);
+  gl_PointSize = clamp((127.0 - pos.z) / 6.0,1.0,128.0);
 }
 `;
 
@@ -4302,8 +4340,11 @@ void main() {
       gl.bindVertexArray(this.vao);
 
       // uniform変数を更新
-      rotateX(this.m,this.worldMatrix,this.count);
-     rotateY(this.m,this.m,this.count);
+      let v = create$4();
+      set$4(v,-40,0,0);
+      translate$2(this.m,this.worldMatrix,v);
+      rotateX(this.m,this.m,this.count);
+      rotateY(this.m,this.m,this.count);
      //mat4.rotateX(this.m,this.m,this.count);
       //mat4.rotateZ(this.m,this.m,this.count);
   //    mat4.rotateY(m,m,this.count);
@@ -4348,7 +4389,7 @@ void main() {
       await fetch('./font.bin')
         .then(r=>r.arrayBuffer()));
     const  parser = new vox.Parser();
-    const models = await parser.parse('./q1.bin');
+    const models = await parser.parse('./myship.bin');
     con.initConsole(textBitmap);
     const gl2 = con.gl2;
 
