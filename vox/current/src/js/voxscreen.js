@@ -35,7 +35,7 @@ uniform float u_scale;// 視点のZ座標
 void main() {
   
   // 表示位置の計算
-  vec4 pos = u_worldViewProjection * vec4( position  ,1.0) ;
+  vec4 pos = u_worldViewProjection * vec4( position * 2.  ,1.0) ;
 
   // 色情報の取り出し
   v_color = vec4(float(color & 0xffu)/255.0 ,float((color >> 8) & 0xffu) /255.0,float((color >> 16) & 0xffu) / 255.0,float(color >> 24) / 255.0);
@@ -46,13 +46,13 @@ void main() {
   
   vec3 lv = normalize(position);
 
-  float diffuse = clamp(dot(lv , inv_light) , 0.6, 1.0);
+  float diffuse = clamp(dot(lv , inv_light) , 0.2, 1.0);
 
   v_color  = v_color * vec4(vec3(diffuse), 1.0);
 
   gl_Position = pos;
   // セルサイズの計算
-  gl_PointSize = clamp((127.0 - pos.z) / 6.0,1.0,128.0);
+  gl_PointSize = clamp((127.0 - pos.z) / 6.0 ,2.0,128.0);
 }
 `;
 
@@ -95,22 +95,54 @@ function checkEndian(buffer = new ArrayBuffer(2)) {
   return false;
 }
 
-const voxCharacters = [];
+// const voxCharacters = [];
 
-class VoxCharacter {
-  constructor({data}){
-    let offset = 0;
-    data.voxels.forEach(d=>{
-      points.setFloat32(offset,(d.x - (data.size.x >> 1)) ,this.endian);
-      points.setFloat32(offset+4, (d.y - (data.size.y >> 1)),this.endian);
-      points.setFloat32(offset+8, (d.z - (data.size.z >> 1)),this.endian);
-      let color = data.palette[d.colorIndex];
-      points.setUint32(offset+12, (color.r ) | (color.g << 8)  | ( color.b << 16) | (color.a << 24) ,this.endian);
-      offset += 16;
+function sign(x){
+  return x == 0 ? 0 : ( x > 0 ? 1 : -1);
+}
+class VoxelModel {
+  constructor({voxelData,buffer = new ArrayBuffer( VoxelModel.POINT_DATA_SIZE * voxelData.voxels.length ),offset = 0}){
+    this.offset = offset;
+    
+    this.points = [];
+    const voxelMap = new Map();
+    voxelData.voxels.forEach(d=>{
+      let p = vec3.create();
+      p[0] = d.x - (voxelData.size.x >> 1);
+      p[1] = d.y - (voxelData.size.y >> 1);
+      p[2] = d.z - (voxelData.size.x >> 1);
+      
+      let s = vec3.clone(p);
+      vec3.set(s,sign(s[0]),sign(s[1]),sign(s[2]));
+      voxelMap.set('x' + p[0] + 'y' + p[1] + 'z' + p[2] , true );
+      let color = voxelData.palette[d.colorIndex];
+      this.points.push({point:p,sign:s,color: (color.r ) | (color.g << 8)  | ( color.b << 16) | (color.a << 24)});
     });
 
-    this.voxCount = data.voxels.length;
-    this.voxBuffer = points.buffer;
+    this.points.forEach(d=>{
+      for(let x = -1,ex = 2;x < ex; ++x){
+        for(let y = -1,ey = 2;y < ey; ++y){
+          for(let z = -1,ez = 2;z < ez; ++z){
+            if( x == 0 && y == 0 && z == 0){
+              continue;
+            }
+            
+          }
+        }
+      }
+    });
+
+    // voxelData.voxels.forEach(d=>{
+    //   points.setFloat32(offset,(d.x - (voxelData.size.x >> 1)) ,this.endian);
+    //   points.setFloat32(offset+4, (d.y - (voxelData.size.y >> 1)),this.endian);
+    //   points.setFloat32(offset+8, (d.z - (voxelData.size.z >> 1)),this.endian);
+    //   let color = voxelData.palette[d.colorIndex];
+    //   points.setUint32(offset+12, (color.r ) | (color.g << 8)  | ( color.b << 16) | (color.a << 24) ,this.endian);
+    //   offset += 16;
+    // });
+
+    this.voxCount = voxelData.voxels.length;
+    //this.voxBuffer = points.buffer;
   }
 
   static async loadFromUrls(voxDataArray){
@@ -122,44 +154,52 @@ class VoxCharacter {
   }
 }
 
-const SIZE_PARAM = 4;
-const VOX_MEMORY_STRIDE =  SIZE_PARAM * (3 /* xyz */ + 1 /* color */ + 3 /* rotate xyz */ + 3 /* scale xyz */ + 1 /* charNo */ + 1 /* attribute */ );
-const VOX_OBJ_POS = 0;
-const VOX_OBJ_POS_SIZE = 3 * SIZE_PARAM;
-const VOX_OBJ_COLOR = SIZE_PARAM * VOX_OBJ_POS_SIZE;
-const VOX_OBJ_COLOR_SIZE = SIZE_PARAM;
-const VOX_OBJ_ROTATE = VOX_OBJ_COLOR + VOX_OBJ_COLOR_SIZE;
-const VOX_OBJ_ROTATE_SIZE = SIZE_PARAM * 3;
-const VOX_OBJ_SCALE = VOX_OBJ_ROTATE + VOX_OBJ_ROTATE_SIZE;
-const VOX_OBJ_SCALE_SIZE = SIZE_PARAM * 3;
-const VOX_OBJ_CHAR_NO = VOX_OBJ_SCALE + VOX_OBJ_SCALE_SIZE;
-const VOX_OBJ_CHAR_NO_SIZE = SIZE_PARAM * 1;
-const VOX_OBJ_ATTR = VOX_OBJ_CHAR_NO + VOX_OBJ_CHAR_NO_SIZE;
-const VOX_OBJ_ATTR_SIZE = SIZE_PARAM * 1;
+VoxelModel.prototype.POINT_DATA_SIZE = 19 * 4;
 
-const VOX_OBJ_MAX = 512;
+// const SIZE_PARAM = 4;
+// const VOX_MEMORY_STRIDE =  SIZE_PARAM * (3 /* xyz */ + 1 /* color */ + 3 /* rotate xyz */ + 3 /* scale xyz */ + 1 /* charNo */ + 1 /* attribute */ );
+// const VOX_OBJ_POS = 0;
+// const VOX_OBJ_POS_SIZE = 3 * SIZE_PARAM;
+// const VOX_OBJ_COLOR = SIZE_PARAM * VOX_OBJ_POS_SIZE;
+// const VOX_OBJ_COLOR_SIZE = SIZE_PARAM;
+// const VOX_OBJ_ROTATE = VOX_OBJ_COLOR + VOX_OBJ_COLOR_SIZE;
+// const VOX_OBJ_ROTATE_SIZE = SIZE_PARAM * 3;
+// const VOX_OBJ_SCALE = VOX_OBJ_ROTATE + VOX_OBJ_ROTATE_SIZE;
+// const VOX_OBJ_SCALE_SIZE = SIZE_PARAM * 3;
+// const VOX_OBJ_CHAR_NO = VOX_OBJ_SCALE + VOX_OBJ_SCALE_SIZE;
+// const VOX_OBJ_CHAR_NO_SIZE = SIZE_PARAM * 1;
+// const VOX_OBJ_ATTR = VOX_OBJ_CHAR_NO + VOX_OBJ_CHAR_NO_SIZE;
+// const VOX_OBJ_ATTR_SIZE = SIZE_PARAM * 1;
 
-const voxScreenMemory = new ArrayBuffer(
-  VOX_MEMORY_STRIDE * VOX_OBJ_MAX
-);
+// const VOX_OBJ_MAX = 512;
 
-class VoxObj {
-  constructor({gl2,visible = true,x,y,z,
-  }){
+// const voxScreenMemory = new ArrayBuffer(
+//   VOX_MEMORY_STRIDE * VOX_OBJ_MAX
+// );
 
-  }
+// class VoxObj {
+//   constructor({gl2,visible = true,x,y,z,
+//   }){
+
+//   }
   
-  setUniforms(){
+//   setUniforms(){
 
-  }
+//   }
 
-  render(){
+//   render(){
 
-  }
+//   }
+// }
+
+const parser = new vox.Parser();
+export async function loadVox(path){
+  const models = await parser.parse(path);
+  return models;
 }
 
 
-class Vox extends Node {
+export class Vox extends Node {
   constructor({ gl2, data,visible = true}) {
     super();
     let points = new DataView(new ArrayBuffer(4 * 4 * data.voxels.length));
@@ -285,7 +325,7 @@ class Vox extends Node {
     
     this.lightLocation = gl.getUniformLocation(program, 'u_light');
     this.lightDirection = vec3.create();
-    vec3.set(this.lightDirection,160,0,-80);
+    vec3.set(this.lightDirection,-0,-50,10);
 
 
 
@@ -309,17 +349,17 @@ class Vox extends Node {
 
     // uniform変数を更新
     let v = vec3.create();
-    vec3.set(v,-40,0,0);
+    vec3.set(v,0,0,0);
     mat4.translate(this.m,this.worldMatrix,v);
-    mat4.rotateX(this.m,this.m,this.count);
+    mat4.rotateX(this.m,this.m,Math.sin(this.count) * 0.8);
     mat4.rotateY(this.m,this.m,this.count);
    //mat4.rotateX(this.m,this.m,this.count);
     //mat4.rotateZ(this.m,this.m,this.count);
 //    mat4.rotateY(m,m,this.count);
-    this.count += 0.01;
+    this.count += 0.02;
     mat4.multiply(this.viewProjection, screen.uniforms.viewProjection, this.m);
 
-    mat4.invert(this.invert,this.viewProjection);
+    mat4.invert(this.invert,this.m);
 
     gl.uniformMatrix4fv(this.viewProjectionLocation, false,this.viewProjection);
     gl.uniformMatrix4fv(this.modelLocation, false,this.m);
@@ -334,4 +374,4 @@ class Vox extends Node {
 
 }
 
-export default Vox;
+

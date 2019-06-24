@@ -963,6 +963,20 @@
   }
 
   /**
+   * Creates a new vec3 initialized with values from an existing vector
+   *
+   * @param {vec3} a vector to clone
+   * @returns {vec3} a new 3D vector
+   */
+  function clone$4(a) {
+    var out = new ARRAY_TYPE(3);
+    out[0] = a[0];
+    out[1] = a[1];
+    out[2] = a[2];
+    return out;
+  }
+
+  /**
    * Calculates the length of a vec3
    *
    * @param {vec3} a vector to calculate length of
@@ -4130,7 +4144,7 @@ uniform float u_scale;// 視点のZ座標
 void main() {
   
   // 表示位置の計算
-  vec4 pos = u_worldViewProjection * vec4( position  ,1.0) ;
+  vec4 pos = u_worldViewProjection * vec4( position * 2.  ,1.0) ;
 
   // 色情報の取り出し
   v_color = vec4(float(color & 0xffu)/255.0 ,float((color >> 8) & 0xffu) /255.0,float((color >> 16) & 0xffu) / 255.0,float(color >> 24) / 255.0);
@@ -4141,13 +4155,13 @@ void main() {
   
   vec3 lv = normalize(position);
 
-  float diffuse = clamp(dot(lv , inv_light) , 0.6, 1.0);
+  float diffuse = clamp(dot(lv , inv_light) , 0.2, 1.0);
 
   v_color  = v_color * vec4(vec3(diffuse), 1.0);
 
   gl_Position = pos;
   // セルサイズの計算
-  gl_PointSize = clamp((127.0 - pos.z) / 6.0,1.0,128.0);
+  gl_PointSize = clamp((127.0 - pos.z) / 6.0 ,2.0,128.0);
 }
 `;
 
@@ -4188,6 +4202,109 @@ void main() {
     ua[0] = 0;
     // ビッグ・エンディアン
     return false;
+  }
+
+  // const voxCharacters = [];
+
+  function sign(x){
+    return x == 0 ? 0 : ( x > 0 ? 1 : -1);
+  }
+  class VoxelModel {
+    constructor({voxelData,buffer = new ArrayBuffer( VoxelModel.POINT_DATA_SIZE * voxelData.voxels.length ),offset = 0}){
+      this.offset = offset;
+      
+      this.points = [];
+      const voxelMap = new Map();
+      voxelData.voxels.forEach(d=>{
+        let p = create$4();
+        p[0] = d.x - (voxelData.size.x >> 1);
+        p[1] = d.y - (voxelData.size.y >> 1);
+        p[2] = d.z - (voxelData.size.x >> 1);
+        
+        let s = clone$4(p);
+        set$4(s,sign(s[0]),sign(s[1]),sign(s[2]));
+        voxelMap.set('x' + p[0] + 'y' + p[1] + 'z' + p[2] , true );
+        let color = voxelData.palette[d.colorIndex];
+        this.points.push({point:p,sign:s,color: (color.r ) | (color.g << 8)  | ( color.b << 16) | (color.a << 24)});
+      });
+
+      this.points.forEach(d=>{
+        for(let x = -1,ex = 2;x < ex; ++x){
+          for(let y = -1,ey = 2;y < ey; ++y){
+            for(let z = -1,ez = 2;z < ez; ++z){
+              if( x == 0 && y == 0 && z == 0){
+                continue;
+              }
+              
+            }
+          }
+        }
+      });
+
+      // voxelData.voxels.forEach(d=>{
+      //   points.setFloat32(offset,(d.x - (voxelData.size.x >> 1)) ,this.endian);
+      //   points.setFloat32(offset+4, (d.y - (voxelData.size.y >> 1)),this.endian);
+      //   points.setFloat32(offset+8, (d.z - (voxelData.size.z >> 1)),this.endian);
+      //   let color = voxelData.palette[d.colorIndex];
+      //   points.setUint32(offset+12, (color.r ) | (color.g << 8)  | ( color.b << 16) | (color.a << 24) ,this.endian);
+      //   offset += 16;
+      // });
+
+      this.voxCount = voxelData.voxels.length;
+      //this.voxBuffer = points.buffer;
+    }
+
+    static async loadFromUrls(voxDataArray){
+      for(const url of voxDataArray){
+        const parser = new vox.Parser();
+        const data = await parser.parse(url);
+        voxCharacters.push(new VoxCharacter(data));
+      }
+    }
+  }
+
+  VoxelModel.prototype.POINT_DATA_SIZE = 19 * 4;
+
+  // const SIZE_PARAM = 4;
+  // const VOX_MEMORY_STRIDE =  SIZE_PARAM * (3 /* xyz */ + 1 /* color */ + 3 /* rotate xyz */ + 3 /* scale xyz */ + 1 /* charNo */ + 1 /* attribute */ );
+  // const VOX_OBJ_POS = 0;
+  // const VOX_OBJ_POS_SIZE = 3 * SIZE_PARAM;
+  // const VOX_OBJ_COLOR = SIZE_PARAM * VOX_OBJ_POS_SIZE;
+  // const VOX_OBJ_COLOR_SIZE = SIZE_PARAM;
+  // const VOX_OBJ_ROTATE = VOX_OBJ_COLOR + VOX_OBJ_COLOR_SIZE;
+  // const VOX_OBJ_ROTATE_SIZE = SIZE_PARAM * 3;
+  // const VOX_OBJ_SCALE = VOX_OBJ_ROTATE + VOX_OBJ_ROTATE_SIZE;
+  // const VOX_OBJ_SCALE_SIZE = SIZE_PARAM * 3;
+  // const VOX_OBJ_CHAR_NO = VOX_OBJ_SCALE + VOX_OBJ_SCALE_SIZE;
+  // const VOX_OBJ_CHAR_NO_SIZE = SIZE_PARAM * 1;
+  // const VOX_OBJ_ATTR = VOX_OBJ_CHAR_NO + VOX_OBJ_CHAR_NO_SIZE;
+  // const VOX_OBJ_ATTR_SIZE = SIZE_PARAM * 1;
+
+  // const VOX_OBJ_MAX = 512;
+
+  // const voxScreenMemory = new ArrayBuffer(
+  //   VOX_MEMORY_STRIDE * VOX_OBJ_MAX
+  // );
+
+  // class VoxObj {
+  //   constructor({gl2,visible = true,x,y,z,
+  //   }){
+
+  //   }
+    
+  //   setUniforms(){
+
+  //   }
+
+  //   render(){
+
+  //   }
+  // }
+
+  const parser = new vox.Parser();
+  async function loadVox(path){
+    const models = await parser.parse(path);
+    return models;
   }
 
 
@@ -4317,7 +4434,7 @@ void main() {
       
       this.lightLocation = gl.getUniformLocation(program, 'u_light');
       this.lightDirection = create$4();
-      set$4(this.lightDirection,160,0,-80);
+      set$4(this.lightDirection,-0,-50,10);
 
 
 
@@ -4341,17 +4458,17 @@ void main() {
 
       // uniform変数を更新
       let v = create$4();
-      set$4(v,-40,0,0);
+      set$4(v,0,0,0);
       translate$2(this.m,this.worldMatrix,v);
-      rotateX(this.m,this.m,this.count);
+      rotateX(this.m,this.m,Math.sin(this.count) * 0.8);
       rotateY(this.m,this.m,this.count);
      //mat4.rotateX(this.m,this.m,this.count);
       //mat4.rotateZ(this.m,this.m,this.count);
   //    mat4.rotateY(m,m,this.count);
-      this.count += 0.01;
+      this.count += 0.02;
       multiply$3(this.viewProjection, screen.uniforms.viewProjection, this.m);
 
-      invert$3(this.invert,this.viewProjection);
+      invert$3(this.invert,this.m);
 
       gl.uniformMatrix4fv(this.viewProjectionLocation, false,this.viewProjection);
       gl.uniformMatrix4fv(this.modelLocation, false,this.m);
@@ -4388,12 +4505,10 @@ void main() {
     const textBitmap = new Uint8Array(
       await fetch('./font.bin')
         .then(r=>r.arrayBuffer()));
-    const  parser = new vox.Parser();
-    const models = await parser.parse('./myship.bin');
     con.initConsole(textBitmap);
     const gl2 = con.gl2;
 
-    const voxmodel = new Vox({gl2:gl2,data:models});
+    const voxmodel = new Vox({gl2:gl2,data:await loadVox('./myship.bin')});
 
     //const myship = new SceneNode(model);
     con.vscreen.appendScene(voxmodel);

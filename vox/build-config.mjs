@@ -12,7 +12,8 @@ export default {
     './common/enemy.png',
     './common/font.bin',
     './common/icon.png',
-    './common/q1.bin'
+    './common/q1.bin',
+    './common/myship.bin'
   ],
   "schema":{
   }
