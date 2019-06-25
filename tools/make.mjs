@@ -5,7 +5,7 @@ import fs, { access } from 'fs';
 import nodeResolve from 'rollup-plugin-node-resolve';
 import commonjs from 'rollup-plugin-commonjs';
 import rollup from 'rollup';
-import resolveHome from './resolveHome';
+import resolveHome from './resolveHome.js';
 import path from 'path';
 import { exec as exec_ } from 'child_process';
 import util from 'util';
