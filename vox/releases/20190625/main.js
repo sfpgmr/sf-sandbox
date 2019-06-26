@@ -4209,11 +4209,21 @@ void main() {
   function sign(x){
     return x == 0 ? 0 : ( x > 0 ? 1 : -1);
   }
+
+  const faces = [
+    {x:-1,y:0,z:0,face:0},
+    {x:1,y:0,z:0,face:1},
+    {x:0,y:-1,z:0,face:2},
+    {x:0,y:1,z:0,face:4},
+    {x:0,y:0,z:-1,face:8},
+    {x:0,y:0,z:1,face:16}
+  ];
+
   class VoxelModel {
     constructor({voxelData,buffer = new ArrayBuffer( VoxelModel.POINT_DATA_SIZE * voxelData.voxels.length ),offset = 0}){
       this.offset = offset;
       
-      this.points = [];
+      const points = [];
       const voxelMap = new Map();
       voxelData.voxels.forEach(d=>{
         let p = create$4();
@@ -4225,21 +4235,28 @@ void main() {
         set$4(s,sign(s[0]),sign(s[1]),sign(s[2]));
         voxelMap.set('x' + p[0] + 'y' + p[1] + 'z' + p[2] , true );
         let color = voxelData.palette[d.colorIndex];
-        this.points.push({point:p,sign:s,color: (color.r ) | (color.g << 8)  | ( color.b << 16) | (color.a << 24)});
+        points.push({point:p,sign:s,color: (color.r ) | (color.g << 8)  | ( color.b << 16) | (color.a << 24)});
       });
 
-      this.points.forEach(d=>{
-        for(let x = -1,ex = 2;x < ex; ++x){
-          for(let y = -1,ey = 2;y < ey; ++y){
-            for(let z = -1,ez = 2;z < ez; ++z){
-              if( x == 0 && y == 0 && z == 0){
-                continue;
-              }
-              
-            }
-          }
+      this.points = [];
+
+      for(const p of points){
+        const openFaces = faces.filter(d=>{
+          return voxelMap.get('x' + (p.point[0] + d.x) + 'y' + (p.point[1] + d.y) + 'z' + (p.point[2] + d.z));
+        });
+
+        // 見えないボクセルはスキップする
+        if(!openFaces.length){
+          continue;
         }
-      });
+        // 
+        let openFlag = openFaces.reduce((a,v)=>a|v.face,0);
+        p.openFlags = openFlag;
+        p.openFaces = openFaces;
+        this.points.push(p);
+    }
+
+
 
       // voxelData.voxels.forEach(d=>{
       //   points.setFloat32(offset,(d.x - (voxelData.size.x >> 1)) ,this.endian);
