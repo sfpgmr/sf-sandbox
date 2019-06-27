@@ -12,7 +12,7 @@ precision highp int;
 if((face & b) > 0u){ \
 vec3 f = (u_model * vec4(x,y,z,1.)).xyz; \
 if(dot(f,u_eye) > 0.){ \
-  diffuse += clamp(dot(f,u_light),0.,1.); \
+  diffuse += max(diffuse,clamp(dot(f,u_light),0.,1.)); \
 } \
 }
 
@@ -46,7 +46,7 @@ uniform float u_scale;
 void main() {
   
   // 表示位置の計算
-  vec4 pos = u_worldViewProjection * vec4( position * 2.  ,1.0) ;
+  vec4 pos = u_worldViewProjection * vec4( position   ,1.0) ;
 
   // 色情報の取り出し
   v_color = vec4(float(color & 0xffu)/255.0 ,float((color >> 8) & 0xffu) /255.0,float((color >> 16) & 0xffu) / 255.0,float(color >> 24) / 255.0);
@@ -70,7 +70,7 @@ void main() {
 
   gl_Position = pos;
   // セルサイズの計算
-  gl_PointSize = clamp((127.0 - pos.z) / 6.0 ,2.0,128.0);
+  gl_PointSize = clamp((127.0 - pos.z) / 6.0 ,1.4,128.0);
 }
 `;
 
@@ -360,7 +360,7 @@ export class Vox extends Node {
     vec3.set(v,0,0,0);
 
     mat4.rotateX(this.model,mat4.identity(this.model),this.count);
-    //mat4.rotateY(this.model,this.model,this.count);
+    mat4.rotateY(this.model,this.model,this.count);
 
     //mat4.translate(this.m,this.model,v);
     mat4.multiply(this.m,this.worldMatrix,this.model);
