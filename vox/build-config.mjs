@@ -15,7 +15,9 @@ export default {
     './common/q1.bin',
     './common/myship.bin',
     './common/q.bin',
-    './common/nature.bin'
+    './common/nature.bin',
+    './common/ephtracy.bin',
+    './common/chr.bin'
   ],
   "schema":{
   }

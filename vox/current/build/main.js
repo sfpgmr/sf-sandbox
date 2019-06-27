@@ -4083,8 +4083,10 @@ precision highp int;
 #define d(b,x,y,z) \
 if((face & b) > 0u){ \
 vec3 f = (u_model * vec4(x,y,z,1.)).xyz; \
-if(dot(f,u_eye) > 0.){ \
-  diffuse += max(diffuse,clamp(dot(f,u_light),0.,1.)); \
+float e = dot(f,u_eye); \
+if(e >  eye_dot){ \
+  eye_dot = e; \
+  diffuse = dot(f,u_light); \
 } \
 }
 
@@ -4118,7 +4120,7 @@ uniform float u_scale;
 void main() {
   
   // 表示位置の計算
-  vec4 pos = u_worldViewProjection * vec4( position   ,1.0) ;
+  vec4 pos = u_worldViewProjection * vec4( position * u_scale  ,1.0) ;
 
   // 色情報の取り出し
   v_color = vec4(float(color & 0xffu)/255.0 ,float((color >> 8) & 0xffu) /255.0,float((color >> 16) & 0xffu) / 255.0,float(color >> 24) / 255.0);
@@ -4128,6 +4130,7 @@ void main() {
 
   // ライティング用のベクトルを作る
   float diffuse;
+  float eye_dot;
   
   d(0x1u,-1.,0.,0.);
   d(0x2u,1.,0.,0.);
@@ -4142,7 +4145,7 @@ void main() {
 
   gl_Position = pos;
   // セルサイズの計算
-  gl_PointSize = clamp((127.0 - pos.z) / 6.0 ,1.4,128.0);
+  gl_PointSize = clamp((127.0 - pos.z) / 6.0 ,u_scale * 1.4,128.0);
 }
 `;
 
@@ -4430,6 +4433,7 @@ void main() {
       set$4(v,0,0,0);
 
       rotateX(this.model,identity$3(this.model),this.count);
+      rotateZ(this.model,this.model,this.count);
       rotateY(this.model,this.model,this.count);
 
       //mat4.translate(this.m,this.model,v);
@@ -4437,7 +4441,7 @@ void main() {
      //mat4.rotateX(this.m,this.m,this.count);
       //mat4.rotateZ(this.m,this.m,this.count);
   //    mat4.rotateY(m,m,this.count);
-      this.count += 0.02;
+      this.count += 0.03;
       multiply$3(this.viewProjection, screen.uniforms.viewProjection, this.m);
 
       invert$3(this.invert,this.m);
@@ -4446,7 +4450,8 @@ void main() {
       gl.uniformMatrix4fv(this.modelLocation, false,this.model);
       gl.uniformMatrix4fv(this.invertLocation, false,this.invert);
 
-      gl.uniform1f(this.scaleLocation, this.count);
+      gl.uniform1f(this.scaleLocation, 4);
+
       gl.uniform3fv(this.eyeLocation, this.eye);
       gl.uniform3fv(this.lightLocation, this.lightDirection);
 
@@ -4476,13 +4481,13 @@ void main() {
     const con = new Console(160,100);
 
     const textBitmap = new Uint8Array(
-      await fetch('./font.bin')
+      await fetch('./rock.bin')
         .then(r=>r.arrayBuffer()));
     con.initConsole(textBitmap);
     const gl2 = con.gl2;
 
-    //const voxmodel = new Vox({gl2:gl2,data:await loadVox('./myship.bin')});
-    const voxmodel = new Vox({gl2:gl2,data:await loadVox('./nature.bin')});
+    const voxmodel = new Vox({gl2:gl2,data:await loadVox('./q.bin')});
+    //const voxmodel = new Vox({gl2:gl2,data:await loadVox('./q1.bin')});
 
     //const myship = new SceneNode(model);
     con.vscreen.appendScene(voxmodel);
