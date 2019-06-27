@@ -579,43 +579,6 @@
   }
 
   /**
-   * Translate a mat4 by the given vector
-   *
-   * @param {mat4} out the receiving matrix
-   * @param {mat4} a the matrix to translate
-   * @param {vec3} v vector to translate by
-   * @returns {mat4} out
-   */
-  function translate$2(out, a, v) {
-    let x = v[0], y = v[1], z = v[2];
-    let a00, a01, a02, a03;
-    let a10, a11, a12, a13;
-    let a20, a21, a22, a23;
-
-    if (a === out) {
-      out[12] = a[0] * x + a[4] * y + a[8] * z + a[12];
-      out[13] = a[1] * x + a[5] * y + a[9] * z + a[13];
-      out[14] = a[2] * x + a[6] * y + a[10] * z + a[14];
-      out[15] = a[3] * x + a[7] * y + a[11] * z + a[15];
-    } else {
-      a00 = a[0]; a01 = a[1]; a02 = a[2]; a03 = a[3];
-      a10 = a[4]; a11 = a[5]; a12 = a[6]; a13 = a[7];
-      a20 = a[8]; a21 = a[9]; a22 = a[10]; a23 = a[11];
-
-      out[0] = a00; out[1] = a01; out[2] = a02; out[3] = a03;
-      out[4] = a10; out[5] = a11; out[6] = a12; out[7] = a13;
-      out[8] = a20; out[9] = a21; out[10] = a22; out[11] = a23;
-
-      out[12] = a00 * x + a10 * y + a20 * z + a[12];
-      out[13] = a01 * x + a11 * y + a21 * z + a[13];
-      out[14] = a02 * x + a12 * y + a22 * z + a[14];
-      out[15] = a03 * x + a13 * y + a23 * z + a[15];
-    }
-
-    return out;
-  }
-
-  /**
    * Scales the mat4 by the dimensions in the given vec3 not using vectorization
    *
    * @param {mat4} out the receiving matrix
@@ -4121,7 +4084,7 @@ precision highp int;
 if((face & b) > 0u){ \
 vec3 f = (u_model * vec4(x,y,z,1.)).xyz; \
 if(dot(f,u_eye) > 0.){ \
-  diffuse += clamp(dot(f,inv_light),0.,1.); \
+  diffuse += clamp(dot(f,u_light),0.,1.); \
 } \
 }
 
@@ -4247,7 +4210,7 @@ void main() {
         let p = create$4();
         p[0] = d.x - (voxelData.size.x >> 1);
         p[1] = d.y - (voxelData.size.y >> 1);
-        p[2] = d.z - (voxelData.size.x >> 1);
+        p[2] = d.z - (voxelData.size.z >> 1);
         
         let s = clone$4(p);
         set$4(s,sign(s[0]),sign(s[1]),sign(s[2]));
@@ -4260,11 +4223,11 @@ void main() {
 
       for(const p of points){
         const openFaces = faces.filter(d=>{
-          return voxelMap.get('x' + (p.point[0] + d.x) + 'y' + (p.point[1] + d.y) + 'z' + (p.point[2] + d.z));
+          return !voxelMap.get('x' + (p.point[0] + d.x) + 'y' + (p.point[1] + d.y) + 'z' + (p.point[2] + d.z));
         });
 
         // 見えないボクセルはスキップする
-        if(openFaces.length == 6){
+        if(openFaces.length == 0){
           continue;
         }
         // 
@@ -4278,9 +4241,9 @@ void main() {
       this.endian = checkEndian();
       const dv = new DataView(this.buffer);
       for(const p of this.points){
-        dv.setFloat32(offset,(p.point[0] - (voxelData.size.x >> 1)) ,this.endian);
-        dv.setFloat32(offset+4, (p.point[1] - (voxelData.size.y >> 1)),this.endian);
-        dv.setFloat32(offset+8, (p.point[2] - (voxelData.size.z >> 1)),this.endian);
+        dv.setFloat32(offset,p.point[0] ,this.endian);
+        dv.setFloat32(offset+4, p.point[1],this.endian);
+        dv.setFloat32(offset+8, p.point[2],this.endian);
         dv.setUint32(offset+12,p.color,this.endian);
         dv.setUint32(offset+16,p.openFlag,this.endian);
         offset += 20;
@@ -4466,12 +4429,11 @@ void main() {
       let v = create$4();
       set$4(v,0,0,0);
 
-      //mat4.identity(this.model);
-      rotateY(this.model,this.worldMatrix,this.count);
-      //mat4.rotateX(this.model,this.model,Math.sin(this.count) * 0.8);
+      rotateX(this.model,identity$3(this.model),this.count);
+      //mat4.rotateY(this.model,this.model,this.count);
 
-      translate$2(this.m,this.model,v);
-     // mat4.multiply(this.m,this.model,this.worldMatrix);
+      //mat4.translate(this.m,this.model,v);
+      multiply$3(this.m,this.worldMatrix,this.model);
      //mat4.rotateX(this.m,this.m,this.count);
       //mat4.rotateZ(this.m,this.m,this.count);
   //    mat4.rotateY(m,m,this.count);
@@ -4519,6 +4481,7 @@ void main() {
     con.initConsole(textBitmap);
     const gl2 = con.gl2;
 
+    //const voxmodel = new Vox({gl2:gl2,data:await loadVox('./myship.bin')});
     const voxmodel = new Vox({gl2:gl2,data:await loadVox('./myship.bin')});
 
     //const myship = new SceneNode(model);

@@ -12,7 +12,7 @@ precision highp int;
 if((face & b) > 0u){ \
 vec3 f = (u_model * vec4(x,y,z,1.)).xyz; \
 if(dot(f,u_eye) > 0.){ \
-  diffuse += clamp(dot(f,inv_light),0.,1.); \
+  diffuse += clamp(dot(f,u_light),0.,1.); \
 } \
 }
 
@@ -138,7 +138,7 @@ class VoxelModel {
       let p = vec3.create();
       p[0] = d.x - (voxelData.size.x >> 1);
       p[1] = d.y - (voxelData.size.y >> 1);
-      p[2] = d.z - (voxelData.size.x >> 1);
+      p[2] = d.z - (voxelData.size.z >> 1);
       
       let s = vec3.clone(p);
       vec3.set(s,sign(s[0]),sign(s[1]),sign(s[2]));
@@ -151,11 +151,11 @@ class VoxelModel {
 
     for(const p of points){
       const openFaces = faces.filter(d=>{
-        return voxelMap.get('x' + (p.point[0] + d.x) + 'y' + (p.point[1] + d.y) + 'z' + (p.point[2] + d.z));
+        return !voxelMap.get('x' + (p.point[0] + d.x) + 'y' + (p.point[1] + d.y) + 'z' + (p.point[2] + d.z));
       });
 
       // 見えないボクセルはスキップする
-      if(openFaces.length == 6){
+      if(openFaces.length == 0){
         continue;
       }
       // 
@@ -169,9 +169,9 @@ class VoxelModel {
     this.endian = checkEndian();
     const dv = new DataView(this.buffer);
     for(const p of this.points){
-      dv.setFloat32(offset,(p.point[0] - (voxelData.size.x >> 1)) ,this.endian);
-      dv.setFloat32(offset+4, (p.point[1] - (voxelData.size.y >> 1)),this.endian);
-      dv.setFloat32(offset+8, (p.point[2] - (voxelData.size.z >> 1)),this.endian);
+      dv.setFloat32(offset,p.point[0] ,this.endian);
+      dv.setFloat32(offset+4, p.point[1],this.endian);
+      dv.setFloat32(offset+8, p.point[2],this.endian);
       dv.setUint32(offset+12,p.color,this.endian);
       dv.setUint32(offset+16,p.openFlag,this.endian);
       offset += 20;
@@ -359,12 +359,11 @@ export class Vox extends Node {
     let v = vec3.create();
     vec3.set(v,0,0,0);
 
-    //mat4.identity(this.model);
-    mat4.rotateY(this.model,this.worldMatrix,this.count);
-    //mat4.rotateX(this.model,this.model,Math.sin(this.count) * 0.8);
+    mat4.rotateX(this.model,mat4.identity(this.model),this.count);
+    //mat4.rotateY(this.model,this.model,this.count);
 
-    mat4.translate(this.m,this.model,v);
-   // mat4.multiply(this.m,this.model,this.worldMatrix);
+    //mat4.translate(this.m,this.model,v);
+    mat4.multiply(this.m,this.worldMatrix,this.model);
    //mat4.rotateX(this.m,this.m,this.count);
     //mat4.rotateZ(this.m,this.m,this.count);
 //    mat4.rotateY(m,m,this.count);

@@ -29,6 +29,7 @@ async function start(){
   const gl = con.gl;
   const gl2 = con.gl2;
 
+  //const voxmodel = new Vox({gl2:gl2,data:await loadVox('./myship.bin')});
   const voxmodel = new Vox({gl2:gl2,data:await loadVox('./myship.bin')});
 
   //const myship = new SceneNode(model);

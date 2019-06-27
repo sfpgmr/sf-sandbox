@@ -13,7 +13,9 @@ export default {
     './common/font.bin',
     './common/icon.png',
     './common/q1.bin',
-    './common/myship.bin'
+    './common/myship.bin',
+    './common/q.bin',
+    './common/nature.bin'
   ],
   "schema":{
   }

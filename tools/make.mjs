@@ -170,14 +170,15 @@ try {
         try {
           const stat = await fse.stat(dest);
           console.info('symlink already exists:', src, '=>', dest);
+          await fse.unlink(dest);
         } catch (e) {
           if (e.code == 'ENOENT') {
             console.info('symlink:', src, '=>', dest);
-            await fse.symlink(src, dest);
           } else {
             throw e;
           }
         }
+        await fse.symlink(src, dest);
       }
     }
 
@@ -208,14 +209,15 @@ try {
           try {
             const stat = await fse.stat(dest);
             console.info('symlink already exists:', src, '=>', dest);
+            await fse.unlink(dest);
           } catch (e) {
             if (e.code == 'ENOENT') {
               console.info('symlink:', src, '=>', dest);
-              await fse.symlink(src, dest);
             } else {
               throw e;
             }
           }
+          await fse.symlink(src, dest);
         }
       }
       // ソースファイルのコピー
@@ -261,14 +263,15 @@ try {
             try {
               const stat = await fse.stat(dest);
               console.info('symlink already exists:', src, '=>', dest);
+              await fse.unlink(dest);
             } catch (e) {
               if (e.code == 'ENOENT') {
                 console.info('symlink:', src, '=>', dest);
-                await fse.symlink(src, dest);
               } else {
                 throw e;
               }
             }
+            await fse.symlink(src, dest);
           }
         }
 
