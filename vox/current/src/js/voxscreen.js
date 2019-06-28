@@ -73,7 +73,7 @@ void main() {
 
   gl_Position = pos;
   // セルサイズの計算
-  gl_PointSize = clamp((127.0 - pos.z) / 6.0 ,u_scale * 1.4,128.0);
+  gl_PointSize = clamp((127.0 - pos.z) / 6.0 ,1.4 * u_scale,128.0);
 }
 `;
 
@@ -212,12 +212,10 @@ VoxelModel.prototype.POINT_DATA_SIZE = 5 * 4;
 const SIZE_PARAM = 4;
 const VOX_OBJ_POS = 0;
 const VOX_OBJ_POS_SIZE = 3 * SIZE_PARAM;
-const VOX_OBJ_COLOR = SIZE_PARAM * VOX_OBJ_POS_SIZE;
-const VOX_OBJ_COLOR_SIZE = SIZE_PARAM;
-const VOX_OBJ_ROTATE = VOX_OBJ_COLOR + VOX_OBJ_COLOR_SIZE;
+const VOX_OBJ_ROTATE = VOX_OBJ_POS + VOX_POS_SIZE;
 const VOX_OBJ_ROTATE_SIZE = SIZE_PARAM * 3;
 const VOX_OBJ_SCALE = VOX_OBJ_ROTATE + VOX_OBJ_ROTATE_SIZE;
-const VOX_OBJ_SCALE_SIZE = SIZE_PARAM * 3;
+const VOX_OBJ_SCALE_SIZE = SIZE_PARAM;
 const VOX_OBJ_CHAR_NO = VOX_OBJ_SCALE + VOX_OBJ_SCALE_SIZE;
 const VOX_OBJ_CHAR_NO_SIZE = SIZE_PARAM * 1;
 const VOX_OBJ_ATTR = VOX_OBJ_CHAR_NO + VOX_OBJ_CHAR_NO_SIZE;
@@ -229,20 +227,6 @@ const VOX_OBJ_MAX = 16;
 const voxScreenMemory = new ArrayBuffer(
   VOX_MEMORY_STRIDE * VOX_OBJ_MAX
 );
-
-class VoxObj {
-  constructor({gl2,visible = true,x,y,z,memory,offset}){
-
-  }
-  
-  setUniforms(){
-
-  }
-
-  render(){
-
-  }
-}
 
 const parser = new vox.Parser();
 export async function loadVox(path){
@@ -329,11 +313,12 @@ export class Vox extends Node {
 
     // 視点のZ位置
     this.scaleLocation = gl.getUniformLocation(program, 'u_scale');
+    this.scale = 1.0;
     // ビュー・投影行列
     this.viewProjection = mat4.create();
-    // 逆行列
-    this.invertLocation = gl.getUniformLocation(program,'u_invert');
-    this.invert = mat4.create();
+    // // 逆行列
+    // this.invertLocation = gl.getUniformLocation(program,'u_invert');
+    // this.invert = mat4.create();
 
     // 平行光源の方向ベクトル
     
@@ -368,24 +353,23 @@ export class Vox extends Node {
       // uniform変数を更新
 
       mat4.rotateX(this.model,mat4.identity(this.model),memory.getFloat32(offset + VOX_OBJ_ROTATE,endian));
-      mat4.rotateZ(this.model,this.model,memory.getFloat32(offset + VOX_OBJ_ROTATE + 4));
-      mat4.rotateY(this.model,this.model,memory.getFloat32(offset + VOX_OBJ_ROTATE + 8));
+      mat4.rotateZ(this.model,this.model,memory.getFloat32(offset + VOX_OBJ_ROTATE + 4,endian));
+      mat4.rotateY(this.model,this.model,memory.getFloat32(offset + VOX_OBJ_ROTATE + 8,endian));
 
-      this.position.set(v,memory.getFloat32(offset + VOX_OBJ_POS) ,memory.getFloat32(offset + VOX_OBJ_POS + 4),memory.getFloat32(offset + VOX_OBJ_POS + 8));
+      this.position.set(v,memory.getFloat32(offset + VOX_OBJ_POS,endian) ,memory.getFloat32(offset + VOX_OBJ_POS + 4,endian),memory.getFloat32(offset + VOX_OBJ_POS + 8,andian));
       mat4.translate(this.m,this.model,this.position);
 
       mat4.multiply(this.m,this.worldMatrix,this.m);
 
       mat4.multiply(this.viewProjection, screen.uniforms.viewProjection, this.m);
 
-      mat4.invert(this.invert,this.m);
+      //mat4.invert(this.invert,this.m);
 
       gl.uniformMatrix4fv(this.viewProjectionLocation, false,this.viewProjection);
       gl.uniformMatrix4fv(this.modelLocation, false,this.model);
-      gl.uniformMatrix4fv(this.invertLocation, false,this.invert);
+      //gl.uniformMatrix4fv(this.invertLocation, false,this.invert);
 
-      gl.uniform1f(this.scaleLocation, 4);
-
+      gl.uniform1f(this.scaleLocation, this.scale);
       gl.uniform3fv(this.eyeLocation, this.eye);
       gl.uniform3fv(this.lightLocation, this.lightDirection);
 
