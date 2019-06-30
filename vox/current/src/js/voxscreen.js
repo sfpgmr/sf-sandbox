@@ -339,7 +339,8 @@ export class Vox extends Node {
     gl.uniformBlockBinding(program,this.objAttrLocation,0);
     this.objAttrBuffer = gl.createBuffer();
     gl.bindBuffer(gl.UNIFORM_BUFFER, this.objAttrBuffer);
-    gl.bufferData(gl.UNIFORM_BUFFER, this.voxScreenMemory.buffer, gl.DYNAMIC_DRAW,0,VOX_MEMORY_STRIDE);
+    gl.bufferData(gl.UNIFORM_BUFFER,VOX_MEMORY_STRIDE,gl.DYNAMIC_DRAW);
+//    gl.bufferData(gl.UNIFORM_BUFFER, this.voxScreenMemory.buffer, gl.DYNAMIC_DRAW,0,VOX_MEMORY_STRIDE);
     gl.bindBuffer(gl.UNIFORM_BUFFER, null);
     gl.bindBufferBase(gl.UNIFORM_BUFFER,0,this.objAttrBuffer);
 
