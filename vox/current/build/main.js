@@ -4407,7 +4407,8 @@ void main() {
       gl.uniformBlockBinding(program,this.objAttrLocation,0);
       this.objAttrBuffer = gl.createBuffer();
       gl.bindBuffer(gl.UNIFORM_BUFFER, this.objAttrBuffer);
-      gl.bufferData(gl.UNIFORM_BUFFER, 0,this.voxScreenMemory.buffer, gl.DYNAMIC_DRAW,0,VOX_MEMORY_STRIDE);
+      gl.bufferData(gl.UNIFORM_BUFFER,VOX_MEMORY_STRIDE,gl.DYNAMIC_DRAW);
+  //    gl.bufferData(gl.UNIFORM_BUFFER, this.voxScreenMemory.buffer, gl.DYNAMIC_DRAW,0,VOX_MEMORY_STRIDE);
       gl.bindBuffer(gl.UNIFORM_BUFFER, null);
       gl.bindBufferBase(gl.UNIFORM_BUFFER,0,this.objAttrBuffer);
 
@@ -4428,7 +4429,7 @@ void main() {
       // 環境光
       this.ambient = create$4();
       this.ambientLocation = gl.getUniformLocation(program,'u_ambient');
-      set$4(0.2,0.2,0.2);
+      set$4(this.ambient,0.2,0.2,0.2);
 
       // カラーパレット
       this.palleteTexture = gl2.createTexture();
@@ -4445,8 +4446,7 @@ void main() {
 
       this.count = 0;
 
-      this.sv = new DataView(voxScreenMemory);
-      this.sv.setUint32(VOX_OBJ_ATTRIB,0x8003fc00,this.endian);
+      this.voxScreenMemory.setUint32(VOX_OBJ_ATTRIB,0x8003fc00,this.endian);
   //    for(let offset = 0,eo = this.voxScreenMemory.byteLength;offset < eo;offset += VOX_MEMORY_STRIDE){
   //      sv.setFloat32()
   //    }

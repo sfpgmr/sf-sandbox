@@ -361,7 +361,7 @@ export class Vox extends Node {
     // 環境光
     this.ambient = vec3.create();
     this.ambientLocation = gl.getUniformLocation(program,'u_ambient');
-    vec3.set(0.2,0.2,0.2);
+    vec3.set(this.ambient,0.2,0.2,0.2);
 
     // カラーパレット
     this.palleteTexture = gl2.createTexture();
