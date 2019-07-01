@@ -4237,9 +4237,9 @@ void main() {
   ];
 
   class VoxelModel {
-    constructor({gl2,voxelData,offset = 0}){
+    constructor({gl,voxelData,offset = 0}){
       this.offset = offset;
-      this.gl2 = gl2;
+      this.gl = gl;
       
       const points = [];
       const voxelMap = new Map();
@@ -4294,6 +4294,10 @@ void main() {
         colorPallete.push(color.b);
         colorPallete.push(color.a);
       }
+      colorPallete[0] = 0;
+      colorPallete[1] = 0;
+      colorPallete[2] = 0;
+      colorPallete[3] = 0;
       this.colorPallete = new Uint8Array(colorPallete);
 
     }
@@ -4333,7 +4337,7 @@ void main() {
   // c: color index (0-4095)
   const VOX_OBJ_ATTRIB = VOX_OBJ_ANGLE+ VOX_OBJ_ANGLE_SIZE;
   const VOX_OBJ_ATTRIB_SIZE = SIZE_PARAM; // uint
-  const VOX_MEMORY_STRIDE =  SIZE_PARAM * (VOX_OBJ_POS_SIZE + VOX_OBJ_SCALE_SIZE + VOX_OBJ_AXIS_SIZE + VOX_OBJ_ANGLE_SIZE + VOX_OBJ_ATTRIB_SIZE);
+  const VOX_MEMORY_STRIDE =  (VOX_OBJ_POS_SIZE + VOX_OBJ_SCALE_SIZE + VOX_OBJ_AXIS_SIZE + VOX_OBJ_ANGLE_SIZE + VOX_OBJ_ATTRIB_SIZE);
   const VOX_OBJ_MAX = 1;
 
   const voxScreenMemory = new ArrayBuffer(
@@ -4350,11 +4354,15 @@ void main() {
   class Vox extends Node {
     constructor({ gl2, data,visible = true}) {
       super();
+      // webgl コンテキストの保存
+      const gl = this.gl = gl2.gl;
+      this.gl2 = gl2;
       this.endian = checkEndian();
       this.voxScreenMemory = new DataView(voxScreenMemory);
+      this.voxScreenBuffer = new Uint8Array(voxScreenMemory);
       this.voxBuffer = new Uint8Array(voxScreenMemory);
 
-      this.voxelModel = new VoxelModel({gl2:gl2,voxelData:data});
+      this.voxelModel = new VoxelModel({gl:gl,voxelData:data});
 
       this.voxCount = this.voxelModel.voxCount;
       this.voxBuffer = this.voxelModel.buffer;
@@ -4362,9 +4370,6 @@ void main() {
       // スプライト面の表示・非表示
       this.visible = visible;
 
-      // webgl コンテキストの保存
-      const gl = this.gl = gl2.gl;
-      this.gl2 = gl2;
 
       // プログラムの生成
       if (!programCache) {
@@ -4408,13 +4413,14 @@ void main() {
       this.objAttrBuffer = gl.createBuffer();
       gl.bindBuffer(gl.UNIFORM_BUFFER, this.objAttrBuffer);
       gl.bufferData(gl.UNIFORM_BUFFER,VOX_MEMORY_STRIDE,gl.DYNAMIC_DRAW);
-  //    gl.bufferData(gl.UNIFORM_BUFFER, this.voxScreenMemory.buffer, gl.DYNAMIC_DRAW,0,VOX_MEMORY_STRIDE);
+      //gl.bufferData(gl.UNIFORM_BUFFER, this.voxScreenMemory.buffer, gl.DYNAMIC_DRAW,0,VOX_MEMORY_STRIDE);
       gl.bindBuffer(gl.UNIFORM_BUFFER, null);
       gl.bindBufferBase(gl.UNIFORM_BUFFER,0,this.objAttrBuffer);
 
 
       // ワールド・ビュー変換行列
       this.viewProjectionLocation = gl.getUniformLocation(program,'u_worldViewProjection');
+      this.viewProjection = create$3();
       this.eyeLocation = gl.getUniformLocation(program,'u_eye');
       this.eye = create$4();
       set$4(this.eye,0,0,1);
@@ -4432,21 +4438,23 @@ void main() {
       set$4(this.ambient,0.2,0.2,0.2);
 
       // カラーパレット
-      this.palleteTexture = gl2.createTexture();
+      this.palleteTexture = gl.createTexture();
       this.palleteLocation = gl.getUniformLocation(program,'u_pallete');
       
-      gl.pixelStorei(gl.UNPACK_ALIGNMENT, 1);
+      //gl.pixelStorei(gl.UNPACK_ALIGNMENT, 1);
       gl.bindTexture(gl.TEXTURE_2D, this.palleteTexture);
-      gl.texImage2D(gl.TEXTURE_2D, 0, gl2.RGBA8, 1024, 4, 0, gl2.RGBA, gl2.UNSIGNED_BYTE, this.voxelModel.colorPallete.buffer);
+      gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 256, 1, 0, gl.RGBA, gl.UNSIGNED_BYTE, this.voxelModel.colorPallete);
       gl.bindTexture(gl.TEXTURE_2D, null);
 
-      this.sampler = gl2.createSampler();
-      gl2.samplerParameteri(this.sampler, gl2.TEXTURE_MIN_FILTER, gl2.NEAREST);
-      gl2.samplerParameteri(this.sampler, gl2.TEXTURE_MAG_FILTER, gl2.NEAREST);
+      this.sampler = gl.createSampler();
+      gl.samplerParameteri(this.sampler, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
+      gl.samplerParameteri(this.sampler, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
 
       this.count = 0;
 
       this.voxScreenMemory.setUint32(VOX_OBJ_ATTRIB,0x8003fc00,this.endian);
+      this.voxScreenMemory.setFloat32(VOX_OBJ_SCALE,1.0,this.endian);
+      this.voxScreenMemory.setFloat32(VOX_OBJ_POS,-60.0,this.endian);
   //    for(let offset = 0,eo = this.voxScreenMemory.byteLength;offset < eo;offset += VOX_MEMORY_STRIDE){
   //      sv.setFloat32()
   //    }
@@ -4470,31 +4478,31 @@ void main() {
       const endian = this.endian;
 
       // カラーパレットをバインド
-      this.gl2.activeTexture(this.gl2.TEXTURE0);
-      this.gl2.bindTexture(this.gl2.TEXTURE_2D,this.palleteTexture);
-      this.gl2.bindSampler(0,this.sampler);
-      this.gl2.uniform1i(this.palleteLocation,0);
+      gl.activeTexture(this.gl.TEXTURE0);
+      gl.bindTexture(this.gl.TEXTURE_2D,this.palleteTexture);
+      gl.bindSampler(0,this.sampler);
+      gl.uniform1i(this.palleteLocation,0);
 
       for(let offset = 0,eo = this.voxScreenMemory.byteLength;offset < eo;offset += VOX_MEMORY_STRIDE){
 
         // 表示ビットが立っていたら表示      
-        if(this.sv.getUint32(offset + VOX_OBJ_ATTRIB,this.endian) & 0x80000000){
+        if(this.voxScreenMemory.getUint32(offset + VOX_OBJ_ATTRIB,this.endian) & 0x80000000){
           // uniform変数を更新
 
           // UBO
-          this.gl2.bindBuffer(gl.UNIFORM_BUFFER,this.objAttrBuffer);
-          this.gl2.bufferSubData(gl.UNIFORM_BUFFER,0,this.voxScreenMemory.buffer,offset,VOX_MEMORY_STRIDE);
-          this.gl2.bindBuffer(gl.UNIFORM_BUFFER,null);
+          gl.bindBuffer(gl.UNIFORM_BUFFER,this.objAttrBuffer);
+          gl.bufferSubData(gl.UNIFORM_BUFFER,0,this.voxScreenBuffer,offset,VOX_MEMORY_STRIDE);
+          gl.bindBuffer(gl.UNIFORM_BUFFER,null);
 
           // ビュー変換行列
           multiply$3(this.viewProjection, screen.uniforms.viewProjection, this.worldMatrix);
           gl.uniformMatrix4fv(this.viewProjectionLocation, false,this.viewProjection);
           gl.uniform3fv(this.eyeLocation, this.eye);
           gl.uniform3fv(this.lightLocation, this.lightDirection);
-          gl.uniform1f(this.ambientLocation, this.ambient);
+          gl.uniform3fv(this.ambientLocation, this.ambient);
 
           // 描画命令の発行
-          gl.drawArrays(gl.POINTS, 0,this.voxModel.voxCount);
+          gl.drawArrays(gl.POINTS, 0,this.voxelModel.voxCount);
 
         }
 
