@@ -4179,7 +4179,7 @@ precision highp int;
 
 
 // 頂点シェーダーからの情報
-flat in uint v_color_index;// 色
+flat in uint v_color_index;// 色]
 flat in float v_diffuse;
 flat in vec3 v_ambient;
 flat in float v_alpha;
@@ -4454,7 +4454,7 @@ void main() {
 
       this.voxScreenMemory.setUint32(VOX_OBJ_ATTRIB,0x8003fc00,this.endian);
       this.voxScreenMemory.setFloat32(VOX_OBJ_SCALE,1.0,this.endian);
-      this.voxScreenMemory.setFloat32(VOX_OBJ_POS,-60.0,this.endian);
+      this.voxScreenMemory.setFloat32(VOX_OBJ_POS,0.0,this.endian);
   //    for(let offset = 0,eo = this.voxScreenMemory.byteLength;offset < eo;offset += VOX_MEMORY_STRIDE){
   //      sv.setFloat32()
   //    }
@@ -4488,6 +4488,14 @@ void main() {
         // 表示ビットが立っていたら表示      
         if(this.voxScreenMemory.getUint32(offset + VOX_OBJ_ATTRIB,this.endian) & 0x80000000){
           // uniform変数を更新
+          let axis = new Float32Array(this.voxScreenMemory.buffer,VOX_OBJ_AXIS,3);
+          set$4(axis,1,1,0);
+          normalize(axis,axis);
+          //this.voxScreenMemory.setFloat32(VOX_OBJ_AXIS,0,endian);
+          //this.voxScreenMemory.setFloat32(VOX_OBJ_AXIS+4,0,endian);
+          //this.voxScreenMemory.setFloat32(VOX_OBJ_AXIS+8,1,endian);
+          this.voxScreenMemory.setFloat32(VOX_OBJ_ANGLE,this.count,endian);
+
 
           // UBO
           gl.bindBuffer(gl.UNIFORM_BUFFER,this.objAttrBuffer);
@@ -4508,6 +4516,7 @@ void main() {
 
       }
 
+          this.count += 0.03;
     }
 
   }
@@ -4529,6 +4538,7 @@ void main() {
   });
 
   async function start(){
+    try {
     const con = new Console(160,100);
 
     const textBitmap = new Uint8Array(
@@ -4537,7 +4547,7 @@ void main() {
     con.initConsole(textBitmap);
     const gl2 = con.gl2;
 
-    const voxmodel = new Vox({gl2:gl2,data:await loadVox('./q.bin')});
+    const voxmodel = new Vox({gl2:gl2,data:await loadVox('q.bin')});
     //const voxmodel = new Vox({gl2:gl2,data:await loadVox('./q1.bin')});
 
     //const myship = new SceneNode(model);
@@ -4568,6 +4578,9 @@ void main() {
         requestAnimationFrame(main);
     }
     main();
+    } catch (e) {
+    alert(e.stack);
+    }
   }
 
   // function initSprite(sprite){

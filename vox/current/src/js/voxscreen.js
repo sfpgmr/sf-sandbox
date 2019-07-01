@@ -107,7 +107,7 @@ precision highp int;
 
 
 // 頂点シェーダーからの情報
-flat in uint v_color_index;// 色
+flat in uint v_color_index;// 色]
 flat in float v_diffuse;
 flat in vec3 v_ambient;
 flat in float v_alpha;
@@ -387,7 +387,7 @@ export class Vox extends Node {
 
     this.voxScreenMemory.setUint32(VOX_OBJ_ATTRIB,0x8003fc00,this.endian);
     this.voxScreenMemory.setFloat32(VOX_OBJ_SCALE,1.0,this.endian);
-    this.voxScreenMemory.setFloat32(VOX_OBJ_POS,-60.0,this.endian);
+    this.voxScreenMemory.setFloat32(VOX_OBJ_POS,0.0,this.endian);
 //    for(let offset = 0,eo = this.voxScreenMemory.byteLength;offset < eo;offset += VOX_MEMORY_STRIDE){
 //      sv.setFloat32()
 //    }
@@ -421,6 +421,14 @@ export class Vox extends Node {
       // 表示ビットが立っていたら表示      
       if(this.voxScreenMemory.getUint32(offset + VOX_OBJ_ATTRIB,this.endian) & 0x80000000){
         // uniform変数を更新
+        let axis = new Float32Array(this.voxScreenMemory.buffer,VOX_OBJ_AXIS,3);
+        vec3.set(axis,1,1,0);
+        vec3.normalize(axis,axis);
+        //this.voxScreenMemory.setFloat32(VOX_OBJ_AXIS,0,endian);
+        //this.voxScreenMemory.setFloat32(VOX_OBJ_AXIS+4,0,endian);
+        //this.voxScreenMemory.setFloat32(VOX_OBJ_AXIS+8,1,endian);
+        this.voxScreenMemory.setFloat32(VOX_OBJ_ANGLE,this.count,endian);
+
 
         // UBO
         gl.bindBuffer(gl.UNIFORM_BUFFER,this.objAttrBuffer);
@@ -441,6 +449,7 @@ export class Vox extends Node {
 
     }
 
+        this.count += 0.03;
   }
 
 }

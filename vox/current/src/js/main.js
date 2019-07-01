@@ -20,6 +20,7 @@ window.addEventListener('load',()=>{
 });
 
 async function start(){
+  try {
   const con = new Console(160,100);
 
   const textBitmap = new Uint8Array(
@@ -29,7 +30,7 @@ async function start(){
   const gl = con.gl;
   const gl2 = con.gl2;
 
-  const voxmodel = new Vox({gl2:gl2,data:await loadVox('./q.bin')});
+  const voxmodel = new Vox({gl2:gl2,data:await loadVox('q.bin')});
   //const voxmodel = new Vox({gl2:gl2,data:await loadVox('./q1.bin')});
 
   //const myship = new SceneNode(model);
@@ -131,6 +132,9 @@ async function start(){
       requestAnimationFrame(main);
   }
   main();
+  } catch (e) {
+  alert(e.stack);
+  }
 }
 
 // function initSprite(sprite){
