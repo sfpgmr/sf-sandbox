@@ -364,7 +364,7 @@
    *
    * @returns {mat3} a new 3x3 matrix
    */
-  function create() {
+  function create$2() {
     let out = new ARRAY_TYPE(9);
     out[0] = 1;
     out[1] = 0;
@@ -408,7 +408,7 @@
    *
    * @returns {mat4} a new 4x4 matrix
    */
-  function create$1() {
+  function create$3() {
     let out = new ARRAY_TYPE(16);
     out[0] = 1;
     out[1] = 0;
@@ -436,7 +436,7 @@
    * @param {mat4} a the source matrix
    * @returns {mat4} out
    */
-  function copy(out, a) {
+  function copy$3(out, a) {
     out[0] = a[0];
     out[1] = a[1];
     out[2] = a[2];
@@ -463,7 +463,7 @@
    * @param {mat4} out the receiving matrix
    * @returns {mat4} out
    */
-  function identity(out) {
+  function identity$3(out) {
     out[0] = 1;
     out[1] = 0;
     out[2] = 0;
@@ -490,7 +490,7 @@
    * @param {mat4} a the source matrix
    * @returns {mat4} out
    */
-  function invert(out, a) {
+  function invert$3(out, a) {
     let a00 = a[0], a01 = a[1], a02 = a[2], a03 = a[3];
     let a10 = a[4], a11 = a[5], a12 = a[6], a13 = a[7];
     let a20 = a[8], a21 = a[9], a22 = a[10], a23 = a[11];
@@ -545,7 +545,7 @@
    * @param {mat4} b the second operand
    * @returns {mat4} out
    */
-  function multiply(out, a, b) {
+  function multiply$3(out, a, b) {
     let a00 = a[0], a01 = a[1], a02 = a[2], a03 = a[3];
     let a10 = a[4], a11 = a[5], a12 = a[6], a13 = a[7];
     let a20 = a[8], a21 = a[9], a22 = a[10], a23 = a[11];
@@ -586,7 +586,7 @@
    * @param {vec3} v the vec3 to scale the matrix by
    * @returns {mat4} out
    **/
-  function scale(out, a, v) {
+  function scale$3(out, a, v) {
     let x = v[0], y = v[1], z = v[2];
 
     out[0] = a[0] * x;
@@ -748,7 +748,7 @@
    * @param {vec3} v Translation vector
    * @returns {mat4} out
    */
-  function fromTranslation(out, v) {
+  function fromTranslation$2(out, v) {
     out[0] = 1;
     out[1] = 0;
     out[2] = 0;
@@ -824,7 +824,7 @@
     if (Math.abs(eyex - centerx) < EPSILON &&
         Math.abs(eyey - centery) < EPSILON &&
         Math.abs(eyez - centerz) < EPSILON) {
-      return identity(out);
+      return identity$3(out);
     }
 
     z0 = eyex - centerx;
@@ -917,7 +917,7 @@
    *
    * @returns {vec3} a new 3D vector
    */
-  function create$2() {
+  function create$4() {
     let out = new ARRAY_TYPE(3);
     out[0] = 0;
     out[1] = 0;
@@ -931,7 +931,7 @@
    * @param {vec3} a vector to clone
    * @returns {vec3} a new 3D vector
    */
-  function clone(a) {
+  function clone$4(a) {
     var out = new ARRAY_TYPE(3);
     out[0] = a[0];
     out[1] = a[1];
@@ -960,7 +960,7 @@
    * @param {Number} z Z component
    * @returns {vec3} a new 3D vector
    */
-  function fromValues(x, y, z) {
+  function fromValues$4(x, y, z) {
     let out = new ARRAY_TYPE(3);
     out[0] = x;
     out[1] = y;
@@ -977,7 +977,7 @@
    * @param {Number} z Z component
    * @returns {vec3} out
    */
-  function set(out, x, y, z) {
+  function set$4(out, x, y, z) {
     out[0] = x;
     out[1] = y;
     out[2] = z;
@@ -1054,7 +1054,7 @@
    * @function
    */
   const forEach = (function() {
-    let vec = create$2();
+    let vec = create$4();
 
     return function(a, stride, offset, count, fn, arg) {
       let i, l;
@@ -1112,7 +1112,7 @@
    *
    * @returns {vec4} a new 4D vector
    */
-  function create$3() {
+  function create$5() {
     let out = new ARRAY_TYPE(4);
     out[0] = 0;
     out[1] = 0;
@@ -1130,7 +1130,7 @@
    * @param {Number} w W component
    * @returns {vec4} a new 4D vector
    */
-  function fromValues$1(x, y, z, w) {
+  function fromValues$5(x, y, z, w) {
     let out = new ARRAY_TYPE(4);
     out[0] = x;
     out[1] = y;
@@ -1175,7 +1175,7 @@
    * @function
    */
   const forEach$1 = (function() {
-    let vec = create$3();
+    let vec = create$5();
 
     return function(a, stride, offset, count, fn, arg) {
       let i, l;
@@ -1233,7 +1233,7 @@
    *
    * @returns {quat} a new quaternion
    */
-  function create$4() {
+  function create$6() {
     let out = new ARRAY_TYPE(4);
     out[0] = 0;
     out[1] = 0;
@@ -1378,20 +1378,20 @@
    * @returns {quat} out
    */
   const rotationTo = (function() {
-    let tmpvec3 = create$2();
-    let xUnitVec3 = fromValues(1,0,0);
-    let yUnitVec3 = fromValues(0,1,0);
+    let tmpvec3 = create$4();
+    let xUnitVec3 = fromValues$4(1,0,0);
+    let yUnitVec3 = fromValues$4(0,1,0);
 
     return function(out, a, b) {
-      let dot$1 = dot(a, b);
-      if (dot$1 < -0.999999) {
+      let dot$$1 = dot(a, b);
+      if (dot$$1 < -0.999999) {
         cross(tmpvec3, xUnitVec3, a);
         if (len(tmpvec3) < 0.000001)
           cross(tmpvec3, yUnitVec3, a);
         normalize(tmpvec3, tmpvec3);
         setAxisAngle(out, tmpvec3, Math.PI);
         return out;
-      } else if (dot$1 > 0.999999) {
+      } else if (dot$$1 > 0.999999) {
         out[0] = 0;
         out[1] = 0;
         out[2] = 0;
@@ -1402,7 +1402,7 @@
         out[0] = tmpvec3[0];
         out[1] = tmpvec3[1];
         out[2] = tmpvec3[2];
-        out[3] = 1 + dot$1;
+        out[3] = 1 + dot$$1;
         return normalize$2(out, out);
       }
     };
@@ -1420,8 +1420,8 @@
    * @returns {quat} out
    */
   const sqlerp = (function () {
-    let temp1 = create$4();
-    let temp2 = create$4();
+    let temp1 = create$6();
+    let temp2 = create$6();
 
     return function (out, a, b, c, d, t) {
       slerp(temp1, a, d, t);
@@ -1443,7 +1443,7 @@
    * @returns {quat} out
    */
   const setAxes = (function() {
-    let matr = create();
+    let matr = create$2();
 
     return function(out, view, right, up) {
       matr[0] = right[0];
@@ -1492,7 +1492,7 @@
    *
    * @returns {vec2} a new 2D vector
    */
-  function create$5() {
+  function create$7() {
     let out = new ARRAY_TYPE(2);
     out[0] = 0;
     out[1] = 0;
@@ -1512,7 +1512,7 @@
    * @function
    */
   const forEach$2 = (function() {
-    let vec = create$5();
+    let vec = create$7();
 
     return function(a, stride, offset, count, fn, arg) {
       let i, l;
@@ -2001,20 +2001,20 @@ void main()
 
   class TRS {
     constructor() {
-      this.translation = create$2();
-      this.rotation = create$2();
-      this.scale = fromValues(1, 1, 1);
+      this.translation = create$4();
+      this.rotation = create$4();
+      this.scale = fromValues$4(1, 1, 1);
     }
 
     getMatrix(dst) {
-      dst = dst || create$1();
+      dst = dst || create$3();
       const t = this.translation;
       const r = this.rotation;
       const s = this.scale;
 
       // compute a matrix from translation, rotation, and scale
-      fromTranslation(dst,t);
-      scale(dst, dst,s);
+      fromTranslation$2(dst,t);
+      scale$3(dst, dst,s);
       rotateX(dst,dst, r[0]);
       rotateY(dst,dst, r[1]);
       rotateZ(dst,dst, r[2]);
@@ -2026,8 +2026,8 @@ void main()
   class Node {
     constructor(source = new TRS()) {
       this.children = [];
-      this.localMatrix = identity(create$1());
-      this.worldMatrix = identity(create$1());
+      this.localMatrix = identity$3(create$3());
+      this.worldMatrix = identity$3(create$3());
       this.source = source;
     }
 
@@ -2055,10 +2055,10 @@ void main()
 
       if (matrix) {
         // a matrix was passed in so do the math
-        multiply(this.worldMatrix,matrix, this.localMatrix );
+        multiply$3(this.worldMatrix,matrix, this.localMatrix );
       } else {
         // no matrix was passed in so just copy.
-        copy(this.worldMatrix,this.localMatrix);
+        copy$3(this.worldMatrix,this.localMatrix);
       }
 
       // now process all the children
@@ -2156,9 +2156,9 @@ void main() {
       this.sceneNodes = [];
 
       this.uniforms = {
-        u_lightWorldPos: fromValues(1, 108, 1000),
-        u_lightColor: fromValues$1(1.0, 1.0, 1.0, 1),
-        u_ambient: fromValues$1(0.2, 0.2, 0.2, 1.0)
+        u_lightWorldPos: fromValues$4(1, 108, 1000),
+        u_lightColor: fromValues$5(1.0, 1.0, 1.0, 1),
+        u_ambient: fromValues$5(0.2, 0.2, 0.2, 1.0)
       };
 
       const fov = this.console.ANGLE_OF_VIEW * Math.PI / 180;
@@ -2166,14 +2166,14 @@ void main() {
       const aspect = con.VIRTUAL_WIDTH / con.VIRTUAL_HEIGHT;
       const zNear = 0.01;
       const zFar = 100000;
-      const projection = perspective(create$1(), fov, aspect, zNear, zFar);
-      const eye = fromValues(0, 0, this.console.CAMERA_Z);
-      const target = create$2();
-      const up = fromValues(0, 1, 0);
+      const projection$$1 = perspective(create$3(), fov, aspect, zNear, zFar);
+      const eye = fromValues$4(0, 0, this.console.CAMERA_Z);
+      const target = create$4();
+      const up = fromValues$4(0, 1, 0);
 
-      const view = lookAt(create$1(), eye, target, up);
-      const camera = invert(create$1(), view);
-      this.uniforms.viewProjection = multiply(create$1(), projection, view);
+      const view = lookAt(create$3(), eye, target, up);
+      const camera = invert$3(create$3(), view);
+      this.uniforms.viewProjection = multiply$3(create$3(), projection$$1, view);
 
       this.uniforms.u_viewInverse = camera;
 
@@ -2668,7 +2668,7 @@ void main(){
       this.CAMERA_Z = this.VIRTUAL_HEIGHT / (Math.tan(this.ANGLE_OF_VIEW / 360 * Math.PI) * 2);
 
       this.scale_ = 1.0;
-      this.offset_ = create$2();
+      this.offset_ = create$4();
 
       this.renderer = null;
       this.stats = null;
@@ -4126,6 +4126,7 @@ void main() {
 
   // 表示位置の計算
   vec4 pos = u_worldViewProjection * vec4( u_rotate * position * u_scale + u_obj_position ,1.0) ;
+  //vec4 pos = u_worldViewProjection * vec4(  position  ,1.0) ;
   
   // ライティング用のベクトルを作る
   float diffuse;
@@ -4221,13 +4222,13 @@ void main() {
       const points = [];
       const voxelMap = new Map();
       voxelData.voxels.forEach(d=>{
-        let p = create$2();
+        let p = create$4();
         p[0] = d.x - (voxelData.size.x >> 1);
-        p[1] = d[1] - (voxelData.size[1] >> 1);
+        p[1] = d.y - (voxelData.size.y >> 1);
         p[2] = d.z - (voxelData.size.z >> 1);
         
-        let s = clone(p);
-        set(s,sign(s[0]),sign(s[1]),sign(s[2]));
+        let s = clone$4(p);
+        set$4(s,sign(s[0]),sign(s[1]),sign(s[2]));
         voxelMap.set('x' + p[0] + 'y' + p[1] + 'z' + p[2] , true );
         points.push({point:p,sign:s,color: d.colorIndex});
       });
@@ -4236,7 +4237,7 @@ void main() {
 
       for(const p of points){
        const openFaces = faces.filter(d=>{
-          return !voxelMap.get('x' + (p.point[0] + d.x) + 'y' + (p.point[1] + d[1]) + 'z' + (p.point[2] + d.z));
+          return !voxelMap.get('x' + (p.point[0] + d.x) + 'y' + (p.point[1] + d.y) + 'z' + (p.point[2] + d.z));
         });
 
         // 見えないボクセルはスキップする
@@ -4315,7 +4316,7 @@ void main() {
   const VOX_OBJ_ATTRIB = VOX_OBJ_ANGLE+ VOX_OBJ_ANGLE_SIZE;
   const VOX_OBJ_ATTRIB_SIZE = SIZE_PARAM; // uint
   const VOX_MEMORY_STRIDE =  (VOX_OBJ_POS_SIZE + VOX_OBJ_SCALE_SIZE + VOX_OBJ_AXIS_SIZE + VOX_OBJ_ANGLE_SIZE + VOX_OBJ_ATTRIB_SIZE);
-  const VOX_OBJ_MAX = 1;
+  const VOX_OBJ_MAX = 8;
 
   const voxScreenMemory = new ArrayBuffer(
     VOX_MEMORY_STRIDE * VOX_OBJ_MAX
@@ -4327,22 +4328,22 @@ void main() {
     return models;
   }
 
-  function setRotate(mat3 ,angle,  axis){
+  function setRotate(mat3$$1 ,angle$$1,  axis){
 
-    const s = Math.sin(angle);
-    const c = Math.cos(angle);
+    const s = Math.sin(angle$$1);
+    const c = Math.cos(angle$$1);
     const r = 1.0 - c;
 
-    mat3[0] = axis[0] * axis[0] * r + c; 
-    mat3[1] = axis[1] * axis[0] * r + axis[2] * s;
-    mat3[2] = axis[2] * axis[0] * r - axis[1] * s;
-    mat3[3] = axis[0] * axis[1] * r - axis[2] * s;
-    mat3[4] = axis[1] * axis[1] * r + c;
-    mat3[5] = axis[2] * axis[1] * r + axis[0] * s;
-    mat3[6] = axis[0] * axis[2] * r + axis[1] * s;
-    mat3[7] = axis[1] * axis[2] * r - axis[0] * s;
-    mat3[8] = axis[2] * axis[2] * r + c;
-    return mat3;
+    mat3$$1[0] = axis[0] * axis[0] * r + c; 
+    mat3$$1[1] = axis[1] * axis[0] * r + axis[2] * s;
+    mat3$$1[2] = axis[2] * axis[0] * r - axis[1] * s;
+    mat3$$1[3] = axis[0] * axis[1] * r - axis[2] * s;
+    mat3$$1[4] = axis[1] * axis[1] * r + c;
+    mat3$$1[5] = axis[2] * axis[1] * r + axis[0] * s;
+    mat3$$1[6] = axis[0] * axis[2] * r + axis[1] * s;
+    mat3$$1[7] = axis[1] * axis[2] * r - axis[0] * s;
+    mat3$$1[8] = axis[2] * axis[2] * r + c;
+    return mat3$$1;
   }
 
 
@@ -4416,28 +4417,28 @@ void main() {
       this.attribLocation = gl.getUniformLocation(program,'u_attrib');
       this.scaleLocation = gl.getUniformLocation(program,'u_scale');
       this.rotateLocation = gl.getUniformLocation(program,'u_rotate');
-      this.rotate = create();
+      this.rotate = create$2();
       this.objPositionLocation = gl.getUniformLocation(program,'u_obj_position');
 
 
       // ワールド・ビュー変換行列
       this.viewProjectionLocation = gl.getUniformLocation(program,'u_worldViewProjection');
-      this.viewProjection = create$1();
+      this.viewProjection = create$3();
       this.eyeLocation = gl.getUniformLocation(program,'u_eye');
-      this.eye = create$2();
-      set(this.eye,0,0,1);
+      this.eye = create$4();
+      set$4(this.eye,0,0,1);
       
 
       // 平行光源の方向ベクトル
       
       this.lightLocation = gl.getUniformLocation(program,'u_light');
-      this.lightDirection = create$2();
-      set(this.lightDirection,0,0,1);
+      this.lightDirection = create$4();
+      set$4(this.lightDirection,0,0,1);
 
       // 環境光
-      this.ambient = create$2();
+      this.ambient = create$4();
       this.ambientLocation = gl.getUniformLocation(program,'u_ambient');
-      set(this.ambient,0.2,0.2,0.2);
+      set$4(this.ambient,0.2,0.2,0.2);
 
       // カラーパレット
       this.palleteTexture = gl.createTexture();
@@ -4453,10 +4454,15 @@ void main() {
       gl.samplerParameteri(this.sampler, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
 
       this.count = 0;
+      const memory = this.voxScreenMemory;
+      let px = -60,color=1;
 
-      this.voxScreenMemory.setUint32(VOX_OBJ_ATTRIB,0x8003fc00,this.endian);
-      this.voxScreenMemory.setFloat32(VOX_OBJ_SCALE,1.0,this.endian);
-      this.voxScreenMemory.setFloat32(VOX_OBJ_POS,0.0,this.endian);
+      for(let offset = 0,eo = memory.byteLength;offset < eo;offset += VOX_MEMORY_STRIDE){
+      this.voxScreenMemory.setUint32(offset + VOX_OBJ_ATTRIB,0x8003fc00|color++ ,this.endian);
+      this.voxScreenMemory.setFloat32(offset + VOX_OBJ_SCALE,1.0,this.endian);
+      this.voxScreenMemory.setFloat32(offset + VOX_OBJ_POS,px,this.endian);
+        px += 20;
+      }
   //    for(let offset = 0,eo = this.voxScreenMemory.byteLength;offset < eo;offset += VOX_MEMORY_STRIDE){
   //      sv.setFloat32()
   //    }
@@ -4485,7 +4491,7 @@ void main() {
       gl.bindSampler(0,this.sampler);
       gl.uniform1i(this.palleteLocation,0);
 
-      multiply(this.viewProjection, screen.uniforms.viewProjection, this.worldMatrix);
+      multiply$3(this.viewProjection, screen.uniforms.viewProjection, this.worldMatrix);
       gl.uniformMatrix4fv(this.viewProjectionLocation, false,this.viewProjection);
       gl.uniform3fv(this.eyeLocation, this.eye);
       gl.uniform3fv(this.lightLocation, this.lightDirection);
@@ -4499,7 +4505,7 @@ void main() {
 
           // uniform変数を更新
           let axis = new Float32Array(memory.buffer,offset + VOX_OBJ_AXIS,3);
-          set(axis,1,1,-1);
+          set$4(axis,1,1,-1);
           normalize(axis,axis);
           memory.setFloat32(offset + VOX_OBJ_ANGLE,this.count,endian);
           setRotate(this.rotate,memory.getFloat32(offset + VOX_OBJ_ANGLE,endian),axis);
@@ -4554,8 +4560,8 @@ void main() {
     con.initConsole(textBitmap);
     const gl2 = con.gl2;
 
-    const voxmodel = new Vox({gl2:gl2,data:await loadVox('myship.bin')});
-    //const voxmodel = new Vox({gl2:gl2,data:await loadVox('./q1.bin')});
+    //const voxmodel = new Vox({gl2:gl2,data:await loadVox('myship.bin')});
+    const voxmodel = new Vox({gl2:gl2,data:await loadVox('./q.bin')});
 
     //const myship = new SceneNode(model);
     con.vscreen.appendScene(voxmodel);

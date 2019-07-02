@@ -54,6 +54,7 @@ void main() {
 
   // 表示位置の計算
   vec4 pos = u_worldViewProjection * vec4( u_rotate * position * u_scale + u_obj_position ,1.0) ;
+  //vec4 pos = u_worldViewProjection * vec4(  position  ,1.0) ;
   
   // ライティング用のベクトルを作る
   float diffuse;
@@ -153,7 +154,7 @@ class VoxelModel {
     voxelData.voxels.forEach(d=>{
       let p = vec3.create();
       p[0] = d.x - (voxelData.size.x >> 1);
-      p[1] = d[1] - (voxelData.size[1] >> 1);
+      p[1] = d.y - (voxelData.size.y >> 1);
       p[2] = d.z - (voxelData.size.z >> 1);
       
       let s = vec3.clone(p);
@@ -166,7 +167,7 @@ class VoxelModel {
 
     for(const p of points){
      const openFaces = faces.filter(d=>{
-        return !voxelMap.get('x' + (p.point[0] + d.x) + 'y' + (p.point[1] + d[1]) + 'z' + (p.point[2] + d.z));
+        return !voxelMap.get('x' + (p.point[0] + d.x) + 'y' + (p.point[1] + d.y) + 'z' + (p.point[2] + d.z));
       });
 
       // 見えないボクセルはスキップする
@@ -245,7 +246,7 @@ const VOX_OBJ_ANGLE_SIZE = SIZE_PARAM * 1; // float
 const VOX_OBJ_ATTRIB = VOX_OBJ_ANGLE+ VOX_OBJ_ANGLE_SIZE;
 const VOX_OBJ_ATTRIB_SIZE = SIZE_PARAM; // uint
 const VOX_MEMORY_STRIDE =  (VOX_OBJ_POS_SIZE + VOX_OBJ_SCALE_SIZE + VOX_OBJ_AXIS_SIZE + VOX_OBJ_ANGLE_SIZE + VOX_OBJ_ATTRIB_SIZE);
-const VOX_OBJ_MAX = 1;
+const VOX_OBJ_MAX = 8;
 
 const voxScreenMemory = new ArrayBuffer(
   VOX_MEMORY_STRIDE * VOX_OBJ_MAX
@@ -386,10 +387,15 @@ export class Vox extends Node {
     gl.samplerParameteri(this.sampler, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
 
     this.count = 0;
+    const memory = this.voxScreenMemory;
+    let px = -60,color=1;
 
-    this.voxScreenMemory.setUint32(VOX_OBJ_ATTRIB,0x8003fc00,this.endian);
-    this.voxScreenMemory.setFloat32(VOX_OBJ_SCALE,1.0,this.endian);
-    this.voxScreenMemory.setFloat32(VOX_OBJ_POS,0.0,this.endian);
+    for(let offset = 0,eo = memory.byteLength;offset < eo;offset += VOX_MEMORY_STRIDE){
+    this.voxScreenMemory.setUint32(offset + VOX_OBJ_ATTRIB,0x8003fc00|color++ ,this.endian);
+    this.voxScreenMemory.setFloat32(offset + VOX_OBJ_SCALE,1.0,this.endian);
+    this.voxScreenMemory.setFloat32(offset + VOX_OBJ_POS,px,this.endian);
+      px += 20;
+    }
 //    for(let offset = 0,eo = this.voxScreenMemory.byteLength;offset < eo;offset += VOX_MEMORY_STRIDE){
 //      sv.setFloat32()
 //    }
