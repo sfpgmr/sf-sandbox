@@ -1,6 +1,6 @@
 'use strict';
 import { Node } from './scene.js';
-import { mat4, vec3, vec4 } from './gl-matrix/gl-matrix.js';
+import { mat4, mat3,vec3, vec4 } from './gl-matrix/gl-matrix.js';
 import vox from './vox.js';
 
 
@@ -10,7 +10,7 @@ precision highp int;
 
 #define d(b,x,y,z) \
 if((face & b) > 0u){ \
-vec3 f = rm * vec3(x,y,z); \
+vec3 f = u_rotate * vec3(x,y,z); \
 float e = dot(f,u_eye); \
 if(e >  eye_dot){ \
   eye_dot = e; \
@@ -39,45 +39,21 @@ flat out float v_alpha;
 
 #define root2 1.414213562
 
-layout (std140) uniform obj_attributes {
-  vec3 obj_position;
-  float scale;
-  vec3 axis;
-  float angle;
-  uint attrib;
-};
-
+uniform uint u_attrib;
+uniform float u_scale;
+uniform mat3 u_rotate;
+uniform vec3 u_obj_position;
 uniform mat4 u_worldViewProjection; // 変換行列
 uniform vec3 u_eye;
 uniform vec3 u_light;
 uniform vec3 u_ambient;
 
-mat3 getRotateMat(float angle, vec3 axis){
-
-  float s = sin(angle);
-  float c = cos(angle);
-  float r = 1.0 - c;
-
-  return mat3(
-      axis.x * axis.x * r + c,
-      axis.y * axis.x * r + axis.z * s,
-      axis.z * axis.x * r - axis.y * s,
-      axis.x * axis.y * r - axis.z * s,
-      axis.y * axis.y * r + c,
-      axis.z * axis.y * r + axis.x * s,
-      axis.x * axis.z * r + axis.y * s,
-      axis.y * axis.z * r - axis.x * s,
-      axis.z * axis.z * r + c
-  );
-}
-
 void main() {
   
   uint face = (point_attrib & 0xffff0000u) >> 16u;
-  mat3 rm = getRotateMat(angle,axis);
 
   // 表示位置の計算
-  vec4 pos = u_worldViewProjection * vec4( rm * position * scale + obj_position,1.0) ;
+  vec4 pos = u_worldViewProjection * vec4( u_rotate * position * u_scale + u_obj_position ,1.0) ;
   
   // ライティング用のベクトルを作る
   float diffuse;
@@ -91,13 +67,13 @@ void main() {
   d(0x20u,0.,0.,1.);
 
   v_diffuse = clamp(diffuse, 0.0, 1.0);
-  v_color_index  = (point_attrib & 0x3ffu) | ((attrib & 0x3ffu) << 16u) ;
+  v_color_index  = (point_attrib & 0x3ffu) | ((u_attrib & 0x3ffu) << 16u) ;
   v_ambient = u_ambient;
-  v_alpha = float((attrib & 0x3fc00u) >> 10u) / 255.0;
+  v_alpha = float((u_attrib & 0x3fc00u) >> 10u) / 255.0;
 
   gl_Position = pos;
   // セルサイズの計算（今のところかなりいい加減。。）
-  gl_PointSize = clamp((127.0 - pos.z) / 6.0 ,root2 * scale,128.0);
+  gl_PointSize = clamp((127.0 - pos.z) / 6.0 ,root2 * u_scale,128.0);
 }
 `;
 
@@ -125,6 +101,7 @@ void main() {
   vec4 color2 =  texelFetch(u_pallete,ivec2(int((v_color_index & 0xff0000u) >> 16u),int((v_color_index & 0x3ff0000u) >> 20u)),0); 
   vec4 color = clamp(color1 + vec4(v_ambient,0.) + color2,0.0,1.0);
   fcolor = vec4(color.rgb, color.a * v_alpha);
+  //fcolor = vec4(1.0);
 }
 `;
 
@@ -176,7 +153,7 @@ class VoxelModel {
     voxelData.voxels.forEach(d=>{
       let p = vec3.create();
       p[0] = d.x - (voxelData.size.x >> 1);
-      p[1] = d.y - (voxelData.size.y >> 1);
+      p[1] = d[1] - (voxelData.size[1] >> 1);
       p[2] = d.z - (voxelData.size.z >> 1);
       
       let s = vec3.clone(p);
@@ -189,7 +166,7 @@ class VoxelModel {
 
     for(const p of points){
      const openFaces = faces.filter(d=>{
-        return !voxelMap.get('x' + (p.point[0] + d.x) + 'y' + (p.point[1] + d.y) + 'z' + (p.point[2] + d.z));
+        return !voxelMap.get('x' + (p.point[0] + d.x) + 'y' + (p.point[1] + d[1]) + 'z' + (p.point[2] + d.z));
       });
 
       // 見えないボクセルはスキップする
@@ -255,16 +232,16 @@ const VOX_OBJ_POS = 0;
 const VOX_OBJ_POS_SIZE = 3 * SIZE_PARAM; // vec3
 const VOX_OBJ_SCALE = VOX_OBJ_POS + VOX_OBJ_POS_SIZE;
 const VOX_OBJ_SCALE_SIZE = SIZE_PARAM; // float
-const VOX_OBJ_AXIS = VOX_OBJ_SCALE + VOX_OBJ_SCALE_SIZE;
-const VOX_OBJ_AXIS_SIZE = SIZE_PARAM * 3; // vec3
-const VOX_OBJ_ANGLE = VOX_OBJ_AXIS + VOX_OBJ_AXIS_SIZE;
-const VOX_OBJ_ANGLE_SIZE = SIZE_PARAM * 1; // float
 // アトリビュートのビット構成
 // v0nn nnnn nnnn 00aa aaaa aacc cccc cccc
 // v: 1 ... 表示 0 ... 非表示
 // n: object No (0-4095)
 // a: alpha (0-255)
 // c: color index (0-4095)
+const VOX_OBJ_AXIS = VOX_OBJ_SCALE + VOX_OBJ_SCALE_SIZE;
+const VOX_OBJ_AXIS_SIZE = SIZE_PARAM * 3; // vec3
+const VOX_OBJ_ANGLE = VOX_OBJ_AXIS + VOX_OBJ_AXIS_SIZE;
+const VOX_OBJ_ANGLE_SIZE = SIZE_PARAM * 1; // float
 const VOX_OBJ_ATTRIB = VOX_OBJ_ANGLE+ VOX_OBJ_ANGLE_SIZE;
 const VOX_OBJ_ATTRIB_SIZE = SIZE_PARAM; // uint
 const VOX_MEMORY_STRIDE =  (VOX_OBJ_POS_SIZE + VOX_OBJ_SCALE_SIZE + VOX_OBJ_AXIS_SIZE + VOX_OBJ_ANGLE_SIZE + VOX_OBJ_ATTRIB_SIZE);
@@ -278,6 +255,24 @@ const parser = new vox.Parser();
 export async function loadVox(path){
   const models = await parser.parse(path);
   return models;
+}
+
+function setRotate(mat3 ,angle,  axis){
+
+  const s = Math.sin(angle);
+  const c = Math.cos(angle);
+  const r = 1.0 - c;
+
+  mat3[0] = axis[0] * axis[0] * r + c; 
+  mat3[1] = axis[1] * axis[0] * r + axis[2] * s;
+  mat3[2] = axis[2] * axis[0] * r - axis[1] * s;
+  mat3[3] = axis[0] * axis[1] * r - axis[2] * s;
+  mat3[4] = axis[1] * axis[1] * r + c;
+  mat3[5] = axis[2] * axis[1] * r + axis[0] * s;
+  mat3[6] = axis[0] * axis[2] * r + axis[1] * s;
+  mat3[7] = axis[1] * axis[2] * r - axis[0] * s;
+  mat3[8] = axis[2] * axis[2] * r + c;
+  return mat3;
 }
 
 
@@ -341,14 +336,21 @@ export class Vox extends Node {
     // uniform変数の位置の取得と保存
 
     // UBO
-    this.objAttrLocation = gl.getUniformBlockIndex(program,'obj_attributes');
-    gl.uniformBlockBinding(program,this.objAttrLocation,0);
-    this.objAttrBuffer = gl.createBuffer();
-    gl.bindBuffer(gl.UNIFORM_BUFFER, this.objAttrBuffer);
-    gl.bufferData(gl.UNIFORM_BUFFER,VOX_MEMORY_STRIDE,gl.DYNAMIC_DRAW);
-    //gl.bufferData(gl.UNIFORM_BUFFER, this.voxScreenMemory.buffer, gl.DYNAMIC_DRAW,0,VOX_MEMORY_STRIDE);
-    gl.bindBuffer(gl.UNIFORM_BUFFER, null);
-    gl.bindBufferBase(gl.UNIFORM_BUFFER,0,this.objAttrBuffer);
+    // this.objAttrLocation = gl.getUniformBlockIndex(program,'obj_attributes');
+    // gl.uniformBlockBinding(program,this.objAttrLocation,0);
+    // this.objAttrBuffer = gl.createBuffer();
+    // gl.bindBuffer(gl.UNIFORM_BUFFER, this.objAttrBuffer);
+    // gl.bufferData(gl.UNIFORM_BUFFER,VOX_MEMORY_STRIDE,gl.DYNAMIC_DRAW);
+    // //gl.bufferData(gl.UNIFORM_BUFFER, this.voxScreenMemory.buffer, gl.DYNAMIC_DRAW,0,VOX_MEMORY_STRIDE);
+    // gl.bindBuffer(gl.UNIFORM_BUFFER, null);
+    // gl.bindBufferBase(gl.UNIFORM_BUFFER,0,this.objAttrBuffer);
+
+    // 
+    this.attribLocation = gl.getUniformLocation(program,'u_attrib');
+    this.scaleLocation = gl.getUniformLocation(program,'u_scale');
+    this.rotateLocation = gl.getUniformLocation(program,'u_rotate');
+    this.rotate = mat3.create();
+    this.objPositionLocation = gl.getUniformLocation(program,'u_obj_position');
 
 
     // ワールド・ビュー変換行列
@@ -416,32 +418,37 @@ export class Vox extends Node {
     gl.bindSampler(0,this.sampler);
     gl.uniform1i(this.palleteLocation,0);
 
-    for(let offset = 0,eo = this.voxScreenMemory.byteLength;offset < eo;offset += VOX_MEMORY_STRIDE){
+    mat4.multiply(this.viewProjection, screen.uniforms.viewProjection, this.worldMatrix);
+    gl.uniformMatrix4fv(this.viewProjectionLocation, false,this.viewProjection);
+    gl.uniform3fv(this.eyeLocation, this.eye);
+    gl.uniform3fv(this.lightLocation, this.lightDirection);
+    gl.uniform3fv(this.ambientLocation, this.ambient);
+    
+
+    for(let offset = 0,eo = memory.byteLength;offset < eo;offset += VOX_MEMORY_STRIDE){
 
       // 表示ビットが立っていたら表示      
-      if(this.voxScreenMemory.getUint32(offset + VOX_OBJ_ATTRIB,this.endian) & 0x80000000){
-        // uniform変数を更新
-        let axis = new Float32Array(this.voxScreenMemory.buffer,VOX_OBJ_AXIS,3);
-        vec3.set(axis,1,1,0);
-        vec3.normalize(axis,axis);
-        //this.voxScreenMemory.setFloat32(VOX_OBJ_AXIS,0,endian);
-        //this.voxScreenMemory.setFloat32(VOX_OBJ_AXIS+4,0,endian);
-        //this.voxScreenMemory.setFloat32(VOX_OBJ_AXIS+8,1,endian);
-        this.voxScreenMemory.setFloat32(VOX_OBJ_ANGLE,this.count,endian);
+      if(memory.getUint32(offset + VOX_OBJ_ATTRIB,this.endian) & 0x80000000){
 
+        // uniform変数を更新
+        let axis = new Float32Array(memory.buffer,offset + VOX_OBJ_AXIS,3);
+        vec3.set(axis,1,1,-1);
+        vec3.normalize(axis,axis);
+        memory.setFloat32(offset + VOX_OBJ_ANGLE,this.count,endian);
+        setRotate(this.rotate,memory.getFloat32(offset + VOX_OBJ_ANGLE,endian),axis);
+
+        gl.uniform1ui(this.attribLocation,memory.getUint32(offset + VOX_OBJ_ATTRIB,endian));
+        gl.uniform1f(this.scaleLocation,memory.getFloat32(offset + VOX_OBJ_SCALE,endian));
+        gl.uniformMatrix3fv(this.rotateLocation,false,this.rotate);
+        gl.uniform3fv(this.objPositionLocation,new Float32Array(memory.buffer,offset + VOX_OBJ_POS,3));
 
         // UBO
-        gl.bindBuffer(gl.UNIFORM_BUFFER,this.objAttrBuffer);
-        gl.bufferSubData(gl.UNIFORM_BUFFER,0,this.voxScreenBuffer,offset,VOX_MEMORY_STRIDE);
-        gl.bindBuffer(gl.UNIFORM_BUFFER,null);
+        // gl.bindBuffer(gl.UNIFORM_BUFFER,this.objAttrBuffer);
+        // gl.bufferSubData(gl.UNIFORM_BUFFER,0,this.voxScreenBuffer,offset,VOX_MEMORY_STRIDE);
+        // gl.bindBuffer(gl.UNIFORM_BUFFER,null);
 
-        // ビュー変換行列
-        mat4.multiply(this.viewProjection, screen.uniforms.viewProjection, this.worldMatrix);
-        gl.uniformMatrix4fv(this.viewProjectionLocation, false,this.viewProjection);
-        gl.uniform3fv(this.eyeLocation, this.eye);
-        gl.uniform3fv(this.lightLocation, this.lightDirection);
-        gl.uniform3fv(this.ambientLocation, this.ambient);
 
+    
         // 描画命令の発行
         gl.drawArrays(gl.POINTS, 0,this.voxelModel.voxCount);
 
@@ -449,7 +456,7 @@ export class Vox extends Node {
 
     }
 
-        this.count += 0.03;
+        this.count += 0.04;
   }
 
 }
