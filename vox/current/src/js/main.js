@@ -1,7 +1,7 @@
 'use strict';
 
 import {Console} from './console.js';
-import {Vox,loadVox} from './voxscreen.js';
+import {Vox,VoxelModel} from './voxscreen.js';
 
 // let display = true;
 let play = false;
@@ -31,10 +31,17 @@ async function start(){
   const gl2 = con.gl2;
 
   //const voxmodel = new Vox({gl2:gl2,data:await loadVox('myship.bin')});
-  const voxmodel = new Vox({gl2:gl2,data:await loadVox('./q.bin')});
+  const voxelModels = await VoxelModel.loadFromUrls([
+    'myship.bin',
+    'q.bin',
+    'q1.bin',
+    'chr.bin'
+  ]);
+
+  const vox = new Vox({gl2:gl2,voxelModels:voxelModels});
 
   //const myship = new SceneNode(model);
-  con.vscreen.appendScene(voxmodel);
+  con.vscreen.appendScene(vox);
 
   // cube.source.translation[2] = 0;
   // //m4.scale(cube.localMatrix,[20,20,20],cube.localMatrix);
