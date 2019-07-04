@@ -117,22 +117,23 @@ void main(){
 
 /// テキストプレーン
 export default class TextPlane {
-  constructor({gl2, vwidth = 320, vheight = 200,textBitmap,memory,offset}) {
+  constructor(gl2, vwidth = 320, vheight = 200,textBitmap) {
 
     this.gl2 = gl2;
     const gl = this.gl = gl2.gl;
 
+    this.charSize = 8;/* 文字サイズ pixel */
 
     this.vwidth = vwidth;
     this.vheight = vheight;
 
-    this.twidth = parseInt(vwidth / this.charSize);// テキストの横の文字数
-    this.theight = parseInt(vheight / this.charSize);// テキストの縦の文字数
+    this.twidth = vwidth / this.charSize;// テキストの横の文字数
+    this.theight = vheight / this.charSize;// テキストの縦の文字数
 
     this.blinkCount = 0;// ブリンク制御用
     this.blink = false;// ブリンク制御用
 
-    this.textBuffer = new Uint32Array(memory,offset,parseInt(this.twidth * this.theight));// テキスト/アトリビュートVRAM
+    this.textBuffer = new Uint32Array(this.twidth * this.theight);// テキスト/アトリビュートVRAM
     // テスト用
     // const s = '０１２３４５６７８９０美咲フォントで表示してみた！ABCDEFGHIJKLMNOPQRSTUVWXYZ!ＡＢＣＤＥＦ漢字もそれなりに表示できる.';
     // let si = 0;
@@ -274,11 +275,7 @@ export default class TextPlane {
     this.sy = 0;//描画開始スタート位置
 
     //this.cls();
-
-
   }
-
-
 
   /// 画面消去
   cls() {
@@ -438,15 +435,9 @@ export default class TextPlane {
     this.needsUpdate = false;
 
   }
-
-  static calc_memory_size(width , height){
-    const csize = TextPlane.prototype.charSize;
-    return parseInt(width / csize )  * parseInt(height / csize) * 4;
-  }
 }
 
 TextPlane.prototype.CENTER = Symbol('Center');
 TextPlane.prototype.LEFT = Symbol('LEFT');
 TextPlane.prototype.RIGHT = Symbol('RIGHT');
-TextPlane.prototype.charSize = 8;/* 文字サイズ pixel */
 

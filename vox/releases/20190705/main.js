@@ -2320,22 +2320,23 @@ void main(){
 
   /// テキストプレーン
   class TextPlane {
-    constructor({gl2, vwidth = 320, vheight = 200,textBitmap,memory,offset}) {
+    constructor(gl2, vwidth = 320, vheight = 200,textBitmap) {
 
       this.gl2 = gl2;
       const gl = this.gl = gl2.gl;
 
+      this.charSize = 8;/* 文字サイズ pixel */
 
       this.vwidth = vwidth;
       this.vheight = vheight;
 
-      this.twidth = parseInt(vwidth / this.charSize);// テキストの横の文字数
-      this.theight = parseInt(vheight / this.charSize);// テキストの縦の文字数
+      this.twidth = vwidth / this.charSize;// テキストの横の文字数
+      this.theight = vheight / this.charSize;// テキストの縦の文字数
 
       this.blinkCount = 0;// ブリンク制御用
       this.blink = false;// ブリンク制御用
 
-      this.textBuffer = new Uint32Array(memory,offset,parseInt(this.twidth * this.theight));// テキスト/アトリビュートVRAM
+      this.textBuffer = new Uint32Array(this.twidth * this.theight);// テキスト/アトリビュートVRAM
       // テスト用
       // const s = '０１２３４５６７８９０美咲フォントで表示してみた！ABCDEFGHIJKLMNOPQRSTUVWXYZ!ＡＢＣＤＥＦ漢字もそれなりに表示できる.';
       // let si = 0;
@@ -2477,11 +2478,7 @@ void main(){
       this.sy = 0;//描画開始スタート位置
 
       //this.cls();
-
-
     }
-
-
 
     /// 画面消去
     cls() {
@@ -2641,17 +2638,11 @@ void main(){
       this.needsUpdate = false;
 
     }
-
-    static calc_memory_size(width , height){
-      const csize = TextPlane.prototype.charSize;
-      return parseInt(width / csize )  * parseInt(height / csize) * 4;
-    }
   }
 
   TextPlane.prototype.CENTER = Symbol('Center');
   TextPlane.prototype.LEFT = Symbol('LEFT');
   TextPlane.prototype.RIGHT = Symbol('RIGHT');
-  TextPlane.prototype.charSize = 8;/* 文字サイズ pixel */
 
   class Console extends EventEmitter {
     constructor(virtualWidth = 240 , virtualHeight = 320) {
@@ -2675,7 +2666,6 @@ void main(){
       this.SPRITE_SIZE_X = 16.0;
       this.SPRITE_SIZE_Y = 16.0;
       this.CAMERA_Z = this.VIRTUAL_HEIGHT / (Math.tan(this.ANGLE_OF_VIEW / 360 * Math.PI) * 2);
-      this.MEMORY_SIZE_NEEDED = TextPlane.calc_memory_size(virtualWidth,virtualHeight);
 
       this.scale_ = 1.0;
       this.offset_ = create$4();
@@ -2688,7 +2678,7 @@ void main(){
       this.position = this.POS_CENTER;
     }
 
-    initConsole({textBitmap,memory,offset}) {
+    initConsole(textBitmap) {
 
       this.gl = document.querySelector('#c').getContext('webgl2');
       const gl = this.gl;
@@ -2711,7 +2701,7 @@ void main(){
       gl.bindTexture(gl.TEXTURE_2D, null);
 
       this.vscreen = new VScreen(this);
-      this.text = new TextPlane({gl2:gl2,vwitdh:this.VIRTUAL_WIDTH,vheight:this.VIRTUAL_HEIGHT,textBitmap:textBitmap,memory:memory,offset:offset});
+      this.text = new TextPlane(gl2,this.VIRTUAL_WIDTH,this.VIRTUAL_HEIGHT,textBitmap);
       this.screen = new Screen(this,this.texture);
 
       window.addEventListener('resize', this.resize.bind(this));
@@ -4360,6 +4350,10 @@ void main() {
   const VOX_MEMORY_STRIDE =  (VOX_OBJ_POS_SIZE + VOX_OBJ_SCALE_SIZE + VOX_OBJ_AXIS_SIZE + VOX_OBJ_ANGLE_SIZE + VOX_OBJ_ATTRIB_SIZE);
   const VOX_OBJ_MAX = 512;
 
+  const voxScreenMemory = new ArrayBuffer(
+    VOX_MEMORY_STRIDE * VOX_OBJ_MAX
+  );
+
   const parser = new vox.Parser();
 
   function setRotate(mat3$$1 ,angle$$1,  axis){
@@ -4382,16 +4376,14 @@ void main() {
 
 
   class Vox extends Node {
-    constructor({ gl2, voxelModels,visible = true,memory,offset}) {
+    constructor({ gl2, voxelModels,visible = true}) {
       super();
       // webgl コンテキストの保存
       const gl = this.gl = gl2.gl;
       this.gl2 = gl2;
-
-      //let points = new DataView(new ArrayBuffer(4 * 4 * data.voxels.length));
       this.endian = checkEndian();
-      this.voxScreenMemory = new DataView(memory,offset,this.MEMORY_SIZE_NEEDED);
-      this.voxScreenBuffer = new Uint8Array(memory,offset,this.MEMORY_SIZE_NEEDED);
+      this.voxScreenMemory = new DataView(voxScreenMemory);
+      this.voxScreenBuffer = new Uint8Array(voxScreenMemory);
       this.voxelModels = voxelModels;
       this.voxelBuffer = this.voxelModels.buffer;
         
@@ -4486,16 +4478,16 @@ void main() {
       gl.samplerParameteri(this.sampler, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
 
       this.count = 0;
-      const vmemory = this.voxScreenMemory;
+      const memory = this.voxScreenMemory;
       let count=1;
 
-      for(let offset = 0,eo = vmemory.byteLength;offset < eo;offset += VOX_MEMORY_STRIDE){
-        vmemory.setUint32(offset + VOX_OBJ_ATTRIB,0x8003fc00 | count++ | ((count & 0x3) << 20),this.endian);
-        vmemory.setFloat32(offset + VOX_OBJ_SCALE,Math.random() * 1.5,this.endian);
-        vmemory.setFloat32(offset + VOX_OBJ_POS,Math.random() * 160 - 80,this.endian);
-        vmemory.setFloat32(offset + VOX_OBJ_POS + SIZE_PARAM,Math.random() * 100 - 50,this.endian);
-        vmemory.setFloat32(offset + VOX_OBJ_POS + SIZE_PARAM * 2,Math.random() * 192 - 128,this.endian);
-        vmemory.setFloat32(offset + VOX_OBJ_ANGLE,count,this.endian);
+      for(let offset = 0,eo = memory.byteLength;offset < eo;offset += VOX_MEMORY_STRIDE){
+        memory.setUint32(offset + VOX_OBJ_ATTRIB,0x8003fc00 | count++ | ((count & 0x3) << 20),this.endian);
+        memory.setFloat32(offset + VOX_OBJ_SCALE,Math.random() * 1.5,this.endian);
+        memory.setFloat32(offset + VOX_OBJ_POS,Math.random() * 160 - 80,this.endian);
+        memory.setFloat32(offset + VOX_OBJ_POS + SIZE_PARAM,Math.random() * 100 - 50,this.endian);
+        memory.setFloat32(offset + VOX_OBJ_POS + SIZE_PARAM * 2,Math.random() * 192 - 128,this.endian);
+        memory.setFloat32(offset + VOX_OBJ_ANGLE,count,this.endian);
       }
     }
 
@@ -4572,8 +4564,6 @@ void main() {
 
   }
 
-  Vox.prototype.MEMORY_SIZE_NEEDED = VOX_MEMORY_STRIDE * VOX_OBJ_MAX;
-
   // let display = true;
   let play = false;
 
@@ -4597,12 +4587,7 @@ void main() {
     const textBitmap = new Uint8Array(
       await fetch('./font.bin')
         .then(r=>r.arrayBuffer()));
-    
-    const memory = new ArrayBuffer(con.MEMORY_SIZE_NEEDED + Vox.prototype.MEMORY_SIZE_NEEDED);
-
-    let offset = 0;
-    con.initConsole({textBitmap:textBitmap,memory:memory,offset:offset});
-    offset += con.MEMORY_SIZE_NEEDED;
+    con.initConsole(textBitmap);
     const gl2 = con.gl2;
 
     //const voxmodel = new Vox({gl2:gl2,data:await loadVox('myship.bin')});
@@ -4613,7 +4598,7 @@ void main() {
       'chr.bin'
     ]);
 
-    const vox = new Vox({gl2:gl2,voxelModels:voxelModels,memory:memory,offset:offset});
+    const vox = new Vox({gl2:gl2,voxelModels:voxelModels});
 
     //const myship = new SceneNode(model);
     con.vscreen.appendScene(vox);

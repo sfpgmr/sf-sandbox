@@ -278,6 +278,10 @@ const VOX_OBJ_ATTRIB_SIZE = SIZE_PARAM; // uint
 const VOX_MEMORY_STRIDE =  (VOX_OBJ_POS_SIZE + VOX_OBJ_SCALE_SIZE + VOX_OBJ_AXIS_SIZE + VOX_OBJ_ANGLE_SIZE + VOX_OBJ_ATTRIB_SIZE);
 const VOX_OBJ_MAX = 512;
 
+const voxScreenMemory = new ArrayBuffer(
+  VOX_MEMORY_STRIDE * VOX_OBJ_MAX
+);
+
 const parser = new vox.Parser();
 export async function loadVox(path){
   const models = await parser.parse(path);
@@ -304,16 +308,17 @@ function setRotate(mat3 ,angle,  axis){
 
 
 export class Vox extends Node {
-  constructor({ gl2, voxelModels,visible = true,memory,offset}) {
+  constructor({ gl2, voxelModels,visible = true}) {
     super();
     // webgl コンテキストの保存
     const gl = this.gl = gl2.gl;
     this.gl2 = gl2;
 
     //let points = new DataView(new ArrayBuffer(4 * 4 * data.voxels.length));
+    let offset = 0;
     this.endian = checkEndian();
-    this.voxScreenMemory = new DataView(memory,offset,this.MEMORY_SIZE_NEEDED);
-    this.voxScreenBuffer = new Uint8Array(memory,offset,this.MEMORY_SIZE_NEEDED);
+    this.voxScreenMemory = new DataView(voxScreenMemory);
+    this.voxScreenBuffer = new Uint8Array(voxScreenMemory);
     this.voxelModels = voxelModels;
     this.voxelBuffer = this.voxelModels.buffer;
       
@@ -408,16 +413,16 @@ export class Vox extends Node {
     gl.samplerParameteri(this.sampler, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
 
     this.count = 0;
-    const vmemory = this.voxScreenMemory;
+    const memory = this.voxScreenMemory;
     let px = -70,count=1;
 
-    for(let offset = 0,eo = vmemory.byteLength;offset < eo;offset += VOX_MEMORY_STRIDE){
-      vmemory.setUint32(offset + VOX_OBJ_ATTRIB,0x8003fc00 | count++ | ((count & 0x3) << 20),this.endian);
-      vmemory.setFloat32(offset + VOX_OBJ_SCALE,Math.random() * 1.5,this.endian);
-      vmemory.setFloat32(offset + VOX_OBJ_POS,Math.random() * 160 - 80,this.endian);
-      vmemory.setFloat32(offset + VOX_OBJ_POS + SIZE_PARAM,Math.random() * 100 - 50,this.endian);
-      vmemory.setFloat32(offset + VOX_OBJ_POS + SIZE_PARAM * 2,Math.random() * 192 - 128,this.endian);
-      vmemory.setFloat32(offset + VOX_OBJ_ANGLE,count,this.endian);
+    for(let offset = 0,eo = memory.byteLength;offset < eo;offset += VOX_MEMORY_STRIDE){
+      memory.setUint32(offset + VOX_OBJ_ATTRIB,0x8003fc00 | count++ | ((count & 0x3) << 20),this.endian);
+      memory.setFloat32(offset + VOX_OBJ_SCALE,Math.random() * 1.5,this.endian);
+      memory.setFloat32(offset + VOX_OBJ_POS,Math.random() * 160 - 80,this.endian);
+      memory.setFloat32(offset + VOX_OBJ_POS + SIZE_PARAM,Math.random() * 100 - 50,this.endian);
+      memory.setFloat32(offset + VOX_OBJ_POS + SIZE_PARAM * 2,Math.random() * 192 - 128,this.endian);
+      memory.setFloat32(offset + VOX_OBJ_ANGLE,count,this.endian);
     }
   }
 
@@ -494,5 +499,4 @@ export class Vox extends Node {
 
 }
 
-Vox.prototype.MEMORY_SIZE_NEEDED = VOX_MEMORY_STRIDE * VOX_OBJ_MAX;
 

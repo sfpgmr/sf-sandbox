@@ -26,12 +26,7 @@ async function start(){
   const textBitmap = new Uint8Array(
     await fetch('./font.bin')
       .then(r=>r.arrayBuffer()));
-  
-  const memory = new ArrayBuffer(con.MEMORY_SIZE_NEEDED + Vox.prototype.MEMORY_SIZE_NEEDED);
-
-  let offset = 0;
-  con.initConsole({textBitmap:textBitmap,memory:memory,offset:offset});
-  offset += con.MEMORY_SIZE_NEEDED;
+  con.initConsole(textBitmap);
   const gl = con.gl;
   const gl2 = con.gl2;
 
@@ -43,7 +38,7 @@ async function start(){
     'chr.bin'
   ]);
 
-  const vox = new Vox({gl2:gl2,voxelModels:voxelModels,memory:memory,offset:offset});
+  const vox = new Vox({gl2:gl2,voxelModels:voxelModels});
 
   //const myship = new SceneNode(model);
   con.vscreen.appendScene(vox);
