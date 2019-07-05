@@ -313,7 +313,7 @@ export class Vox extends Node {
     //let points = new DataView(new ArrayBuffer(4 * 4 * data.voxels.length));
     this.endian = checkEndian();
     this.voxScreenMemory = new DataView(memory,offset,this.MEMORY_SIZE_NEEDED);
-    this.voxScreenBuffer = new Uint8Array(memory,offset,this.MEMORY_SIZE_NEEDED);
+    //his.voxScreenBuffer = new Uint8Array(memory,offset,this.MEMORY_SIZE_NEEDED);
     this.voxelModels = voxelModels;
     this.voxelBuffer = this.voxelModels.buffer;
       
@@ -457,7 +457,7 @@ export class Vox extends Node {
       if( attribute & 0x80000000){
 
         // uniform変数を更新
-        let axis = new Float32Array(memory.buffer,offset + VOX_OBJ_AXIS,3);
+        let axis = new Float32Array(memory.buffer,memory.byteOffset + offset + VOX_OBJ_AXIS,3);
         vec3.set(axis,1,-1,-1);
         vec3.normalize(axis,axis);
         let c = memory.getFloat32(offset + VOX_OBJ_ANGLE,endian) + 0.04;
@@ -466,7 +466,7 @@ export class Vox extends Node {
 
         gl.uniform1f(this.scaleLocation,memory.getFloat32(offset + VOX_OBJ_SCALE,endian));
         gl.uniformMatrix3fv(this.rotateLocation,false,this.rotate);
-        gl.uniform3fv(this.objPositionLocation,new Float32Array(memory.buffer,offset + VOX_OBJ_POS,3));
+        gl.uniform3fv(this.objPositionLocation,new Float32Array(memory.buffer,memory.byteOffset + offset + VOX_OBJ_POS,3));
 
         // UBO
         // gl.bindBuffer(gl.UNIFORM_BUFFER,this.objAttrBuffer);

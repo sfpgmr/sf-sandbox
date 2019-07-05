@@ -440,8 +440,7 @@ export default class TextPlane {
   }
 
   static calc_memory_size(width , height){
-    const csize = TextPlane.prototype.charSize;
-    return parseInt(width / csize )  * parseInt(height / csize) * 4;
+    return width * height * 4;
   }
 }
 

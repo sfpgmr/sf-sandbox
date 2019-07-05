@@ -2643,8 +2643,7 @@ void main(){
     }
 
     static calc_memory_size(width , height){
-      const csize = TextPlane.prototype.charSize;
-      return parseInt(width / csize )  * parseInt(height / csize) * 4;
+      return width * height * 4;
     }
   }
 
@@ -2668,14 +2667,14 @@ void main(){
       this.V_LEFT = -1 * this.VIRTUAL_WIDTH / 2.0;
       this.V_BOTTOM = -1 * this.VIRTUAL_HEIGHT / 2.0;
       this.CHAR_SIZE = 8;
-      this.TEXT_WIDTH = this.VIRTUAL_WIDTH / this.CHAR_SIZE;
-      this.TEXT_HEIGHT = this.VIRTUAL_HEIGHT / this.CHAR_SIZE;
+      this.TEXT_WIDTH = this.VIRTUAL_WIDTH / this.CHAR_SIZE | 0; 
+      this.TEXT_HEIGHT = this.VIRTUAL_HEIGHT / this.CHAR_SIZE | 0;
       this.PIXEL_SIZE = 1;
       this.ACTUAL_CHAR_SIZE = this.CHAR_SIZE * this.PIXEL_SIZE;
       this.SPRITE_SIZE_X = 16.0;
       this.SPRITE_SIZE_Y = 16.0;
       this.CAMERA_Z = this.VIRTUAL_HEIGHT / (Math.tan(this.ANGLE_OF_VIEW / 360 * Math.PI) * 2);
-      this.MEMORY_SIZE_NEEDED = TextPlane.calc_memory_size(virtualWidth,virtualHeight);
+      this.MEMORY_SIZE_NEEDED = TextPlane.calc_memory_size(this.TEXT_WIDTH,this.TEXT_HEIGHT);
 
       this.scale_ = 1.0;
       this.offset_ = create$4();
@@ -4391,7 +4390,7 @@ void main() {
       //let points = new DataView(new ArrayBuffer(4 * 4 * data.voxels.length));
       this.endian = checkEndian();
       this.voxScreenMemory = new DataView(memory,offset,this.MEMORY_SIZE_NEEDED);
-      this.voxScreenBuffer = new Uint8Array(memory,offset,this.MEMORY_SIZE_NEEDED);
+      //his.voxScreenBuffer = new Uint8Array(memory,offset,this.MEMORY_SIZE_NEEDED);
       this.voxelModels = voxelModels;
       this.voxelBuffer = this.voxelModels.buffer;
         
@@ -4535,7 +4534,7 @@ void main() {
         if( attribute & 0x80000000){
 
           // uniform変数を更新
-          let axis = new Float32Array(memory.buffer,offset + VOX_OBJ_AXIS,3);
+          let axis = new Float32Array(memory.buffer,memory.byteOffset + offset + VOX_OBJ_AXIS,3);
           set$4(axis,1,-1,-1);
           normalize(axis,axis);
           let c = memory.getFloat32(offset + VOX_OBJ_ANGLE,endian) + 0.04;
@@ -4544,7 +4543,7 @@ void main() {
 
           gl.uniform1f(this.scaleLocation,memory.getFloat32(offset + VOX_OBJ_SCALE,endian));
           gl.uniformMatrix3fv(this.rotateLocation,false,this.rotate);
-          gl.uniform3fv(this.objPositionLocation,new Float32Array(memory.buffer,offset + VOX_OBJ_POS,3));
+          gl.uniform3fv(this.objPositionLocation,new Float32Array(memory.buffer,memory.byteOffset + offset + VOX_OBJ_POS,3));
 
           // UBO
           // gl.bindBuffer(gl.UNIFORM_BUFFER,this.objAttrBuffer);
