@@ -15,7 +15,8 @@ export default
       ],
       output: {
         file: './current/build/main.js',
-        format: 'iife'
+        format: 'iife',
+        sourcemap: true
       }
   
 };

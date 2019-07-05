@@ -66,7 +66,7 @@ export class Console extends EventEmitter {
     gl.bindTexture(gl.TEXTURE_2D, null);
 
     this.vscreen = new VScreen(this);
-    this.text = new TextPlane({gl2:gl2,vwitdh:this.VIRTUAL_WIDTH,vheight:this.VIRTUAL_HEIGHT,textBitmap:textBitmap,memory:memory,offset:offset});
+    this.text = new TextPlane({gl2:gl2,vwidth:this.VIRTUAL_WIDTH,vheight:this.VIRTUAL_HEIGHT,textBitmap:textBitmap,memory:memory,offset:offset});
     this.screen = new Screen(this,this.texture);
 
     window.addEventListener('resize', this.resize.bind(this));
