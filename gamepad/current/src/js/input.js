@@ -4,6 +4,10 @@ import EventEmitter from './eventEmitter3.js';
 export const DEVICE_KEY_MOUSE = 1;
 export const DEVICE_GAMEPAD = 2;
 
+/*
+
+*/
+
 export class Key {
   constructor(code) {
     this.code = code;
@@ -133,10 +137,6 @@ export class BasicDevice {
 
     if (keyBuffer.length > 16) {
       keyBuffer.shift();
-    }
-
-    if (e.key == 'p') {
-      this.emit('pause');
     }
 
     keyBuffer.push({key:e.key,ctrlKey:e.ctrlKey,altKey:e.altKey,shiftKey:e.shiftKey,metaKey:e.metaKey});
@@ -420,9 +420,10 @@ export class GamePad extends EventEmitter {
         
         // 代替のGamePadを探す
         if(!this.findConnectedGamePad()){
-            this.support = false;
-            this.connected = false;
-            this.emit('gamepadDisabled');
+          // 見つからない場合は無効化してイベントをディスパッチ！
+          this.support = false;
+          this.connected = false;
+          this.emit('gamepadDisabled');
         }
       }
       //delete this.gamepad;
@@ -444,7 +445,6 @@ export class GamePad extends EventEmitter {
       }
     }
     return found;
-    // 見つからない場合は無効化してイベントをディスパッチ！
   }
 
   change(index){
@@ -549,6 +549,7 @@ export class BasicInput {
     this.gamepad = new GamePad();
 
     this.gamepad.on('gamepadConnected',(gamepad)=>{
+      // GamePadが接続されているときはGamePadを優先して使う
       //debugger;
       this.currentDevice = this.gamepad;
 
