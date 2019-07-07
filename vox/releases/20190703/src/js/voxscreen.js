@@ -33,6 +33,7 @@ layout(location = 1) in uint point_attrib;
 
 // フラグメント・シェーダーに渡す変数
 flat out uint v_color_index;// 色 インデックス
+flat out uint v_pallete_index;
 flat out float v_diffuse;//  
 flat out vec3 v_ambient;
 flat out float v_alpha;
@@ -47,6 +48,7 @@ uniform mat4 u_worldViewProjection; // 変換行列
 uniform vec3 u_eye;
 uniform vec3 u_light;
 uniform vec3 u_ambient;
+
 
 void main() {
   
@@ -67,14 +69,17 @@ void main() {
   d(0x10u,0.,0.,-1.);
   d(0x20u,0.,0.,1.);
 
-  v_diffuse = clamp(diffuse, 0.0, 1.0);
-  v_color_index  = ( (point_attrib & 0x3ffu) + (u_attrib & 0x3ffu) ) & 0x3ffu;
+  v_diffuse = clamp(diffuse * ((256. - pos.z) / 256.0), 0.0, 1.0);
+ 
+  v_color_index  = point_attrib & 0xffu;
+  v_pallete_index = u_attrib & 0x1ffu;
+ 
   v_ambient = u_ambient;
   v_alpha = float((u_attrib & 0x3fc00u) >> 10u) / 255.0;
 
   gl_Position = pos;
   // セルサイズの計算（今のところかなりいい加減。。）
-  gl_PointSize = clamp((127.0 - pos.z) / 6.0 ,root2 * u_scale,128.0);
+  gl_PointSize = clamp((160.0 / pos.z) * u_scale * root2,0.0,128.0);
 }
 `;
 
@@ -84,7 +89,8 @@ precision highp int;
 
 
 // 頂点シェーダーからの情報
-flat in uint v_color_index;// 色]
+flat in uint v_color_index;// 色
+flat in uint v_pallete_index;// 色
 flat in float v_diffuse;
 flat in vec3 v_ambient;
 flat in float v_alpha;
@@ -97,7 +103,7 @@ uniform sampler2D u_pallete;
 out vec4 fcolor;
 
 void main() {
-  vec4 color = texelFetch(u_pallete,ivec2(int(v_color_index & 0xffu),int((v_color_index & 0x300u) >> 8u)),0) ;
+  vec4 color = texelFetch(u_pallete,ivec2(int(v_color_index),int(v_pallete_index)),0) ;
   color = vec4(color.rgb * v_diffuse,color.a);
   color = clamp(color + vec4(v_ambient,0.),0.0,1.0);
   fcolor = vec4(color.rgb, color.a * v_alpha);
@@ -140,13 +146,10 @@ const faces = [
   {x:0,y:0,z:1,face:32}
 ];
 
-const voxelModels = [];
 
-class VoxelModel {
-  constructor({gl,voxelData,offset = 0}){
-    this.offset = offset;
-    this.gl = gl;
-    
+export class VoxelModel {
+  constructor(voxelData){
+   
     const points = [];
     const voxelMap = new Map();
     voxelData.voxels.forEach(d=>{
@@ -179,18 +182,6 @@ class VoxelModel {
       this.points.push(p);
     }
 
-    this.buffer = new ArrayBuffer(this.points.length * 4 * 4);
-    this.endian = checkEndian();
-    const dv = new DataView(this.buffer);
-    for(const p of this.points){
-      dv.setFloat32(offset,p.point[0] ,this.endian);
-      dv.setFloat32(offset+4, p.point[1],this.endian);
-      dv.setFloat32(offset+8, p.point[2],this.endian);
-      dv.setUint32(offset+12,p.color | (p.openFlag << 16),this.endian);
-      offset += 16;
-    }
-    this.voxCount = this.points.length;
-
     const colorPallete = [];
 
     for(const color of voxelData.palette)
@@ -200,27 +191,67 @@ class VoxelModel {
       colorPallete.push(color.b);
       colorPallete.push(color.a);
     }
-    colorPallete[0] = 0;
-    colorPallete[1] = 0;
-    colorPallete[2] = 0;
-    colorPallete[3] = 0;
-    this.colorPallete = new Uint8Array(colorPallete);
+    // colorPallete[0] = 0;
+    // colorPallete[1] = 0;
+    // colorPallete[2] = 0;
+    // colorPallete[3] = 0;
 
+    this.colorPallete = new Uint8Array(colorPallete);
+    this.voxCount = this.points.length;
+    this.voxByteCount = this.voxCount * this.POINT_DATA_SIZE;
+    this.endian = checkEndian();
   }
 
-  // activate(){
-  //   this.gl2.activeTexture(this.gl2.TEXTURE0);
-  //   this.gl2.bindTexture(this.gl2.TEXTURE_2D,this.palleteTexture);
-  //   this.gl2.bindSampler(0,this.sampler);
-  //   this.gl2.uniform1i(0,0);
-  // }
-
-  static async loadFromUrls(voxDataArray){
-    for(const url of voxDataArray){
-      const parser = new vox.Parser();
-      const data = await parser.parse(url);
-      voxCharacters.push(new VoxCharacter(data));
+  setBuffer(offset,dv)
+  {
+    for(const p of this.points){
+      dv.setFloat32(offset,p.point[0] ,this.endian);
+      dv.setFloat32(offset + 4, p.point[1],this.endian);
+      dv.setFloat32(offset + 8, p.point[2],this.endian);
+      dv.setUint32(offset + 12,p.color | (p.openFlag << 16),this.endian);
+      offset += 16;
     }
+    return offset;
+  }
+
+  static async loadFromUrls(voxelUrls){
+    const voxelModels = {};
+    const parser = new vox.Parser();
+    const models = [];
+    let bufferLength = 0;
+    for(const url of voxelUrls){
+      const data = await parser.parse(url);
+      const voxelModel = new VoxelModel(data);
+      models.push(voxelModel);
+      bufferLength += voxelModel.voxByteCount;
+    }
+
+    const buffer = new ArrayBuffer(bufferLength);
+    const dv = new DataView(buffer);
+    const palletes = new Uint8Array(256 /* pallete */ * 4 /* rgba */ * models.length );
+    let offset = 0,poffset = 0,vindex = 0;
+
+    voxelModels.modelInfos = [];
+    voxelModels.palletes = palletes;
+    voxelModels.buffer = buffer;
+
+
+    for(let i = 0;i < models.length;++i){
+      const data = models[i];
+      voxelModels.modelInfos.push(
+        {
+          index:i,
+          vindex:vindex,
+          count:data.voxCount
+        }
+      );
+      offset = data.setBuffer(offset,dv);
+      vindex += data.voxCount;
+      for(let pi = 0;pi < data.colorPallete.length;++pi){
+        palletes[poffset++] = data.colorPallete[pi];
+      }
+    }
+    return voxelModels;
   }
 }
 
@@ -231,24 +262,21 @@ const VOX_OBJ_POS = 0;
 const VOX_OBJ_POS_SIZE = 3 * SIZE_PARAM; // vec3
 const VOX_OBJ_SCALE = VOX_OBJ_POS + VOX_OBJ_POS_SIZE;
 const VOX_OBJ_SCALE_SIZE = SIZE_PARAM; // float
-// アトリビュートのビット構成
-// v0nn nnnn nnnn 00aa aaaa aacc cccc cccc
-// v: 1 ... 表示 0 ... 非表示
-// n: object No (0-4095)
-// a: alpha (0-255)
-// c: color index (0-4095)
 const VOX_OBJ_AXIS = VOX_OBJ_SCALE + VOX_OBJ_SCALE_SIZE;
 const VOX_OBJ_AXIS_SIZE = SIZE_PARAM * 3; // vec3
 const VOX_OBJ_ANGLE = VOX_OBJ_AXIS + VOX_OBJ_AXIS_SIZE;
 const VOX_OBJ_ANGLE_SIZE = SIZE_PARAM * 1; // float
 const VOX_OBJ_ATTRIB = VOX_OBJ_ANGLE+ VOX_OBJ_ANGLE_SIZE;
 const VOX_OBJ_ATTRIB_SIZE = SIZE_PARAM; // uint
+// アトリビュートのビット構成
+// v00n nnnn nnnn 00aa aaaa aadc cccc cccc
+// v: 1 ... 表示 0 ... 非表示
+// n: object No (0-511)
+// a: alpha (0-255)
+// c: color pallet index (0-511)
+// d: use default pallet;
 const VOX_MEMORY_STRIDE =  (VOX_OBJ_POS_SIZE + VOX_OBJ_SCALE_SIZE + VOX_OBJ_AXIS_SIZE + VOX_OBJ_ANGLE_SIZE + VOX_OBJ_ATTRIB_SIZE);
-const VOX_OBJ_MAX = 8;
-
-const voxScreenMemory = new ArrayBuffer(
-  VOX_MEMORY_STRIDE * VOX_OBJ_MAX
-);
+const VOX_OBJ_MAX = 64;
 
 const parser = new vox.Parser();
 export async function loadVox(path){
@@ -276,23 +304,18 @@ function setRotate(mat3 ,angle,  axis){
 
 
 export class Vox extends Node {
-  constructor({ gl2, data,visible = true}) {
+  constructor({ gl2, voxelModels,visible = true,memory,offset}) {
     super();
     // webgl コンテキストの保存
     const gl = this.gl = gl2.gl;
     this.gl2 = gl2;
 
     //let points = new DataView(new ArrayBuffer(4 * 4 * data.voxels.length));
-    let offset = 0;
     this.endian = checkEndian();
-    this.voxScreenMemory = new DataView(voxScreenMemory);
-    this.voxScreenBuffer = new Uint8Array(voxScreenMemory);
-    this.voxBuffer = new Uint8Array(voxScreenMemory);
-
-    this.voxelModel = new VoxelModel({gl:gl,voxelData:data});
-
-    this.voxCount = this.voxelModel.voxCount;
-    this.voxBuffer = this.voxelModel.buffer;
+    this.voxScreenMemory = new DataView(memory,offset,this.MEMORY_SIZE_NEEDED);
+    //his.voxScreenBuffer = new Uint8Array(memory,offset,this.MEMORY_SIZE_NEEDED);
+    this.voxelModels = voxelModels;
+    this.voxelBuffer = this.voxelModels.buffer;
       
     // スプライト面の表示・非表示
     this.visible = visible;
@@ -313,7 +336,7 @@ export class Vox extends Node {
 
     gl.bindBuffer(gl.ARRAY_BUFFER, this.buffer);
     // VBOにスプライトバッファの内容を転送
-    gl.bufferData(gl.ARRAY_BUFFER, this.voxBuffer, gl.DYNAMIC_DRAW);
+    gl.bufferData(gl.ARRAY_BUFFER, this.voxelBuffer, gl.DYNAMIC_DRAW);
 
     // 属性ロケーションIDの取得と保存
     this.positionLocation = 0;
@@ -377,7 +400,7 @@ export class Vox extends Node {
     
     //gl.pixelStorei(gl.UNPACK_ALIGNMENT, 1);
     gl.bindTexture(gl.TEXTURE_2D, this.palleteTexture);
-    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 256, 1, 0, gl.RGBA, gl.UNSIGNED_BYTE, this.voxelModel.colorPallete);
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 256, this.voxelModels.modelInfos.length, 0, gl.RGBA, gl.UNSIGNED_BYTE, this.voxelModels.palletes);
     gl.bindTexture(gl.TEXTURE_2D, null);
 
     this.sampler = gl.createSampler();
@@ -385,20 +408,17 @@ export class Vox extends Node {
     gl.samplerParameteri(this.sampler, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
 
     this.count = 0;
-    const memory = this.voxScreenMemory;
+    const vmemory = this.voxScreenMemory;
     let px = -70,count=1;
 
-    for(let offset = 0,eo = memory.byteLength;offset < eo;offset += VOX_MEMORY_STRIDE){
-      memory.setUint32(offset + VOX_OBJ_ATTRIB,0x8003fc00 | count++ ,this.endian);
-      memory.setFloat32(offset + VOX_OBJ_SCALE,1.0 + Math.random(),this.endian);
-      memory.setFloat32(offset + VOX_OBJ_POS,px,this.endian);
-      memory.setFloat32(offset + VOX_OBJ_ANGLE,count,this.endian);
-      px += 20;
+    for(let offset = 0,eo = vmemory.byteLength;offset < eo;offset += VOX_MEMORY_STRIDE){
+      vmemory.setUint32(offset + VOX_OBJ_ATTRIB,0x8003fc00 | count++ | ((count & 0x3) << 20),this.endian);
+      vmemory.setFloat32(offset + VOX_OBJ_SCALE,Math.random() * 1.5,this.endian);
+      vmemory.setFloat32(offset + VOX_OBJ_POS,Math.random() * 160 - 80,this.endian);
+      vmemory.setFloat32(offset + VOX_OBJ_POS + SIZE_PARAM,Math.random() * 100 - 50,this.endian);
+      vmemory.setFloat32(offset + VOX_OBJ_POS + SIZE_PARAM * 2,Math.random() * 192 - 128,this.endian);
+      vmemory.setFloat32(offset + VOX_OBJ_ANGLE,count,this.endian);
     }
-//    for(let offset = 0,eo = this.voxScreenMemory.byteLength;offset < eo;offset += VOX_MEMORY_STRIDE){
-//      sv.setFloat32()
-//    }
-
   }
 
   // スプライトを描画
@@ -432,39 +452,47 @@ export class Vox extends Node {
 
     for(let offset = 0,eo = memory.byteLength;offset < eo;offset += VOX_MEMORY_STRIDE){
 
-      // 表示ビットが立っていたら表示      
-      if(memory.getUint32(offset + VOX_OBJ_ATTRIB,this.endian) & 0x80000000){
+      // 表示ビットが立っていたら表示    
+      let attribute = memory.getUint32(offset + VOX_OBJ_ATTRIB,this.endian);  
+      if( attribute & 0x80000000){
 
         // uniform変数を更新
-        let axis = new Float32Array(memory.buffer,offset + VOX_OBJ_AXIS,3);
+        let axis = new Float32Array(memory.buffer,memory.byteOffset + offset + VOX_OBJ_AXIS,3);
         vec3.set(axis,1,-1,-1);
         vec3.normalize(axis,axis);
         let c = memory.getFloat32(offset + VOX_OBJ_ANGLE,endian) + 0.04;
         memory.setFloat32(offset + VOX_OBJ_ANGLE,c,endian);
         setRotate(this.rotate,memory.getFloat32(offset + VOX_OBJ_ANGLE,endian),axis);
 
-        gl.uniform1ui(this.attribLocation,memory.getUint32(offset + VOX_OBJ_ATTRIB,endian));
         gl.uniform1f(this.scaleLocation,memory.getFloat32(offset + VOX_OBJ_SCALE,endian));
         gl.uniformMatrix3fv(this.rotateLocation,false,this.rotate);
-        gl.uniform3fv(this.objPositionLocation,new Float32Array(memory.buffer,offset + VOX_OBJ_POS,3));
+        gl.uniform3fv(this.objPositionLocation,new Float32Array(memory.buffer,memory.byteOffset + offset + VOX_OBJ_POS,3));
 
         // UBO
         // gl.bindBuffer(gl.UNIFORM_BUFFER,this.objAttrBuffer);
         // gl.bufferSubData(gl.UNIFORM_BUFFER,0,this.voxScreenBuffer,offset,VOX_MEMORY_STRIDE);
         // gl.bindBuffer(gl.UNIFORM_BUFFER,null);
 
+        const objInfo = this.voxelModels.modelInfos[(attribute & 0x1ff00000) >> 20];
+        if(attribute & 0x20000){
+          // use default pallet
+          attribute = (attribute & 0b11111111111111111111111000000000) | objInfo.index;
+          memory.setUint32(offset + VOX_OBJ_ATTRIB,attribute,endian);
+        }
+
+        gl.uniform1ui(this.attribLocation,memory.getUint32(offset + VOX_OBJ_ATTRIB,endian));
 
     
         // 描画命令の発行
-        gl.drawArrays(gl.POINTS, 0,this.voxelModel.voxCount);
+        gl.drawArrays(gl.POINTS, objInfo.vindex,objInfo.count);
 
       }
 
     }
-
-        this.count += 0.04;
+    this.count += 0.04;
   }
 
 }
 
+Vox.prototype.MEMORY_SIZE_NEEDED = VOX_MEMORY_STRIDE * VOX_OBJ_MAX;
 

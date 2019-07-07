@@ -1,7 +1,7 @@
 'use strict';
 
 import {Console} from './console.js';
-import {Vox,loadVox} from './voxscreen.js';
+import {Vox,VoxelModel} from './voxscreen.js';
 
 // let display = true;
 let play = false;
@@ -26,15 +26,27 @@ async function start(){
   const textBitmap = new Uint8Array(
     await fetch('./font.bin')
       .then(r=>r.arrayBuffer()));
-  con.initConsole(textBitmap);
+  
+  const memory = new ArrayBuffer(con.MEMORY_SIZE_NEEDED + Vox.prototype.MEMORY_SIZE_NEEDED);
+
+  let offset = 0;
+  con.initConsole({textBitmap:textBitmap,memory:memory,offset:offset});
+  offset += con.MEMORY_SIZE_NEEDED;
   const gl = con.gl;
   const gl2 = con.gl2;
 
   //const voxmodel = new Vox({gl2:gl2,data:await loadVox('myship.bin')});
-  const voxmodel = new Vox({gl2:gl2,data:await loadVox('./q1.bin')});
+  const voxelModels = await VoxelModel.loadFromUrls([
+    'myship.bin',
+    'q.bin',
+    'q1.bin',
+    'chr.bin'
+  ]);
+
+  const vox = new Vox({gl2:gl2,voxelModels:voxelModels,memory:memory,offset:offset});
 
   //const myship = new SceneNode(model);
-  con.vscreen.appendScene(voxmodel);
+  con.vscreen.appendScene(vox);
 
   // cube.source.translation[2] = 0;
   // //m4.scale(cube.localMatrix,[20,20,20],cube.localMatrix);

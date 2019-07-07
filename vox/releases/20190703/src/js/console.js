@@ -23,13 +23,14 @@ export class Console extends EventEmitter {
     this.V_LEFT = -1 * this.VIRTUAL_WIDTH / 2.0;
     this.V_BOTTOM = -1 * this.VIRTUAL_HEIGHT / 2.0;
     this.CHAR_SIZE = 8;
-    this.TEXT_WIDTH = this.VIRTUAL_WIDTH / this.CHAR_SIZE;
-    this.TEXT_HEIGHT = this.VIRTUAL_HEIGHT / this.CHAR_SIZE;
+    this.TEXT_WIDTH = this.VIRTUAL_WIDTH / this.CHAR_SIZE | 0; 
+    this.TEXT_HEIGHT = this.VIRTUAL_HEIGHT / this.CHAR_SIZE | 0;
     this.PIXEL_SIZE = 1;
     this.ACTUAL_CHAR_SIZE = this.CHAR_SIZE * this.PIXEL_SIZE;
     this.SPRITE_SIZE_X = 16.0;
     this.SPRITE_SIZE_Y = 16.0;
     this.CAMERA_Z = this.VIRTUAL_HEIGHT / (Math.tan(this.ANGLE_OF_VIEW / 360 * Math.PI) * 2);
+    this.MEMORY_SIZE_NEEDED = TextPlane.calc_memory_size(this.TEXT_WIDTH,this.TEXT_HEIGHT);
 
     this.scale_ = 1.0;
     this.offset_ = vec3.create();
@@ -42,7 +43,7 @@ export class Console extends EventEmitter {
     this.position = this.POS_CENTER;
   }
 
-  initConsole(textBitmap) {
+  initConsole({textBitmap,memory,offset}) {
 
     this.gl = document.querySelector('#c').getContext('webgl2');
     const gl = this.gl;
@@ -65,7 +66,7 @@ export class Console extends EventEmitter {
     gl.bindTexture(gl.TEXTURE_2D, null);
 
     this.vscreen = new VScreen(this);
-    this.text = new TextPlane(gl2,this.VIRTUAL_WIDTH,this.VIRTUAL_HEIGHT,textBitmap);
+    this.text = new TextPlane({gl2:gl2,vwidth:this.VIRTUAL_WIDTH,vheight:this.VIRTUAL_HEIGHT,textBitmap:textBitmap,memory:memory,offset:offset});
     this.screen = new Screen(this,this.texture);
 
     window.addEventListener('resize', this.resize.bind(this));

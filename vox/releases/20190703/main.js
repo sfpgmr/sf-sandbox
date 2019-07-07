@@ -314,46 +314,6 @@
   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
   THE SOFTWARE. */
 
-  /* Copyright (c) 2015, Brandon Jones, Colin MacKenzie IV.
-
-  Permission is hereby granted, free of charge, to any person obtaining a copy
-  of this software and associated documentation files (the "Software"), to deal
-  in the Software without restriction, including without limitation the rights
-  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-  copies of the Software, and to permit persons to whom the Software is
-  furnished to do so, subject to the following conditions:
-
-  The above copyright notice and this permission notice shall be included in
-  all copies or substantial portions of the Software.
-
-  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-  THE SOFTWARE. */
-
-  /* Copyright (c) 2015, Brandon Jones, Colin MacKenzie IV.
-
-  Permission is hereby granted, free of charge, to any person obtaining a copy
-  of this software and associated documentation files (the "Software"), to deal
-  in the Software without restriction, including without limitation the rights
-  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-  copies of the Software, and to permit persons to whom the Software is
-  furnished to do so, subject to the following conditions:
-
-  The above copyright notice and this permission notice shall be included in
-  all copies or substantial portions of the Software.
-
-  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-  THE SOFTWARE. */
-
   /**
    * 3x3 Matrix
    * @module mat3
@@ -364,7 +324,7 @@
    *
    * @returns {mat3} a new 3x3 matrix
    */
-  function create$2() {
+  function create() {
     let out = new ARRAY_TYPE(9);
     out[0] = 1;
     out[1] = 0;
@@ -408,7 +368,7 @@
    *
    * @returns {mat4} a new 4x4 matrix
    */
-  function create$3() {
+  function create$1() {
     let out = new ARRAY_TYPE(16);
     out[0] = 1;
     out[1] = 0;
@@ -436,7 +396,7 @@
    * @param {mat4} a the source matrix
    * @returns {mat4} out
    */
-  function copy$3(out, a) {
+  function copy(out, a) {
     out[0] = a[0];
     out[1] = a[1];
     out[2] = a[2];
@@ -463,7 +423,7 @@
    * @param {mat4} out the receiving matrix
    * @returns {mat4} out
    */
-  function identity$3(out) {
+  function identity(out) {
     out[0] = 1;
     out[1] = 0;
     out[2] = 0;
@@ -490,7 +450,7 @@
    * @param {mat4} a the source matrix
    * @returns {mat4} out
    */
-  function invert$3(out, a) {
+  function invert(out, a) {
     let a00 = a[0], a01 = a[1], a02 = a[2], a03 = a[3];
     let a10 = a[4], a11 = a[5], a12 = a[6], a13 = a[7];
     let a20 = a[8], a21 = a[9], a22 = a[10], a23 = a[11];
@@ -545,7 +505,7 @@
    * @param {mat4} b the second operand
    * @returns {mat4} out
    */
-  function multiply$3(out, a, b) {
+  function multiply(out, a, b) {
     let a00 = a[0], a01 = a[1], a02 = a[2], a03 = a[3];
     let a10 = a[4], a11 = a[5], a12 = a[6], a13 = a[7];
     let a20 = a[8], a21 = a[9], a22 = a[10], a23 = a[11];
@@ -586,7 +546,7 @@
    * @param {vec3} v the vec3 to scale the matrix by
    * @returns {mat4} out
    **/
-  function scale$3(out, a, v) {
+  function scale(out, a, v) {
     let x = v[0], y = v[1], z = v[2];
 
     out[0] = a[0] * x;
@@ -748,7 +708,7 @@
    * @param {vec3} v Translation vector
    * @returns {mat4} out
    */
-  function fromTranslation$2(out, v) {
+  function fromTranslation(out, v) {
     out[0] = 1;
     out[1] = 0;
     out[2] = 0;
@@ -824,7 +784,7 @@
     if (Math.abs(eyex - centerx) < EPSILON &&
         Math.abs(eyey - centery) < EPSILON &&
         Math.abs(eyez - centerz) < EPSILON) {
-      return identity$3(out);
+      return identity(out);
     }
 
     z0 = eyex - centerx;
@@ -917,7 +877,7 @@
    *
    * @returns {vec3} a new 3D vector
    */
-  function create$4() {
+  function create$2() {
     let out = new ARRAY_TYPE(3);
     out[0] = 0;
     out[1] = 0;
@@ -931,7 +891,7 @@
    * @param {vec3} a vector to clone
    * @returns {vec3} a new 3D vector
    */
-  function clone$4(a) {
+  function clone(a) {
     var out = new ARRAY_TYPE(3);
     out[0] = a[0];
     out[1] = a[1];
@@ -960,7 +920,7 @@
    * @param {Number} z Z component
    * @returns {vec3} a new 3D vector
    */
-  function fromValues$4(x, y, z) {
+  function fromValues(x, y, z) {
     let out = new ARRAY_TYPE(3);
     out[0] = x;
     out[1] = y;
@@ -977,7 +937,7 @@
    * @param {Number} z Z component
    * @returns {vec3} out
    */
-  function set$4(out, x, y, z) {
+  function set(out, x, y, z) {
     out[0] = x;
     out[1] = y;
     out[2] = z;
@@ -1054,7 +1014,7 @@
    * @function
    */
   const forEach = (function() {
-    let vec = create$4();
+    let vec = create$2();
 
     return function(a, stride, offset, count, fn, arg) {
       let i, l;
@@ -1112,7 +1072,7 @@
    *
    * @returns {vec4} a new 4D vector
    */
-  function create$5() {
+  function create$3() {
     let out = new ARRAY_TYPE(4);
     out[0] = 0;
     out[1] = 0;
@@ -1130,7 +1090,7 @@
    * @param {Number} w W component
    * @returns {vec4} a new 4D vector
    */
-  function fromValues$5(x, y, z, w) {
+  function fromValues$1(x, y, z, w) {
     let out = new ARRAY_TYPE(4);
     out[0] = x;
     out[1] = y;
@@ -1175,7 +1135,7 @@
    * @function
    */
   const forEach$1 = (function() {
-    let vec = create$5();
+    let vec = create$3();
 
     return function(a, stride, offset, count, fn, arg) {
       let i, l;
@@ -1233,7 +1193,7 @@
    *
    * @returns {quat} a new quaternion
    */
-  function create$6() {
+  function create$4() {
     let out = new ARRAY_TYPE(4);
     out[0] = 0;
     out[1] = 0;
@@ -1378,20 +1338,20 @@
    * @returns {quat} out
    */
   const rotationTo = (function() {
-    let tmpvec3 = create$4();
-    let xUnitVec3 = fromValues$4(1,0,0);
-    let yUnitVec3 = fromValues$4(0,1,0);
+    let tmpvec3 = create$2();
+    let xUnitVec3 = fromValues(1,0,0);
+    let yUnitVec3 = fromValues(0,1,0);
 
     return function(out, a, b) {
-      let dot$$1 = dot(a, b);
-      if (dot$$1 < -0.999999) {
+      let dot$1 = dot(a, b);
+      if (dot$1 < -0.999999) {
         cross(tmpvec3, xUnitVec3, a);
         if (len(tmpvec3) < 0.000001)
           cross(tmpvec3, yUnitVec3, a);
         normalize(tmpvec3, tmpvec3);
         setAxisAngle(out, tmpvec3, Math.PI);
         return out;
-      } else if (dot$$1 > 0.999999) {
+      } else if (dot$1 > 0.999999) {
         out[0] = 0;
         out[1] = 0;
         out[2] = 0;
@@ -1402,7 +1362,7 @@
         out[0] = tmpvec3[0];
         out[1] = tmpvec3[1];
         out[2] = tmpvec3[2];
-        out[3] = 1 + dot$$1;
+        out[3] = 1 + dot$1;
         return normalize$2(out, out);
       }
     };
@@ -1420,8 +1380,8 @@
    * @returns {quat} out
    */
   const sqlerp = (function () {
-    let temp1 = create$6();
-    let temp2 = create$6();
+    let temp1 = create$4();
+    let temp2 = create$4();
 
     return function (out, a, b, c, d, t) {
       slerp(temp1, a, d, t);
@@ -1443,7 +1403,7 @@
    * @returns {quat} out
    */
   const setAxes = (function() {
-    let matr = create$2();
+    let matr = create();
 
     return function(out, view, right, up) {
       matr[0] = right[0];
@@ -1492,7 +1452,7 @@
    *
    * @returns {vec2} a new 2D vector
    */
-  function create$7() {
+  function create$5() {
     let out = new ARRAY_TYPE(2);
     out[0] = 0;
     out[1] = 0;
@@ -1512,7 +1472,7 @@
    * @function
    */
   const forEach$2 = (function() {
-    let vec = create$7();
+    let vec = create$5();
 
     return function(a, stride, offset, count, fn, arg) {
       let i, l;
@@ -1539,13 +1499,6 @@
       return a;
     };
   })();
-
-  /**
-   * @fileoverview gl-matrix - High performance matrix and vector operations
-   * @author Brandon Jones
-   * @author Colin MacKenzie IV
-   * @version 2.4.0
-   */
 
   // WebGL 2.0 APIをラッピングするクラス
 
@@ -2001,20 +1954,20 @@ void main()
 
   class TRS {
     constructor() {
-      this.translation = create$4();
-      this.rotation = create$4();
-      this.scale = fromValues$4(1, 1, 1);
+      this.translation = create$2();
+      this.rotation = create$2();
+      this.scale = fromValues(1, 1, 1);
     }
 
     getMatrix(dst) {
-      dst = dst || create$3();
+      dst = dst || create$1();
       const t = this.translation;
       const r = this.rotation;
       const s = this.scale;
 
       // compute a matrix from translation, rotation, and scale
-      fromTranslation$2(dst,t);
-      scale$3(dst, dst,s);
+      fromTranslation(dst,t);
+      scale(dst, dst,s);
       rotateX(dst,dst, r[0]);
       rotateY(dst,dst, r[1]);
       rotateZ(dst,dst, r[2]);
@@ -2026,8 +1979,8 @@ void main()
   class Node {
     constructor(source = new TRS()) {
       this.children = [];
-      this.localMatrix = identity$3(create$3());
-      this.worldMatrix = identity$3(create$3());
+      this.localMatrix = identity(create$1());
+      this.worldMatrix = identity(create$1());
       this.source = source;
     }
 
@@ -2055,10 +2008,10 @@ void main()
 
       if (matrix) {
         // a matrix was passed in so do the math
-        multiply$3(this.worldMatrix,matrix, this.localMatrix );
+        multiply(this.worldMatrix,matrix, this.localMatrix );
       } else {
         // no matrix was passed in so just copy.
-        copy$3(this.worldMatrix,this.localMatrix);
+        copy(this.worldMatrix,this.localMatrix);
       }
 
       // now process all the children
@@ -2156,9 +2109,9 @@ void main() {
       this.sceneNodes = [];
 
       this.uniforms = {
-        u_lightWorldPos: fromValues$4(1, 108, 1000),
-        u_lightColor: fromValues$5(1.0, 1.0, 1.0, 1),
-        u_ambient: fromValues$5(0.2, 0.2, 0.2, 1.0)
+        u_lightWorldPos: fromValues(1, 108, 1000),
+        u_lightColor: fromValues$1(1.0, 1.0, 1.0, 1),
+        u_ambient: fromValues$1(0.2, 0.2, 0.2, 1.0)
       };
 
       const fov = this.console.ANGLE_OF_VIEW * Math.PI / 180;
@@ -2166,14 +2119,14 @@ void main() {
       const aspect = con.VIRTUAL_WIDTH / con.VIRTUAL_HEIGHT;
       const zNear = 0.01;
       const zFar = 100000;
-      const projection$$1 = perspective(create$3(), fov, aspect, zNear, zFar);
-      const eye = fromValues$4(0, 0, this.console.CAMERA_Z);
-      const target = create$4();
-      const up = fromValues$4(0, 1, 0);
+      const projection = perspective(create$1(), fov, aspect, zNear, zFar);
+      const eye = fromValues(0, 0, this.console.CAMERA_Z);
+      const target = create$2();
+      const up = fromValues(0, 1, 0);
 
-      const view = lookAt(create$3(), eye, target, up);
-      const camera = invert$3(create$3(), view);
-      this.uniforms.viewProjection = multiply$3(create$3(), projection$$1, view);
+      const view = lookAt(create$1(), eye, target, up);
+      const camera = invert(create$1(), view);
+      this.uniforms.viewProjection = multiply(create$1(), projection, view);
 
       this.uniforms.u_viewInverse = camera;
 
@@ -2320,23 +2273,22 @@ void main(){
 
   /// テキストプレーン
   class TextPlane {
-    constructor(gl2, vwidth = 320, vheight = 200,textBitmap) {
+    constructor({gl2, vwidth = 320, vheight = 200,textBitmap,memory,offset}) {
 
       this.gl2 = gl2;
       const gl = this.gl = gl2.gl;
 
-      this.charSize = 8;/* 文字サイズ pixel */
 
       this.vwidth = vwidth;
       this.vheight = vheight;
 
-      this.twidth = vwidth / this.charSize;// テキストの横の文字数
-      this.theight = vheight / this.charSize;// テキストの縦の文字数
+      this.twidth = parseInt(vwidth / this.charSize);// テキストの横の文字数
+      this.theight = parseInt(vheight / this.charSize);// テキストの縦の文字数
 
       this.blinkCount = 0;// ブリンク制御用
       this.blink = false;// ブリンク制御用
 
-      this.textBuffer = new Uint32Array(this.twidth * this.theight);// テキスト/アトリビュートVRAM
+      this.textBuffer = new Uint32Array(memory,offset,parseInt(this.twidth * this.theight));// テキスト/アトリビュートVRAM
       // テスト用
       // const s = '０１２３４５６７８９０美咲フォントで表示してみた！ABCDEFGHIJKLMNOPQRSTUVWXYZ!ＡＢＣＤＥＦ漢字もそれなりに表示できる.';
       // let si = 0;
@@ -2478,7 +2430,11 @@ void main(){
       this.sy = 0;//描画開始スタート位置
 
       //this.cls();
+
+
     }
+
+
 
     /// 画面消去
     cls() {
@@ -2638,11 +2594,16 @@ void main(){
       this.needsUpdate = false;
 
     }
+
+    static calc_memory_size(width , height){
+      return width * height * 4;
+    }
   }
 
   TextPlane.prototype.CENTER = Symbol('Center');
   TextPlane.prototype.LEFT = Symbol('LEFT');
   TextPlane.prototype.RIGHT = Symbol('RIGHT');
+  TextPlane.prototype.charSize = 8;/* 文字サイズ pixel */
 
   class Console extends EventEmitter {
     constructor(virtualWidth = 240 , virtualHeight = 320) {
@@ -2659,16 +2620,17 @@ void main(){
       this.V_LEFT = -1 * this.VIRTUAL_WIDTH / 2.0;
       this.V_BOTTOM = -1 * this.VIRTUAL_HEIGHT / 2.0;
       this.CHAR_SIZE = 8;
-      this.TEXT_WIDTH = this.VIRTUAL_WIDTH / this.CHAR_SIZE;
-      this.TEXT_HEIGHT = this.VIRTUAL_HEIGHT / this.CHAR_SIZE;
+      this.TEXT_WIDTH = this.VIRTUAL_WIDTH / this.CHAR_SIZE | 0; 
+      this.TEXT_HEIGHT = this.VIRTUAL_HEIGHT / this.CHAR_SIZE | 0;
       this.PIXEL_SIZE = 1;
       this.ACTUAL_CHAR_SIZE = this.CHAR_SIZE * this.PIXEL_SIZE;
       this.SPRITE_SIZE_X = 16.0;
       this.SPRITE_SIZE_Y = 16.0;
       this.CAMERA_Z = this.VIRTUAL_HEIGHT / (Math.tan(this.ANGLE_OF_VIEW / 360 * Math.PI) * 2);
+      this.MEMORY_SIZE_NEEDED = TextPlane.calc_memory_size(this.TEXT_WIDTH,this.TEXT_HEIGHT);
 
       this.scale_ = 1.0;
-      this.offset_ = create$4();
+      this.offset_ = create$2();
 
       this.renderer = null;
       this.stats = null;
@@ -2678,7 +2640,7 @@ void main(){
       this.position = this.POS_CENTER;
     }
 
-    initConsole(textBitmap) {
+    initConsole({textBitmap,memory,offset}) {
 
       this.gl = document.querySelector('#c').getContext('webgl2');
       const gl = this.gl;
@@ -2701,7 +2663,7 @@ void main(){
       gl.bindTexture(gl.TEXTURE_2D, null);
 
       this.vscreen = new VScreen(this);
-      this.text = new TextPlane(gl2,this.VIRTUAL_WIDTH,this.VIRTUAL_HEIGHT,textBitmap);
+      this.text = new TextPlane({gl2:gl2,vwidth:this.VIRTUAL_WIDTH,vheight:this.VIRTUAL_HEIGHT,textBitmap:textBitmap,memory:memory,offset:offset});
       this.screen = new Screen(this,this.texture);
 
       window.addEventListener('resize', this.resize.bind(this));
@@ -2996,6 +2958,7 @@ void main(){
               dataHolder.data.size = dataHolder.data.anim[0].size;
               dataHolder.data.voxels = dataHolder.data.anim[0].voxels;
               if (dataHolder.data.palette.length === 0) {
+                  debugLog("(use default palette)");
                   dataHolder.data.palette = vox.defaultPalette;
               } else {
                   dataHolder.data.palette.unshift(dataHolder.data.palette[0]);
@@ -4105,6 +4068,7 @@ layout(location = 1) in uint point_attrib;
 
 // フラグメント・シェーダーに渡す変数
 flat out uint v_color_index;// 色 インデックス
+flat out uint v_pallete_index;
 flat out float v_diffuse;//  
 flat out vec3 v_ambient;
 flat out float v_alpha;
@@ -4119,6 +4083,7 @@ uniform mat4 u_worldViewProjection; // 変換行列
 uniform vec3 u_eye;
 uniform vec3 u_light;
 uniform vec3 u_ambient;
+
 
 void main() {
   
@@ -4139,14 +4104,17 @@ void main() {
   d(0x10u,0.,0.,-1.);
   d(0x20u,0.,0.,1.);
 
-  v_diffuse = clamp(diffuse, 0.0, 1.0);
-  v_color_index  = ( (point_attrib & 0x3ffu) + (u_attrib & 0x3ffu) ) & 0x3ffu;
+  v_diffuse = clamp(diffuse * ((256. - pos.z) / 256.0), 0.0, 1.0);
+ 
+  v_color_index  = point_attrib & 0xffu;
+  v_pallete_index = u_attrib & 0x1ffu;
+ 
   v_ambient = u_ambient;
   v_alpha = float((u_attrib & 0x3fc00u) >> 10u) / 255.0;
 
   gl_Position = pos;
   // セルサイズの計算（今のところかなりいい加減。。）
-  gl_PointSize = clamp((127.0 - pos.z) / 6.0 ,root2 * u_scale,128.0);
+  gl_PointSize = clamp((160.0 / pos.z) * u_scale * root2,0.0,128.0);
 }
 `;
 
@@ -4156,7 +4124,8 @@ precision highp int;
 
 
 // 頂点シェーダーからの情報
-flat in uint v_color_index;// 色]
+flat in uint v_color_index;// 色
+flat in uint v_pallete_index;// 色
 flat in float v_diffuse;
 flat in vec3 v_ambient;
 flat in float v_alpha;
@@ -4169,7 +4138,7 @@ uniform sampler2D u_pallete;
 out vec4 fcolor;
 
 void main() {
-  vec4 color = texelFetch(u_pallete,ivec2(int(v_color_index & 0xffu),int((v_color_index & 0x300u) >> 8u)),0) ;
+  vec4 color = texelFetch(u_pallete,ivec2(int(v_color_index),int(v_pallete_index)),0) ;
   color = vec4(color.rgb * v_diffuse,color.a);
   color = clamp(color + vec4(v_ambient,0.),0.0,1.0);
   fcolor = vec4(color.rgb, color.a * v_alpha);
@@ -4212,21 +4181,20 @@ void main() {
     {x:0,y:0,z:1,face:32}
   ];
 
+
   class VoxelModel {
-    constructor({gl,voxelData,offset = 0}){
-      this.offset = offset;
-      this.gl = gl;
-      
+    constructor(voxelData){
+     
       const points = [];
       const voxelMap = new Map();
       voxelData.voxels.forEach(d=>{
-        let p = create$4();
+        let p = create$2();
         p[0] = d.x - (voxelData.size.x >> 1);
         p[1] = d.y - (voxelData.size.y >> 1);
         p[2] = d.z - (voxelData.size.z >> 1);
         
-        let s = clone$4(p);
-        set$4(s,sign(s[0]),sign(s[1]),sign(s[2]));
+        let s = clone(p);
+        set(s,sign(s[0]),sign(s[1]),sign(s[2]));
         voxelMap.set('x' + p[0] + 'y' + p[1] + 'z' + p[2] , true );
         points.push({point:p,sign:s,color: d.colorIndex});
       });
@@ -4249,18 +4217,6 @@ void main() {
         this.points.push(p);
       }
 
-      this.buffer = new ArrayBuffer(this.points.length * 4 * 4);
-      this.endian = checkEndian();
-      const dv = new DataView(this.buffer);
-      for(const p of this.points){
-        dv.setFloat32(offset,p.point[0] ,this.endian);
-        dv.setFloat32(offset+4, p.point[1],this.endian);
-        dv.setFloat32(offset+8, p.point[2],this.endian);
-        dv.setUint32(offset+12,p.color | (p.openFlag << 16),this.endian);
-        offset += 16;
-      }
-      this.voxCount = this.points.length;
-
       const colorPallete = [];
 
       for(const color of voxelData.palette)
@@ -4270,27 +4226,67 @@ void main() {
         colorPallete.push(color.b);
         colorPallete.push(color.a);
       }
-      colorPallete[0] = 0;
-      colorPallete[1] = 0;
-      colorPallete[2] = 0;
-      colorPallete[3] = 0;
-      this.colorPallete = new Uint8Array(colorPallete);
+      // colorPallete[0] = 0;
+      // colorPallete[1] = 0;
+      // colorPallete[2] = 0;
+      // colorPallete[3] = 0;
 
+      this.colorPallete = new Uint8Array(colorPallete);
+      this.voxCount = this.points.length;
+      this.voxByteCount = this.voxCount * this.POINT_DATA_SIZE;
+      this.endian = checkEndian();
     }
 
-    // activate(){
-    //   this.gl2.activeTexture(this.gl2.TEXTURE0);
-    //   this.gl2.bindTexture(this.gl2.TEXTURE_2D,this.palleteTexture);
-    //   this.gl2.bindSampler(0,this.sampler);
-    //   this.gl2.uniform1i(0,0);
-    // }
-
-    static async loadFromUrls(voxDataArray){
-      for(const url of voxDataArray){
-        const parser = new vox.Parser();
-        const data = await parser.parse(url);
-        voxCharacters.push(new VoxCharacter(data));
+    setBuffer(offset,dv)
+    {
+      for(const p of this.points){
+        dv.setFloat32(offset,p.point[0] ,this.endian);
+        dv.setFloat32(offset + 4, p.point[1],this.endian);
+        dv.setFloat32(offset + 8, p.point[2],this.endian);
+        dv.setUint32(offset + 12,p.color | (p.openFlag << 16),this.endian);
+        offset += 16;
       }
+      return offset;
+    }
+
+    static async loadFromUrls(voxelUrls){
+      const voxelModels = {};
+      const parser = new vox.Parser();
+      const models = [];
+      let bufferLength = 0;
+      for(const url of voxelUrls){
+        const data = await parser.parse(url);
+        const voxelModel = new VoxelModel(data);
+        models.push(voxelModel);
+        bufferLength += voxelModel.voxByteCount;
+      }
+
+      const buffer = new ArrayBuffer(bufferLength);
+      const dv = new DataView(buffer);
+      const palletes = new Uint8Array(256 /* pallete */ * 4 /* rgba */ * models.length );
+      let offset = 0,poffset = 0,vindex = 0;
+
+      voxelModels.modelInfos = [];
+      voxelModels.palletes = palletes;
+      voxelModels.buffer = buffer;
+
+
+      for(let i = 0;i < models.length;++i){
+        const data = models[i];
+        voxelModels.modelInfos.push(
+          {
+            index:i,
+            vindex:vindex,
+            count:data.voxCount
+          }
+        );
+        offset = data.setBuffer(offset,dv);
+        vindex += data.voxCount;
+        for(let pi = 0;pi < data.colorPallete.length;++pi){
+          palletes[poffset++] = data.colorPallete[pi];
+        }
+      }
+      return voxelModels;
     }
   }
 
@@ -4301,65 +4297,56 @@ void main() {
   const VOX_OBJ_POS_SIZE = 3 * SIZE_PARAM; // vec3
   const VOX_OBJ_SCALE = VOX_OBJ_POS + VOX_OBJ_POS_SIZE;
   const VOX_OBJ_SCALE_SIZE = SIZE_PARAM; // float
-  // アトリビュートのビット構成
-  // v0nn nnnn nnnn 00aa aaaa aacc cccc cccc
-  // v: 1 ... 表示 0 ... 非表示
-  // n: object No (0-4095)
-  // a: alpha (0-255)
-  // c: color index (0-4095)
   const VOX_OBJ_AXIS = VOX_OBJ_SCALE + VOX_OBJ_SCALE_SIZE;
   const VOX_OBJ_AXIS_SIZE = SIZE_PARAM * 3; // vec3
   const VOX_OBJ_ANGLE = VOX_OBJ_AXIS + VOX_OBJ_AXIS_SIZE;
   const VOX_OBJ_ANGLE_SIZE = SIZE_PARAM * 1; // float
   const VOX_OBJ_ATTRIB = VOX_OBJ_ANGLE+ VOX_OBJ_ANGLE_SIZE;
   const VOX_OBJ_ATTRIB_SIZE = SIZE_PARAM; // uint
+  // アトリビュートのビット構成
+  // v00n nnnn nnnn 00aa aaaa aadc cccc cccc
+  // v: 1 ... 表示 0 ... 非表示
+  // n: object No (0-511)
+  // a: alpha (0-255)
+  // c: color pallet index (0-511)
+  // d: use default pallet;
   const VOX_MEMORY_STRIDE =  (VOX_OBJ_POS_SIZE + VOX_OBJ_SCALE_SIZE + VOX_OBJ_AXIS_SIZE + VOX_OBJ_ANGLE_SIZE + VOX_OBJ_ATTRIB_SIZE);
-  const VOX_OBJ_MAX = 8;
-
-  const voxScreenMemory = new ArrayBuffer(
-    VOX_MEMORY_STRIDE * VOX_OBJ_MAX
-  );
+  const VOX_OBJ_MAX = 64;
 
   const parser = new vox.Parser();
-  async function loadVox(path){
-    const models = await parser.parse(path);
-    return models;
-  }
 
-  function setRotate(mat3$$1 ,angle$$1,  axis){
+  function setRotate(mat3 ,angle,  axis){
 
-    const s = Math.sin(angle$$1);
-    const c = Math.cos(angle$$1);
+    const s = Math.sin(angle);
+    const c = Math.cos(angle);
     const r = 1.0 - c;
 
-    mat3$$1[0] = axis[0] * axis[0] * r + c; 
-    mat3$$1[1] = axis[1] * axis[0] * r + axis[2] * s;
-    mat3$$1[2] = axis[2] * axis[0] * r - axis[1] * s;
-    mat3$$1[3] = axis[0] * axis[1] * r - axis[2] * s;
-    mat3$$1[4] = axis[1] * axis[1] * r + c;
-    mat3$$1[5] = axis[2] * axis[1] * r + axis[0] * s;
-    mat3$$1[6] = axis[0] * axis[2] * r + axis[1] * s;
-    mat3$$1[7] = axis[1] * axis[2] * r - axis[0] * s;
-    mat3$$1[8] = axis[2] * axis[2] * r + c;
-    return mat3$$1;
+    mat3[0] = axis[0] * axis[0] * r + c; 
+    mat3[1] = axis[1] * axis[0] * r + axis[2] * s;
+    mat3[2] = axis[2] * axis[0] * r - axis[1] * s;
+    mat3[3] = axis[0] * axis[1] * r - axis[2] * s;
+    mat3[4] = axis[1] * axis[1] * r + c;
+    mat3[5] = axis[2] * axis[1] * r + axis[0] * s;
+    mat3[6] = axis[0] * axis[2] * r + axis[1] * s;
+    mat3[7] = axis[1] * axis[2] * r - axis[0] * s;
+    mat3[8] = axis[2] * axis[2] * r + c;
+    return mat3;
   }
 
 
   class Vox extends Node {
-    constructor({ gl2, data,visible = true}) {
+    constructor({ gl2, voxelModels,visible = true,memory,offset}) {
       super();
       // webgl コンテキストの保存
       const gl = this.gl = gl2.gl;
       this.gl2 = gl2;
+
+      //let points = new DataView(new ArrayBuffer(4 * 4 * data.voxels.length));
       this.endian = checkEndian();
-      this.voxScreenMemory = new DataView(voxScreenMemory);
-      this.voxScreenBuffer = new Uint8Array(voxScreenMemory);
-      this.voxBuffer = new Uint8Array(voxScreenMemory);
-
-      this.voxelModel = new VoxelModel({gl:gl,voxelData:data});
-
-      this.voxCount = this.voxelModel.voxCount;
-      this.voxBuffer = this.voxelModel.buffer;
+      this.voxScreenMemory = new DataView(memory,offset,this.MEMORY_SIZE_NEEDED);
+      //his.voxScreenBuffer = new Uint8Array(memory,offset,this.MEMORY_SIZE_NEEDED);
+      this.voxelModels = voxelModels;
+      this.voxelBuffer = this.voxelModels.buffer;
         
       // スプライト面の表示・非表示
       this.visible = visible;
@@ -4380,7 +4367,7 @@ void main() {
 
       gl.bindBuffer(gl.ARRAY_BUFFER, this.buffer);
       // VBOにスプライトバッファの内容を転送
-      gl.bufferData(gl.ARRAY_BUFFER, this.voxBuffer, gl.DYNAMIC_DRAW);
+      gl.bufferData(gl.ARRAY_BUFFER, this.voxelBuffer, gl.DYNAMIC_DRAW);
 
       // 属性ロケーションIDの取得と保存
       this.positionLocation = 0;
@@ -4415,28 +4402,28 @@ void main() {
       this.attribLocation = gl.getUniformLocation(program,'u_attrib');
       this.scaleLocation = gl.getUniformLocation(program,'u_scale');
       this.rotateLocation = gl.getUniformLocation(program,'u_rotate');
-      this.rotate = create$2();
+      this.rotate = create();
       this.objPositionLocation = gl.getUniformLocation(program,'u_obj_position');
 
 
       // ワールド・ビュー変換行列
       this.viewProjectionLocation = gl.getUniformLocation(program,'u_worldViewProjection');
-      this.viewProjection = create$3();
+      this.viewProjection = create$1();
       this.eyeLocation = gl.getUniformLocation(program,'u_eye');
-      this.eye = create$4();
-      set$4(this.eye,0,0,1);
+      this.eye = create$2();
+      set(this.eye,0,0,1);
       
 
       // 平行光源の方向ベクトル
       
       this.lightLocation = gl.getUniformLocation(program,'u_light');
-      this.lightDirection = create$4();
-      set$4(this.lightDirection,0,0,1);
+      this.lightDirection = create$2();
+      set(this.lightDirection,0,0,1);
 
       // 環境光
-      this.ambient = create$4();
+      this.ambient = create$2();
       this.ambientLocation = gl.getUniformLocation(program,'u_ambient');
-      set$4(this.ambient,0.2,0.2,0.2);
+      set(this.ambient,0.2,0.2,0.2);
 
       // カラーパレット
       this.palleteTexture = gl.createTexture();
@@ -4444,7 +4431,7 @@ void main() {
       
       //gl.pixelStorei(gl.UNPACK_ALIGNMENT, 1);
       gl.bindTexture(gl.TEXTURE_2D, this.palleteTexture);
-      gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 256, 1, 0, gl.RGBA, gl.UNSIGNED_BYTE, this.voxelModel.colorPallete);
+      gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 256, this.voxelModels.modelInfos.length, 0, gl.RGBA, gl.UNSIGNED_BYTE, this.voxelModels.palletes);
       gl.bindTexture(gl.TEXTURE_2D, null);
 
       this.sampler = gl.createSampler();
@@ -4452,20 +4439,17 @@ void main() {
       gl.samplerParameteri(this.sampler, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
 
       this.count = 0;
-      const memory = this.voxScreenMemory;
-      let px = -70,count=1;
+      const vmemory = this.voxScreenMemory;
+      let count=1;
 
-      for(let offset = 0,eo = memory.byteLength;offset < eo;offset += VOX_MEMORY_STRIDE){
-        memory.setUint32(offset + VOX_OBJ_ATTRIB,0x8003fc00 | count++ ,this.endian);
-        memory.setFloat32(offset + VOX_OBJ_SCALE,1.0 + Math.random(),this.endian);
-        memory.setFloat32(offset + VOX_OBJ_POS,px,this.endian);
-        memory.setFloat32(offset + VOX_OBJ_ANGLE,count,this.endian);
-        px += 20;
+      for(let offset = 0,eo = vmemory.byteLength;offset < eo;offset += VOX_MEMORY_STRIDE){
+        vmemory.setUint32(offset + VOX_OBJ_ATTRIB,0x8003fc00 | count++ | ((count & 0x3) << 20),this.endian);
+        vmemory.setFloat32(offset + VOX_OBJ_SCALE,Math.random() * 1.5,this.endian);
+        vmemory.setFloat32(offset + VOX_OBJ_POS,Math.random() * 160 - 80,this.endian);
+        vmemory.setFloat32(offset + VOX_OBJ_POS + SIZE_PARAM,Math.random() * 100 - 50,this.endian);
+        vmemory.setFloat32(offset + VOX_OBJ_POS + SIZE_PARAM * 2,Math.random() * 192 - 128,this.endian);
+        vmemory.setFloat32(offset + VOX_OBJ_ANGLE,count,this.endian);
       }
-  //    for(let offset = 0,eo = this.voxScreenMemory.byteLength;offset < eo;offset += VOX_MEMORY_STRIDE){
-  //      sv.setFloat32()
-  //    }
-
     }
 
     // スプライトを描画
@@ -4490,7 +4474,7 @@ void main() {
       gl.bindSampler(0,this.sampler);
       gl.uniform1i(this.palleteLocation,0);
 
-      multiply$3(this.viewProjection, screen.uniforms.viewProjection, this.worldMatrix);
+      multiply(this.viewProjection, screen.uniforms.viewProjection, this.worldMatrix);
       gl.uniformMatrix4fv(this.viewProjectionLocation, false,this.viewProjection);
       gl.uniform3fv(this.eyeLocation, this.eye);
       gl.uniform3fv(this.lightLocation, this.lightDirection);
@@ -4499,40 +4483,49 @@ void main() {
 
       for(let offset = 0,eo = memory.byteLength;offset < eo;offset += VOX_MEMORY_STRIDE){
 
-        // 表示ビットが立っていたら表示      
-        if(memory.getUint32(offset + VOX_OBJ_ATTRIB,this.endian) & 0x80000000){
+        // 表示ビットが立っていたら表示    
+        let attribute = memory.getUint32(offset + VOX_OBJ_ATTRIB,this.endian);  
+        if( attribute & 0x80000000){
 
           // uniform変数を更新
-          let axis = new Float32Array(memory.buffer,offset + VOX_OBJ_AXIS,3);
-          set$4(axis,1,-1,-1);
+          let axis = new Float32Array(memory.buffer,memory.byteOffset + offset + VOX_OBJ_AXIS,3);
+          set(axis,1,-1,-1);
           normalize(axis,axis);
           let c = memory.getFloat32(offset + VOX_OBJ_ANGLE,endian) + 0.04;
           memory.setFloat32(offset + VOX_OBJ_ANGLE,c,endian);
           setRotate(this.rotate,memory.getFloat32(offset + VOX_OBJ_ANGLE,endian),axis);
 
-          gl.uniform1ui(this.attribLocation,memory.getUint32(offset + VOX_OBJ_ATTRIB,endian));
           gl.uniform1f(this.scaleLocation,memory.getFloat32(offset + VOX_OBJ_SCALE,endian));
           gl.uniformMatrix3fv(this.rotateLocation,false,this.rotate);
-          gl.uniform3fv(this.objPositionLocation,new Float32Array(memory.buffer,offset + VOX_OBJ_POS,3));
+          gl.uniform3fv(this.objPositionLocation,new Float32Array(memory.buffer,memory.byteOffset + offset + VOX_OBJ_POS,3));
 
           // UBO
           // gl.bindBuffer(gl.UNIFORM_BUFFER,this.objAttrBuffer);
           // gl.bufferSubData(gl.UNIFORM_BUFFER,0,this.voxScreenBuffer,offset,VOX_MEMORY_STRIDE);
           // gl.bindBuffer(gl.UNIFORM_BUFFER,null);
 
+          const objInfo = this.voxelModels.modelInfos[(attribute & 0x1ff00000) >> 20];
+          if(attribute & 0x20000){
+            // use default pallet
+            attribute = (attribute & 0b11111111111111111111111000000000) | objInfo.index;
+            memory.setUint32(offset + VOX_OBJ_ATTRIB,attribute,endian);
+          }
+
+          gl.uniform1ui(this.attribLocation,memory.getUint32(offset + VOX_OBJ_ATTRIB,endian));
 
       
           // 描画命令の発行
-          gl.drawArrays(gl.POINTS, 0,this.voxelModel.voxCount);
+          gl.drawArrays(gl.POINTS, objInfo.vindex,objInfo.count);
 
         }
 
       }
-
-          this.count += 0.04;
+      this.count += 0.04;
     }
 
   }
+
+  Vox.prototype.MEMORY_SIZE_NEEDED = VOX_MEMORY_STRIDE * VOX_OBJ_MAX;
 
   // let display = true;
   let play = false;
@@ -4557,14 +4550,98 @@ void main() {
     const textBitmap = new Uint8Array(
       await fetch('./font.bin')
         .then(r=>r.arrayBuffer()));
-    con.initConsole(textBitmap);
+    
+    const memory = new ArrayBuffer(con.MEMORY_SIZE_NEEDED + Vox.prototype.MEMORY_SIZE_NEEDED);
+
+    let offset = 0;
+    con.initConsole({textBitmap:textBitmap,memory:memory,offset:offset});
+    offset += con.MEMORY_SIZE_NEEDED;
+    const gl = con.gl;
     const gl2 = con.gl2;
 
     //const voxmodel = new Vox({gl2:gl2,data:await loadVox('myship.bin')});
-    const voxmodel = new Vox({gl2:gl2,data:await loadVox('./q1.bin')});
+    const voxelModels = await VoxelModel.loadFromUrls([
+      'myship.bin',
+      'q.bin',
+      'q1.bin',
+      'chr.bin'
+    ]);
+
+    const vox = new Vox({gl2:gl2,voxelModels:voxelModels,memory:memory,offset:offset});
 
     //const myship = new SceneNode(model);
-    con.vscreen.appendScene(voxmodel);
+    con.vscreen.appendScene(vox);
+
+    // cube.source.translation[2] = 0;
+    // //m4.scale(cube.localMatrix,[20,20,20],cube.localMatrix);
+    // cube.source.scale = vec3.fromValues(50,50,50);
+    // con.vscreen.appendScene(cube);
+
+    // const cube2 = new SceneNode(model);
+    // cube2.source.translation = vec3.fromValues(2,0,0);
+
+    // cube2.source.scale = vec3.fromValues(0.5,0.5,0.5);
+    
+    // con.vscreen.appendScene(cube2,cube);
+
+    
+    // WebAssembly側のメモリ
+    let mem ;
+
+    // コンパイル時に引き渡すオブジェクト
+    // envというプロパティにエクスポートしたいものを入れる
+
+    const exportToWasm = {
+      env:{
+        consoleLogString:consoleLogString,
+        consoleValue:consoleValue,
+        acos:Math.acos,
+        acosh:Math.acosh,
+        asin:Math.asin,
+        asinh:Math.asinh,
+        atan:Math.atan,
+        atanh:Math.atanh,
+        atan2:Math.atan2,
+        cbrt:Math.cbrt,
+        ceil:Math.ceil,
+        clz32:Math.clz32,
+        cos:Math.cos,
+        cosh:Math.cosh,
+        exp:Math.exp,
+        expm1:Math.expm1,
+        floor:Math.floor,
+        fround:Math.fround,
+        imul:Math.imul,
+        log:Math.log,
+        log1p:Math.log1p,
+        log10:Math.log10,
+        log2:Math.log2,
+        pow:Math.pow,
+        round:Math.round,
+        sign:Math.sign,
+        sin:Math.sin,
+        sinh:Math.sinh,
+        sqrt:Math.sqrt,
+        tan:Math.tan,
+        tanh:Math.tanh
+       }
+    };
+
+    function consoleValue(v){
+      console.log(v);
+    }
+    
+    function consoleLogString(index) {
+
+      // 先頭の4byte(uint32)に文字列の長さが入っている
+      const length = mem.getUint32(index,true);
+
+      // 文字列は長さの後に続けて入っている
+      const array = new Uint16Array(mem.buffer,index + 4,length);
+      const str = new TextDecoder('utf-16').decode(array);
+      //const str = String.fromCharCode(...array);
+      alert(str);
+    }
     
     // WebAssembly.instantiateStreaming(fetch("./wa/test.wasm"),exportToWasm).then(mod => {
     //   const test = mod.instance.exports.test;
@@ -4622,3 +4699,4 @@ void main() {
   // }
 
 }());
+//# sourceMappingURL=main.js.map

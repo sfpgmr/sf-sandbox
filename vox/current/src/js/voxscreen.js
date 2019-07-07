@@ -276,7 +276,7 @@ const VOX_OBJ_ATTRIB_SIZE = SIZE_PARAM; // uint
 // c: color pallet index (0-511)
 // d: use default pallet;
 const VOX_MEMORY_STRIDE =  (VOX_OBJ_POS_SIZE + VOX_OBJ_SCALE_SIZE + VOX_OBJ_AXIS_SIZE + VOX_OBJ_ANGLE_SIZE + VOX_OBJ_ATTRIB_SIZE);
-const VOX_OBJ_MAX = 512;
+const VOX_OBJ_MAX = 64;
 
 const parser = new vox.Parser();
 export async function loadVox(path){

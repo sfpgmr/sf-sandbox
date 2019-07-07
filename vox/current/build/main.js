@@ -314,46 +314,6 @@
   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
   THE SOFTWARE. */
 
-  /* Copyright (c) 2015, Brandon Jones, Colin MacKenzie IV.
-
-  Permission is hereby granted, free of charge, to any person obtaining a copy
-  of this software and associated documentation files (the "Software"), to deal
-  in the Software without restriction, including without limitation the rights
-  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-  copies of the Software, and to permit persons to whom the Software is
-  furnished to do so, subject to the following conditions:
-
-  The above copyright notice and this permission notice shall be included in
-  all copies or substantial portions of the Software.
-
-  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-  THE SOFTWARE. */
-
-  /* Copyright (c) 2015, Brandon Jones, Colin MacKenzie IV.
-
-  Permission is hereby granted, free of charge, to any person obtaining a copy
-  of this software and associated documentation files (the "Software"), to deal
-  in the Software without restriction, including without limitation the rights
-  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-  copies of the Software, and to permit persons to whom the Software is
-  furnished to do so, subject to the following conditions:
-
-  The above copyright notice and this permission notice shall be included in
-  all copies or substantial portions of the Software.
-
-  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-  THE SOFTWARE. */
-
   /**
    * 3x3 Matrix
    * @module mat3
@@ -1539,13 +1499,6 @@
       return a;
     };
   })();
-
-  /**
-   * @fileoverview gl-matrix - High performance matrix and vector operations
-   * @author Brandon Jones
-   * @author Colin MacKenzie IV
-   * @version 2.4.0
-   */
 
   // WebGL 2.0 APIをラッピングするクラス
 
@@ -3005,6 +2958,7 @@ void main(){
               dataHolder.data.size = dataHolder.data.anim[0].size;
               dataHolder.data.voxels = dataHolder.data.anim[0].voxels;
               if (dataHolder.data.palette.length === 0) {
+                  debugLog("(use default palette)");
                   dataHolder.data.palette = vox.defaultPalette;
               } else {
                   dataHolder.data.palette.unshift(dataHolder.data.palette[0]);
@@ -4357,7 +4311,7 @@ void main() {
   // c: color pallet index (0-511)
   // d: use default pallet;
   const VOX_MEMORY_STRIDE =  (VOX_OBJ_POS_SIZE + VOX_OBJ_SCALE_SIZE + VOX_OBJ_AXIS_SIZE + VOX_OBJ_ANGLE_SIZE + VOX_OBJ_ATTRIB_SIZE);
-  const VOX_OBJ_MAX = 512;
+  const VOX_OBJ_MAX = 64;
 
   const parser = new vox.Parser();
 
@@ -4602,6 +4556,7 @@ void main() {
     let offset = 0;
     con.initConsole({textBitmap:textBitmap,memory:memory,offset:offset});
     offset += con.MEMORY_SIZE_NEEDED;
+    const gl = con.gl;
     const gl2 = con.gl2;
 
     //const voxmodel = new Vox({gl2:gl2,data:await loadVox('myship.bin')});
@@ -4616,6 +4571,77 @@ void main() {
 
     //const myship = new SceneNode(model);
     con.vscreen.appendScene(vox);
+
+    // cube.source.translation[2] = 0;
+    // //m4.scale(cube.localMatrix,[20,20,20],cube.localMatrix);
+    // cube.source.scale = vec3.fromValues(50,50,50);
+    // con.vscreen.appendScene(cube);
+
+    // const cube2 = new SceneNode(model);
+    // cube2.source.translation = vec3.fromValues(2,0,0);
+
+    // cube2.source.scale = vec3.fromValues(0.5,0.5,0.5);
+    
+    // con.vscreen.appendScene(cube2,cube);
+
+    
+    // WebAssembly側のメモリ
+    let mem ;
+
+    // コンパイル時に引き渡すオブジェクト
+    // envというプロパティにエクスポートしたいものを入れる
+
+    const exportToWasm = {
+      env:{
+        consoleLogString:consoleLogString,
+        consoleValue:consoleValue,
+        acos:Math.acos,
+        acosh:Math.acosh,
+        asin:Math.asin,
+        asinh:Math.asinh,
+        atan:Math.atan,
+        atanh:Math.atanh,
+        atan2:Math.atan2,
+        cbrt:Math.cbrt,
+        ceil:Math.ceil,
+        clz32:Math.clz32,
+        cos:Math.cos,
+        cosh:Math.cosh,
+        exp:Math.exp,
+        expm1:Math.expm1,
+        floor:Math.floor,
+        fround:Math.fround,
+        imul:Math.imul,
+        log:Math.log,
+        log1p:Math.log1p,
+        log10:Math.log10,
+        log2:Math.log2,
+        pow:Math.pow,
+        round:Math.round,
+        sign:Math.sign,
+        sin:Math.sin,
+        sinh:Math.sinh,
+        sqrt:Math.sqrt,
+        tan:Math.tan,
+        tanh:Math.tanh
+       }
+    };
+
+    function consoleValue(v){
+      console.log(v);
+    }
+    
+    function consoleLogString(index) {
+
+      // 先頭の4byte(uint32)に文字列の長さが入っている
+      const length = mem.getUint32(index,true);
+
+      // 文字列は長さの後に続けて入っている
+      const array = new Uint16Array(mem.buffer,index + 4,length);
+      const str = new TextDecoder('utf-16').decode(array);
+      //const str = String.fromCharCode(...array);
+      alert(str);
+    }
     
     // WebAssembly.instantiateStreaming(fetch("./wa/test.wasm"),exportToWasm).then(mod => {
     //   const test = mod.instance.exports.test;
