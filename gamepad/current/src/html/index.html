@@ -1,53 +1,136 @@
 ﻿<!DOCTYPE html>
 <html vocab="http://schema.org" lang="ja">
+
 <head>
-<!-- Global site tag (gtag.js) - Google Analytics -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=UA-15457703-9"></script>
-<script>
-  if (!window.location.hostname.match(/localhost/)) {
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-  gtag('config', 'UA-15457703-9');
-  }
-</script>
-  <title>ゲーム用入力設定画面の作成</title>
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-15457703-9"></script>
+  <script>
+    if (!window.location.hostname.match(/localhost/)) {
+      window.dataLayer = window.dataLayer || [];
+      function gtag() { dataLayer.push(arguments); }
+      gtag('js', new Date());
+      gtag('config', 'UA-15457703-9');
+    }
+  </script>
+  <title>ゲーム用入力クラスの作成</title>
 
   <meta charset="utf-8" />
   <meta name="description" content="ゲーム用入力設定画面の作成" />
   <meta name="keywords" content="game,controller" />
   <meta name="author" content="sfpgmr" />
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/3.0.2/normalize.min.css" />
-  <style>
-    body {
-      margin: 0;
-      padding: 0;
-      overflow: hidden;
-    }
-
-    #svg {
-      display: none;
-    }
-
-    #stat {
-      position: absolute;
-      color:white;
-      font-size:20px;
-    }
-  </style>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/siimple@3.3.1/dist/siimple.min.css">
 </head>
-<body>
+
+<body class="siimple-content siimple-content--medium">
+  <div class="siimple-box siimple-box--orange">
+    <h1 class="siimple-box-title">ゲーム用入力クラスの作成</h1>
+    <div class="siimple-box-detail">
+      通常はキーボード入力ですが、ゲームパッドをUSBポートに刺すとそちらに切り替わります。抜くとキーボード入力に戻ります。
+    </div>
+  </div>
+  <div class="siimple-table">
+    <div class="siimple-table-header">
+      <div class="siimple-table-row">
+        <div class="siimple-table-cell">ボタン</div>
+        <div class="siimple-table-cell">キー</div>
+        <div class="siimple-table-cell">ステータス</div>
+      </div>
+    </div>
+    <div class="siimple-table-body">
+      <div class="siimple-table-row">
+        <div class="siimple-table-cell">
+          up
+        </div>
+        <div class="siimple-table-cell" id="key-up"></div>
+        <div class="siimple-table-cell" id="up"></div>
+      </div>
+    </div>
+    <div class="siimple-table-body">
+      <div class="siimple-table-row">
+        <div class="siimple-table-cell">
+          down
+        </div>
+        <div class="siimple-table-cell" id="key-down"></div>
+        <div class="siimple-table-cell" id="down"></div>
+      </div>
+    </div>
+    <div class="siimple-table-body">
+      <div class="siimple-table-row">
+        <div class="siimple-table-cell">
+          left
+        </div>
+        <div class="siimple-table-cell" id="key-left"></div>
+        <div class="siimple-table-cell" id="left"></div>
+      </div>
+    </div>
+    <div class="siimple-table-body">
+      <div class="siimple-table-row">
+        <div class="siimple-table-cell">
+          right
+        </div>
+        <div class="siimple-table-cell" id="key-right"></div>
+        <div class="siimple-table-cell" id="right"></div>
+      </div>
+    </div>
+    <div class="siimple-table-body">
+      <div class="siimple-table-row">
+        <div class="siimple-table-cell">
+          start
+        </div>
+        <div class="siimple-table-cell" id="key-start"></div>
+        <div class="siimple-table-cell" id="start"></div>
+      </div>
+    </div>
+    <div class="siimple-table-body">
+      <div class="siimple-table-row">
+        <div class="siimple-table-cell">
+          back
+        </div>
+        <div class="siimple-table-cell" id="key-back"></div>
+        <div class="siimple-table-cell" id="back"></div>
+      </div>
+    </div>
+    <div class="siimple-table-body">
+      <div class="siimple-table-row">
+        <div class="siimple-table-cell">
+          shoot1
+        </div>
+        <div class="siimple-table-cell" id="key-shoot1"></div>
+        <div class="siimple-table-cell" id="shoot1"></div>
+      </div>
+    </div>
+    <div class="siimple-table-body">
+      <div class="siimple-table-row">
+        <div class="siimple-table-cell">
+          shoot2
+        </div>
+        <div class="siimple-table-cell" id="key-shoot2"></div>
+        <div class="siimple-table-cell" id="shoot2"></div>
+      </div>
+    </div>
+    <div class="siimple-table-body">
+      <div class="siimple-table-row">
+        <div class="siimple-table-cell">
+          shoot3
+        </div>
+        <div class="siimple-table-cell" id="key-shoot3"></div>
+        <div class="siimple-table-cell" id="shoot3"></div>
+      </div>
+    </div>
+    <div class="siimple-table-body">
+      <div class="siimple-table-row">
+        <div class="siimple-table-cell">
+          shoot4
+        </div>
+        <div class="siimple-table-cell" id="key-shoot4"></div>
+        <div class="siimple-table-cell" id="shoot4"></div>
+      </div>
+    </div>
+
+  </div>
+
   <script src="./index.js"></script>
-  <div>up: <span id="up"></span></div>
-  <div>down: <span id="down"></span></div>
-  <div>left: <span id="left"></span></div>
-  <div>right: <span id="right"></span></div>
-  <div>start: <span id="start"></span></div>
-  <div>back: <span id="back"></span></div>
-  <div>shoot1: <span id="shoot1"></span></div>
-  <div>shoot2: <span id="shoot2"></span></div>
-  <div>shoot3: <span id="shoot3"></span></div>
-  <div>shoot4: <span id="shoot4"></span></div>
 </body>
+
 </html>

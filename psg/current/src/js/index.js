@@ -23,51 +23,18 @@
 // リリース時にはコメントアウトすること
 
 "use strict";
-import {Key,BasicDevice,GamePad,BasicInput} from './input.js';
 
 // メイン
 window.addEventListener('load', async ()=>{
-
-  const basicInput = new BasicInput();
-
-  function step(){
-    requestAnimationFrame(step);
-    basicInput.update();
-    const qs = document.querySelector.bind(document);
-    qs('#up').innerHTML = basicInput.up.pressed;
-    qs('#down').innerHTML = basicInput.down.pressed;
-    qs('#left').innerHTML = basicInput.left.pressed;
-    qs('#right').innerHTML = basicInput.right.pressed;
-    qs('#start').innerHTML = basicInput.start.pressed;
-    qs('#back').innerHTML = basicInput.back.pressed;
-    qs('#shoot1').innerHTML = basicInput.shoot1.pressed;
-    qs('#shoot2').innerHTML = basicInput.shoot2.pressed;
-    qs('#shoot3').innerHTML = basicInput.shoot3.pressed;
-    qs('#shoot4').innerHTML = basicInput.shoot4.pressed;
-    qs('#key-up').innerHTML = basicInput.up.name;
-    qs('#key-down').innerHTML = basicInput.down.name;
-    qs('#key-left').innerHTML = basicInput.left.name;
-    qs('#key-right').innerHTML = basicInput.right.name;
-    qs('#key-start').innerHTML = basicInput.start.name;
-    qs('#key-back').innerHTML = basicInput.back.name;
-    qs('#key-shoot1').innerHTML = basicInput.shoot1.name;
-    qs('#key-shoot2').innerHTML = basicInput.shoot2.name;
-    qs('#key-shoot3').innerHTML = basicInput.shoot3.name;
-    qs('#key-shoot4').innerHTML = basicInput.shoot4.name;
-  }
-
-  requestAnimationFrame(step);
-
-
 
   var WIDTH = window.innerWidth , HEIGHT = window.innerHeight;
 
   window.addEventListener( 'resize', ()=>{
         WIDTH = window.innerWidth;
         HEIGHT = window.innerHeight;
+				renderer.setSize(WIDTH,HEIGHT);
+        composer.setSize(WIDTH,HEIGHT)
   }
   , false );
-
-  basicInput.bind();
   
 });

@@ -1,10 +1,11 @@
-{
+export default {
   "buildCommands":[
-    "rollup -c ./rollup.config.js"
+    "make run"
   ],
   "copyFiles":[
   "./current/src/html/index.html",
-  "./current/build/index.js"
+  "./current/build/index.js",
+  "./current/build/psg.wasm"
   ],
   "symlinkFiles":[],
   "schema":{
