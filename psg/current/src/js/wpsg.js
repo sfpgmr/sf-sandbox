@@ -1,4 +1,4 @@
-class PSG extends AudioWorkletProcessor {
+class WSG extends AudioWorkletProcessor {
   constructor(options){
     super();
     this.options = options;
@@ -74,4 +74,4 @@ class PSG extends AudioWorkletProcessor {
       return true;
   }
 }
-registerProcessor("PSG", PSG);
+registerProcessor("WSG", PSG);
