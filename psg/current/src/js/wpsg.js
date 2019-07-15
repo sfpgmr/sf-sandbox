@@ -2,15 +2,16 @@ class WSG extends AudioWorkletProcessor {
   constructor(options){
     super();
     this.options = options;
+
     if(options.processorOptions){
+      this.memory = new WebAssembly.Memory({initial:1,maximum:1});
       const userOptions = options.processorOptions;
       
-      (!userOptions.clock) && (userOptions.clock = 3580000);
       (!userOptions.sampleRate) && (userOptions.sampleRate = sampleRate);
 
       if(userOptions.wasmBinary){
         const module = new WebAssembly.Module(userOptions.wasmBinary);
-        const instance = new WebAssembly.Instance(module, {});
+        const instance = new WebAssembly.Instance(module, {env:{memory:this.memory}});
         this.module = instance.exports;
         this.module.init(userOptions.clock,userOptions.sampleRate);
         this.module.reset();
