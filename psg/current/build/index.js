@@ -1165,21 +1165,21 @@
   // ドラムサンプル
 
   const drumSamples = [
-    { name: 'bass1', path: '../../common/bd1_lz.json' }, // @9
-    { name: 'bass2', path: '../../common/bd2_lz.json' }, // @10
-    { name: 'closed', path: '../../common/closed_lz.json' }, // @11
-    { name: 'cowbell', path: '../../common/cowbell_lz.json' },// @12
-    { name: 'crash', path: '../../common/crash_lz.json' },// @13
-    { name: 'handclap', path: '../../common/handclap_lz.json' }, // @14
-    { name: 'hitom', path: '../../common/hitom_lz.json' },// @15
-    { name: 'lowtom', path: '../../common/lowtom_lz.json' },// @16
-    { name: 'midtom', path: '../../common/midtom_lz.json' },// @17
-    { name: 'open', path: '../../common/open_lz.json' },// @18
-    { name: 'ride', path: '../../common/ride_lz.json' },// @19
-    { name: 'rimshot', path: '../../common/rimshot_lz.json' },// @20
-    { name: 'sd1', path: '../../common/sd1_lz.json' },// @21
-    { name: 'sd2', path: '../../common/sd2_lz.json' },// @22
-    { name: 'tamb', path: '../../common/tamb_lz.json' }// @23
+    { name: 'bass1', path: '../../common/sample/bd1_lz.json' }, // @9
+    { name: 'bass2', path: '../../common/sample/bd2_lz.json' }, // @10
+    { name: 'closed', path: '../../common/sample/closed_lz.json' }, // @11
+    { name: 'cowbell', path: '../../common/sample/cowbell_lz.json' },// @12
+    { name: 'crash', path: '../../common/sample/crash_lz.json' },// @13
+    { name: 'handclap', path: '../../common/sample/handclap_lz.json' }, // @14
+    { name: 'hitom', path: '../../common/sample/hitom_lz.json' },// @15
+    { name: 'lowtom', path: '../../common/sample/lowtom_lz.json' },// @16
+    { name: 'midtom', path: '../../common/sample/midtom_lz.json' },// @17
+    { name: 'open', path: '../../common/sample/open_lz.json' },// @18
+    { name: 'ride', path: '../../common/sample/ride_lz.json' },// @19
+    { name: 'rimshot', path: '../../common/sample/rimshot_lz.json' },// @20
+    { name: 'sd1', path: '../../common/sample/sd1_lz.json' },// @21
+    { name: 'sd2', path: '../../common/sample/sd2_lz.json' },// @22
+    { name: 'tamb', path: '../../common/sample/tamb_lz.json' }// @23
   ];
 
   async function readDrumSample(audioctx) {
