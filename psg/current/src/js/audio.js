@@ -9,7 +9,6 @@ import Syntax from "./Syntax.js";
 import MMLParser from "./MMLParser.js";
 import DefaultParams from "./DefaultParams.js";
 import lzbase62 from "./lzbase62.min.js";
-import sfg from './global.js'; 
 
 // var fft = new FFT(4096, 44100);
 const BUFFER_SIZE = 1024;
@@ -147,57 +146,35 @@ function createPeriodicWaveFromWaves(audioctx) {
 // ドラムサンプル
 
 const drumSamples = [
-  { name: 'bass1', path: 'base/audio/bd1_lz.json' }, // @9
-  { name: 'bass2', path: 'base/audio/bd2_lz.json' }, // @10
-  { name: 'closed', path: 'base/audio/closed_lz.json' }, // @11
-  { name: 'cowbell', path: 'base/audio/cowbell_lz.json' },// @12
-  { name: 'crash', path: 'base/audio/crash_lz.json' },// @13
-  { name: 'handclap', path: 'base/audio/handclap_lz.json' }, // @14
-  { name: 'hitom', path: 'base/audio/hitom_lz.json' },// @15
-  { name: 'lowtom', path: 'base/audio/lowtom_lz.json' },// @16
-  { name: 'midtom', path: 'base/audio/midtom_lz.json' },// @17
-  { name: 'open', path: 'base/audio/open_lz.json' },// @18
-  { name: 'ride', path: 'base/audio/ride_lz.json' },// @19
-  { name: 'rimshot', path: 'base/audio/rimshot_lz.json' },// @20
-  { name: 'sd1', path: 'base/audio/sd1_lz.json' },// @21
-  { name: 'sd2', path: 'base/audio/sd2_lz.json' },// @22
-  { name: 'tamb', path: 'base/audio/tamb_lz.json' }// @23
+  { name: 'bass1', path: '../../common/bd1_lz.json' }, // @9
+  { name: 'bass2', path: '../../common/bd2_lz.json' }, // @10
+  { name: 'closed', path: '../../common/closed_lz.json' }, // @11
+  { name: 'cowbell', path: '../../common/cowbell_lz.json' },// @12
+  { name: 'crash', path: '../../common/crash_lz.json' },// @13
+  { name: 'handclap', path: '../../common/handclap_lz.json' }, // @14
+  { name: 'hitom', path: '../../common/hitom_lz.json' },// @15
+  { name: 'lowtom', path: '../../common/lowtom_lz.json' },// @16
+  { name: 'midtom', path: '../../common/midtom_lz.json' },// @17
+  { name: 'open', path: '../../common/open_lz.json' },// @18
+  { name: 'ride', path: '../../common/ride_lz.json' },// @19
+  { name: 'rimshot', path: '../../common/rimshot_lz.json' },// @20
+  { name: 'sd1', path: '../../common/sd1_lz.json' },// @21
+  { name: 'sd2', path: '../../common/sd2_lz.json' },// @22
+  { name: 'tamb', path: '../../common/tamb_lz.json' }// @23
 ];
 
-let xhr = new XMLHttpRequest();
-function json(url) {
-  return new Promise((resolve, reject) => {
-    xhr.open("get", url, true);
-    xhr.onload = function () {
-      if (xhr.status == 200) {
-        resolve(JSON.parse(this.responseText));
-      } else {
-        reject(new Error('XMLHttpRequest Error:' + xhr.status));
-      }
-    };
-    xhr.onerror = err => { reject(err); };
-    xhr.send(null);
-  });
-}
-
-function readDrumSample(audioctx) {
-  let pr = Promise.resolve(0);
-  drumSamples.forEach((d) => {
-    pr =
-      pr.then(json.bind(null,sfg.resourceBase + d.path))
-        .then(data => {
-          let sampleStr = lzbase62.decompress(data.samples);
-          let samples = decodeStr(4, sampleStr);
-          let ws = new WaveSample(audioctx, 1, samples.length, data.sampleRate);
-          let sb = ws.sample.getChannelData(0);
-          for (let i = 0, e = sb.length; i < e; ++i) {
-            sb[i] = samples[i];
-          }
-          waveSamples.push(ws);
-        });
-  });
-
-  return pr;
+async function readDrumSample(audioctx) {
+  for(const drumSample of drumSamples){
+    let data = await (await fetch(drumSample.path)).json();
+    let sampleStr = lzbase62.decompress(data.samples);
+    let samples = decodeStr(4, sampleStr);
+    let ws = new WaveSample(audioctx, 1, samples.length, data.sampleRate);
+    let sb = ws.sample.getChannelData(0);
+    for (let i = 0, e = sb.length; i < e; ++i) {
+      sb[i] = samples[i];
+    }
+    waveSamples.push(ws);
+  }
 }
 
 // export class WaveTexture { 
