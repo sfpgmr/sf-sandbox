@@ -1048,6 +1048,7 @@
     noteFreq.push(Math.pow(2, i / 12));
   }
 
+  // 波形メモリ文字列(16進数32文字)をサンプル配列(-1.0-1.0 32個 )に変換する
   function decodeStr(bits, wavestr) {
     var arr = [];
     var n = bits / 4 | 0;
@@ -1095,17 +1096,17 @@
   }
 
   function createWaveSampleFromWaves(audioctx, sampleLength) {
-    for (var i = 0, end = waves.length; i < end; ++i) {
-      var sample = new WaveSample(audioctx, 1, sampleLength);
+    for (let i = 0, end = waves.length; i < end; ++i) {
+      const sample = new WaveSample(audioctx, 1, sampleLength);
       waveSamples.push(sample);
       if (i != 8) {
-        var wavedata = waves[i];
-        var delta = 440.0 * wavedata.length / audioctx.sampleRate;
-        var stime = 0;
-        var output = sample.sample.getChannelData(0);
-        var len = wavedata.length;
-        var index = 0;
-        var endsample = 0;
+        const wavedata = waves[i];
+        const delta = 440.0 * wavedata.length / audioctx.sampleRate;
+        let stime = 0;
+        const output = sample.sample.getChannelData(0);
+        const len = wavedata.length;
+        let index = 0;
+        let endsample = 0;
         for (var j = 0; j < sampleLength; ++j) {
           index = stime | 0;
           output[j] = wavedata[index];
@@ -1127,39 +1128,6 @@
         sample.loop = true;
       }
     }
-  }
-
-  // 参考：http://www.g200kg.com/archives/2014/12/webaudioapiperi.html
-  function fourier(waveform, len) {
-    var real = new Float32Array(len), imag = new Float32Array(len);
-    var wavlen = waveform.length;
-    for (var i = 0; i < len; ++i) {
-      for (var j = 0; j < len; ++j) {
-        var wavj = j / len * wavlen;
-        var d = waveform[wavj | 0];
-        var th = i * j / len * 2 * Math.PI;
-        real[i] += Math.cos(th) * d;
-        imag[i] += Math.sin(th) * d;
-      }
-    }
-    return [real, imag];
-  }
-
-  function createPeriodicWaveFromWaves(audioctx) {
-    return waves.map((d, i) => {
-      if (i != 8) {
-        let waveData = waves[i];
-        let freqData = fourier(waveData, waveData.length);
-        return audioctx.createPeriodicWave(freqData[0], freqData[1]);
-      } else {
-        let waveData = [];
-        for (let j = 0, e = waves[i].length; j < e; ++j) {
-          waveData.push(Math.random() * 2.0 - 1.0);
-        }
-        let freqData = fourier(waveData, waveData.length);
-        return audioctx.createPeriodicWave(freqData[0], freqData[1]);
-      }
-    });
   }
 
   // ドラムサンプル
@@ -1373,7 +1341,7 @@
       this.voices = [];
       if (this.enable) {
         createWaveSampleFromWaves(this.audioctx, BUFFER_SIZE);
-        this.periodicWaves = createPeriodicWaveFromWaves(this.audioctx);
+        //this.periodicWaves = createPeriodicWaveFromWaves(this.audioctx);
         this.filter = this.audioctx.createBiquadFilter();
         this.filter.type = 'lowpass';
         this.filter.frequency.value = 20000;
@@ -2124,13 +2092,14 @@
     //   });
     // });
 
+    let audio,seq;
     startButton.addEventListener('click', async () => {
       try {
-      const audio = new Audio();
-      //await audio.readDrumSamples;
-      const seq = new Sequencer(audio);
-      seq.load(seqData);
-      seq.start();
+      if(!audio){
+        audio = new Audio();
+        seq = new Sequencer(audio);
+        seq.load(seqData);
+      }
 
 
 
@@ -2175,12 +2144,13 @@
         for(const i of inputs){
           i.disabled = '';
         }
+        seq.start();
         play = true;
         startButton.innerText = 'WPSG-OFF';
       } else {
+        seq.stop();
         play = false;
         startButton.innerText = 'WPSG-ON';
-
       }
       } catch (e) {
         alert(e.stack);

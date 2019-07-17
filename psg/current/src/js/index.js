@@ -138,13 +138,14 @@ window.addEventListener('load', async () => {
   //   });
   // });
 
+  let audio,seq;
   startButton.addEventListener('click', async () => {
     try {
-    const audio = new Audio.Audio();
-    //await audio.readDrumSamples;
-    const seq = new Audio.Sequencer(audio);
-    seq.load(seqData);
-    seq.start();
+    if(!audio){
+      audio = new Audio.Audio();
+      seq = new Audio.Sequencer(audio);
+      seq.load(seqData);
+    }
 
 
 
@@ -189,12 +190,13 @@ window.addEventListener('load', async () => {
       for(const i of inputs){
         i.disabled = '';
       }
+      seq.start();
       play = true;
       startButton.innerText = 'WPSG-OFF';
     } else {
+      seq.stop();
       play = false;
       startButton.innerText = 'WPSG-ON';
-
     }
     } catch (e) {
       alert(e.stack);

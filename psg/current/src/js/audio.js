@@ -29,6 +29,7 @@ function midicps(noteNumber) {
   return 440 * Math.pow(2, (noteNumber - 69) * 1 / 12);
 }
 
+// 波形メモリ文字列(16進数32文字)をサンプル配列(-1.0-1.0 32個 )に変換する
 export function decodeStr(bits, wavestr) {
   var arr = [];
   var n = bits / 4 | 0;
@@ -76,17 +77,17 @@ export function WaveSample(audioctx, ch, sampleLength, sampleRate) {
 }
 
 export function createWaveSampleFromWaves(audioctx, sampleLength) {
-  for (var i = 0, end = waves.length; i < end; ++i) {
-    var sample = new WaveSample(audioctx, 1, sampleLength);
+  for (let i = 0, end = waves.length; i < end; ++i) {
+    const sample = new WaveSample(audioctx, 1, sampleLength);
     waveSamples.push(sample);
     if (i != 8) {
-      var wavedata = waves[i];
-      var delta = 440.0 * wavedata.length / audioctx.sampleRate;
-      var stime = 0;
-      var output = sample.sample.getChannelData(0);
-      var len = wavedata.length;
-      var index = 0;
-      var endsample = 0;
+      const wavedata = waves[i];
+      const delta = 440.0 * wavedata.length / audioctx.sampleRate;
+      let stime = 0;
+      const output = sample.sample.getChannelData(0);
+      const len = wavedata.length;
+      let index = 0;
+      let endsample = 0;
       for (var j = 0; j < sampleLength; ++j) {
         index = stime | 0;
         output[j] = wavedata[index];
@@ -133,6 +134,7 @@ function createPeriodicWaveFromWaves(audioctx) {
       let freqData = fourier(waveData, waveData.length);
       return audioctx.createPeriodicWave(freqData[0], freqData[1]);
     } else {
+      // ボイス波形はノイズ波形とする
       let waveData = [];
       for (let j = 0, e = waves[i].length; j < e; ++j) {
         waveData.push(Math.random() * 2.0 - 1.0);
@@ -423,7 +425,7 @@ export class Audio {
     this.voices = [];
     if (this.enable) {
       createWaveSampleFromWaves(this.audioctx, BUFFER_SIZE);
-      this.periodicWaves = createPeriodicWaveFromWaves(this.audioctx);
+      //this.periodicWaves = createPeriodicWaveFromWaves(this.audioctx);
       this.filter = this.audioctx.createBiquadFilter();
       this.filter.type = 'lowpass';
       this.filter.frequency.value = 20000;
