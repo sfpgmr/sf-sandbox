@@ -23,19 +23,20 @@
 // リリース時にはコメントアウトすること
 
 "use strict";
-import {Audio,Sequencer} from './audio.js';
+import * as Audio from './audio.js';
+import {seqData} from './seqData.js';
 
 window.addEventListener('load', async () => {
   // let psgBin = await (await fetch('./wpsg.wasm')).arrayBuffer();
   
   
   // let psg;
-  // let play = false;
+  let play = false;
   // let vol;
   // let enable = 0x3f;
   // let envShape = 0;
   const startButton = document.getElementById('start');
-  // let inputs = document.querySelectorAll('input');
+  let inputs = document.querySelectorAll('input');
   // let currentChannel = 0;
 
   // for(const i of inputs){
@@ -138,7 +139,14 @@ window.addEventListener('load', async () => {
   // });
 
   startButton.addEventListener('click', async () => {
-    const audio = new Audio();
+    try {
+    const audio = new Audio.Audio();
+    //await audio.readDrumSamples;
+    const seq = new Audio.Sequencer(audio);
+    seq.load(seqData);
+    seq.start();
+
+
 
     // if (!psg) {
     //   var audioctx = new AudioContext();
@@ -182,21 +190,16 @@ window.addEventListener('load', async () => {
         i.disabled = '';
       }
       play = true;
-      // psg.writeReg(8, 0b10000);
-      // psg.writeReg(9, 0b10000);
-      // psg.writeReg(10, 0b10000);
-      // psg.writeReg(12, 0xe);
-      // psg.writeReg(13, 0b1000);
-      psg.writeReg(7, enable);
-      // psg.writeReg(6, 0b10000);
-      vol.gain.value = 1.0;
       startButton.innerText = 'WPSG-OFF';
     } else {
       play = false;
-      psg.writeReg(7, 0x3f);
-      vol.gain.value = 0.0;
       startButton.innerText = 'WPSG-ON';
+
     }
+    } catch (e) {
+      alert(e.stack);
+    }
+
   });
 
 

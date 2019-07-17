@@ -1,6 +1,425 @@
 (function () {
   'use strict';
 
+  var Syntax = {
+    Note: "Note",
+    Rest: "Rest",
+    Octave: "Octave",
+    OctaveShift: "OctaveShift",
+    NoteLength: "NoteLength",
+    NoteVelocity: "NoteVelocity",
+    NoteQuantize: "NoteQuantize",
+    Tempo: "Tempo",
+    InfiniteLoop: "InfiniteLoop",
+    LoopBegin: "LoopBegin",
+    LoopExit: "LoopExit",
+    LoopEnd: "LoopEnd",
+    Tone:"Tone",
+    WaveForm:"WaveForm",
+    Envelope:"Envelope"
+  };
+
+  class Scanner {
+    constructor(source) {
+      this.source = source;
+      this.index = 0;
+    }
+
+    hasNext() {
+      return this.index < this.source.length;
+    }
+
+    peek() {
+      return this.source.charAt(this.index) || "";
+    }
+
+    next() {
+      return this.source.charAt(this.index++) || "";
+    }
+
+    forward() {
+      while (this.hasNext() && this.match(/\s/)) {
+        this.index += 1;
+      }
+    }
+
+    match(matcher) {
+      if (matcher instanceof RegExp) {
+        return matcher.test(this.peek());
+      }
+      return this.peek() === matcher;
+    }
+
+    expect(matcher) {
+      if (!this.match(matcher)) {
+        this.throwUnexpectedToken();
+      }
+      this.index += 1;
+    }
+
+    scan(matcher) {
+      let target = this.source.substr(this.index);
+      let result = null;
+
+      if (matcher instanceof RegExp) {
+        let matched = matcher.exec(target);
+
+        if (matched && matched.index === 0) {
+          result = matched[0];
+        }
+      } else if (target.substr(0, matcher.length) === matcher) {
+        result = matcher;
+      }
+
+      if (result) {
+        this.index += result.length;
+      }
+
+      return result;
+    }
+
+    throwUnexpectedToken() {
+      let identifier = this.peek() || "ILLEGAL";
+
+      throw new SyntaxError(`Unexpected token: ${identifier}`);
+    }
+  }
+
+  const NOTE_INDEXES = { c: 0, d: 2, e: 4, f: 5, g: 7, a: 9, b: 11 };
+
+  class MMLParser {
+    constructor(source) {
+      this.scanner = new Scanner(source);
+    }
+
+    parse() {
+      let result = [];
+
+      this._readUntil(";", () => {
+        result = result.concat(this.advance());
+      });
+
+      return result;
+    }
+
+    advance() {
+      switch (this.scanner.peek()) {
+      case "c":
+      case "d":
+      case "e":
+      case "f":
+      case "g":
+      case "a":
+      case "b":
+        return this.readNote();
+      case "[":
+        return this.readChord();
+      case "r":
+        return this.readRest();
+      case "o":
+        return this.readOctave();
+      case ">":
+        return this.readOctaveShift(+1);
+      case "<":
+        return this.readOctaveShift(-1);
+      case "l":
+        return this.readNoteLength();
+      case "q":
+        return this.readNoteQuantize();
+      case "v":
+        return this.readNoteVelocity();
+      case "t":
+        return this.readTempo();
+      case "$":
+        return this.readInfiniteLoop();
+      case "/":
+        return this.readLoop();
+      case "@":
+        return this.readTone();
+      case "w":
+        return this.readWaveForm();
+      case "s":
+        return this.readEnvelope();
+      default:
+        // do nothing
+      }
+      this.scanner.throwUnexpectedToken();
+    }
+
+    readNote() {
+      return {
+        type: Syntax.Note,
+        noteNumbers: [ this._readNoteNumber(0) ],
+        noteLength: this._readLength(),
+      };
+    }
+
+    readChord() {
+      this.scanner.expect("[");
+
+      let noteList = [];
+      let offset = 0;
+
+      this._readUntil("]", () => {
+        switch (this.scanner.peek()) {
+        case "c":
+        case "d":
+        case "e":
+        case "f":
+        case "g":
+        case "a":
+        case "b":
+          noteList.push(this._readNoteNumber(offset));
+          break;
+        case ">":
+          this.scanner.next();
+          offset += 12;
+          break;
+        case "<":
+          this.scanner.next();
+          offset -= 12;
+          break;
+        default:
+          this.scanner.throwUnexpectedToken();
+        }
+      });
+
+      this.scanner.expect("]");
+
+      return {
+        type: Syntax.Note,
+        noteNumbers: noteList,
+        noteLength: this._readLength(),
+      };
+    }
+
+    readRest() {
+      this.scanner.expect("r");
+
+      return {
+        type: Syntax.Rest,
+        noteLength: this._readLength(),
+      };
+    }
+
+    readOctave() {
+      this.scanner.expect("o");
+
+      return {
+        type: Syntax.Octave,
+        value: this._readArgument(/\d+/),
+      };
+    }
+
+    readOctaveShift(direction) {
+      this.scanner.expect(/<|>/);
+
+      return {
+        type: Syntax.OctaveShift,
+        direction: direction|0,
+        value: this._readArgument(/\d+/),
+      };
+    }
+
+    readNoteLength() {
+      this.scanner.expect("l");
+
+      return {
+        type: Syntax.NoteLength,
+        noteLength: this._readLength(),
+      };
+    }
+
+    readNoteQuantize() {
+      this.scanner.expect("q");
+
+      return {
+        type: Syntax.NoteQuantize,
+        value: this._readArgument(/\d+/),
+      };
+    }
+
+    readNoteVelocity() {
+      this.scanner.expect("v");
+
+      return {
+        type: Syntax.NoteVelocity,
+        value: this._readArgument(/\d+/),
+      };
+    }
+
+    readTempo() {
+      this.scanner.expect("t");
+
+      return {
+        type: Syntax.Tempo,
+        value: this._readArgument(/\d+(\.\d+)?/),
+      };
+    }
+
+    readInfiniteLoop() {
+      this.scanner.expect("$");
+
+      return {
+        type: Syntax.InfiniteLoop,
+      };
+    }
+
+    readLoop() {
+      this.scanner.expect("/");
+      this.scanner.expect(":");
+
+      let result = [];
+      let loopBegin = { type: Syntax.LoopBegin };
+      let loopEnd = { type: Syntax.LoopEnd };
+
+      result = result.concat(loopBegin);
+      this._readUntil(/[|:]/, () => {
+        result = result.concat(this.advance());
+      });
+      result = result.concat(this._readLoopExit());
+
+      this.scanner.expect(":");
+      this.scanner.expect("/");
+
+      loopBegin.value = this._readArgument(/\d+/) || null;
+
+      result = result.concat(loopEnd);
+
+      return result;
+    }
+    
+    readTone(){
+      this.scanner.expect("@");
+      return {
+        type: Syntax.Tone,
+        value: this._readArgument(/\d+/)
+      };
+    }
+    
+    readWaveForm(){
+      this.scanner.expect("w");
+      this.scanner.expect("\"");
+      let waveData = this.scanner.scan(/[0-9a-fA-F]+?/);
+      this.scanner.expect("\"");
+      return {
+        type: Syntax.WaveForm,
+        value: waveData
+      };
+    }
+    
+    readEnvelope(){
+      this.scanner.expect("s");
+      let a = this._readArgument(/\d+(\.\d+)?/);
+      this.scanner.expect(",");
+      let d = this._readArgument(/\d+(\.\d+)?/);
+      this.scanner.expect(",");
+      let s = this._readArgument(/\d+(\.\d+)?/);
+      this.scanner.expect(",");
+      let r = this._readArgument(/\d+(\.\d+)?/);
+      return {
+        type:Syntax.Envelope,
+        a:a,d:d,s:s,r:r
+      }
+    }
+
+    _readUntil(matcher, callback) {
+      while (this.scanner.hasNext()) {
+        this.scanner.forward();
+        if (!this.scanner.hasNext() || this.scanner.match(matcher)) {
+          break;
+        }
+        callback();
+      }
+    }
+
+    _readArgument(matcher) {
+      let num = this.scanner.scan(matcher);
+
+      return num !== null ? +num : null;
+    }
+
+    _readNoteNumber(offset) {
+      let noteIndex = NOTE_INDEXES[this.scanner.next()];
+
+      return noteIndex + this._readAccidental() + offset;
+    }
+
+    _readAccidental() {
+      if (this.scanner.match("+")) {
+        return +1 * this.scanner.scan(/\++/).length;
+      }
+      if (this.scanner.match("-")) {
+        return -1 * this.scanner.scan(/\-+/).length;
+      }
+      return 0;
+    }
+
+    _readDot() {
+      let len = (this.scanner.scan(/\.+/) || "").length;
+      let result = new Array(len);
+
+      for (let i = 0; i < len; i++) {
+        result[i] = 0;
+      }
+
+      return result;
+    }
+
+    _readLength() {
+      let result = [];
+
+      result = result.concat(this._readArgument(/\d+/));
+      result = result.concat(this._readDot());
+
+      let tie = this._readTie();
+
+      if (tie) {
+        result = result.concat(tie);
+      }
+
+      return result;
+    }
+
+    _readTie() {
+      this.scanner.forward();
+
+      if (this.scanner.match("^")) {
+        this.scanner.next();
+        return this._readLength();
+      }
+
+      return null;
+    }
+
+    _readLoopExit() {
+      let result = [];
+
+      if (this.scanner.match("|")) {
+        this.scanner.next();
+
+        let loopExit = { type: Syntax.LoopExit };
+
+        result = result.concat(loopExit);
+
+        this._readUntil(":", () => {
+          result = result.concat(this.advance());
+        });
+      }
+
+      return result;
+    }
+  }
+
+  var DefaultParams = {
+    tempo: 120,
+    octave: 4,
+    length: 4,
+    velocity: 100,
+    quantize: 75,
+    loopCount: 2,
+  };
+
   /**
    * lzbase62
    *
@@ -621,6 +1040,7 @@
 
   // var fft = new FFT(4096, 44100);
   const BUFFER_SIZE = 1024;
+  const TIME_BASE = 96;
 
   // MIDIノート => 再生レート変換テーブル
   var noteFreq = [];
@@ -1008,6 +1428,588 @@
     }
   }
 
+
+
+  /**********************************************/
+  /* シーケンサーコマンド                       */
+  /**********************************************/
+
+  function calcStep(noteLength) {
+    // 長さからステップを計算する
+    let prev = null;
+    let dotted = 0;
+
+    let map = noteLength.map((elem) => {
+      switch (elem) {
+        case null:
+          elem = prev;
+          break;
+        case 0:
+          elem = (dotted *= 2);
+          break;
+        default:
+          prev = dotted = elem;
+          break;
+      }
+
+      let length = elem !== null ? elem : DefaultParams.length;
+
+      return TIME_BASE * (4 / length);
+    });
+    return map.reduce((a, b) => a + b, 0);
+  }
+
+  class Note {
+    constructor(notes, length) {
+
+      this.notes = notes;
+      if (length[0]) {
+        this.step = calcStep(length);
+      }
+    }
+
+    process(track) {
+      this.notes.forEach((n, i) => {
+        var back = track.back;
+        var note = n;
+        var oct = this.oct || back.oct;
+        var step = this.step || back.step;
+        var gate = this.gate || back.gate;
+        var vel = this.vel || back.vel;
+        setQueue(track, note, oct, i == 0 ? step : 0, gate, vel);
+      });
+    }
+  }
+
+  function setQueue(track, note, oct, step, gate, vel) {
+    let no = note + oct * 12;
+    let back = track.back;
+    var step_time = (step ? track.playingTime : back.playingTime);
+    // var gate_time = ((gate >= 0) ? gate * 60 : step * gate * 60 * -1.0) / (TIME_BASE * track.localTempo) + track.playingTime;
+
+    var gate_time = ((step == 0 ? back.codeStep : step) * gate * 60) / (TIME_BASE * track.localTempo) + (step ? track.playingTime : back.playingTime);
+    //let voice = track.audio.voices[track.channel];
+    let voice = track.assignVoice(step_time);
+    //voice.reset();
+    voice.sample = back.sample;
+    voice.envelope.attackTime = back.attack;
+    voice.envelope.decayTime = back.decay;
+    voice.envelope.sustainLevel = back.sustain;
+    voice.envelope.releaseTime = back.release;
+    voice.detune = back.detune;
+    voice.volume.gain.setValueAtTime(back.volume, step_time);
+
+    //voice.initProcessor();
+
+    //console.log(track.sequencer.tempo);
+    voice.keyon(step_time, no, vel);
+    voice.keyoff(gate_time);
+    if (step) {
+      back.codeStep = step;
+      back.playingTime = track.playingTime;
+    }
+
+    track.playingTime = (step * 60) / (TIME_BASE * track.localTempo) + track.playingTime;
+    // back.voice = voice;
+    // back.note = note;
+    // back.oct = oct;
+    // back.gate = gate;
+    // back.vel = vel;
+  }
+
+
+  /// 音符の長さ指定
+
+  class Length {
+    constructor(len) {
+      this.step = calcStep(len);
+    }
+    process(track) {
+      track.back.step = this.step;
+    }
+  }
+
+  /// ゲートタイム指定
+
+  class GateTime {
+    constructor(gate) {
+      this.gate = gate / 100;
+    }
+
+    process(track) {
+      track.back.gate = this.gate;
+    }
+  }
+
+  /// ベロシティ指定
+
+  class Velocity {
+    constructor(vel) {
+      this.vel = vel / 100;
+    }
+    process(track) {
+      track.back.vel = this.vel;
+    }
+  }
+
+  /// 音色設定
+  class Tone {
+    constructor(no) {
+      this.no = no;
+      //this.sample = waveSamples[this.no];
+    }
+
+    process(track) {
+      //    track.back.sample = track.audio.periodicWaves[this.no];
+      track.back.sample = waveSamples[this.no];
+      //    track.audio.voices[track.channel].setSample(waveSamples[this.no]);
+    }
+  }
+
+  class Rest {
+    constructor(length) {
+      if(length[0]){
+        this.step = calcStep(length);
+      }
+    }
+    process(track) {
+      const step = this.step || track.back.step;
+      track.playingTime = track.playingTime + (step * 60) / (TIME_BASE * track.localTempo);
+      //track.back.step = this.step;
+    }
+  }
+
+  class Octave {
+    constructor(oct) {
+      this.oct = oct;
+    }
+    process(track) {
+      track.back.oct = this.oct;
+    }
+  }
+
+
+  class OctaveUp {
+    constructor(v) { this.v = v; }
+    process(track) {
+      track.back.oct += this.v;
+    }
+  }
+
+  class OctaveDown {
+    constructor(v) { this.v = v; }
+    process(track) {
+      track.back.oct -= this.v;
+    }
+  }
+  class Tempo {
+    constructor(tempo) {
+      this.tempo = tempo;
+    }
+
+    process(track) {
+      track.localTempo = this.tempo;
+      //track.sequencer.tempo = this.tempo;
+    }
+  }
+
+  class Envelope {
+    constructor(attack, decay, sustain, release) {
+      this.attack = attack;
+      this.decay = decay;
+      this.sustain = sustain;
+      this.release = release;
+    }
+
+    process(track) {
+      //var envelope = track.audio.voices[track.channel].envelope;
+      track.back.attack = this.attack;
+      track.back.decay = this.decay;
+      track.back.sustain = this.sustain;
+      track.back.release = this.release;
+    }
+  }
+
+  class LoopData {
+    constructor(obj, varname, count, seqPos) {
+      this.varname = varname;
+      this.count = count || DefaultParams.loopCount;
+      this.obj = obj;
+      this.seqPos = seqPos;
+      this.outSeqPos = -1;
+    }
+
+    process(track) {
+      var stack = track.stack;
+      if (stack.length == 0 || stack[stack.length - 1].obj !== this) {
+        var ld = this;
+        stack.push(new LoopData(this, ld.varname, ld.count, track.seqPos));
+      }
+    }
+  }
+
+  class LoopEnd {
+    constructor(seqPos) {
+      this.seqPos = seqPos;
+    }
+    process(track) {
+      var ld = track.stack[track.stack.length - 1];
+      if (ld.outSeqPos == -1) ld.outSeqPos = this.seqPos;
+      ld.count--;
+      if (ld.count > 0) {
+        track.seqPos = ld.seqPos;
+      } else {
+        track.stack.pop();
+      }
+    }
+  }
+
+  class LoopExit {
+    process(track) {
+      var ld = track.stack[track.stack.length - 1];
+      if (ld.count <= 1 && ld.outSeqPos != -1) {
+        track.seqPos = ld.outSeqPos;
+        track.stack.pop();
+      }
+    }
+  }
+
+  class InfiniteLoop {
+    process(track) {
+      track.infinitLoopIndex = track.seqPos;
+    }
+  }
+  /////////////////////////////////
+  /// シーケンサートラック
+  class Track {
+    constructor(sequencer, seqdata, audio) {
+      this.name = '';
+      this.end = false;
+      this.oneshot = false;
+      this.sequencer = sequencer;
+      this.seqData = seqdata;
+      this.seqPos = 0;
+      this.mute = false;
+      this.playingTime = -1;
+      this.localTempo = sequencer.tempo;
+      this.trackVolume = 1.0;
+      this.transpose = 0;
+      this.solo = false;
+      this.channel = -1;
+      this.track = -1;
+      this.audio = audio;
+      this.infinitLoopIndex = -1;
+      this.back = {
+        note: 72,
+        oct: 5,
+        step: 96,
+        gate: 0.5,
+        vel: 1.0,
+        attack: 0.01,
+        decay: 0.05,
+        sustain: 0.6,
+        release: 0.07,
+        detune: 1.0,
+        volume: 0.5,
+        //      sample:audio.periodicWaves[0]
+        sample: waveSamples[0]
+      };
+      this.stack = [];
+    }
+
+    process(currentTime) {
+
+      if (this.end) return;
+
+      if (this.oneshot) {
+        this.reset();
+      }
+
+      var seqSize = this.seqData.length;
+      if (this.seqPos >= seqSize) {
+        if (this.sequencer.repeat) {
+          this.seqPos = 0;
+        } else if (this.infinitLoopIndex >= 0) {
+          this.seqPos = this.infinitLoopIndex;
+        } else {
+          this.end = true;
+          return;
+        }
+      }
+
+      var seq = this.seqData;
+      this.playingTime = (this.playingTime > -1) ? this.playingTime : currentTime;
+      var endTime = currentTime + 0.2/*sec*/;
+
+      while (this.seqPos < seqSize) {
+        if (this.playingTime >= endTime && !this.oneshot) {
+          break;
+        } else {
+          var d = seq[this.seqPos];
+          d.process(this);
+          this.seqPos++;
+        }
+      }
+    }
+
+    reset() {
+      // var curVoice = this.audio.voices[this.channel];
+      // curVoice.gain.gain.cancelScheduledValues(0);
+      // curVoice.processor.playbackRate.cancelScheduledValues(0);
+      // curVoice.gain.gain.value = 0;
+      this.playingTime = -1;
+      this.seqPos = 0;
+      this.infinitLoopIndex = -1;
+      this.end = false;
+      this.stack.length = 0;
+    }
+
+    assignVoice(t) {
+      let ret = null;
+      this.audio.voices.some((d, i) => {
+        if (d.isKeyOff(t)) {
+          ret = d;
+          return true;
+        }
+        return false;
+      });
+      if (!ret) {
+        let oldestKeyOnData = (this.audio.voices.map((d, i) => {
+          return { time: d.envelope.keyOnTime, d, i };
+        }).sort((a, b) => a.time - b.time))[0];
+        ret = oldestKeyOnData.d;
+      }
+      return ret;
+    }
+
+  }
+
+  function loadTracks(self, tracks, trackdata) {
+    for (var i = 0; i < trackdata.length; ++i) {
+      var track = new Track(self, trackdata[i].data, self.audio);
+      track.channel = trackdata[i].channel;
+      track.oneshot = (!trackdata[i].oneshot) ? false : true;
+      track.track = i;
+      tracks.push(track);
+    }
+    return tracks;
+  }
+
+  ////////////////////////////
+  /// シーケンサー本体 
+  class Sequencer {
+    constructor(audio) {
+      this.STOP = 0 | 0;
+      this.PLAY = 1 | 0;
+      this.PAUSE = 2 | 0;
+
+      this.audio = audio;
+      this.tempo = 100.0;
+      this.repeat = false;
+      this.play = false;
+      this.tracks = [];
+      this.pauseTime = 0;
+      this.status = this.STOP;
+    }
+    load(data) {
+      parseMML(data);
+      if (this.play) {
+        this.stop();
+      }
+      this.tracks.length = 0;
+      loadTracks(this, this.tracks, data.tracks);
+    }
+    start() {
+      //    this.handle = window.setTimeout(function () { self.process() }, 50);
+      this.audio.readDrumSample
+        .then(() => {
+          this.status = this.PLAY;
+          this.process();
+        });
+    }
+    process() {
+      if (this.status == this.PLAY) {
+        this.playTracks(this.tracks);
+        this.handle = window.setTimeout(this.process.bind(this), 100);
+      }
+    }
+    playTracks(tracks) {
+      var currentTime = this.audio.audioctx.currentTime;
+      //   console.log(this.audio.audioctx.currentTime);
+      for (var i = 0, end = tracks.length; i < end; ++i) {
+        tracks[i].process(currentTime);
+      }
+    }
+    pause() {
+      this.status = this.PAUSE;
+      this.pauseTime = this.audio.audioctx.currentTime;
+    }
+    resume() {
+      if (this.status == this.PAUSE) {
+        this.status = this.PLAY;
+        var tracks = this.tracks;
+        var adjust = this.audio.audioctx.currentTime - this.pauseTime;
+        for (var i = 0, end = tracks.length; i < end; ++i) {
+          tracks[i].playingTime += adjust;
+        }
+        this.process();
+      }
+    }
+    stop() {
+      if (this.status != this.STOP) {
+        clearTimeout(this.handle);
+        //    clearInterval(this.handle);
+        this.status = this.STOP;
+        this.reset();
+      }
+    }
+    reset() {
+      for (var i = 0, end = this.tracks.length; i < end; ++i) {
+        this.tracks[i].reset();
+      }
+    }
+  }
+
+  function parseMML(data) {
+    data.tracks.forEach((d) => {
+      d.data = parseMML_(d.mml);
+    });
+  }
+
+  function parseMML_(mml) {
+    let parser = new MMLParser(mml);
+    let commands = parser.parse();
+    let seqArray = [];
+    commands.forEach((command) => {
+      switch (command.type) {
+        case Syntax.Note:
+          seqArray.push(new Note(command.noteNumbers, command.noteLength));
+          break;
+        case Syntax.Rest:
+          seqArray.push(new Rest(command.noteLength));
+          break;
+        case Syntax.Octave:
+          seqArray.push(new Octave(command.value));
+          break;
+        case Syntax.OctaveShift:
+          if (command.direction >= 0) {
+            seqArray.push(new OctaveUp(1));
+          } else {
+            seqArray.push(new OctaveDown(1));
+          }
+          break;
+        case Syntax.NoteLength:
+          seqArray.push(new Length(command.noteLength));
+          break;
+        case Syntax.NoteVelocity:
+          seqArray.push(new Velocity(command.value));
+          break;
+        case Syntax.Tempo:
+          seqArray.push(new Tempo(command.value));
+          break;
+        case Syntax.NoteQuantize:
+          seqArray.push(new GateTime(command.value));
+          break;
+        case Syntax.InfiniteLoop:
+          seqArray.push(new InfiniteLoop());
+          break;
+        case Syntax.LoopBegin:
+          seqArray.push(new LoopData(null, '', command.value, null));
+          break;
+        case Syntax.LoopExit:
+          seqArray.push(new LoopExit());
+          break;
+        case Syntax.LoopEnd:
+          seqArray.push(new LoopEnd());
+          break;
+        case Syntax.Tone:
+          seqArray.push(new Tone(command.value));
+        case Syntax.WaveForm:
+          break;
+        case Syntax.Envelope:
+          seqArray.push(new Envelope(command.a, command.d, command.s, command.r));
+          break;
+      }
+    });
+    return seqArray;
+  }
+
+  const seqData = {
+    name: 'Test',
+    tracks: [
+  /*    {
+        name: 'part1',
+        channel: 0,
+        mml:
+        `
+         s0.01,0.2,0.2,0.03 @2 
+         t140  q35 v30 l1r1r1r1r1 $l16o3 cccccccc<ggggaabb> cccccccc<gggg>cc<bb b-b-b-b-b-b-b-b-ffffggg+g+ g+g+g+g+g+g+g+g+ggggaabb >
+               `
+        },*/
+      {
+        name: 'part1',
+        channel: 1,
+        mml:
+        `
+      s0.01,0.01,0.8,0.05 @6 
+      t160  q80 v40 o3 l16 
+      erer erer erer erer drdr drdr drdr drdr crcr crcr crcr crcr drdr drdr drdr drdr $ 
+      /:erer erer erer erer drdr drdr drdr drdr crcr crcr crcr crcr drdr drdr drdr drdr:/4   
+      /:erer rrgr rrgr rrar r1 erer rrgr rrgr rrdr r1:/2     
+     `      
+        // `
+        //  s0.01,0.01,0.8,0.05 @6 
+        //  t160  q80 v40 o3 l16 $ /:erer erer erer erer drdr drdr drdr drdr crcr crcr crcr crcr drdr drdr drdr drdr:/4 
+        // `
+         },
+      {
+        name: 'part1',
+        channel: 2,
+        mml:
+        `
+       s0.01,0.2,0.2,0.1 @2
+       t160 q95 v10 o4 l1 
+       r1r1r1r1 $
+       /:[b>e<]2..[>dg<][>ea<][>g>c<<]2[>a>d<<]2r8:/4
+       rrrr rrrr
+      `
+        },
+
+      {
+        name: 'base drum',
+        channel: 3,
+        mml:
+        `s0.01,0.01,1.0,0.05 o5 t160 @10 v60 q10 l4
+      bbbb bbbb bbbb bbbb 
+      $
+      l4q10/:bbbb bbbb bbbb bbbb:/4
+      /:l16q20brrr rrbr rrbr rrbr q10l8brbrbbbr q20l16bbrr rrbr rrbr rrbr q10l8brbrq20l16bbbbl8br :/2
+      `
+      }
+      ,
+      {
+        name: 'snare',
+        channel: 4,
+        mml:
+        `s0.01,0.01,1.0,0.05 o5 t160 @21 v60 q80 $/:l4rbrb:/3l4rbrl16bbbb`
+      }
+      ,
+      {
+        name: 'hi hat',
+        channel: 5,
+        mml:
+        `s0.01,0.01,1.0,0.05 o6 t160 @11 l16 q40 $ v15 c v8 cv20cv8c`
+      }
+      // ,
+      // {
+      //   name: 'part5',
+      //   channel: 4,
+      //   mml:
+      //   `s0.01,0.01,1.0,0.05 o5 t160 @20 q95 $v20 l4 rrrg `
+      // }
+    ]
+  };
+
   //The MIT License (MIT)
 
   window.addEventListener('load', async () => {
@@ -1015,12 +2017,12 @@
     
     
     // let psg;
-    // let play = false;
+    let play = false;
     // let vol;
     // let enable = 0x3f;
     // let envShape = 0;
     const startButton = document.getElementById('start');
-    // let inputs = document.querySelectorAll('input');
+    let inputs = document.querySelectorAll('input');
     // let currentChannel = 0;
 
     // for(const i of inputs){
@@ -1123,7 +2125,14 @@
     // });
 
     startButton.addEventListener('click', async () => {
+      try {
       const audio = new Audio();
+      //await audio.readDrumSamples;
+      const seq = new Sequencer(audio);
+      seq.load(seqData);
+      seq.start();
+
+
 
       // if (!psg) {
       //   var audioctx = new AudioContext();
@@ -1167,21 +2176,16 @@
           i.disabled = '';
         }
         play = true;
-        // psg.writeReg(8, 0b10000);
-        // psg.writeReg(9, 0b10000);
-        // psg.writeReg(10, 0b10000);
-        // psg.writeReg(12, 0xe);
-        // psg.writeReg(13, 0b1000);
-        psg.writeReg(7, enable);
-        // psg.writeReg(6, 0b10000);
-        vol.gain.value = 1.0;
         startButton.innerText = 'WPSG-OFF';
       } else {
         play = false;
-        psg.writeReg(7, 0x3f);
-        vol.gain.value = 0.0;
         startButton.innerText = 'WPSG-ON';
+
       }
+      } catch (e) {
+        alert(e.stack);
+      }
+
     });
 
 
