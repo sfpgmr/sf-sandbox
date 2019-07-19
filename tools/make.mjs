@@ -232,7 +232,7 @@ try {
         const releaseSrcPath = path.join(releasePath,'src');
  
         console.log('wwwレポジトリへのデプロイ');
-        const deployPath = path.join(deployBasePath, projectName, releaseName);
+        const deployPath = path.join(deployBasePath, projectName,'releases', releaseName);
         await fse.ensureDir(deployPath);
         const deploySrcPath = path.join(deployPath, 'src');
         // ファイルコピー
