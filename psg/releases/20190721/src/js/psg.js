@@ -10,7 +10,7 @@ class PSG extends AudioWorkletProcessor {
 
       if(userOptions.wasmBinary){
         const module = new WebAssembly.Module(userOptions.wasmBinary);
-        const instance = new WebAssembly.Instance(module, {memory:userOptions.memory});
+        const instance = new WebAssembly.Instance(module, {});
         this.module = instance.exports;
         this.module.init(userOptions.clock,userOptions.sampleRate);
         this.module.reset();
@@ -55,6 +55,9 @@ class PSG extends AudioWorkletProcessor {
       }
     ];
   }
+
+
+
 
   process (inputs, outputs, parameters) {
       if(this.enable){

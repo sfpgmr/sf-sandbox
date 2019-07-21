@@ -1,6 +1,6 @@
 'use strict';
 
-const http = require("http"),
+const https = require("https"),
   url = require("url"),
   path = require("path"),
   fs = require("fs"),
@@ -16,10 +16,16 @@ const http = require("http"),
     "wasm":"application/wasm",
     "bin":"application/octet-stream"
   };
+
+  const options = {
+    key: fs.readFileSync('./server.key'),
+    cert: fs.readFileSync('./server.crt')
+  };
+
  
-http.createServer(function(request, response) {
+https.createServer(options,function (request, response) {
  
-  var uri = url.parse(request.url).pathname, 
+  let uri = url.parse(request.url).pathname, 
     filename = path.join(process.cwd(), uri);
   
   fs.exists(filename, function(exists) {

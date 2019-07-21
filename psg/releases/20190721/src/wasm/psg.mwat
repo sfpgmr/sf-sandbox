@@ -83,8 +83,8 @@ i32 regmsk[16] = [
   (export "calc" (func $calc))
   (export "reset" (func $reset))
   (export "writeReg" (func $write_reg))
-;;  (export "memory" (memory $memory))
-  (import "js" "memory" (memory $memory) )
+  (export "memory" (memory $memory))
+  (memory $memory 1 )
 {@map
   PSG psg;
   f32 OutputBuffer[128];

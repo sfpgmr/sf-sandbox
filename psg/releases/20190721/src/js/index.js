@@ -54,41 +54,41 @@ if(browser !== 'chrome'){
 window.addEventListener('load', async () => {
   let psgBin = await (await fetch('./psg.wasm')).arrayBuffer();
 
-  // {
-  //   let psg = (await WebAssembly.instantiateStreaming(fetch('./psg.wasm'))).instance.exports;
-  //   psg.init(3580000, 44100);
-  //   psg.reset();
-  //   psg.setRate(44100);
-  //   psg.setQuality(1);
-  //   psg.setVolumeMode(1);
-  //   let a = psg.setMask(0xff);
-  //   console.log(a);
-  //   let b = psg.toggleMask(0);
-  //   console.log(a == b);
-  //   psg.reset();
-  //   console.log(psg.readIo());
-  //   //console.log(psg.writeIO);
-  //   //console.log(psg.writeIO);
-  //   for (let i = 0; i < 16; ++i) {
-  //     psg.writeReg(i, i);
-  //     console.log(i, psg.readReg(i), i == psg.readReg(i));
-  //   }
-  //   //debugger;
-  //   psg.writeReg(0, 0x5d);
-  //   psg.writeReg(1, 0xd);
-  //   psg.writeReg(2, 0x5d);
-  //   psg.writeReg(3, 0x1);
-  //   psg.writeReg(4, 0x5d);
-  //   psg.writeReg(5, 0x2);
-  //   psg.writeReg(6, 0x10);
-  //   psg.writeReg(12, 2);
-  //   psg.writeReg(13, 0b1001);
-  //   psg.writeReg(8, 0b10000);
-  //   psg.writeReg(7, 0b111110);
-  //   for (let i = 0; i < 256; ++i) {
-  //     console.log(psg.calc());
-  //   }
-  // }
+  {
+    let psg = (await WebAssembly.instantiateStreaming(fetch('./psg.wasm'))).instance.exports;
+    psg.init(3580000, 44100);
+    psg.reset();
+    psg.setRate(44100);
+    psg.setQuality(1);
+    psg.setVolumeMode(1);
+    let a = psg.setMask(0xff);
+    console.log(a);
+    let b = psg.toggleMask(0);
+    console.log(a == b);
+    psg.reset();
+    console.log(psg.readIo());
+    //console.log(psg.writeIO);
+    //console.log(psg.writeIO);
+    for (let i = 0; i < 16; ++i) {
+      psg.writeReg(i, i);
+      console.log(i, psg.readReg(i), i == psg.readReg(i));
+    }
+    //debugger;
+    psg.writeReg(0, 0x5d);
+    psg.writeReg(1, 0xd);
+    psg.writeReg(2, 0x5d);
+    psg.writeReg(3, 0x1);
+    psg.writeReg(4, 0x5d);
+    psg.writeReg(5, 0x2);
+    psg.writeReg(6, 0x10);
+    psg.writeReg(12, 2);
+    psg.writeReg(13, 0b1001);
+    psg.writeReg(8, 0b10000);
+    psg.writeReg(7, 0b111110);
+    for (let i = 0; i < 256; ++i) {
+      console.log(psg.calc());
+    }
+  }
 
   let psg;
   let play = false;
@@ -181,20 +181,14 @@ window.addEventListener('load', async () => {
 
   startButton.addEventListener('click', async () => {
     if (!psg) {
-      const memory = new WebAssembly.Memory({initial:1,shared:true});
       var audioctx = new AudioContext();
       await audioctx.audioWorklet.addModule("./psg.js");
       psg = new AudioWorkletNode(audioctx, "PSG", {
         outputChannelCount: [2],
         processorOptions: {
+          wasmBinary: psgBin,
           clock: 17900000
         }
-      });
-
-      psg.port.postMessage({
-        message:'init',
-        wasmBinary:psgBin,
-        memory:memory.buffer
       });
 
       psg.writeReg = (function (reg, value) {
