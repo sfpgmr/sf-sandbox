@@ -48,11 +48,10 @@ function checkBrowser() {
 let browser = checkBrowser();
 
 if(browser !== 'chrome'){
-  alert('ご使用のブラウザはサポートしていません。');
+  alert('このページで使用する機能をサポートしていません。');
 }
 
 window.addEventListener('load', async () => {
-  let psgBin = await (await fetch('./psg.wasm')).arrayBuffer();
 
   // {
   //   let psg = (await WebAssembly.instantiateStreaming(fetch('./psg.wasm'))).instance.exports;
@@ -90,7 +89,7 @@ window.addEventListener('load', async () => {
   //   }
   // }
 
-  let psg;
+  let psg,psgBin;
   let play = false;
   let vol;
   let enable = 0x3f;
@@ -180,21 +179,23 @@ window.addEventListener('load', async () => {
   });
 
   startButton.addEventListener('click', async () => {
+
     if (!psg) {
-      const memory = new WebAssembly.Memory({initial:1,shared:true});
+      // Shared Memoryの利用
+      // wasmバイナリの読み込み
+      psgBin = await (await fetch('./psg.wasm')).arrayBuffer();
+      const memory = new WebAssembly.Memory({initial:1,shared:true,maximum:1});
       var audioctx = new AudioContext();
       await audioctx.audioWorklet.addModule("./psg.js");
       psg = new AudioWorkletNode(audioctx, "PSG", {
-        outputChannelCount: [2],
-        processorOptions: {
-          clock: 17900000
-        }
+        outputChannelCount: [2]
       });
 
       psg.port.postMessage({
         message:'init',
         wasmBinary:psgBin,
-        memory:memory.buffer
+        memory:memory,
+        clock:17900000
       });
 
       psg.writeReg = (function (reg, value) {

@@ -1,63 +1,40 @@
 class PSG extends AudioWorkletProcessor {
-  constructor(options){
+  constructor(){
     super();
-    this.options = options;
-    if(options.processorOptions){
-      const userOptions = options.processorOptions;
-      
-      (!userOptions.clock) && (userOptions.clock = 3580000);
-      (!userOptions.sampleRate) && (userOptions.sampleRate = sampleRate);
-
-      if(userOptions.wasmBinary){
-        const module = new WebAssembly.Module(userOptions.wasmBinary);
-        const instance = new WebAssembly.Instance(module, {});
-        this.module = instance.exports;
-        this.module.init(userOptions.clock,userOptions.sampleRate);
-        this.module.reset();
-        this.enable = true;
-
-        this.port.onmessage = (event)=>{
-          if(this.enable){
-            const message = event.data;
-            switch(message.message){
-              case 'writeReg':
+    this.enable = false;
+    this.sampleRate = sampleRate;
+    this.port.onmessage = (event)=>{
+        const message = event.data;
+        switch(message.message){
+          case 'init':
+            if(!this.enable){
+              this.init(message);
+            } 
+            break;
+          case 'writeReg':
+            if(this.enable){
                 this.module.writeReg(message.reg,message.value);
                 this.port.postMessage({
                   check:this.module.readReg(message.reg) == message.value,
                   value:message.value,
                   read:this.module.readReg(message.reg),
                   reg:message.reg
-                });
-                break;
+              });
             }
-          }
-        }        
-      }
+            break;
+        }
     }
-  
   }
 
-
-  static get parameterDescriptors () {
-      return [{
-          name: 'register',
-          defaultValue: 0,
-          minValue: 0,
-          maxValue: 15,
-          automationRate: "a-rate"
-      },
-      {
-        name: 'value',
-        defaultValue: 0,
-        minValue: 0,
-        maxValue: 15,
-        automationRate: "a-rate"
-      }
-    ];
+  init({wasmBinary,memory,clock = 3580000,sampleRate_ = sampleRate})
+  {
+    const module = new WebAssembly.Module(wasmBinary);
+    const instance = new WebAssembly.Instance(module, {env:{memory:memory}});
+    this.module = instance.exports;
+    this.module.init(clock,sampleRate_);
+    this.module.reset();
+    this.enable = true;
   }
-
-
-
 
   process (inputs, outputs, parameters) {
       if(this.enable){
