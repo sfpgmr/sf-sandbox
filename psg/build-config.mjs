@@ -6,6 +6,7 @@ export default {
   "./current/src/html/index.html",
   "./current/build/index.js",
   "./current/src/js/psg.js",
+  "./current/src/js/psg-worker.js",
   "./current/build/psg.wasm"
   ],
   "symlinkFiles":[],
