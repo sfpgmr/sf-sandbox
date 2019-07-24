@@ -88,7 +88,10 @@ i32 regmsk[16] = [
   
 {@map
   PSG psg;
-  f32 OutputBuffer[128];
+  i32 buffer_size;
+  i32 read_offset;
+  i32 write_offset;
+  i32 buffer_start;
 }
   (func $internal_refresh
     (if

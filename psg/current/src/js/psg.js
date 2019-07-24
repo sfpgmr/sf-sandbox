@@ -1,4 +1,4 @@
-class PSG extends AudioWorkletProcessor {
+class PSGWorklet extends AudioWorkletProcessor {
   constructor(){
     super();
     this.enable = false;
@@ -26,10 +26,12 @@ class PSG extends AudioWorkletProcessor {
     }
   }
 
-  init({wasmBinary,memory,clock = 3580000,sampleRate_ = sampleRate})
+  init({wasmBinary,memory,clock = 3580000,sampleRate_ = sampleRate,bufferOffset = 0})
   {
-    const module = new WebAssembly.Module(wasmBinary);
-    const instance = new WebAssembly.Instance(module, {env:{memory:memory}});
+//    const module = new WebAssembly.Module(wasmBinary);
+    this.buffer = new Float32Array(memory.buffer,bufferOffset); 
+    this.offset = 0;
+//    const instance = new WebAssembly.Instance(module, {env:{memory:memory}});
     this.module = instance.exports;
     this.module.init(clock,sampleRate_);
     this.module.reset();
@@ -38,15 +40,19 @@ class PSG extends AudioWorkletProcessor {
 
   process (inputs, outputs, parameters) {
       if(this.enable){
-        let output = outputs[0];
-        for (let i = 0,e = output[0].length; i < e; ++i) {
-
-          const out = this.module.calc() / 16384;
-
-          for (let channel = 0; channel < output.length; ++channel) {
-              output[channel][i] = out;
+        const output = outputs[0];
+        const buffer = this.buffer;
+        let offset = this.offset | 0;
+        if(offset >= this.buffer.byteLength) {
+          this.offset = 0;
+        }
+        for (let channel = 0; channel < output.length; ++channel) {
+          const o = output[channel];
+          for (let i = 0,e = o.length; i < e; ++i) {
+            o[i] = buffer[offset++];
           }
         }
+        this.offset  = offset;
       }
       return true;
   }
