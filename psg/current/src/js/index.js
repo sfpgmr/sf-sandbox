@@ -89,7 +89,7 @@ window.addEventListener('load', async () => {
   //   }
   // }
 
-  let psg,psgBin;
+  let psg,psgBin,memoryMap,psgWorker;
   let play = false;
   let vol;
   let enable = 0x3f;
@@ -184,27 +184,60 @@ window.addEventListener('load', async () => {
       // Shared Memoryの利用
       // wasmバイナリの読み込み
       psgBin = await (await fetch('./psg.wasm')).arrayBuffer();
-      const memory = new WebAssembly.Memory({initial:1,shared:true,maximum:1});
+      
+      memoryMap = await (await fetch('./psg.context.json')).json();
+      
+      function getOffset(prop){
+        return prop._attributes_.offset;
+      }
+
+      function getSize(prop){
+        return prop._attributes_.size;
+      }
+
+
+      
       var audioctx = new AudioContext();
+      let pageSize = Math.floor(
+        (Math.floor(audioctx.sampleRate / 128) * 128 * 4 | 0 + getSize(memoryMap)) / 65536
+        );
+
+      const memory = new WebAssembly.Memory({initial:pageSize,shared:true,maximum:pageSize});
       await audioctx.audioWorklet.addModule("./psg.js");
       psg = new AudioWorkletNode(audioctx, "PSG", {
         outputChannelCount: [2]
       });
 
+      psgWorker = new Worker('./psg-worker.js');
+
       psg.port.postMessage({
         message:'init',
         wasmBinary:psgBin,
         memory:memory,
+        bufferStart:getOffset(memoryMap.buffer_start),
+        readOffset:getOffset(memoryMap.read_offset),
+        writeOffset:getOffset(memoryMap.write_offset),
+        bufferSize:getOffset(memoryMap.buffer_size)
+      });
+
+      psgWorker.postMessage({
+        message:'init',
+        wasmBinary:psgBin,
+        memory:memory,
+        bufferStart:getOffset(memoryMap.buffer_start),
+        readOffset:getOffset(memoryMap.read_offset),
+        writeOffset:getOffset(memoryMap.write_offset),
+        bufferSize:getOffset(memoryMap.buffer_size),
         clock:17900000
       });
 
-      psg.writeReg = (function (reg, value) {
-        this.port.postMessage(
+      psgWorker.writeReg = (function (reg, value) {
+        this.postMessage(
           {
             message: 'writeReg', reg: reg, value: value
           }
         )
-      }).bind(psg);
+      }).bind(psgWorker);
 
       psg.port.onmessage = function (e) {
         console.log(e.data);

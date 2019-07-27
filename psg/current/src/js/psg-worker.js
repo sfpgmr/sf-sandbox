@@ -1,7 +1,7 @@
 let psg, play = false;
 
 class PSGWorker {
-	PSGWorker({ wasmBinary, memory, clock = 3580000, sampleRate_ = sampleRate }) {
+	PSGWorker({ wasmBinary, memory, clock = 3580000, sampleRate = 44100 }) {
 		const module = new WebAssembly.Module(wasmBinary);
 		const instance = new WebAssembly.Instance(module, { env: { memory: memory } });
 		this.module = instance.exports;

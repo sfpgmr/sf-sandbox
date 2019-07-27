@@ -7,7 +7,8 @@ export default {
   "./current/build/index.js",
   "./current/src/js/psg.js",
   "./current/src/js/psg-worker.js",
-  "./current/build/psg.wasm"
+  "./current/build/psg.wasm",
+  "./current/src/wasm/psg.context.json"
   ],
   "symlinkFiles":[],
   "schema":{
