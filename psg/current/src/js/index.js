@@ -195,14 +195,14 @@ window.addEventListener('load', async () => {
         return prop._attributes_.size;
       }
 
-
-      
       var audioctx = new AudioContext();
+      // 0.5秒以上かつ2の塁上のバッファサイズを求める
+      let audioBufferSize = Math.pow(2,Math.ceil(Math.log2(audioctx.sampleRate * 4 / 2)));
       let pageSize = Math.floor(
-        (Math.floor(audioctx.sampleRate / 128) * 128 * 4 | 0 + getSize(memoryMap)) / 65536
+        (Math.ceil(audioctx.sampleRate / 128) * 128 * 4 | 0 + getSize(memoryMap)) / 65536
         );
 
-      const memory = new WebAssembly.Memory({initial:pageSize,shared:true,maximum:pageSize});
+      const memory = new WebAssembly.Memory({initial:pageSize,shared:true,maximum:50});
       await audioctx.audioWorklet.addModule("./psg.js");
       psg = new AudioWorkletNode(audioctx, "PSG", {
         outputChannelCount: [2]

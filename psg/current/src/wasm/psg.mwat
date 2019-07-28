@@ -81,10 +81,12 @@ i32 regmsk[16] = [
   (export "updateOutput" (func $update_output))
   (export "mixOutput" (func $mix_output))
   (export "calc" (func $calc))
+  (export "render" (func $render))
+
   (export "reset" (func $reset))
   (export "writeReg" (func $write_reg))
 ;;  (export "memory" (memory $memory))
-  (import "env" "memory" (memory $memory 1 1 shared))
+  (import "env" "memory" (memory $memory 1 50 shared))
   
 {@map
   PSG psg;
@@ -729,6 +731,10 @@ i32 regmsk[16] = [
       )
     )
     call $mix_output
+  )
+
+  (func $render (local $i)
+  
   )
 
   (func $write_reg (param $reg i32) (param $val i32) (local $c i32) (local $w i32)
