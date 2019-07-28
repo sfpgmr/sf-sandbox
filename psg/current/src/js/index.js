@@ -196,13 +196,14 @@ window.addEventListener('load', async () => {
       }
 
       var audioctx = new AudioContext();
-      // 0.5秒以上かつ2の塁上のバッファサイズを求める
-      let audioBufferSize = Math.pow(2,Math.ceil(Math.log2(audioctx.sampleRate * 4 / 2)));
-      let pageSize = Math.floor(
-        (Math.ceil(audioctx.sampleRate / 128) * 128 * 4 | 0 + getSize(memoryMap)) / 65536
-        );
-
-      const memory = new WebAssembly.Memory({initial:pageSize,shared:true,maximum:50});
+      // 100ms分のバッファサイズを求める
+      let audioBufferSize = Math.pow(2,Math.ceil(Math.log2(audioctx.sampleRate * 4 * 0.1)));
+      let pageSize = Math.ceil((audioBufferSize + getSize(memoryMap)) / 65536);
+      const memory = new WebAssembly.Memory({initial:pageSize,shared:true,maximum:10});
+      
+      const dataView = new DataView(memory.buffer);
+      dataView.setInt32(getOffset(memoryMap.buffer_size),audioBufferSize,true);
+    
       await audioctx.audioWorklet.addModule("./psg.js");
       psg = new AudioWorkletNode(audioctx, "PSG", {
         outputChannelCount: [2]
@@ -212,7 +213,6 @@ window.addEventListener('load', async () => {
 
       psg.port.postMessage({
         message:'init',
-        wasmBinary:psgBin,
         memory:memory,
         bufferStart:getOffset(memoryMap.buffer_start),
         readOffset:getOffset(memoryMap.read_offset),

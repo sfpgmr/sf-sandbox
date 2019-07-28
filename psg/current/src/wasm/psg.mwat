@@ -82,14 +82,16 @@ i32 regmsk[16] = [
   (export "mixOutput" (func $mix_output))
   (export "calc" (func $calc))
   (export "render" (func $render))
+  (export "fill" (func $fill))
 
   (export "reset" (func $reset))
   (export "writeReg" (func $write_reg))
 ;;  (export "memory" (memory $memory))
-  (import "env" "memory" (memory $memory 1 50 shared))
+  (import "env" "memory" (memory $memory 1 10 shared))
   
 {@map
   PSG psg;
+  i32 status;
   i32 buffer_size;
   i32 read_offset;
   i32 write_offset;
@@ -733,8 +735,27 @@ i32 regmsk[16] = [
     call $mix_output
   )
 
-  (func $render (local $i)
-  
+  (func $fill (local $end i32) (local $woffset i32) (local $output f32)
+    (local.set $end
+      (i32.add (&buffer_start;) (i32.load (&buffer_size;)))
+    )
+ 
+    (block $fill_exit
+      (loop $fill_loop
+        (br_if $render_exit (i32.gt (local.get $woffset) (local.get $end)))
+        (f32.store (local.get $woffset)
+          (f32.div
+            (f32.convert_s (call $calc))
+            (f32.const 16384)
+          )
+        )
+        (local.set $woffset (i32.add (local.get $woffset) (i32.const 4)))
+        (br $fill_loop)
+      )
+    )
+  )
+
+  (func $render
   )
 
   (func $write_reg (param $reg i32) (param $val i32) (local $c i32) (local $w i32)

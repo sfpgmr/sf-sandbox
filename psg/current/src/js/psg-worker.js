@@ -9,8 +9,9 @@ class PSGWorker {
 		this.module.reset();
 		this.enable = true;
   }
-  render(){
-    
+	
+	render(){
+		this.module.render();
   };
 }
 
