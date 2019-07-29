@@ -11,16 +11,9 @@ class PSGWorklet extends AudioWorkletProcessor {
               this.init(message);
             } 
             break;
-          case 'writeReg':
-            if(this.enable){
-                this.module.writeReg(message.reg,message.value);
-                this.port.postMessage({
-                  check:this.module.readReg(message.reg) == message.value,
-                  value:message.value,
-                  read:this.module.readReg(message.reg),
-                  reg:message.reg
-              });
-            }
+          case 'play':
+            break;
+          case 'stop':
             break;
         }
     }
@@ -30,8 +23,8 @@ class PSGWorklet extends AudioWorkletProcessor {
   {
 //    const module = new WebAssembly.Module(wasmBinary);
     this.buffer = new Float32Array(memory.buffer,bufferStart,bufferSize / 4);
-    this.readOffset;
-    this.writeOffset;
+    this.readOffset = readOffset;
+    this.writeOffset = writeOffset;
     this.memory = memory;
     this.dataView = new DataView(this.memory.buffer);
     this.offset = 0;

@@ -257,6 +257,9 @@ i32 regmsk[16] = [
 
     (i32.store (&psg.out;) (i32.const 0))
 
+    ;; バッファの初期化
+    (i32.store (&read_offset) (i32.const 0))
+    (i32.store (&write_offset) (i32.const 0))
   )
 
   (func $read_io (result i32)
@@ -735,6 +738,7 @@ i32 regmsk[16] = [
     call $mix_output
   )
 
+  (;; バッファを埋める ;;)
   (func $fill (local $end i32) (local $woffset i32) (local $output f32)
     (local.set $end
       (i32.add (&buffer_start;) (i32.load (&buffer_size;)))
@@ -755,7 +759,50 @@ i32 regmsk[16] = [
     )
   )
 
-  (func $render
+  (;; バッファの空き部分をデータで埋める ;;)
+  (func $render 
+    (;; local変数 ;;)
+    (local $woffset i32) 
+    (local $roffset i32)
+    (local $buffer_mask i32)
+    (if (i32.eq (i32.load (&read_offset;)) (i32.load (&write_offset;)))
+      (then
+        (return) 
+      ) 
+    )
+
+    (local.set $woffset 
+      (i32.load (&write_offset;))
+    )
+    (local.set $roffset 
+      (i32.load (&read_offset;))
+    )
+
+    (local.set $buffer_mask
+      (i32.sub 
+        (i32.load (&buffer_size;))
+        (i32.const 1)
+      )
+    )
+
+    (block $render_exit
+      (loop $render_loop
+        (br_if $render_exit (i32.eq (local.get $roffset) (local.get $woffset)))
+        (f32.store (i32.add (&buffer_start;) (local.get $woffset))
+          (f32.div
+            (f32.convert_s (call $calc))
+            (f32.const 16384)
+          )
+        )
+        (local.set $woffset 
+          (i32.and
+            (i32.add (local.get $woffset) (i32.const 4))
+            (local.get $buffer_mask)
+          )
+        )
+        (br $render_loop)
+      )
+    )
   )
 
   (func $write_reg (param $reg i32) (param $val i32) (local $c i32) (local $w i32)
