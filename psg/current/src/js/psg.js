@@ -25,8 +25,11 @@ class PSGWorklet extends AudioWorkletProcessor {
   {
 //    const module = new WebAssembly.Module(wasmBinary);
     this.buffer = new Float32Array(memory.buffer,bufferStart,bufferSize / 4);
-    this.readOffset = readOffset;
-    this.writeOffset = writeOffset;
+    this.readOffset = new Int32Array(memory.buffer,readOffset);
+    this.writeOffset = new Int32Array(memory.offset,writeOffset);
+    this.bufferStart = bufferStart;
+    this.bufferSize = bufferSize;
+    this.bufferMask = (bufferSize - 1) & 0xffffffff;
     this.memory = memory;
     this.dataView = new DataView(this.memory.buffer);
     this.offset = 0;
@@ -41,17 +44,14 @@ class PSGWorklet extends AudioWorkletProcessor {
       if(this.enable){
         const output = outputs[0];
         const buffer = this.buffer;
-        let offset = this.offset | 0;
-        if(offset >= this.buffer.byteLength) {
-          this.offset = 0;
-        }
+        let offset = Atomics.load(this.readOffset,0) & this.bufferMask + this.bufferStart;
         for (let channel = 0; channel < output.length; ++channel) {
           const o = output[channel];
           for (let i = 0,e = o.length; i < e; ++i) {
             o[i] = buffer[offset++];
           }
         }
-        this.offset  = offset;
+        Atomics.store(this.readOffset,0,offset - this.bufferStart);
       }
       return true;
   }

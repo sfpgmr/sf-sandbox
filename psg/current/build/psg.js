@@ -1,4 +1,4 @@
-class PSG extends AudioWorkletProcessor {
+class PSGWorklet extends AudioWorkletProcessor {
   constructor(){
     super();
     this.enable = false;
@@ -11,25 +11,29 @@ class PSG extends AudioWorkletProcessor {
               this.init(message);
             } 
             break;
-          case 'writeReg':
-            if(this.enable){
-                this.module.writeReg(message.reg,message.value);
-                this.port.postMessage({
-                  check:this.module.readReg(message.reg) == message.value,
-                  value:message.value,
-                  read:this.module.readReg(message.reg),
-                  reg:message.reg
-              });
-            }
+          case 'play':
+            this.enable = true;
+            break;
+          case 'stop':
+            this.enable = false;
             break;
         }
     }
   }
 
-  init({wasmBinary,memory,clock = 3580000,sampleRate_ = sampleRate})
+  init({memory,clock = 3580000,sampleRate_ = sampleRate,bufferStart = 0,readOffset,writeOffset,bufferSize})
   {
-    const module = new WebAssembly.Module(wasmBinary);
-    const instance = new WebAssembly.Instance(module, {env:{memory:memory}});
+//    const module = new WebAssembly.Module(wasmBinary);
+    this.buffer = new Float32Array(memory.buffer,bufferStart,bufferSize / 4);
+    this.readOffset = new Int32Array(memory.buffer,readOffset);
+    this.writeOffset = new Int32Array(memory.offset,writeOffset);
+    this.bufferStart = bufferStart;
+    this.bufferSize = bufferSize;
+    this.bufferMask = (bufferSize - 1) & 0xffffffff;
+    this.memory = memory;
+    this.dataView = new DataView(this.memory.buffer);
+    this.offset = 0;
+//    const instance = new WebAssembly.Instance(module, {env:{memory:memory}});
     this.module = instance.exports;
     this.module.init(clock,sampleRate_);
     this.module.reset();
@@ -38,15 +42,16 @@ class PSG extends AudioWorkletProcessor {
 
   process (inputs, outputs, parameters) {
       if(this.enable){
-        let output = outputs[0];
-        for (let i = 0,e = output[0].length; i < e; ++i) {
-
-          const out = this.module.calc() / 16384;
-
-          for (let channel = 0; channel < output.length; ++channel) {
-              output[channel][i] = out;
+        const output = outputs[0];
+        const buffer = this.buffer;
+        let offset = Atomics.load(this.readOffset,0) & this.bufferMask + this.bufferStart;
+        for (let channel = 0; channel < output.length; ++channel) {
+          const o = output[channel];
+          for (let i = 0,e = o.length; i < e; ++i) {
+            o[i] = buffer[offset++];
           }
         }
+        Atomics.store(this.readOffset,0,offset - this.bufferStart);
       }
       return true;
   }

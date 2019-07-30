@@ -106,8 +106,8 @@ window.addEventListener('load', async () => {
     const period = document.getElementById(ch + '-Period');
     period.addEventListener('input', function () {
       document.getElementById(ch + '-Period-Text').innerText = this.value;
-      psg.writeReg(i * 2, this.value & 0xff);
-      psg.writeReg(i * 2 + 1, (this.value & 0xf00) >> 8);
+      psgWorker.writeReg(i * 2, this.value & 0xff);
+      psgWorker.writeReg(i * 2 + 1, (this.value & 0xf00) >> 8);
     });
 
     // Noise On/OFF
@@ -117,7 +117,7 @@ window.addEventListener('load', async () => {
       let v = ((this.checked ? 0 : 1) << (i + 3));
       enable = (enable & m) | v;
       console.log(m, v, (enable).toString(2));
-      psg.writeReg(7, enable);
+      psgWorker.writeReg(7, enable);
     });
 
     // Tone On/OFF
@@ -127,7 +127,7 @@ window.addEventListener('load', async () => {
       let v = ((this.checked ? 0 : 1) << i);
       enable = (enable & m) | v;
       console.log(m, v, (enable).toString(2));
-      psg.writeReg(7, enable);
+      psgWorker.writeReg(7, enable);
     });
 
 
@@ -136,7 +136,7 @@ window.addEventListener('load', async () => {
     volume.addEventListener('input', function () {
       document.getElementById('Volume-' + ch + '-Text').innerText = this.value;
       let v = document.getElementById('Env-' + ch).checked ? 16 : 0 | this.value;
-      psg.writeReg(8 + i, v);
+      psgWorker.writeReg(8 + i, v);
     });
 
     // Envelope On/Off
@@ -144,7 +144,7 @@ window.addEventListener('load', async () => {
     env.addEventListener('click', function () {
       let v = this.checked ? 16 : 0;
       v = v | volume.value;
-      psg.writeReg(8 + i, v);
+      psgWorker.writeReg(8 + i, v);
     });
 
   });
@@ -154,7 +154,7 @@ window.addEventListener('load', async () => {
   const noise = document.getElementById('Noise-Period');
   noise.addEventListener('input', function () {
     document.getElementById('Noise-Period-Text').innerText = this.value;
-    psg.writeReg(6, this.value);
+    psgWorker.writeReg(6, this.value);
   });
 
   // Enevlope Period
@@ -162,8 +162,8 @@ window.addEventListener('load', async () => {
   const envPeriod = document.getElementById('Env-Period');
   envPeriod.addEventListener('input', function () {
     document.getElementById('Env-Period-Text').innerText = this.value;
-    psg.writeReg(11, this.value & 0xff);
-    psg.writeReg(12, (this.value & 0xff00) >> 8);
+    psgWorker.writeReg(11, this.value & 0xff);
+    psgWorker.writeReg(12, (this.value & 0xff00) >> 8);
   });
 
   // Envelope Shape
@@ -174,7 +174,7 @@ window.addEventListener('load', async () => {
       let m = (1 << i) ^ 0xf;
       let v = (this.checked ? 1 : 0) << i;
       envShape = (envShape & m) | v;
-      psg.writeReg(13, envShape);
+      psgWorker.writeReg(13, envShape);
     });
   });
 
@@ -239,7 +239,7 @@ window.addEventListener('load', async () => {
         )
       }).bind(psgWorker);
 
-      psg.port.onmessage = function (e) {
+      psgWorker.onmessage = function (e) {
         console.log(e.data);
       };
 
@@ -267,13 +267,17 @@ window.addEventListener('load', async () => {
       // psg.writeReg(10, 0b10000);
       // psg.writeReg(12, 0xe);
       // psg.writeReg(13, 0b1000);
-      psg.writeReg(7, enable);
+      psgWorker.writeReg(7, enable);
+      psg.port.postMessage({message:'play'});
+      psgWorker.postMessage({message:'play'});
       // psg.writeReg(6, 0b10000);
       vol.gain.value = 1.0;
       startButton.innerText = 'PSG-OFF';
     } else {
       play = false;
-      psg.writeReg(7, 0x3f);
+      psg.port.postMessage({message:'stop'});
+      psgWorker.writeReg(7, 0x3f);
+      psgWorker.postMessage({message:'stop'});
       vol.gain.value = 0.0;
       startButton.innerText = 'PSG-ON';
     }

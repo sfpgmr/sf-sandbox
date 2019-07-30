@@ -92,7 +92,7 @@
     //   }
     // }
 
-    let psg,psgBin;
+    let psg,psgBin,memoryMap,psgWorker;
     let play = false;
     let vol;
     let enable = 0x3f;
@@ -109,8 +109,8 @@
       const period = document.getElementById(ch + '-Period');
       period.addEventListener('input', function () {
         document.getElementById(ch + '-Period-Text').innerText = this.value;
-        psg.writeReg(i * 2, this.value & 0xff);
-        psg.writeReg(i * 2 + 1, (this.value & 0xf00) >> 8);
+        psgWorker.writeReg(i * 2, this.value & 0xff);
+        psgWorker.writeReg(i * 2 + 1, (this.value & 0xf00) >> 8);
       });
 
       // Noise On/OFF
@@ -120,7 +120,7 @@
         let v = ((this.checked ? 0 : 1) << (i + 3));
         enable = (enable & m) | v;
         console.log(m, v, (enable).toString(2));
-        psg.writeReg(7, enable);
+        psgWorker.writeReg(7, enable);
       });
 
       // Tone On/OFF
@@ -130,7 +130,7 @@
         let v = ((this.checked ? 0 : 1) << i);
         enable = (enable & m) | v;
         console.log(m, v, (enable).toString(2));
-        psg.writeReg(7, enable);
+        psgWorker.writeReg(7, enable);
       });
 
 
@@ -139,7 +139,7 @@
       volume.addEventListener('input', function () {
         document.getElementById('Volume-' + ch + '-Text').innerText = this.value;
         let v = document.getElementById('Env-' + ch).checked ? 16 : 0 | this.value;
-        psg.writeReg(8 + i, v);
+        psgWorker.writeReg(8 + i, v);
       });
 
       // Envelope On/Off
@@ -147,7 +147,7 @@
       env.addEventListener('click', function () {
         let v = this.checked ? 16 : 0;
         v = v | volume.value;
-        psg.writeReg(8 + i, v);
+        psgWorker.writeReg(8 + i, v);
       });
 
     });
@@ -157,7 +157,7 @@
     const noise = document.getElementById('Noise-Period');
     noise.addEventListener('input', function () {
       document.getElementById('Noise-Period-Text').innerText = this.value;
-      psg.writeReg(6, this.value);
+      psgWorker.writeReg(6, this.value);
     });
 
     // Enevlope Period
@@ -165,8 +165,8 @@
     const envPeriod = document.getElementById('Env-Period');
     envPeriod.addEventListener('input', function () {
       document.getElementById('Env-Period-Text').innerText = this.value;
-      psg.writeReg(11, this.value & 0xff);
-      psg.writeReg(12, (this.value & 0xff00) >> 8);
+      psgWorker.writeReg(11, this.value & 0xff);
+      psgWorker.writeReg(12, (this.value & 0xff00) >> 8);
     });
 
     // Envelope Shape
@@ -177,7 +177,7 @@
         let m = (1 << i) ^ 0xf;
         let v = (this.checked ? 1 : 0) << i;
         envShape = (envShape & m) | v;
-        psg.writeReg(13, envShape);
+        psgWorker.writeReg(13, envShape);
       });
     });
 
@@ -187,29 +187,62 @@
         // Shared Memoryの利用
         // wasmバイナリの読み込み
         psgBin = await (await fetch('./psg.wasm')).arrayBuffer();
-        const memory = new WebAssembly.Memory({initial:1,shared:true,maximum:1});
+        
+        memoryMap = await (await fetch('./psg.context.json')).json();
+        
+        function getOffset(prop){
+          return prop._attributes_.offset;
+        }
+
+        function getSize(prop){
+          return prop._attributes_.size;
+        }
+
         var audioctx = new AudioContext();
+        // 100ms分のバッファサイズを求める
+        let audioBufferSize = Math.pow(2,Math.ceil(Math.log2(audioctx.sampleRate * 4 * 0.1)));
+        let pageSize = Math.ceil((audioBufferSize + getSize(memoryMap)) / 65536);
+        const memory = new WebAssembly.Memory({initial:pageSize,shared:true,maximum:10});
+        
+        const dataView = new DataView(memory.buffer);
+        dataView.setInt32(getOffset(memoryMap.buffer_size),audioBufferSize,true);
+      
         await audioctx.audioWorklet.addModule("./psg.js");
         psg = new AudioWorkletNode(audioctx, "PSG", {
           outputChannelCount: [2]
         });
 
+        psgWorker = new Worker('./psg-worker.js');
+
         psg.port.postMessage({
+          message:'init',
+          memory:memory,
+          bufferStart:getOffset(memoryMap.buffer_start),
+          readOffset:getOffset(memoryMap.read_offset),
+          writeOffset:getOffset(memoryMap.write_offset),
+          bufferSize:getOffset(memoryMap.buffer_size)
+        });
+
+        psgWorker.postMessage({
           message:'init',
           wasmBinary:psgBin,
           memory:memory,
+          bufferStart:getOffset(memoryMap.buffer_start),
+          readOffset:getOffset(memoryMap.read_offset),
+          writeOffset:getOffset(memoryMap.write_offset),
+          bufferSize:getOffset(memoryMap.buffer_size),
           clock:17900000
         });
 
-        psg.writeReg = (function (reg, value) {
-          this.port.postMessage(
+        psgWorker.writeReg = (function (reg, value) {
+          this.postMessage(
             {
               message: 'writeReg', reg: reg, value: value
             }
           );
-        }).bind(psg);
+        }).bind(psgWorker);
 
-        psg.port.onmessage = function (e) {
+        psgWorker.onmessage = function (e) {
           console.log(e.data);
         };
 
@@ -237,13 +270,17 @@
         // psg.writeReg(10, 0b10000);
         // psg.writeReg(12, 0xe);
         // psg.writeReg(13, 0b1000);
-        psg.writeReg(7, enable);
+        psgWorker.writeReg(7, enable);
+        psg.port.postMessage({message:'play'});
+        psgWorker.postMessage({message:'play'});
         // psg.writeReg(6, 0b10000);
         vol.gain.value = 1.0;
         startButton.innerText = 'PSG-OFF';
       } else {
         play = false;
-        psg.writeReg(7, 0x3f);
+        psg.port.postMessage({message:'stop'});
+        psgWorker.writeReg(7, 0x3f);
+        psgWorker.postMessage({message:'stop'});
         vol.gain.value = 0.0;
         startButton.innerText = 'PSG-ON';
       }
