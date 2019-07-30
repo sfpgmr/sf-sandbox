@@ -12,14 +12,16 @@ class PSGWorklet extends AudioWorkletProcessor {
             } 
             break;
           case 'play':
+            this.enable = true;
             break;
           case 'stop':
+            this.enable = false;
             break;
         }
     }
   }
 
-  init({wasmBinary,memory,clock = 3580000,sampleRate_ = sampleRate,bufferStart = 0,readOffset,writeOffset,bufferSize})
+  init({memory,clock = 3580000,sampleRate_ = sampleRate,bufferStart = 0,readOffset,writeOffset,bufferSize})
   {
 //    const module = new WebAssembly.Module(wasmBinary);
     this.buffer = new Float32Array(memory.buffer,bufferStart,bufferSize / 4);
