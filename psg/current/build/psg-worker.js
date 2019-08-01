@@ -15,7 +15,7 @@ class PSGWorker {
 	};
 }
 
-onmessage((message) => {
+self.addEventListener('message',(message) => {
 	const m = message.data;
 	switch (m.message) {
 		case 'init':
@@ -26,7 +26,7 @@ onmessage((message) => {
 		case 'play':
 			if (!play) {
 				play = true;
-				psg.reset();
+				psg.module.reset();
 				psg.module.fill();
 				setTimeout(render, 25);
 			}

@@ -188,7 +188,8 @@
         // wasmバイナリの読み込み
         psgBin = await (await fetch('./psg.wasm')).arrayBuffer();
         
-        memoryMap = await (await fetch('./psg.context.json')).json();
+        memoryMap = await fetch('./psg.context.json');
+        memoryMap = await memoryMap.json();
         
         function getOffset(prop){
           return prop._attributes_.offset;

@@ -1,4 +1,4 @@
-class PSGWorklet extends AudioWorkletProcessor {
+class PSG extends AudioWorkletProcessor {
   constructor(){
     super();
     this.enable = false;
@@ -33,10 +33,6 @@ class PSGWorklet extends AudioWorkletProcessor {
     this.memory = memory;
     this.dataView = new DataView(this.memory.buffer);
     this.offset = 0;
-//    const instance = new WebAssembly.Instance(module, {env:{memory:memory}});
-    this.module = instance.exports;
-    this.module.init(clock,sampleRate_);
-    this.module.reset();
     this.enable = true;
   }
 
@@ -55,5 +51,18 @@ class PSGWorklet extends AudioWorkletProcessor {
       }
       return true;
   }
+
+  static get parameterDescriptors () {
+    const parameters = [];
+    parameters.push({
+      name: 'enable',
+      defaultValue: 0,
+      minValue: 0,
+      maxValue: 1,
+      automationRate: "k-rate"
+    });
+    return parameters;
+  }
+
 }
 registerProcessor("PSG", PSG);
