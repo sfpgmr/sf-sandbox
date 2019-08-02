@@ -27,11 +27,11 @@ class PSG extends AudioWorkletProcessor {
     this.buffer = new Float32Array(memory.buffer,bufferStart,bufferSize / 4);
     this.readOffset = new Int32Array(memory.buffer,readOffset);
     this.writeOffset = new Int32Array(memory.offset,writeOffset);
+    this.dataView = new DataView(this.memory.buffer);
     this.bufferStart = bufferStart;
-    this.bufferSize = bufferSize;
+    this.bufferSize = this.dataView.getInt32(bufferSize,true);
     this.bufferMask = (bufferSize - 1) & 0xffffffff;
     this.memory = memory;
-    this.dataView = new DataView(this.memory.buffer);
     this.offset = 0;
     this.enable = true;
   }

@@ -24,7 +24,7 @@ self.addEventListener('message',(message) => {
 			}
 			break;
 		case 'play':
-			if (!play) {
+			if (!play && psg && psg.enable) {
 				play = true;
 				psg.module.reset();
 				psg.module.fill();
