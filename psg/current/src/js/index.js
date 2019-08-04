@@ -21,6 +21,24 @@
 //THE SOFTWARE.
 
 
+// エンディアンを調べる関数
+function checkEndian(buffer = new ArrayBuffer(2)) {
+
+  if (buffer.byteLength == 1) return false;
+
+  const ua = new Uint16Array(buffer);
+  const v = new DataView(buffer);
+  v.setUint16(0, 1);
+  // ArrayBufferとDataViewの読み出し結果が異なればリトル・エンディアンである
+  if (ua[0] != v.getUint16()) {
+    ua[0] = 0;
+    return true;
+  }
+  ua[0] = 0;
+  // ビッグ・エンディアン
+  return false;
+}
+
 // ブラウザのチェック
 function checkBrowser() {
   let userAgent = window.navigator.userAgent.toLowerCase();
@@ -94,12 +112,19 @@ window.addEventListener('load', async () => {
   let vol;
   let enable = 0x3f;
   let envShape = 0;
+  const littleEndian = checkEndian();
   const startButton = document.getElementById('start');
   let inputs = document.querySelectorAll('input');
 
   for (const i of inputs) {
     i.disabled = 'disabled';
   }
+
+  window.addEventListener("unload",()=>{
+    if(psgWorker){
+      psgWorker.terminate();
+    }
+  });
 
   ['A', 'B', 'C'].forEach((ch, i) => {
     // Tone
@@ -109,6 +134,7 @@ window.addEventListener('load', async () => {
       psgWorker.writeReg(i * 2, this.value & 0xff);
       psgWorker.writeReg(i * 2 + 1, (this.value & 0xf00) >> 8);
     });
+    
 
     // Noise On/OFF
     const noise = document.getElementById('Noise-' + ch);
@@ -202,8 +228,9 @@ window.addEventListener('load', async () => {
       let pageSize = Math.ceil((audioBufferSize + getSize(memoryMap)) / 65536);
       const memory = new WebAssembly.Memory({initial:pageSize,shared:true,maximum:10});
       
-      const dataView = new DataView(memory.buffer);
-      dataView.setInt32(getOffset(memoryMap.buffer_size),audioBufferSize,true);
+      const ia = new Int32Array(memory.buffer);
+      Atomics.store(ia,getOffset(memoryMap.buffer_size) >> 2,audioBufferSize);
+      //nt32(getOffset(memoryMap.buffer_size) >> 2,audioBufferSize,true);
     
       await audioctx.audioWorklet.addModule("./psg.js");
       psg = new AudioWorkletNode(audioctx, "PSG", {
@@ -218,7 +245,9 @@ window.addEventListener('load', async () => {
         bufferStart:getOffset(memoryMap.buffer_start),
         readOffset:getOffset(memoryMap.read_offset),
         writeOffset:getOffset(memoryMap.write_offset),
-        bufferSize:getOffset(memoryMap.buffer_size)
+        bufferSize:getOffset(memoryMap.buffer_size),
+        sampleRate:audioctx.sampleRate,
+        endian:littleEndian
       });
 
       psgWorker.postMessage({
@@ -229,7 +258,9 @@ window.addEventListener('load', async () => {
         readOffset:getOffset(memoryMap.read_offset),
         writeOffset:getOffset(memoryMap.write_offset),
         bufferSize:getOffset(memoryMap.buffer_size),
-        clock:17900000
+        clock:17900000,
+        sampleRate:audioctx.sampleRate,
+        endian:littleEndian
       });
 
       psgWorker.writeReg = (function (reg, value) {
@@ -243,6 +274,7 @@ window.addEventListener('load', async () => {
       psgWorker.onmessage = function (e) {
         console.log(e.data);
       };
+
 
       // psg.writeReg(8, 31);
       // psg.writeReg(0, 0x32);
@@ -258,6 +290,7 @@ window.addEventListener('load', async () => {
       console.log(audioctx.destination.channelCount);
 
     }
+
     if (!play) {
       for (const i of inputs) {
         i.disabled = '';

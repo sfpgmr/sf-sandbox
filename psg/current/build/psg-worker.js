@@ -1,13 +1,15 @@
 let psg, play = false;
 
 class PSGWorker {
-	PSGWorker({ wasmBinary, memory, clock = 3580000, sampleRate = 44100, bufferStart = 0, readOffset, writeOffset, bufferSize }) {
+	constructor({ wasmBinary, memory, clock = 3580000, sampleRate = 44100, bufferStart = 0, readOffset, writeOffset, bufferSize,endian }) {
 		const module = new WebAssembly.Module(wasmBinary);
 		const instance = new WebAssembly.Instance(module, { env: { memory: memory } });
+		this.memory = memory;
 		this.module = instance.exports;
-		this.module.init(clock, sampleRate_);
+		this.module.init(clock, sampleRate);
 		this.module.reset();
 		this.enable = true;
+		this.endian = endian;
 	}
 
 	render() {
@@ -20,7 +22,7 @@ self.addEventListener('message',(message) => {
 	switch (m.message) {
 		case 'init':
 			if (!psg) {
-				psg = new PSGWorker({ m });
+				psg = new PSGWorker(m);
 			}
 			break;
 		case 'play':

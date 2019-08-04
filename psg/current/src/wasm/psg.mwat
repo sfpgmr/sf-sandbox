@@ -741,6 +741,7 @@ i32 regmsk[16] = [
     (local.set $end
       (i32.add (&buffer_start;) (i32.load (&buffer_size;)))
     )
+    (local.set $woffset (&buffer_start;))
  
     (block $fill_exit
       (loop $fill_loop
