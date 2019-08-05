@@ -241,6 +241,14 @@
         });
 
         psgWorker = new Worker('./psg-worker.js');
+        psgWorker.onmessage = function (e) {
+          console.log(e.data);
+        };
+
+        psgWorker.onerror = function(e){
+          console.log(e);
+        };
+
 
         psg.port.postMessage({
           message:'init',
@@ -274,10 +282,6 @@
           );
         }).bind(psgWorker);
 
-        psgWorker.onmessage = function (e) {
-          console.log(e.data);
-        };
-
 
         // psg.writeReg(8, 31);
         // psg.writeReg(0, 0x32);
@@ -290,8 +294,6 @@
 
         vol = new GainNode(audioctx, { gain: 1.0 });
         psg.connect(vol).connect(audioctx.destination);
-        console.log(audioctx.destination.channelCount);
-
       }
 
       if (!play) {

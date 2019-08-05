@@ -37,13 +37,13 @@ self.addEventListener('message',(message) => {
 			play = false;
 			break;
 		case 'writeReg':
-			if (this.enable) {
-				this.module.writeReg(message.reg, message.value);
+			if (psg.enable) {
+				psg.module.writeReg(m.reg, m.value);
 				postMessage({
-					check: this.module.readReg(message.reg) == message.value,
-					value: message.value,
-					read: this.module.readReg(message.reg),
-					reg: message.reg
+					check: psg.module.readReg(m.reg) == m.value,
+					value: m.value,
+					read: psg.module.readReg(m.reg),
+					reg: m.reg
 				});
 			}
 			break;
