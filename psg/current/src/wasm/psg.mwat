@@ -746,6 +746,7 @@ i32 regmsk[16] = [
     (block $fill_exit
       (loop $fill_loop
         (br_if $fill_exit (i32.gt_s (local.get $woffset) (local.get $end)))
+
         (f32.store (local.get $woffset)
           (f32.div
             (f32.convert_i32_s (call $calc))
@@ -764,11 +765,11 @@ i32 regmsk[16] = [
     (local $woffset i32) 
     (local $roffset i32)
     (local $buffer_mask i32)
-    (if (i32.eq (i32.load (&read_offset;)) (i32.load (&write_offset;)))
-      (then
-        (return) 
-      ) 
-    )
+;;    (if (i32.eq (i32.load (&read_offset;)) (i32.load (&write_offset;)))
+;;      (then
+;;        (return) 
+;;      ) 
+;;    )
 
     (local.set $woffset 
       (i32.load (&write_offset;))

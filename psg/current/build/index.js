@@ -110,7 +110,7 @@
     //   }
     // }
 
-    let psg,psgBin,memoryMap,psgWorker;
+    let psg,psgBin,memoryMap,psgWorker,audioctx;
     let play = false;
     let vol;
     let enable = 0x3f;
@@ -126,6 +126,9 @@
     window.addEventListener("unload",()=>{
       if(psgWorker){
         psgWorker.terminate();
+      }
+      if(audioctx){
+        audioctx.close();
       }
     });
 
@@ -145,7 +148,6 @@
         const m = (1 << (i + 3)) ^ 0x3f;
         let v = ((this.checked ? 0 : 1) << (i + 3));
         enable = (enable & m) | v;
-        console.log(m, v, (enable).toString(2));
         psgWorker.writeReg(7, enable);
       });
 
@@ -155,7 +157,6 @@
         const m = (1 << i) ^ 0x3f;
         let v = ((this.checked ? 0 : 1) << i);
         enable = (enable & m) | v;
-        console.log(m, v, (enable).toString(2));
         psgWorker.writeReg(7, enable);
       });
 
@@ -225,9 +226,9 @@
           return prop._attributes_.size;
         }
 
-        var audioctx = new AudioContext();
+        audioctx = new AudioContext();
         // 100ms分のバッファサイズを求める
-        let audioBufferSize = Math.pow(2,Math.ceil(Math.log2(audioctx.sampleRate * 4 * 0.1)));
+        let audioBufferSize = Math.pow(2,Math.ceil(Math.log2(audioctx.sampleRate * 4 * 0.1 )));
         let pageSize = Math.ceil((audioBufferSize + getSize(memoryMap)) / 65536);
         const memory = new WebAssembly.Memory({initial:pageSize,shared:true,maximum:10});
         
@@ -283,14 +284,29 @@
         }).bind(psgWorker);
 
 
-        // psg.writeReg(8, 31);
-        // psg.writeReg(0, 0x32);
-        // psg.writeReg(1, 0x01);
-        // psg.writeReg(2, 0x5d);
-        // psg.writeReg(3, 0x02);
-        // psg.writeReg(4, 0x4d);
-        // psg.writeReg(5, 0x03);
-        //psg.writeReg(7, enable);
+
+        // psgWorker.writeReg(0, 0x5d);
+        // psgWorker.writeReg(1, 0xd);
+        // psgWorker.writeReg(2, 0x5d);
+        // psgWorker.writeReg(3, 0x1);
+        // psgWorker.writeReg(4, 0x5d);
+        // psgWorker.writeReg(5, 0x2);
+        // psgWorker.writeReg(6, 0x10);
+        // psgWorker.writeReg(12, 2);
+        // psgWorker.writeReg(13, 0b1001);
+        // psgWorker.writeReg(8, 0b1111);
+        // psgWorker.writeReg(7, 0b111);
+        // for (let i = 0; i < 128; ++i) {
+        //   psgWorker.postMessage({message:'calc'});
+        // }
+        // for(let i = 0;i < 65536;++i){
+        //   psgWorker.postMessage({message:'calc'});
+        // }
+
+        //psgWorker.postMessage({message:'fill'});
+
+
+
 
         vol = new GainNode(audioctx, { gain: 1.0 });
         psg.connect(vol).connect(audioctx.destination);
@@ -301,11 +317,11 @@
           i.disabled = '';
         }
         play = true;
-        // psg.writeReg(8, 0b10000);
-        // psg.writeReg(9, 0b10000);
-        // psg.writeReg(10, 0b10000);
-        // psg.writeReg(12, 0xe);
-        // psg.writeReg(13, 0b1000);
+        // psgWorker.writeReg(8, 0b10000);
+        // psgWorker.writeReg(9, 0b10000);
+        // psgWorker.writeReg(10, 0b10000);
+        // psgWorker.writeReg(12, 0xe);
+        // psgWorker.writeReg(13, 0b1000);
         psgWorker.writeReg(7, enable);
         psg.port.postMessage({message:'play'});
         psgWorker.postMessage({message:'play'});

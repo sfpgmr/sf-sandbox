@@ -43,7 +43,9 @@ class PSG extends AudioWorkletProcessor {
         const dv = this.dataView;
         const endian = this.endian;
 
-        let offset = (Atomics.load(this.readOffset,0) & this.bufferMask) + this.bufferStart;
+        let offset = (Atomics.load(this.readOffset,0) ) + this.bufferStart;
+        const  woffset = Atomics.load(this.writeOffset,0);
+
         const e = output[0].length;
         for (let channel = 0; channel < output.length; ++channel) {
           const o = output[channel];
@@ -51,7 +53,7 @@ class PSG extends AudioWorkletProcessor {
             o[i] = dv.getFloat32(offset + (i << 2),endian);
           }
         }
-        Atomics.store(this.readOffset,0,offset + e * 4 - this.bufferStart);
+        Atomics.store(this.readOffset,0,(offset + e * 4 - this.bufferStart) & this.bufferMask);
       }
       return true;
   }

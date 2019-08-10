@@ -10,11 +10,29 @@ class PSGWorker {
 		this.module.reset();
 		this.enable = true;
 		this.endian = endian;
+		this.writeOffset = writeOffset / 4;
+		this.readOffset = readOffset / 4;
+		this.dv = new DataView(memory.buffer);
+		this.array = new Uint32Array(memory.buffer);
+		this.bufferStart = bufferStart;
+		this.bufferSize = bufferSize;
+		this.bufferMask = Atomics.load(this.array,bufferSize / 4) - 1;
 	}
 
 	render() {
+		// const ro = Atomics.load(this.array,this.readOffset) ;
+		// let wo = Atomics.load(this.array,this.writeOffset);
+
+		// while(wo != ro){
+		// 	let o = this.module.calc() / 16384;
+		// 	this.dv.setFloat32(wo + this.bufferStart,o,this.endian);
+		// 	wo =  (wo + 4) & this.bufferMask;
+		// }
+
+		// Atomics.store(this.array,this.writeOffset,wo);
+
 		this.module.render();
-	};
+	}
 }
 
 self.addEventListener('message',(message) => {
@@ -24,13 +42,14 @@ self.addEventListener('message',(message) => {
 			if (!psg) {
 				psg = new PSGWorker(m);
 			}
+			self.postMessage({message:'init'});
 			break;
 		case 'play':
 			if (!play && psg && psg.enable) {
 				play = true;
-				psg.module.reset();
-				psg.module.fill();
-				setTimeout(render, 25);
+				//psg.module.reset();
+				//psg.module.fill();
+				render();
 			}
 			break;
 		case 'stop':
@@ -47,7 +66,17 @@ self.addEventListener('message',(message) => {
 				});
 			}
 			break;
-
+		case `fill`:
+			if (psg.enable) {
+				psg.module.fill();
+				postMessage('fill done.');
+			}
+			break;
+		case 'calc':
+			if(psg.enable){
+				let out = psg.module.calc();
+				postMessage(out);
+			}
 	}
 });
 
