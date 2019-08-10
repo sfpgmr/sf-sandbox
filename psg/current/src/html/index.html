@@ -51,8 +51,9 @@
 
 <body class="siimple-content siimple-content--medium">
   <div class="siimple-box siimple-box--orange">
-    <h1 class="siimple-box-title">WASMでPSGエミュレータを作る</h1>
+    <h1 class="siimple-box-title">WASMでPSGエミュレータを作る(WebWorkerで波形データ作成版）</h1>
   </div>
+  <p>Web Worker中のwasmモジュールで波形データを共有メモリ(SharedBufferArray)に作成し、それをAudioWorkletが再生します。</p>
   <p>PSG-ONボタンでパラメータUIが有効になります。</p>
   <button class="siimple-btn siimple-btn--orange" id="start" disabled>PSG-ON</button>
 
