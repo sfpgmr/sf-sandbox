@@ -5,10 +5,7 @@ export default {
   "copyFiles":[
   "./current/src/html/index.html",
   "./current/build/index.js",
-  "./current/src/js/wpsg.js",
-  "./current/src/js/wpsg-worker.js",
-  "./current/build/wpsg.wasm",
-  "./current/src/wasm/wpsg.context.json"
+  "./current/build/wpsg.wasm"
   ],
   "symlinkFiles":[],
   "schema":{

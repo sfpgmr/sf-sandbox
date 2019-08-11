@@ -81,21 +81,13 @@ i32 regmsk[16] = [
   (export "updateOutput" (func $update_output))
   (export "mixOutput" (func $mix_output))
   (export "calc" (func $calc))
-  (export "render" (func $render))
-  (export "fill" (func $fill))
-
   (export "reset" (func $reset))
   (export "writeReg" (func $write_reg))
-;;  (export "memory" (memory $memory))
-  (import "env" "memory" (memory $memory 1 10 shared))
-  
+  (export "memory" (memory $memory))
+  (memory $memory 1 )
 {@map
   PSG psg;
-  i32 status;
-  i32 buffer_size;
-  i32 read_offset;
-  i32 write_offset;
-  i32 buffer_start;
+  f32 OutputBuffer[128];
 }
   (func $internal_refresh
     (if
@@ -257,9 +249,6 @@ i32 regmsk[16] = [
 
     (i32.store (&psg.out;) (i32.const 0))
 
-    ;; バッファの初期化
-    (i32.store (&read_offset;) (i32.const 0))
-    (i32.store (&write_offset;) (i32.const 0))
   )
 
   (func $read_io (result i32)
@@ -569,7 +558,9 @@ i32 regmsk[16] = [
             )
           )
         )
-       
+
+
+        
        
         (if
           (i32.and
@@ -733,79 +724,47 @@ i32 regmsk[16] = [
         (i32.load(&psg.realstep;))
       )
     )
+
     call $mix_output
   )
 
-  (;; バッファを埋める ;;)
-  (func $fill (local $end i32) (local $woffset i32) (local $output f32)
-    (local.set $end
-      (i32.add (&buffer_start;) (i32.load (&buffer_size;)))
-    )
-    (local.set $woffset (&buffer_start;))
- 
-    (block $fill_exit
-      (loop $fill_loop
-        (br_if $fill_exit (i32.gt_s (local.get $woffset) (local.get $end)))
-
-        (f32.store (local.get $woffset)
-          (f32.div
-            (f32.convert_i32_s (call $calc))
-            (f32.const 16384)
+  (func $calc2 (param $numOfSamples i32)(result i32)
+    (if (i32.eqz (i32.load (&psg.quality;)))
+      (then
+        (block $loop-normal-exit
+          (loop $loop-normal
           )
-        )
-        (local.set $woffset (i32.add (local.get $woffset) (i32.const 4)))
-        (br $fill_loop)
+            
+        call $update_output
+        call $mix_output
+        return
       )
     )
-  )
-
-  (;; バッファの空き部分をデータで埋める ;;)
-  (func $render 
-    (;; local変数 ;;)
-    (local $woffset i32) 
-    (local $roffset i32)
-    (local $buffer_mask i32)
-;;    (if (i32.eq (i32.load (&read_offset;)) (i32.load (&write_offset;)))
-;;      (then
-;;        (return) 
-;;      ) 
-;;    )
-
-    (local.set $woffset 
-      (i32.load (&write_offset;))
+    (block $rate_loop_exit
+      (loop $rate_loop
+        (br_if $rate_loop_exit 
+          (i32.le_u (i32.load(&psg.realstep;)) (i32.load(&psg.psgtime;)))
+        )
+        (i32.store
+          (&psg.psgtime;)
+          (i32.add
+            (i32.load(&psg.psgtime;))
+            (i32.load(&psg.psgstep;))
+          )
+        )
+        call $update_output
+        (br $rate_loop)
+      )
     )
-    (local.set $roffset 
-      (i32.load (&read_offset;))
-    )
-
-    (local.set $buffer_mask
-      (i32.sub 
-        (i32.load (&buffer_size;))
-        (i32.const 1)
+    (i32.store
+      (&psg.psgtime;)
+      (i32.sub
+        (i32.load(&psg.psgtime;))
+        (i32.load(&psg.realstep;))
       )
     )
 
-    (block $render_exit
-      (loop $render_loop
-        (br_if $render_exit (i32.eq (local.get $roffset) (local.get $woffset)))
-        (f32.store (i32.add (&buffer_start;) (local.get $woffset))
-          (f32.div
-            (f32.convert_i32_s (call $calc))
-            (f32.const 16384)
-          )
-        )
-        (local.set $woffset 
-          (i32.and
-            (i32.add (local.get $woffset) (#buffer_start;))
-            (local.get $buffer_mask)
-          )
-        )
-        (br $render_loop)
-      )
-    )
-
-    (i32.atomic.store (&write_offset;) (local.get $woffset))
-
+    call $mix_output
   )
 
   (func $write_reg (param $reg i32) (param $val i32) (local $c i32) (local $w i32)

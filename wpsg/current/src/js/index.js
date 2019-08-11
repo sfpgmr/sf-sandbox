@@ -20,188 +20,324 @@
 //OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //THE SOFTWARE.
 
-// リリース時にはコメントアウトすること
 
-"use strict";
-import * as Audio from './audio.js';
-import {seqData} from './seqData.js';
+// エンディアンを調べる関数
+function checkEndian(buffer = new ArrayBuffer(2)) {
+
+  if (buffer.byteLength == 1) return false;
+
+  const ua = new Uint16Array(buffer);
+  const v = new DataView(buffer);
+  v.setUint16(0, 1);
+  // ArrayBufferとDataViewの読み出し結果が異なればリトル・エンディアンである
+  if (ua[0] != v.getUint16()) {
+    ua[0] = 0;
+    return true;
+  }
+  ua[0] = 0;
+  // ビッグ・エンディアン
+  return false;
+}
+
+// ブラウザのチェック
+function checkBrowser() {
+  let userAgent = window.navigator.userAgent.toLowerCase();
+  let currentBrowser = '';
+
+  if (userAgent.indexOf('msie') != -1 ||
+    userAgent.indexOf('trident') != -1) {
+    currentBrowser = 'trident';
+  } else if (userAgent.indexOf('edge') != -1) {
+    currentBrowser = 'edge';
+  } else if (userAgent.indexOf('chrome') != -1) {
+    currentBrowser = 'chrome';
+  } else if (userAgent.indexOf('safari') != -1) {
+    currentBrowser = 'safari';
+  } else if (userAgent.indexOf('firefox') != -1) {
+    currentBrowser = 'firefox';
+  } else if (userAgent.indexOf('opera') != -1) {
+    currentBrowser = 'opera';
+  } else {
+    currentBrowser = 'unknown';
+  }
+  return currentBrowser;
+}
+
+let browser = checkBrowser();
+
+if(browser !== 'chrome'){
+  alert('このページで使用する機能をサポートしていません。');
+}
 
 window.addEventListener('load', async () => {
-  // let psgBin = await (await fetch('./wpsg.wasm')).arrayBuffer();
-  
-  
-  // let psg;
-  let play = false;
-  // let vol;
-  // let enable = 0x3f;
-  // let envShape = 0;
-  const startButton = document.getElementById('start');
-  let inputs = document.querySelectorAll('input');
-  // let currentChannel = 0;
 
-  // for(const i of inputs){
-  //   i.disabled = 'disabled';
+  // {
+  //   let psg = (await WebAssembly.instantiateStreaming(fetch('./psg.wasm'))).instance.exports;
+  //   psg.init(3580000, 44100);
+  //   psg.reset();
+  //   psg.setRate(44100);
+  //   psg.setQuality(1);
+  //   psg.setVolumeMode(1);
+  //   let a = psg.setMask(0xff);
+  //   console.log(a);
+  //   let b = psg.toggleMask(0);
+  //   console.log(a == b);
+  //   psg.reset();
+  //   console.log(psg.readIo());
+  //   //console.log(psg.writeIO);
+  //   //console.log(psg.writeIO);
+  //   for (let i = 0; i < 16; ++i) {
+  //     psg.writeReg(i, i);
+  //     console.log(i, psg.readReg(i), i == psg.readReg(i));
+  //   }
+  //   //debugger;
+  //   psg.writeReg(0, 0x5d);
+  //   psg.writeReg(1, 0xd);
+  //   psg.writeReg(2, 0x5d);
+  //   psg.writeReg(3, 0x1);
+  //   psg.writeReg(4, 0x5d);
+  //   psg.writeReg(5, 0x2);
+  //   psg.writeReg(6, 0x10);
+  //   psg.writeReg(12, 2);
+  //   psg.writeReg(13, 0b1001);
+  //   psg.writeReg(8, 0b10000);
+  //   psg.writeReg(7, 0b111110);
+  //   for (let i = 0; i < 256; ++i) {
+  //     console.log(psg.calc());
+  //   }
   // }
 
-  // const chTabs = document.querySelectorAll('#WPSG-Ch-Tabs > div');
-  // chTabs.forEach((elm,k,p)=>{
-  //   elm.addEventListener('click',function(){
-  //     if(currentChannel != parseInt(this.dataset.ch)){
-  //       document.querySelector('#WPSG-Ch-Tabs > div[data-ch="' + currentChannel + '"]').classList.remove('siimple-tabs-item--selected');
-  //       currentChannel = parseInt(this.dataset.ch);
-  //       elm.classList.add('siimple-tabs-item--selected');
-  //     }
-  //   });
-  // });
+  let psg,psgBin,memoryMap,psgWorker,audioctx,wasmModule,wasmFuncs;
+  let play = false;
+  let vol;
+  let enable = 0x3f;
+  let envShape = 0;
+  const littleEndian = checkEndian();
+  const startButton = document.getElementById('start');
+  let inputs = document.querySelectorAll('input');
 
-  // const WPSGEnableCheckBox = document.getElementById('WPSG-Enable');
-  // const WPSGFreqSlider = document.getElementById('WPSG-Freq');
-  // const WPSGFreqText = document.getElementById('WPSG-Freq');
-  // const WPSGVolumeSlider = document.getElementById('WPSG-Volume');
-  // const WPSGVolumeText = document.getElementById('WPSG-Volume');
+  for (const i of inputs) {
+    i.disabled = 'disabled';
+  }
 
-  
-  // ['A','B','C'].forEach((ch,i)=>{
-  //   // Tone
-  //   const period = document.getElementById(ch + '-Period');
-  //   period.addEventListener('input',function(){
-  //     document.getElementById(ch + '-Period-Text').innerText = this.value;
-  //     psg.writeReg(i * 2,this.value & 0xff);
-  //     psg.writeReg(i * 2 + 1,(this.value & 0xf00) >> 8);
-  //   });
+  window.addEventListener("unload",()=>{
+    if(psgWorker){
+      psgWorker.terminate();
+    }
+    if(audioctx){
+      audioctx.close();
+    }
+  });
 
-  //   // Noise On/OFF
-  //   const noise = document.getElementById('Noise-' + ch);
-  //   noise.addEventListener('click',function(){
-  //     const m = (1 << (i+3)) ^ 0x3f; 
-  //     let v = ((this.checked?0:1) << (i+3));
-  //     enable = (enable & m) | v;
-  //     console.log(m,v,(enable).toString(2));
-  //     psg.writeReg(7,enable);
-  //   });
+  ['A', 'B', 'C'].forEach((ch, i) => {
+    // Tone
+    const period = document.getElementById(ch + '-Period');
+    period.addEventListener('input', function () {
+      document.getElementById(ch + '-Period-Text').innerText = this.value;
+      wasmFuncs.writeReg(i * 2, this.value & 0xff);
+      wasmFuncs.writeReg(i * 2 + 1, (this.value & 0xf00) >> 8);
+    });
+    
 
-  //   // Tone On/OFF
-  //   const tone = document.getElementById('Tone-' + ch);
-  //   tone.addEventListener('click',function(){
-  //     const m = (1 << i) ^ 0x3f; 
-  //     let v = ((this.checked?0:1) << i);
-  //     enable = (enable & m) | v;
-  //     console.log(m,v,(enable).toString(2));
-  //     psg.writeReg(7,enable);
-  //   });
+    // Noise On/OFF
+    const noise = document.getElementById('Noise-' + ch);
+    noise.addEventListener('click', function () {
+      const m = (1 << (i + 3)) ^ 0x3f;
+      let v = ((this.checked ? 0 : 1) << (i + 3));
+      enable = (enable & m) | v;
+      wasmFuncs.writeReg(7, enable);
+    });
+
+    // Tone On/OFF
+    const tone = document.getElementById('Tone-' + ch);
+    tone.addEventListener('click', function () {
+      const m = (1 << i) ^ 0x3f;
+      let v = ((this.checked ? 0 : 1) << i);
+      enable = (enable & m) | v;
+      wasmFuncs.writeReg(7, enable);
+    });
 
 
-  //   // Volume 
-  //   const volume = document.getElementById('Volume-' + ch);
-  //   volume.addEventListener('input',function(){
-  //     document.getElementById('Volume-' + ch + '-Text').innerText = this.value;
-  //     let v = document.getElementById('Env-' + ch).checked?16:0 | this.value; 
-  //     psg.writeReg(8 + i,v);
-  //   });
+    // Volume 
+    const volume = document.getElementById('Volume-' + ch);
+    volume.addEventListener('input', function () {
+      document.getElementById('Volume-' + ch + '-Text').innerText = this.value;
+      let v = document.getElementById('Env-' + ch).checked ? 16 : 0 | this.value;
+      wasmFuncs.writeReg(8 + i, v);
+    });
 
-  //   // Envelope On/Off
-  //   const env = document.getElementById('Env-' + ch);
-  //   env.addEventListener('click',function(){
-  //     let v = this.checked?16:0;
-  //     v = v | volume.value;
-  //     psg.writeReg(8 + i,v);
-  //   });
+    // Envelope On/Off
+    const env = document.getElementById('Env-' + ch);
+    env.addEventListener('click', function () {
+      let v = this.checked ? 16 : 0;
+      v = v | volume.value;
+      wasmFuncs.writeReg(8 + i, v);
+    });
 
-  // });
+  });
 
-  // // Noise Period
+  // Noise Period
 
-  // const noise = document.getElementById('Noise-Period');
-  // noise.addEventListener('input',function(){
-  //   document.getElementById('Noise-Period-Text').innerText = this.value;
-  //   psg.writeReg(6,this.value);
-  // });
+  const noise = document.getElementById('Noise-Period');
+  noise.addEventListener('input', function () {
+    document.getElementById('Noise-Period-Text').innerText = this.value;
+    wasmFuncs.writeReg(6, this.value);
+  });
 
-  // // Enevlope Period
+  // Enevlope Period
 
-  // const envPeriod = document.getElementById('Env-Period');
-  // envPeriod.addEventListener('input',function(){
-  //   document.getElementById('Env-Period-Text').innerText = this.value;
-  //   psg.writeReg(11,this.value & 0xff);
-  //   psg.writeReg(12,(this.value & 0xff00) >> 8 );
-  // });
+  const envPeriod = document.getElementById('Env-Period');
+  envPeriod.addEventListener('input', function () {
+    document.getElementById('Env-Period-Text').innerText = this.value;
+    wasmFuncs.writeReg(11, this.value & 0xff);
+    wasmFuncs.writeReg(12, (this.value & 0xff00) >> 8);
+  });
 
-  // // Envelope Shape
+  // Envelope Shape
 
-  // ['Continue','Attack','Alternate','Hold'].reverse().forEach((p,i)=>{
-  //   const param = document.getElementById(p);
-  //   param.addEventListener('click',function(){
-  //     let m = (1 << i) ^ 0xf;
-  //     let v = (this.checked?1:0) << i;
-  //     envShape = (envShape & m) | v;
-  //     psg.writeReg(13,envShape);
-  //   });
-  // });
+  ['Continue', 'Attack', 'Alternate', 'Hold'].reverse().forEach((p, i) => {
+    const param = document.getElementById(p);
+    param.addEventListener('click', function () {
+      let m = (1 << i) ^ 0xf;
+      let v = (this.checked ? 1 : 0) << i;
+      envShape = (envShape & m) | v;
+      wasmFuncs.writeReg(13, envShape);
+    });
+  });
 
-  let audio,seq;
   startButton.addEventListener('click', async () => {
-    try {
-    if(!audio){
-      audio = new Audio.Audio();
-      seq = new Audio.Sequencer(audio);
-      seq.load(seqData);
+
+    if (!psg) {
+      // Shared Memoryの利用
+      // wasmバイナリの読み込み
+      psgBin = await (await fetch('./wpsg.wasm')).arrayBuffer();
+      
+      memoryMap = await fetch('./wpsg.context.json');
+      memoryMap = await memoryMap.json();
+      
+
+      function getOffset(prop){
+        return prop._attributes_.offset;
+      }
+
+      function getSize(prop){
+        return prop._attributes_.size;
+      }
+
+      audioctx = new AudioContext();
+      // 100ms分のバッファサイズを求める
+      let audioBufferSize = Math.pow(2,Math.ceil(Math.log2(audioctx.sampleRate * 4 * 0.1 )));
+      let pageSize = Math.ceil((audioBufferSize + getSize(memoryMap)) / 65536);
+      const memory = new WebAssembly.Memory({initial:pageSize,shared:true,maximum:10});
+      
+      wasmModule = new WebAssembly.Module(psgBin);
+      wasmFuncs = (new WebAssembly.Instance(wasmModule, { env: { memory: memory } })).exports;
+  
+
+      const ia = new Int32Array(memory.buffer);
+      Atomics.store(ia,getOffset(memoryMap.buffer_size) >> 2,audioBufferSize);
+      //nt32(getOffset(memoryMap.buffer_size) >> 2,audioBufferSize,true);
+    
+      await audioctx.audioWorklet.addModule("./wpsg.js");
+      psg = new AudioWorkletNode(audioctx, "PSG", {
+        outputChannelCount: [2]
+      });
+
+      psgWorker = new Worker('./wpsg-worker.js');
+      psgWorker.onmessage = function (e) {
+        console.log(e.data);
+      };
+
+      psgWorker.onerror = function(e){
+        console.log(e);
+      }
+
+
+      psg.port.postMessage({
+        message:'init',
+        memory:memory,
+        bufferStart:getOffset(memoryMap.buffer_start),
+        readOffset:getOffset(memoryMap.read_offset),
+        writeOffset:getOffset(memoryMap.write_offset),
+        bufferSize:getOffset(memoryMap.buffer_size),
+        sampleRate:audioctx.sampleRate,
+        endian:littleEndian
+      });
+
+      psgWorker.postMessage({
+        message:'init',
+        wasmBinary:psgBin,
+        memory:memory,
+        bufferStart:getOffset(memoryMap.buffer_start),
+        readOffset:getOffset(memoryMap.read_offset),
+        writeOffset:getOffset(memoryMap.write_offset),
+        bufferSize:getOffset(memoryMap.buffer_size),
+        clock:17900000,
+        sampleRate:audioctx.sampleRate,
+        endian:littleEndian
+      });
+
+      // psgWorker.writeReg = (function (reg, value) {
+      //   this.postMessage(
+      //     {
+      //       message: 'writeReg', reg: reg, value: value
+      //     }
+      //   )
+      // }).bind(psgWorker);
+
+
+
+      // psgWorker.writeReg(0, 0x5d);
+      // psgWorker.writeReg(1, 0xd);
+      // psgWorker.writeReg(2, 0x5d);
+      // psgWorker.writeReg(3, 0x1);
+      // psgWorker.writeReg(4, 0x5d);
+      // psgWorker.writeReg(5, 0x2);
+      // psgWorker.writeReg(6, 0x10);
+      // psgWorker.writeReg(12, 2);
+      // psgWorker.writeReg(13, 0b1001);
+      // psgWorker.writeReg(8, 0b1111);
+      // psgWorker.writeReg(7, 0b111);
+      // for (let i = 0; i < 128; ++i) {
+      //   psgWorker.postMessage({message:'calc'});
+      // }
+      // for(let i = 0;i < 65536;++i){
+      //   psgWorker.postMessage({message:'calc'});
+      // }
+
+      //psgWorker.postMessage({message:'fill'});
+
+
+
+
+      vol = new GainNode(audioctx, { gain: 1.0 });
+      psg.connect(vol).connect(audioctx.destination);
     }
 
-
-
-    // if (!psg) {
-    //   var audioctx = new AudioContext();
-    //   await audioctx.audioWorklet.addModule("./psg.js");
-    //   psg = new AudioWorkletNode(audioctx, "PSG", {
-    //     outputChannelCount: [2],
-    //     processorOptions: {
-    //       wasmBinary: psgBin,
-    //       sampleRate: 17900000
-    //     }
-    //   });
-
-    //   psg.writeReg = (function (reg, value) {
-    //     this.port.postMessage(
-    //       {
-    //         message: 'writeReg', reg: reg, value: value
-    //       }
-    //     )
-    //   }).bind(psg);
-
-    //   psg.port.onmessage = function (e) {
-    //     console.log(e.data);
-    //   };
-
-    //   // psg.writeReg(8, 31);
-    //   // psg.writeReg(0, 0x32);
-    //   // psg.writeReg(1, 0x01);
-    //   // psg.writeReg(2, 0x5d);
-    //   // psg.writeReg(3, 0x02);
-    //   // psg.writeReg(4, 0x4d);
-    //   // psg.writeReg(5, 0x03);
-    //   //psg.writeReg(7, enable);
-
-    //   vol = new GainNode(audioctx, { gain: 1.0 });
-    //   psg.connect(vol).connect(audioctx.destination);
-    //   console.log(audioctx.destination.channelCount);
-
-    // }
     if (!play) {
-      for(const i of inputs){
+      for (const i of inputs) {
         i.disabled = '';
       }
-      seq.start();
       play = true;
-      startButton.innerText = 'WPSG-OFF';
+      // psgWorker.writeReg(8, 0b10000);
+      // psgWorker.writeReg(9, 0b10000);
+      // psgWorker.writeReg(10, 0b10000);
+      // psgWorker.writeReg(12, 0xe);
+      // psgWorker.writeReg(13, 0b1000);
+      //wasmFuncs.writeReg(7, enable);
+      psgWorker.postMessage({message:'play'});
+      psg.port.postMessage({message:'play'});
+      // psg.writeReg(6, 0b10000);
+      vol.gain.value = 1.0;
+      startButton.innerText = 'PSG-OFF';
     } else {
-      seq.stop();
       play = false;
-      startButton.innerText = 'WPSG-ON';
+      psg.port.postMessage({message:'stop'});
+      //psgWorker.writeReg(7, 0x3f);
+      psgWorker.postMessage({message:'stop'});
+      vol.gain.value = 0.0;
+      startButton.innerText = 'PSG-ON';
     }
-    } catch (e) {
-      alert(e.stack);
-    }
-
   });
 
 
