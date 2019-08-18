@@ -17,37 +17,82 @@ $.DEFAULT_VOLUME = 1 << $.POINT_BITS;
 $.WAVE_LENGTH = 32;
 }
 
-{@struct Voice 
-  i32 wave_table[8];
-  i64 delta;
-  i64 counter;
-  i32 volume;
-  i32 pitch;
-  i32 position;
+{@struct WaveForm
   i32 flag;
+  i32 offset;
+  f32 volume;
+}
+
+{@struct EnvParam
+  i32 flag;
+  i32 step;
+  f32 level;
+  f32 attack_time;
+  f32 decay_time;
+  f32 sustain_level;
+  f32 release_time;
+  f32 counter;
+}
+
+{@struct LFOParam
+  i32 flag;
+  i32 wave_form_offset;
+  f32 level;
+  f32 freq;
+  EnvParam envelope;
+  f32 counter;
+}
+
+{@struct FilterParam
+  i32 flag;
+  i32 filter_type;
+  f32 level;
+  f32 freq;
+  f32 resonance;
+  EnvParam envelope;
+  LFOParam lfo;
+  f32 counter;
+}
+
+{@struct AmplitudeParam
+  i32 flag;
+  f32 level;
+  EnvParam envelope;
+  LFOParam lfo;
+  f32 counter;
+}
+
+{@struct PitchParam
+  i32 flag;
+  f32 freq;
+  EnvParam envelope;
+  LFOParam lfo;
+  f32 counter;
+}
+
+{@struct Timbre
+  i32 wave_form_index;
+  f32 master_level;
+  PitchParam picth;
+  AmplitudeParam amp;
+  FilterParam filter;
+}
+
+{@struct Voice 
+  i32 flag;
+  i32 timber_offset;
+  f64 ampEnv_counter;
+  f32 volume;
 }
 
 {@map
-  f32 output_buffer[128];
-  Voice voice[5];
-  {
-    // 正弦波で初期値をセットしておく
-    let data = "";
-    for(let i = 0,ei = 32;i < ei;++i){
-      data += '\\' + (128 - (Math.sin(2 * Math.PI * i / 32) * 127) | 0).toString(16).padStart(2,'0');
-    }
-    let out = "";
-    
-    let voiceOffset = $.voice[$attributes].offset;
-    const voiceSize = $.voice[$attributes].size;
-
-    for(let i = 0;i < 5;++i){
-      const offset =voiceOffset + i * voiceSize;
-      out += `(data (i32.const ${offset}) "${data}")`;
-    }
-    return out;
-  }
-  i64 sample_rate;
+  Timber timber[64];
+  Voice voice[8];
+  i32 wave_table_start;
+  i32 buffer_start;
+  f64 counter;
+  f32 sample_rate;
+  f32 delta_time;
 }
 
   (func $set_rate (param $r i32) 
