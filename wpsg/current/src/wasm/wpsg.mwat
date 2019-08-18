@@ -25,12 +25,15 @@ $.WAVE_LENGTH = 32;
 
 {@struct EnvParam
   i32 flag;
-  i32 step;
   f32 level;
   f32 attack_time;
   f32 decay_time;
   f32 sustain_level;
   f32 release_time;
+}
+
+{@struct EnvWork
+  i32 step;
   f32 counter;
 }
 
@@ -41,6 +44,11 @@ $.WAVE_LENGTH = 32;
   f32 freq;
   EnvParam envelope;
   f32 counter;
+}
+
+{@struct LFOWork
+  i32 offset;
+  f32 counter;  
 }
 
 {@struct FilterParam
@@ -54,6 +62,10 @@ $.WAVE_LENGTH = 32;
   f32 counter;
 }
 
+{@struct FilterWork
+
+}
+
 {@struct AmplitudeParam
   i32 flag;
   f32 level;
@@ -62,12 +74,20 @@ $.WAVE_LENGTH = 32;
   f32 counter;
 }
 
+{@struct AmplitudeWork
+
+}
+
 {@struct PitchParam
   i32 flag;
   f32 freq;
   EnvParam envelope;
   LFOParam lfo;
   f32 counter;
+}
+
+{@struct PitchWork
+
 }
 
 {@struct Timbre
@@ -81,7 +101,6 @@ $.WAVE_LENGTH = 32;
 {@struct Voice 
   i32 flag;
   i32 timber_offset;
-  f64 ampEnv_counter;
   f32 volume;
 }
 
