@@ -5,22 +5,15 @@
   (export "reset" (func $reset))
   (import "env" "memory" (memory $memory 0))
 
-{@
-// 20.12bitの固定小数点で計算
-$.POINT_BITS = 12;
-$.POINT_BITS_64 = 32;
-$.SHIFT_BITS = 1 << $.POINT_BITS;
-$.SHIFT_BITS_MASK = (1 << $.POINT_BITS) - 1;
-$.DEFAULT_SAMPLE_RATE = 44100 << $.POINT_BITS;
-$.DEFAULT_PITCH = 440 << $.POINT_BITS;
-$.DEFAULT_VOLUME = 1 << $.POINT_BITS;
-$.WAVE_LENGTH = 32;
-}
-
 {@struct WaveForm
   i32 flag;
   i32 offset;
+  i32 read_offset;
   f32 volume;
+}
+
+{@struct WaveWork
+
 }
 
 {@struct EnvParam
@@ -81,6 +74,7 @@ $.WAVE_LENGTH = 32;
 {@struct PitchParam
   i32 flag;
   f32 freq;
+  f32 detune;
   EnvParam envelope;
   LFOParam lfo;
   f32 counter;
@@ -102,16 +96,21 @@ $.WAVE_LENGTH = 32;
   i32 flag;
   i32 timber_offset;
   f32 volume;
+  WaveWork wave;
+  AmplitudeWork amp;
+  PitchWork pitch;
+  FilterWork filter;
 }
 
 {@map
-  Timber timber[64];
+  Timbre timbre[64];
   Voice voice[8];
-  i32 wave_table_start;
-  i32 buffer_start;
+  i32 wave_table_offset_start;
+  i32 buffer_offset_start;
   f64 counter;
   f32 sample_rate;
   f32 delta_time;
+  i32 offset_start;
 }
 
   (func $set_rate (param $r i32) 
