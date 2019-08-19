@@ -12,11 +12,17 @@
   f32 decay_time;
   f32 sustain_level;
   f32 release_time;
+
+  f32 attack_delta;
+  f32 decay_delta;
+  f32 release_delta;
 }
 
 {@struct EnvWork
+  i32 flag;
   i32 step;
   f32 counter;
+  f32 value;
 }
 
 {@struct LFOParam
@@ -126,39 +132,122 @@
     エンベロープジェネレータ 
    ####################################
   ;;)
+  ;; ## 初期化 ##
+  (func $initEnvelope 
+    (param $env_param_offset i32) 
+    (param $sample_rate f32)
+
+    ;; attack ;;;;;;;
+    (f32.store 
+      (i32.add (&EnvParam.attack_delta;) (local.get $env_param_offset))
+      (f32.div (f32.const 1)
+        (f32.mul 
+          (local.get $sample_rate)
+          (f32.load (i32.add (&EnvParam.attack_time;) (local.get $env_param_offset)))
+        )
+      )
+    )
+    ;; decay ;;;;;;;;
+    (f32.store 
+      (i32.add (&EnvParam.decay_delta;) (local.get $env_param_offset))
+      (f32.div 
+        (f32.sub 
+          (f32.const 1) 
+          (f32.load (i32.add (&EnvParam.sustain_level;) (local.get $env_param_offset)))
+        )
+        (f32.mul 
+          (local.get $sample_rate)
+          (f32.load (i32.add (&EnvParam.decay_time;) (local.get $env_param_offset)))
+        )
+      )
+    )
+    ;; release ;;;;;;
+    (f32.store 
+      (i32.add (&EnvParam.release_delta;) (local.get $env_param_offset))
+      (f32.div (f32.load (i32.add (&EnvParam.sustain_level;) (local.get $env_param_offset)))
+        (f32.mul 
+          (local.get $sample_rate)
+          (f32.load (i32.add (&EnvParam.release_time;) (local.get $env_param_offset)))
+        )
+      )
+    )
+  )
+
+  (func $initEnvWork (param $env_work_offset i32)
+    ;; counter 
+    (f32.store 
+      (i32.add (&EnvWork.counter;) (local.get $env_work_offset))
+      (f32.const 0)
+    )
+
+    ;; step
+    (i32.store 
+      (i32.add (&EnvWork.step;) (local.get $env_work_offset))
+      (i32.const 0)
+    )
+
+    ;; flag 
+    (i32.store 
+      (i32.add (&EnvWork.flag;) (local.get $env_work_offset))
+      (i32.const 0)
+    )
+
+  )
+
   (func $doEnvelope 
     (param $env_param_offset i32) 
     (param $env_work_offset i32)
     (result f32)
     (local $counter f32)
     (local $step i32)
+    (local $value f32)
 
-    (local.get $counter 
-      (i32.load 
+    (local.set $counter 
+      (f32.load 
         (i32.add (&EnvWork.counter;) (local.get $env_work_offset))
       )
     )
-    (if (f32.eqz (local.get $counter))
-      (then
-        ()
+
+    (local.set $step
+      (i32.load 
+        (i32.add (&EnvWork.step;) (local.get $env_work_offset))
       )
     )
-    
+
+    (local.set $value 
+      (f32.load 
+        (i32.add (&EnvWork.value;) (local.get $env_work_offset))
+      )
+    )
+
     (block $main
       (block $do_release
         (block $do_sustain
           (block $do_decay
             (block $do_attack
               (br_table $do_attack $do_decay $do_sustain $do_release 
-                (i32.load 
-                  (i32.add (&EnvWork.step;) (local.get $env_work_offset))
-                )
+                (local.get $step)
               )
             )
             ;; ### attack ###
-            
-            (if (f32.ge ())
-              (then )
+
+            (if (f32.ge            
+                  (local.tee $counter
+                    (f32.add 
+                      (f32.load (&delta;))
+                      (local.get $counter)
+                    )
+                  )
+                  (f32.load (&EnvParam.attack_time;))
+                 )
+              (then
+                ()
+              
+              )
+              (else
+                (f32.store ()) 
+                (return (local.get $counter))
+              )
             )
           )
           ;; ### decay ###
