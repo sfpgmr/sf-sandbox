@@ -213,9 +213,9 @@
       if (!psg) {
         // Shared Memoryの利用
         // wasmバイナリの読み込み
-        psgBin = await (await fetch('./psg.wasm')).arrayBuffer();
+        psgBin = await (await fetch('./wpsg.wasm')).arrayBuffer();
         
-        memoryMap = await fetch('./psg.context.json');
+        memoryMap = await fetch('./wpsg.context.json');
         memoryMap = await memoryMap.json();
         
 
@@ -241,12 +241,12 @@
         Atomics.store(ia,getOffset(memoryMap.buffer_size) >> 2,audioBufferSize);
         //nt32(getOffset(memoryMap.buffer_size) >> 2,audioBufferSize,true);
       
-        await audioctx.audioWorklet.addModule("./psg.js");
+        await audioctx.audioWorklet.addModule("./wpsg.js");
         psg = new AudioWorkletNode(audioctx, "PSG", {
           outputChannelCount: [2]
         });
 
-        psgWorker = new Worker('./psg-worker.js');
+        psgWorker = new Worker('./wpsg-worker.js');
         psgWorker.onmessage = function (e) {
           console.log(e.data);
         };
