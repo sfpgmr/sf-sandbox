@@ -238,19 +238,75 @@
                       (local.get $counter)
                     )
                   )
-                  (f32.load (&EnvParam.attack_time;))
+                  (f32.load (f32.add(&EnvParam.attack_time;) (local.get $env_param_offset)))
                  )
               (then
-                ()
-              
+                (i32.store
+                  (i32.add (&EnvWork.step;) (local.get $env_work_offset))
+                  (i32.const 1)
+                )
+
+                (f32.store
+                  (i32.add (&EnvWork.counter;) (local.get $env_work_offset))
+                  (f32.const 0)
+                )
+                (f32.store (f32.add (&EnvWork.value;) (local.get $env_work_offset))
+                  (local.tee $value 
+                    (f32.const 1)
+                  ) 
+                )
+                (return (local.get $value))
               )
               (else
-                (f32.store ()) 
-                (return (local.get $counter))
+                (f32.store f32.add((&EnvWork.value;) (local.get $env_work_offset))
+                  (local.tee $value
+                    (f32.add (local.get $value)
+                      (f32.load (f32.add(&EnvParam.attack_delta;) (local.get $env_param_offset)))
+                    )
+                  )
+                )
+                (return (local.get $value))
               )
             )
           )
           ;; ### decay ###
+            (if (f32.ge            
+                  (local.tee $counter
+                    (f32.add 
+                      (f32.load (&delta;))
+                      (local.get $counter)
+                    )
+                  )
+                  (f32.load (f32.add(&EnvParam.attack_time;) (local.get $env_param_offset)))
+                 )
+              (then
+                (i32.store
+                  (i32.add (&EnvWork.step;) (local.get $env_work_offset))
+                  (i32.const 1)
+                )
+
+                (f32.store
+                  (i32.add (&EnvWork.counter;) (local.get $env_work_offset))
+                  (f32.const 0)
+                )
+                (f32.store (f32.add (&EnvWork.value;) (local.get $env_work_offset))
+                  (local.tee $value 
+                    (f32.const 1)
+                  ) 
+                )
+                (return (local.get $value))
+              )
+              (else
+                (f32.store f32.add((&EnvWork.value;) (local.get $env_work_offset))
+                  (local.tee $value
+                    (f32.add (local.get $value)
+                      (f32.load (f32.add(&EnvParam.attack_delta;) (local.get $env_param_offset)))
+                    )
+                  )
+                )
+                (return (local.get $value))
+              )
+            )
         )
         ;; ### sustain ###
       )
