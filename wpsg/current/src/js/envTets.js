@@ -7,7 +7,9 @@ function getInstance(obj, imports = {}) {
 }
 
 (async () => {
-  const psg = getInstance(await fs.promises.readFile('./em2149.wasm')).exports;
+  const wpsg = getInstance(await fs.promises.readFile('../../current/build/wpsg.wasm')).exports;
+  wpsg.setRate(44100);
+
   psg.init(1790000, 4000);
   psg.reset();
   psg.setQuality(0);
