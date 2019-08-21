@@ -1,8 +1,10 @@
 (module
   (export "setRate" (func $set_rate))
-  (export "init" (func $init))
-  (export "reset" (func $reset))
-  (export "doEnvelope" (func $do_envelope))
+  (export "initEnvelope" (func $initEnvelope))
+  (export "initEnvWork" (func $initEnvWork))
+  (export "KeyOnEnvelope" (func $initEnvWork))
+  (export "KeyOffEnvelope" (func $initEnvWork))
+  (export "doEnvelope" (func $doEnvelope))
   (import "env" "memory" (memory $memory 0))
 
 {@struct EnvParam
@@ -116,16 +118,6 @@
     )
   )
  
-  (func $init 
-    (call $reset)
-  )
-
-  (func $reset 
-  )
-
-  (func $update 
-  )
-
   (;; 
    ####################################
     エンベロープジェネレータ 
@@ -192,50 +184,63 @@
     )
 
     ;; value 
-    (i32.store 
-      (i32.add (&EnvWork.value;) (local.get $env_work_offset))
-      (i32.const 0)
-    )
-  )
-
-  (func $envKeyOn (param $env_work_offset i32)
-    ;; flag 
-    (i32.store 
-      (i32.add (&EnvWork.flag;) (local.get $env_work_offset))
-      (i32.or (i32.const 0x80000000)
-        (i32.load (&EnvWork.flag;) (local.get $env_work_offset))
-      )
-    )
-    ;; step
-    (i32.store 
-      (i32.add (&EnvWork.step;) (local.get $env_work_offset))
-      (i32.const 0)
-    )
-
-    ;; counter 
     (f32.store 
-      (i32.add (&EnvWork.counter;) (local.get $env_work_offset))
+      (i32.add (&EnvWork.value;) (local.get $env_work_offset))
       (f32.const 0)
     )
   )
 
-  (func $envKeyOff (param $env_work_offset i32)
-    ;; flag 
+  (func $keyOnEnvelope (param $env_work_offset i32)
+    ;; flag ;;
+    (i32.store 
+      (i32.add (&EnvWork.flag;) (local.get $env_work_offset))
+      (i32.or (i32.const 0x80000000)
+        (i32.load (i32.add (&EnvWork.flag;) (local.get $env_work_offset)))
+      )
+    )
+    ;; step ;;
+    (i32.store 
+      (i32.add (&EnvWork.step;) (local.get $env_work_offset))
+      (i32.const 0)
+    )
+
+    ;; counter ;; 
+    (f32.store 
+      (i32.add (&EnvWork.counter;) (local.get $env_work_offset))
+      (f32.const 0)
+    )
+
+    ;; value ;; 
+    (f32.store 
+      (i32.add (&EnvWork.value;) (local.get $env_work_offset))
+      (f32.const 0)
+    )
+
+  )
+
+  (func $KeyOffEnvelope 
+    (param $env_work_offset i32)
+    ;; flag ;;
     (i32.store 
       (i32.add (&EnvWork.flag;) (local.get $env_work_offset))
       (i32.and 
        (i32.const 0x7fffffff)
-       (i32.load (&EnvWork.flag;) (local.get $env_work_offset))
+       (i32.load (i32.add (&EnvWork.flag;) (local.get $env_work_offset)))
       )
     )
-    ;; step
+    ;; step ;;
     (i32.store 
       (i32.add (&EnvWork.step;) (local.get $env_work_offset))
       (i32.const 3)
     )
+    ;; counter
+    (f32.store
+      (i32.add (&EnvWork.counter;) (local.get $env_work_offset))
+      (f32.const 0)
+    )    
   )
 
-  (func $do_envelope 
+  (func $doEnvelope 
     (param $env_param_offset i32) 
     (param $env_work_offset i32)
     (result f32)
@@ -266,12 +271,10 @@
     )
 
     (block $main
-      (block $check_keyoff
       (block $do_release
-        (block $do_sustain
           (block $do_decay
             (block $do_attack
-              (br_table $do_attack $do_decay $do_sustain $do_release 
+              (br_table $do_attack $do_decay $main $do_release 
                 (local.get $step)
               )
             )
@@ -312,7 +315,7 @@
                 )
               )
             )
-            (br $check_keyoff)
+            (br $main)
           )
           ;; ### decay ###
           (if (f32.ge            
@@ -352,12 +355,8 @@
               )
             )
           )
-          (br $check_keyoff)
+          (br $main)
         )
-        ;; ### sustain ###
-        ;; Key Offまでsustain levelの値を返し続ける
-        (br $check_keyoff)
-      )
       ;; ### release ###
       (if (f32.ge            
             (local.tee $counter
@@ -396,24 +395,10 @@
         )
       )
       (br $main)
-      )
-      ;; Key OFFかどうか
-      (if 
-        (i32.eqz 
-          (i32.and 
-            (i32.load 
-              (i32.add (&EnvParam.flag;) (local.get $env_param_offset))
-            )
-            (i32.const 0x80000000)
-          )
-        )
-        (then 
-          (i32.store
-            (i32.add (&EnvWork.step;) (local.get $env_work_offset))
-            (i32.const 3)
-          )
-        )
-      )    
+    )
+    (f32.store 
+      (i32.add (&EnvWork.counter;) (local.get $env_work_offset))
+      (local.get $counter)
     )
     (return (local.get $value))
   )
