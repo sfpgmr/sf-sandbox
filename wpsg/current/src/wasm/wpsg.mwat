@@ -191,6 +191,48 @@
       (i32.const 0)
     )
 
+    ;; value 
+    (i32.store 
+      (i32.add (&EnvWork.value;) (local.get $env_work_offset))
+      (i32.const 0)
+    )
+  )
+
+  (func $envKeyOn (param $env_work_offset i32)
+    ;; flag 
+    (i32.store 
+      (i32.add (&EnvWork.flag;) (local.get $env_work_offset))
+      (i32.or (i32.const 0x80000000)
+        (i32.load (&EnvWork.flag;) (local.get $env_work_offset))
+      )
+    )
+    ;; step
+    (i32.store 
+      (i32.add (&EnvWork.step;) (local.get $env_work_offset))
+      (i32.const 0)
+    )
+
+    ;; counter 
+    (f32.store 
+      (i32.add (&EnvWork.counter;) (local.get $env_work_offset))
+      (f32.const 0)
+    )
+  )
+
+  (func $envKeyOff (param $env_work_offset i32)
+    ;; flag 
+    (i32.store 
+      (i32.add (&EnvWork.flag;) (local.get $env_work_offset))
+      (i32.and 
+       (i32.const 0x7fffffff)
+       (i32.load (&EnvWork.flag;) (local.get $env_work_offset))
+      )
+    )
+    ;; step
+    (i32.store 
+      (i32.add (&EnvWork.step;) (local.get $env_work_offset))
+      (i32.const 3)
+    )
   )
 
   (func $do_envelope 
