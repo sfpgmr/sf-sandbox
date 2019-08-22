@@ -2,10 +2,10 @@
   (export "setRate" (func $set_rate))
   (export "initEnvelope" (func $initEnvelope))
   (export "initEnvWork" (func $initEnvWork))
-  (export "KeyOnEnvelope" (func $initEnvWork))
-  (export "KeyOffEnvelope" (func $initEnvWork))
+  (export "keyOnEnvelope" (func $keyOnEnvelope))
+  (export "keyOffEnvelope" (func $KeyOffEnvelope))
   (export "doEnvelope" (func $doEnvelope))
-  (import "env" "memory" (memory $memory 0))
+  (import "env" "memory" (memory $memory 1 10 shared))
 
 {@struct EnvParam
   i32 flag;
@@ -297,7 +297,9 @@
 
                 (f32.store
                   (i32.add (&EnvWork.counter;) (local.get $env_work_offset))
-                  (f32.const 0)
+                  (local.tee $counter
+                    (f32.const 0)
+                  )
                 )
                 (f32.store (i32.add (&EnvWork.value;) (local.get $env_work_offset))
                   (local.tee $value 
@@ -335,7 +337,9 @@
 
               (f32.store
                 (i32.add (&EnvWork.counter;) (local.get $env_work_offset))
-                (f32.const 0)
+                (local.tee $counter
+                  (f32.const 0)
+                )
               )
               (f32.store (i32.add (&EnvWork.value;) (local.get $env_work_offset))
                 (local.tee $value 
@@ -374,14 +378,12 @@
           )
           (f32.store
             (i32.add (&EnvWork.counter;) (local.get $env_work_offset))
-            (f32.const 0)
+            (local.tee $counter
+              (f32.const 0)
+            )
           )
           (f32.store (i32.add (&EnvWork.value;) (local.get $env_work_offset))
-            (local.tee $value 
-              (f32.load 
-                  (i32.add (&EnvParam.sustain_level;) (local.get $env_param_offset))
-              )
-            ) 
+            (local.tee $value (f32.const 0)) 
           )
         )
         (else
@@ -400,6 +402,11 @@
       (i32.add (&EnvWork.counter;) (local.get $env_work_offset))
       (local.get $counter)
     )
-    (return (local.get $value))
+    (return 
+      (f32.mul 
+        (local.get $value)
+        (f32.load (i32.add (&EnvParam.level;) (local.get $env_param_offset)))
+      )
+    )
   )
 )
