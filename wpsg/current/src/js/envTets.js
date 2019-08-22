@@ -6,7 +6,22 @@ function getInstance(obj, imports = {}) {
   return inst;
 }
 
+function getOffset(prop){
+  return prop._attributes_.offset;
+}
+
+function getSize(prop){
+  return prop._attributes_.size;
+}
+
 (async () => {
+      // 100ms分のバッファサイズを求める
+      let audioBufferSize = Math.pow(2,Math.ceil(Math.log2(audioctx.sampleRate * 4 * 0.1 )));
+      let pageSize = Math.ceil((audioBufferSize + getSize(memoryMap)) / 65536);
+      const memory = new WebAssembly.Memory({initial:pageSize,shared:true,maximum:10});
+  let memoryMap = await fetch('../../current/build/wpsg.context.json');
+      memoryMap = await memoryMap.json();
+
   const wpsg = getInstance(await fs.promises.readFile('../../current/build/wpsg.wasm')).exports;
   wpsg.setRate(44100);
 
