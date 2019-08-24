@@ -6,9 +6,26 @@
   (export "keyOffEnvelope" (func $KeyOffEnvelope))
   (export "doEnvelope" (func $doEnvelope))
   (import "env" "memory" (memory $memory 1 10 shared))
-(;;
 
+(;;
+###############################################################
+
+Envelope Generator
+    decay
+   /\   sustain
+  /  \_________   
+ /             |\
+/              | \
+attack        release
+|              |
+keyon          keyoff
+
+EnvParam .... エンベロープのパラメータ格納用
+EnvWork .... エンベロープのインスタンス制御用ワーク
+
+###############################################################
 ;;)
+
 {@struct EnvParam
   i32 flag;
   f32 level;
