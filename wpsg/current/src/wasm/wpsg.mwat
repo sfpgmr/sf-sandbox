@@ -6,7 +6,9 @@
   (export "keyOffEnvelope" (func $KeyOffEnvelope))
   (export "doEnvelope" (func $doEnvelope))
   (import "env" "memory" (memory $memory 1 10 shared))
+(;;
 
+;;)
 {@struct EnvParam
   i32 flag;
   f32 level;
@@ -61,11 +63,11 @@
   f32 level;
   EnvParam envelope;
   LFOParam lfo;
-  f32 counter;
 }
 
 {@struct AmplitudeWork
   i32 flag;
+  f32 counter;
 }
 
 {@struct PitchParam
@@ -79,6 +81,19 @@
 
 {@struct PitchWork
   i32 flag;
+}
+
+{@struct WaveFormParam
+  i32 flag;
+  i32 wave_table_offset;
+  i32 size;
+  f32 sample_rate;
+}
+
+{@struct WaveFormWork
+  f32 counter;
+  f32 delta;
+  f32 value;
 }
 
 {@struct Timbre
