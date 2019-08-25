@@ -102,20 +102,21 @@ EnvWork .... エンベロープのインスタンス制御用ワーク
 
 {@struct WaveFormParam
   i32 flag;
+  i32 size;
   i32 wave_table_offset;
   f32 sample_rate;
 }
 
 {@struct WaveTable
-  ;; 32サンプルで1周期 
-  ;; 基準周波数 440Hz
-  f32 wave_data[32];
-}
-
-{@struct WaveTableWork
-  f32 counter;
-  f32 delta;
-  f32 value;
+  (;; flag  
+    0b0000_0000_0000_0000
+    bit 31:  1... enable  0... disable
+    bit 24-27: 0000 ... wave table mode 0001 ... sampler mode
+  ;;)
+  i32 flag;
+  i32 size;
+  (;; wave data is 8bit x 32bytes ;;)
+  i32 wave_data[4];
 }
 
 {@struct WaveFormWork
@@ -159,29 +160,6 @@ EnvWork .... エンベロープのインスタンス制御用ワーク
         (local.get $r)
       )
     )
-  )
-
-  (;;
-   ####################################
-    Wave Table
-   ####################################
-  ;;)
-
-  (func $initWaveFormParam
-    (param $wave_form_param_offset i32)
-    (param $type i32)
-    (param $wave_table_offset)
-    (param $sample_rate)
-
-  )
-
-  (func $initWaveTableWork
-    (param $wave_form_param_offset i32)
-  
-  )
-
-  (func $readWaveTable
-  
   )
  
   (;; 
