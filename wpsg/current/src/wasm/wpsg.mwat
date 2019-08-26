@@ -137,10 +137,11 @@ EnvWork .... エンベロープのインスタンス制御用ワーク
 }
 
 {@struct WaveTableWork
-  i32 base_sample_rate;
-  i32 table_sample_rate;
-  i32 counter;
-  i32 delta;
+  f32 base_sample_rate;
+  f32 table_sample_rate;
+  f32 counter;
+  f32 delta;
+  f32 pitch;
   f32 value;
 }
 
@@ -197,7 +198,7 @@ EnvWork .... エンベロープのインスタンス制御用ワーク
     (param $wave_form_param_offset i32)
     (param $type i32)
     (param $wave_table_offset i32)
-    (param $sample_rate i32)
+    (param $sample_rate f32)
     (i32.store 
       (local.get $wave_form_param_offset)
       (i32.or
@@ -226,6 +227,8 @@ EnvWork .... エンベロープのインスタンス制御用ワーク
     )
 
 
+
+
   )
 
   (func $initWaveTableWork
@@ -242,24 +245,22 @@ EnvWork .... エンベロープのインスタンス制御用ワーク
       )
     )
  
-    (i32.store 
+    (f32.store 
       (i32.add
         (&WaveTableWork.base_sample_rate;)
         (local.get $wave_table_work_offset)
       )
-      (i32.trunc_f32_s
-        (f32.load (&sample_rate;))
-      )
+      (f32.load (&sample_rate;))
     )
 
-    (i32.store 
+    (f32.store 
       (i32.add
         (&WaveTableWork.table_sample_rate;)
         (local.get $wave_table_work_offset)
       )
-      (i32.mul
-        (i32.const 440 )
-        (i32.load
+      (f32.mul
+        (f32.const 440 )
+        (f32.load
           (i32.add
             (&WaveTable.size)
             (local.get $wave_table_offset)
@@ -268,20 +269,29 @@ EnvWork .... エンベロープのインスタンス制御用ワーク
       )
     )
 
-    (i32.store
+    (f32.store
       (i32.add
         (&WaveTableWork.counter;)
         (local.get $wave_table_work_offset)
       )
-      (i32.const 0)
+      (f32.const 0)
     )
 
-    (i32.store
+    ;;pitch
+    (f32.store
+      (i32.add
+        (&WaveTableWork.pitch;)
+        (local.get $wave_table_work_offset)
+      )
+      (f32.const 1)
+    )
+
+    (f32.store
       (i32.add
         (&WaveTableWork.delta;)
         (local.get $wave_table_work_offset)
       )
-      (i32.load
+      (f32.load
         (i32.add
           (&WaveTableWork.base_sample_rate;)
           (local.get $wave_table_work_offset)
@@ -289,31 +299,13 @@ EnvWork .... エンベロープのインスタンス制御用ワーク
       )
     )
 
-    (i32.store
+    (f32.store
       (i32.add
         (&WaveTableWork.value;)
         (local.get $wave_table_work_offset)
       )
-      (i32.const 0)
+      (f32.const 0)
     )
-
-    ;; mask 
-    (i32.store
-      (i32.add
-        (&WaveTableWork.wave_size_mask;)
-        (local.get $wave_form_param_offset)
-      )
-      (i32.sub 
-        (i32.load
-          (i32.add
-            (&WaveTable.size;)
-            (local.get $wave_table_offset)
-          )
-        )
-        (i32.const 1)
-      )
-    )
-
   )
 
   (func $readWaveTable
@@ -321,28 +313,27 @@ EnvWork .... エンベロープのインスタンス制御用ワーク
     (param $wave_form_param_offset i32)
     (result f32)
     (local $wave_table_offset i32)
-    (local $counter i32)
+    (local $counter f32)
     (local $value f32)
-    (local $delta i32)
-    (local $mask i32)
+    (local $delta f32)
 
     (if 
-      (i32.le_s
+      (f32.le_s
         (local.tee $counter
-          (i32.sub 
+          (f32.sub 
             (local.tee $counter
-              (i32.load
+              (f32.load
                 (i32.add 
                   (&WaveTableWork.counter;)
                   (local.get $wave_table_work_offset)
                 )
               )
             )
-            (i32.load
+            (f32.load
               (i32.add
                 (&EnvTableWork.table_sample_rate;)
                 (local.tee $wave_table_offset
-                  (i32.load
+                  (f32.load
                     (i32.add 
                       (&WaveFormParam.wave_table_offset;)
                       (local.get $wave_form_param_offset)
@@ -353,19 +344,55 @@ EnvWork .... エンベロープのインスタンス制御用ワーク
             )
           )
         )
-        (i32.const 0)
+        (f32.const 0)
       )
 
       (then
         ;; delta を進め、波形データを$valueにセットする
-        (i32.store 
+        (f32.store 
           (i32.add
             (&WaveTableWork.value;)
             (local.get $wave_table_work_offset)
           )
           (local.tee $value
             (f32.load
-              (i32.add 
+              (i32.add
+
+              )
+            )
+          )
+        )
+        
+        (if 
+          (f32.gt 
+            (local.tee $delta
+              (f32.add
+                (local.get $delta)
+                (f32.const 1)
+              )
+            )
+            (f32.load
+              (i32.add
+                (i32.add
+                  (&WaveTable.size;)
+                  (local.get $wave_table_offset)
+                )
+              )
+            )
+          )
+          (then
+            (local.tee $delta
+            )
+          )
+        )
+        (f32.store 
+          (i32.add
+            (&WaveTableWork.value;)
+            (local.get $wave_table_work_offset)
+          )
+          (local.tee $value
+            (f32.load
+              (f32.add 
                 (local.tee $delta
                   (i32.and
                     (i32.add
