@@ -1644,7 +1644,7 @@
   "WaveFormParam": {
     "_attributes_": {
       "type": "StructDefinition",
-      "size": 16
+      "size": 12
     },
     "flag": {
       "_attributes_": {
@@ -1654,19 +1654,6 @@
         "integer": true,
         "unsigned": false,
         "offset": 0,
-        "initData": null,
-        "num": 1,
-        "log2": 2
-      }
-    },
-    "size": {
-      "_attributes_": {
-        "type": "PrimitiveType",
-        "varType": "i32",
-        "size": 4,
-        "integer": true,
-        "unsigned": false,
-        "offset": 4,
         "initData": null,
         "num": 1,
         "log2": 2
@@ -1679,7 +1666,7 @@
         "size": 4,
         "integer": true,
         "unsigned": false,
-        "offset": 8,
+        "offset": 4,
         "initData": null,
         "num": 1,
         "log2": 2
@@ -1692,7 +1679,7 @@
         "size": 4,
         "integer": false,
         "unsigned": false,
-        "offset": 12,
+        "offset": 8,
         "initData": null,
         "num": 1,
         "log2": 2
@@ -1702,9 +1689,9 @@
   "WaveTable": {
     "_attributes_": {
       "type": "StructDefinition",
-      "size": 24
+      "size": 12
     },
-    "flag": {
+    "size": {
       "_attributes_": {
         "type": "PrimitiveType",
         "varType": "i32",
@@ -1717,7 +1704,7 @@
         "log2": 2
       }
     },
-    "size": {
+    "wave_size_mask": {
       "_attributes_": {
         "type": "PrimitiveType",
         "varType": "i32",
@@ -1730,7 +1717,52 @@
         "log2": 2
       }
     },
-    "wave_data": {
+    "wave_data_start": {
+      "_attributes_": {
+        "type": "PrimitiveType",
+        "varType": "f32",
+        "size": 4,
+        "integer": false,
+        "unsigned": false,
+        "offset": 8,
+        "initData": null,
+        "num": 1,
+        "log2": 2
+      }
+    }
+  },
+  "WaveSample": {
+    "_attributes_": {
+      "type": "StructDefinition",
+      "size": 20
+    },
+    "size": {
+      "_attributes_": {
+        "type": "PrimitiveType",
+        "varType": "i32",
+        "size": 4,
+        "integer": true,
+        "unsigned": false,
+        "offset": 0,
+        "initData": null,
+        "num": 1,
+        "log2": 2
+      }
+    },
+    "flag": {
+      "_attributes_": {
+        "type": "PrimitiveType",
+        "varType": "i32",
+        "size": 4,
+        "integer": true,
+        "unsigned": false,
+        "offset": 4,
+        "initData": null,
+        "num": 1,
+        "log2": 2
+      }
+    },
+    "loop_start": {
       "_attributes_": {
         "type": "PrimitiveType",
         "varType": "i32",
@@ -1739,7 +1771,117 @@
         "unsigned": false,
         "offset": 8,
         "initData": null,
-        "num": 4,
+        "num": 1,
+        "log2": 2
+      }
+    },
+    "loop_end": {
+      "_attributes_": {
+        "type": "PrimitiveType",
+        "varType": "i32",
+        "size": 4,
+        "integer": true,
+        "unsigned": false,
+        "offset": 12,
+        "initData": null,
+        "num": 1,
+        "log2": 2
+      }
+    },
+    "wave_data_start": {
+      "_attributes_": {
+        "type": "PrimitiveType",
+        "varType": "f32",
+        "size": 4,
+        "integer": false,
+        "unsigned": false,
+        "offset": 16,
+        "initData": null,
+        "num": 1,
+        "log2": 2
+      }
+    }
+  },
+  "WaveTableWork": {
+    "_attributes_": {
+      "type": "StructDefinition",
+      "size": 24
+    },
+    "base_sample_rate": {
+      "_attributes_": {
+        "type": "PrimitiveType",
+        "varType": "f32",
+        "size": 4,
+        "integer": false,
+        "unsigned": false,
+        "offset": 0,
+        "initData": null,
+        "num": 1,
+        "log2": 2
+      }
+    },
+    "table_sample_rate": {
+      "_attributes_": {
+        "type": "PrimitiveType",
+        "varType": "f32",
+        "size": 4,
+        "integer": false,
+        "unsigned": false,
+        "offset": 4,
+        "initData": null,
+        "num": 1,
+        "log2": 2
+      }
+    },
+    "counter": {
+      "_attributes_": {
+        "type": "PrimitiveType",
+        "varType": "i32",
+        "size": 4,
+        "integer": true,
+        "unsigned": false,
+        "offset": 8,
+        "initData": null,
+        "num": 1,
+        "log2": 2
+      }
+    },
+    "delta": {
+      "_attributes_": {
+        "type": "PrimitiveType",
+        "varType": "f32",
+        "size": 4,
+        "integer": false,
+        "unsigned": false,
+        "offset": 12,
+        "initData": null,
+        "num": 1,
+        "log2": 2
+      }
+    },
+    "pitch": {
+      "_attributes_": {
+        "type": "PrimitiveType",
+        "varType": "f32",
+        "size": 4,
+        "integer": false,
+        "unsigned": false,
+        "offset": 16,
+        "initData": null,
+        "num": 1,
+        "log2": 2
+      }
+    },
+    "value": {
+      "_attributes_": {
+        "type": "PrimitiveType",
+        "varType": "f32",
+        "size": 4,
+        "integer": false,
+        "unsigned": false,
+        "offset": 20,
+        "initData": null,
+        "num": 1,
         "log2": 2
       }
     }
