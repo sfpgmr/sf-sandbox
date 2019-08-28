@@ -85,7 +85,7 @@ function getSize(prop){
 
 window.addEventListener('load', async () => {
  // 100ms分のバッファサイズを求める
- const sampleRate = 4000;
+ const sampleRate = 16000;
  const memory = new WebAssembly.Memory({initial:1,shared:true,maximum:10});
  let memoryMap = await (await fetch('./wpsg.context.json')).json();
  const envParam = getOffset(memoryMap.env);
@@ -93,27 +93,55 @@ window.addEventListener('load', async () => {
 
  const wpsg = getInstance(await (await fetch('./wpsg.wasm')).arrayBuffer(), { env: { memory: memory } }).exports;
  wpsg.setRate(sampleRate);
- const envParamView = new DataView(memory.buffer,envParam);
- const envWorkView = new DataView(memory.buffer,envWork);
+ 
+//  const envParamView = new DataView(memory.buffer,envParam);
 
- envParamView.setFloat32(4,1.0,true);// ouput level
- envParamView.setFloat32(8,0.5,true);// attack_time;
- envParamView.setFloat32(12,0.5,true);// decay_time;
- envParamView.setFloat32(16,0.5,true);// sustain_level;
- envParamView.setFloat32(20,0.5,true);// release_time;
+//  envParamView.setFloat32(4,1.0,true);// ouput level
+//  envParamView.setFloat32(8,0.5,true);// attack_time;
+//  envParamView.setFloat32(12,0.5,true);// decay_time;
+//  envParamView.setFloat32(16,0.5,true);// sustain_level;
+//  envParamView.setFloat32(20,0.5,true);// release_time;
 
- wpsg.initEnvelope(envParam,sampleRate);
- wpsg.keyOnEnvelope(envWork);
+//  wpsg.initEnvelope(envParam,sampleRate);
+//  wpsg.keyOnEnvelope(envWork);
 
- for(let i = 0,e = (2 * sampleRate) | 0;i < e;++i){
-   console.log(wpsg.doEnvelope(envParam,envWork))
+//  for(let i = 0,e = (2 * sampleRate) | 0;i < e;++i){
+//    console.log(wpsg.doEnvelope(envParam,envWork));
+//  }
+
+//  wpsg.keyOffEnvelope(envWork);
+
+//  for(let i = 0,e = (0.6 * sampleRate) | 0;i < e;++i){
+//    console.log(wpsg.doEnvelope(envParam,envWork));
+//  }
+
+ const offset_start = getOffset(memoryMap.offset_start);
+ const waveFormParam = new DataView(memory.buffer,offset_start);
+ const waveTable = new DataView(memory.buffer,getSize(memoryMap.WaveFormParam) + offset_start);
+ const waveTableWork =new DataView(memory.buffer,waveTable.byteOffset + getSize(memoryMap.WaveTable) + (32 - 1) * 4);
+ // WaveFormParamの設定
+ wpsg.initWaveFormParam(waveFormParam.byteOffset,0b000,waveTable.byteOffset,440);
+ // waveTableの設定
+ waveTable.setInt32(getOffset(memoryMap.WaveTable.size),32,true);
+ waveTable.setInt32(getOffset(memoryMap.WaveTable.wave_size_mask),32-1,true);
+ // 波形データの設定
+ let start_offset = getOffset(memoryMap.WaveTable.wave_data_start) ;
+ // sin波形を設定
+ for(let i = 0;i < 32;++i){
+    waveTable.setFloat32(start_offset + i * 4,Math.sin(2 * Math.Pi * (i / 32)),true);
  }
 
- wpsg.keyOffEnvelope(envWork);
+ // WaveTableWorkの初期化
+ wpsg.initWaveTableWork(waveFormParam.byteOffset,waveTableWork.byteOffset);
 
- for(let i = 0,e = (0.6 * sampleRate) | 0;i < e;++i){
-   console.log(wpsg.doEnvelope(envParam,envWork))
+ // 波形生成
+ for(let i = 0;i < sampleRate;++i){
+   console.log(wpsg.readWaveTable(
+    waveTableWork.byteOffset,
+    waveFormParam.byteOffset
+   ));
  }
+
 
   // {
   //   let psg = (await WebAssembly.instantiateStreaming(fetch('./psg.wasm'))).instance.exports;

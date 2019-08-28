@@ -260,10 +260,12 @@ EnvWork .... エンベロープのインスタンス制御用ワーク
       )
       (f32.mul
         (f32.const 440 )
-        (f32.load
-          (i32.add
-            (&WaveTable.size;)
-            (local.get $wave_table_offset)
+        (f32.convert_i32_s
+          (i32.load
+            (i32.add
+              (&WaveTable.size;)
+              (local.get $wave_table_offset)
+            )
           )
         )
       )
@@ -341,6 +343,15 @@ EnvWork .... エンベロープのインスタンス制御用ワーク
       )
 
       (then
+        (local.set $wave_table_offset
+          (i32.load
+            (i32.add 
+              (&WaveFormParam.wave_table_offset;)
+              (local.get $wave_form_param_offset)
+            )
+          )
+        )
+        
         ;; delta を進め、波形データを$valueにセットする
         (f32.store 
           (i32.add
@@ -350,24 +361,27 @@ EnvWork .... エンベロープのインスタンス制御用ワーク
           (local.tee $value
             (f32.load
               (i32.add 
-                (local.tee $counter
-                  (i32.and
-                    (i32.add
-                      (i32.load 
-                        (i32.add
-                          (&WaveTableWork.counter;)
-                          (local.get $wave_table_work_offset)
+                (i32.shl 
+                  (local.tee $counter
+                    (i32.and
+                      (i32.add
+                        (i32.load 
+                          (i32.add
+                            (&WaveTableWork.counter;)
+                            (local.get $wave_table_work_offset)
+                          )
                         )
+                        (i32.const 1)
                       )
-                      (i32.const 1)
-                    )
-                    (i32.load 
-                      (i32.add 
-                        (&WaveTable.wave_size_mask;)
-                        (local.get $wave_table_offset)
+                      (i32.load 
+                        (i32.add 
+                          (&WaveTable.wave_size_mask;)
+                          (local.get $wave_table_offset)
+                        )
                       )
                     )
                   )
+                  (i32.const 2)
                 )
                 (i32.add 
                   (&WaveTable.wave_data_start;)
