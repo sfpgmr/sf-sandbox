@@ -392,6 +392,14 @@ EnvWork .... エンベロープのインスタンス制御用ワーク
           )
         )
 
+        (i32.store 
+          (i32.add
+            (&WaveTableWork.counter;)
+            (local.get $wave_table_work_offset)
+          )
+          (local.get $counter)
+        )
+
         ;; deltaをリセットする
         (f32.store 
           (i32.add

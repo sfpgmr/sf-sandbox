@@ -128,19 +128,25 @@ window.addEventListener('load', async () => {
  let start_offset = getOffset(memoryMap.WaveTable.wave_data_start) ;
  // sin波形を設定
  for(let i = 0;i < 32;++i){
-    waveTable.setFloat32(start_offset + i * 4,Math.sin(2 * Math.Pi * (i / 32)),true);
+    waveTable.setFloat32(start_offset + i * 4,Math.sin(2.0 * Math.PI * (i / 32)),true);
  }
 
  // WaveTableWorkの初期化
  wpsg.initWaveTableWork(waveFormParam.byteOffset,waveTableWork.byteOffset);
 
  // 波形生成
+ let c = 0;
  for(let i = 0;i < sampleRate;++i){
-   console.log(wpsg.readWaveTable(
+   const v = wpsg.readWaveTable(
     waveTableWork.byteOffset,
     waveFormParam.byteOffset
-   ));
+   );
+   if(v == 1){
+     ++c;
+   }
  }
+
+ console.log(c);
 
 
   // {
