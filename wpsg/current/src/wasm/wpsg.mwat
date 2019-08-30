@@ -5,8 +5,11 @@
   (export "keyOnEnvelope" (func $keyOnEnvelope))
   (export "keyOffEnvelope" (func $KeyOffEnvelope))
   (export "doEnvelope" (func $doEnvelope))
-  (export "initWaveFormParam" (func $initWaveFormParam))
+
+  (export "initWaveTableOscillator" (func $initWaveTableOscillator))
+  (export "initWaveTable" (func $initWaveTable))
   (export "initWaveTableWork" (func $initWaveTableWork))
+  
   (export "readWaveTable" (func $readWaveTable))
 
   (import "env" "memory" (memory $memory 1 10 shared))
@@ -44,6 +47,7 @@ EnvWork .... エンベロープのインスタンス制御用ワーク
 }
 
 {@struct EnvWork
+  i32 env_param_offset;
   i32 flag;
   i32 step;
   f32 counter;
@@ -92,41 +96,76 @@ EnvWork .... エンベロープのインスタンス制御用ワーク
 }
 
 {@struct PitchParam
+  ;; 0 ... 無効
+  ;; 1 ... 有効
   i32 flag;
-  f32 freq;
+  ;; ピッチ初期値
+  f32 pitch;
+  ;; デチューン初期値
   f32 detune;
+  ;; ピッチ・エンベロープ
   EnvParam envelope;
+  ;; LFO 
   LFOParam lfo;
-  f32 counter;
 }
 
 {@struct PitchWork
+  ;; ... 無効
+  ;; ... 有効
   i32 flag;
+  ;; ピッチの現在値
+  f32 pitch;
+  ;; エンベロープのワーク
+  EnvWork env;
+  ;; LFOのワークエリア
+  LFOWork lfo;
 }
 
-{@struct WaveFormParam
+{@struct OscillatorParam
   ;; フラグ
-  
   ;; bit 0-4 : タイプ
   ;;  0000 ... WaveTable
   ;;  0001 ... WaveSample
-
   i32 flag;
-  i32 wave_table_offset;
-  f32 sample_rate;
+  i32 offset;
 }
 
+{@struct OscillatorWork
+  i32 offset;
+}
+
+;;
+;; 波形メモリオシレータ
+;; いわゆるwsgとかsccみたいなの
+;;
+
 {@struct WaveTable
-  ;; サンプル・サイズは２のべき乗 
+  ;; サンプル・サイズは２のべき乗 (min:2 - max:128)
   ;; 1周期分
   ;; 基準周波数 440Hz
   i32 size;
   i32 wave_size_mask;
-  ;; Waveデータ開始
-  f32 wave_data_start;
+  ;; Waveデータ開始位置（最大128）
+  f32 wave_data_start[128];
 }
 
+{@struct WaveTableWork
+  i32 wave_table_offset;
+  f32 base_sample_rate;
+  f32 table_sample_rate;
+  i32 counter;
+  f32 delta;
+  f32 pitch;
+  f32 value;
+}
+
+;;
+;; 波形メモリオシレータ（いわゆるサンプラー）  
+;; まだ手をつけていない
+;;
+
 {@struct WaveSample
+
   ;; サンプル・サイズは任意
   i32 size;
   ;; フラグ
@@ -138,16 +177,10 @@ EnvWork .... エンベロープのインスタンス制御用ワーク
   i32 loop_end;
   ;; Waveデータ開始
   f32 wave_data_start;
+  ;; サンプルのサンプルレート
+  f32 sample_rate;
 }
 
-{@struct WaveTableWork
-  f32 base_sample_rate;
-  f32 table_sample_rate;
-  i32 counter;
-  f32 delta;
-  f32 pitch;
-  f32 value;
-}
 
 {@struct WaveFormWork
   f32 counter;
@@ -155,30 +188,106 @@ EnvWork .... エンベロープのインスタンス制御用ワーク
   f32 value;
 }
 
+;;
+;; 音色パラメータ格納用
+;;
+
 {@struct Timbre
-  i32 wave_form_index;
-  f32 master_level;
-  PitchParam picth;
+  ;; オシレータ
+  OscillatorParam oscillator;
+  ;; 音量
   AmplitudeParam amp;
-  FilterParam filter;
+  ;; ピッチ
+  PitchParam picth;
+  ;; フィルタ
+;;  FilterParam filter;
 }
+
+;;
+;; 発音処理用ワーク
+;;
 
 {@struct Voice 
+  ;; フラグ
   i32 flag;
-  i32 timber_offset;
-  f32 volume;
+  ;; オシレータワークエリア
+  OscillatorWork oscillator;
+  ;; 音量ワークエリア
   AmplitudeWork amp;
+  ;; ピッチワークエリア
   PitchWork pitch;
-  FilterWork filter;
+;;  FilterWork filter;
 }
 
+;;
+;; メモリマップ 
+;;
+
 {@map
-  EnvParam env;
-  EnvWork env_work;
+  ;; アロケート済みメモリのオフセット格納用
+  i32 alloc_mem_offset;
+  ;; オーディオ・インターフェースのサンプルレート
   f32 sample_rate;
+  ;; サンプルレートの逆数 1 / sample_rate
   f32 delta;
-  i32 offset_start;
+  ;; 波形テーブル(16個分)
+  WaveTable wave_table[16];
+  ;; 波形メモリ用ワーク
+  WaveTableWork wave_table_work[16];
+  ;; 音色（16音色分）
+  Timbre timbre[16];
+  ;; ボイス（同時発生8ボイス）
+  Voice voice[8];
+  ;; メモリの先頭位置
+  i32 mem_start;
 }
+
+  ;; 簡易メモリアロケータ 
+  ;; 取ったら取りっぱなしのメモリーアロケータ
+
+  ;; メモリ初期化
+  (func $initMemory
+    (i32.store
+      (&alloc_mem_offset;)
+      (&mem_start;)  
+    )
+  )
+
+  ;; メモリのアロケート
+  (func $allocMemory
+    (param $size i32)
+    (result i32)
+    (local $mem_offset i32)
+    (local $mem_page i32)
+    (if
+      (i32.gt 
+        (local.tee $mem_page
+          (i32.shr_u
+            (local.tee $mem_offset
+              (i32.add (local.get $size) (&alloc_mem_offset;))
+            )
+            (i32.const 16)
+          )
+        )
+        (memory.size)
+      )
+      (then
+        ;;メモリが足りない場合、必要な分だけページを拡張する
+        (memory.grow
+          (i32.sub
+            (local.get $mem_page)
+            (i32.const 1)
+          )
+        )
+      )
+    )
+
+    (i32.store
+      (&alloc_mem_offset;)
+      (local.get $mem_offset)
+    )
+    (local.get $mem_offset)
+  )
 
   (func $set_rate (param $r f32) 
     (f32.store (&sample_rate;) 
@@ -192,57 +301,91 @@ EnvWork .... エンベロープのインスタンス制御用ワーク
     )
   )
 
-  (;;
-   ####################################
-    Wave Table
-   ####################################
-  ;;)
+  ;;
+  ;;  Wave Table
+  ;;
 
-  (func $initWaveFormParam
-    (param $wave_form_param_offset i32)
-    (param $type i32)
+  (func $initWaveTableOscillator
+    (param $oscillator_param_offset i32)
     (param $wave_table_offset i32)
-    (param $sample_rate f32)
+
     (i32.store 
-      (local.get $wave_form_param_offset)
-      (i32.or
-        (local.get $type)
-        (i32.and 
-          (i32.load (local.get $wave_form_param_offset))
-          (i32.const 0xf)
-        )
+      (i32.add
+        (&OscillatorParam.flag;)
+        (local.get $oscillator_param_offset)
       )
+      (i32.const 0)
     )
 
     (i32.store 
       (i32.add
-        (&WaveFormParam.wave_table_offset;)
-        (local.get $wave_form_param_offset)
+        (&OscillatorParam.offset;)
+        (local.get $oscillator_param_offset)
       )
       (local.get $wave_table_offset)
     )
+  )
 
-    (f32.store 
-      (i32.add
-        (&WaveFormParam.sample_rate;)
-        (local.get $wave_form_param_offset)
+  (func $initOscillatorWork
+    (param $osciilator_work_offset i32)
+    (param $work_offset i32)
+    (i32.store 
+      (i32.add 
+        (&OscillatorWork.offset)
+        (local.get $osciilator_work_offset)
       )
-      (local.get $sample_rate)
+      (local.get $work_offset)
     )
+ )
+
+  (func $initWaveTable
+    ;; メモリオフセット
+    (param $wave_table_offset i32)
+    ;; サイズ（２のべき乗単位で2-128までの数値で指定）
+    (param $size i32)
+    ;; wave　dataのスタートオフセットを返す
+    (result i32)
+
+    (i32.store
+      (i32.add
+        (&WaveTable.size;)
+        (local.get $wave_table_offset)
+      )
+      (local.get $size)
+    )
+
+    (i32.store
+      (i32.add
+        (&WaveTable.wave_size_mask;)
+        (local.get $wave_table_offset)
+      )
+      (i32.sub
+        (local.get $size)
+        (i32.const 1)
+      )
+    )
+    
+    (return
+      (i32.add
+        (&WaveTable.wave_data_start;)
+        (local.get $wave_table_offset)
+      )
+    ) 
+    
   )
 
   (func $initWaveTableWork
-    (param $wave_form_param_offset i32)
+    (param $oscillator_param_offset i32)
     (param $wave_table_work_offset i32)
-    (local $wave_table_offset i32)
+    (param $wave_table_offset i32)
 
-    (local.set $wave_table_offset
-      (i32.load
-        (i32.add 
-          (&WaveFormParam.wave_table_offset;)
-          (local.get $wave_form_param_offset)
-        )
+    
+    (i32.store
+      (i32.add 
+        (&WaveTableWork.wave_table_offset;)
+        (local.get $wave_table_work_offset)
       )
+      (local.get $wave_table_offset)
     )
  
     (f32.store 
@@ -312,7 +455,6 @@ EnvWork .... エンベロープのインスタンス制御用ワーク
 
   (func $readWaveTable
     (param $wave_table_work_offset i32)
-    (param $wave_form_param_offset i32)
     (result f32)
     (local $wave_table_offset i32)
     (local $counter i32)
@@ -346,8 +488,8 @@ EnvWork .... エンベロープのインスタンス制御用ワーク
         (local.set $wave_table_offset
           (i32.load
             (i32.add 
-              (&WaveFormParam.wave_table_offset;)
-              (local.get $wave_form_param_offset)
+              (&WaveTableWork.wave_table_offset;)
+              (local.get $wave_table_work_offset)
             )
           )
         )
@@ -453,10 +595,20 @@ EnvWork .... エンベロープのインスタンス制御用ワーク
   ;;)
   ;; ## 初期化 ##
   (func $initEnvelope 
-    (param $env_param_offset i32) 
+    (param $env_param_offset i32)
     (param $sample_rate f32)
+    (param $attack f32)
+    (param $decay f32)
+    (param $sustain f32)
+    (param $release f32)
+    
+    ;; attack ;;
 
-    ;; attack ;;;;;;;
+    (f32.store
+      (i32.add (&EnvParam.attack;) (local.get $env_param_offset))
+      (local.get $attack)
+    )
+
     (f32.store 
       (i32.add (&EnvParam.attack_delta;) (local.get $env_param_offset))
       (f32.div (f32.const 1)
@@ -466,7 +618,14 @@ EnvWork .... エンベロープのインスタンス制御用ワーク
         )
       )
     )
+
     ;; decay ;;;;;;;;
+
+    (f32.store
+      (i32.add (&EnvParam.decay;) (local.get $env_param_offset))
+      (local.get $decay)
+    )
+
     (f32.store 
       (i32.add (&EnvParam.decay_delta;) (local.get $env_param_offset))
       (f32.div 
@@ -480,7 +639,21 @@ EnvWork .... エンベロープのインスタンス制御用ワーク
         )
       )
     )
-    ;; release ;;;;;;
+
+    ;; sustain ;;
+
+    (f32.store
+      (i32.add (&EnvParam.sustain;) (local.get $env_param_offset))
+      (local.get $sustain)
+    )
+
+    ;; release ;;
+
+    (f32.store
+      (i32.add (&EnvParam.release;) (local.get $env_param_offset))
+      (local.get $release)
+    )
+
     (f32.store 
       (i32.add (&EnvParam.release_delta;) (local.get $env_param_offset))
       (f32.div (f32.load (i32.add (&EnvParam.sustain_level;) (local.get $env_param_offset)))
@@ -492,7 +665,16 @@ EnvWork .... エンベロープのインスタンス制御用ワーク
     )
   )
 
-  (func $initEnvWork (param $env_work_offset i32)
+  (func $initEnvWork 
+    (param $env_work_offset i32)
+    (param $env_param_offset i32)
+    
+    ;; envelope parameter offset
+    (f32.store
+      (i32.add (&EnvWork.env_param_offset;) (local.get $env_work_offset))
+      (local.get $env_param_offset)
+    )
+
     ;; counter 
     (f32.store 
       (i32.add (&EnvWork.counter;) (local.get $env_work_offset))
@@ -516,6 +698,7 @@ EnvWork .... エンベロープのインスタンス制御用ワーク
       (i32.add (&EnvWork.value;) (local.get $env_work_offset))
       (f32.const 0)
     )
+
   )
 
   (func $keyOnEnvelope (param $env_work_offset i32)
@@ -569,13 +752,18 @@ EnvWork .... エンベロープのインスタンス制御用ワーク
   )
 
   (func $doEnvelope 
-    (param $env_param_offset i32) 
     (param $env_work_offset i32)
     (result f32)
+    (local $env_param_offset i32) 
     (local $counter f32)
     (local $step i32)
     (local $value f32)
 
+    (local.get $env_param_offset
+      (i32.add
+        (i32.add (&EnvWork.env_param_offset;) (local.get $env_work_offset))
+      )
+    )
     (local.set $counter 
       (f32.load 
         (i32.add (&EnvWork.counter;) (local.get $env_work_offset))

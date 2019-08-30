@@ -49,7 +49,7 @@
 
   window.addEventListener('load', async () => {
    // 100ms分のバッファサイズを求める
-   const sampleRate = 16000;
+   const sampleRate = 24000;
    const memory = new WebAssembly.Memory({initial:1,shared:true,maximum:10});
    let memoryMap = await (await fetch('./wpsg.context.json')).json();
    const envParam = getOffset(memoryMap.env);
