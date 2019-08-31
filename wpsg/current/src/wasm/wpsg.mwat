@@ -1,18 +1,22 @@
 (module
+  (import "env" "memory" (memory $memory 1 10 shared))
   (export "setRate" (func $set_rate))
   (export "initEnvelope" (func $initEnvelope))
   (export "initEnvWork" (func $initEnvWork))
   (export "keyOnEnvelope" (func $keyOnEnvelope))
   (export "keyOffEnvelope" (func $KeyOffEnvelope))
   (export "doEnvelope" (func $doEnvelope))
+  (export "initMemory" (func $initMemory))
+  (export "allocateMemory" (func $allocateMemory))
+  (export "freeMemory" (func $freeMemory))
 
   (export "initWaveTableOscillator" (func $initWaveTableOscillator))
   (export "initWaveTable" (func $initWaveTable))
+  (export "allocateWaveTable" (func $allocateWaveTable))
   (export "initWaveTableWork" (func $initWaveTableWork))
   
   (export "readWaveTable" (func $readWaveTable))
 
-  (import "env" "memory" (memory $memory 1 10 shared))
 
 (;;
 ###############################################################
@@ -34,6 +38,9 @@ EnvWork .... エンベロープのインスタンス制御用ワーク
 ;;)
 
 {@struct EnvParam
+  ;; bit 0:
+  ;; 1 ... enable
+  ;; 0 ... disable
   i32 flag;
   f32 level;
   f32 attack_time;
@@ -54,19 +61,90 @@ EnvWork .... エンベロープのインスタンス制御用ワーク
   f32 value;
 }
 
-{@struct LFOParam
-  i32 flag;
-  i32 wave_form_offset;
-  f32 level;
-  f32 freq;
-  EnvParam envelope;
-  f32 counter;
+;; --------------------------
+;; 波形メモリオシレータ
+;; いわゆるwsgとかsccみたいなの
+;; --------------------------
+
+{@struct WaveTable
+  ;; サンプル・サイズは２のべき乗 (min:2)
+  ;; 1周期分
+  i32 size;
+  i32 wave_size_mask;
+  ;; Waveデータ開始位置
+  f32 wave_data_start;
 }
 
-{@struct LFOWork
-  i32 offset;
-  f32 counter;  
+{@struct WaveTableWork
+  i32 wave_table_offset;
+  f32 base_sample_rate;
+  f32 base_frequency;
+  f32 table_sample_rate;
+  i32 counter;
+  f32 delta;
+  f32 pitch;
+  f32 value;
 }
+
+;; --------------------------
+;; 波形メモリオシレータ（いわゆるサンプラー）  
+;; まだ手をつけていない
+;; --------------------------
+
+{@struct WaveSample
+
+  ;; サンプル・サイズは任意
+  i32 size;
+  ;; フラグ
+  ;; bit 0: 1 ... ループあり 0... ループなし
+  i32 flag;
+  ;; ループ開始オフセット
+  i32 loop_start;
+  ;; ループ終了オフセット
+  i32 loop_end;
+  ;; Waveデータ開始
+  f32 wave_data_start;
+  ;; サンプルのサンプルレート
+  f32 sample_rate;
+}
+
+
+{@struct WaveFormWork
+  f32 counter;
+  f32 delta;
+  f32 value;
+}
+
+;; --------------------------
+;; LFO
+;; --------------------------
+
+;; LFOパラメータ
+{@struct LFOParam
+  ;; flag ;;
+  ;; #bit 0 
+  ;;   0 ... disable
+  ;;   1 ... enable
+  i32 flag;
+  ;; LFO波形
+  i32 wave_table_offset;
+  f32 level;
+  f32 base_frequency;
+  EnvParam envelope;
+}
+
+;; LFOワーク
+{@struct LFOWork
+  ;;
+  i32 flag;
+  WaveTableWork wave;
+  EnvWork envelope;
+  f32 value;
+}
+
+;; --------------------------
+;; フィルター
+;; --------------------------
 
 {@struct FilterParam
   i32 flag;
@@ -82,6 +160,10 @@ EnvWork .... エンベロープのインスタンス制御用ワーク
 {@struct FilterWork
   i32 flag;
 }
+
+;; ---------------------
+;; 音量
+;; ---------------------
 
 {@struct AmplitudeParam
   i32 flag;
@@ -134,63 +216,9 @@ EnvWork .... エンベロープのインスタンス制御用ワーク
   i32 offset;
 }
 
-;;
-;; 波形メモリオシレータ
-;; いわゆるwsgとかsccみたいなの
-;;
-
-{@struct WaveTable
-  ;; サンプル・サイズは２のべき乗 (min:2 - max:128)
-  ;; 1周期分
-  ;; 基準周波数 440Hz
-  i32 size;
-  i32 wave_size_mask;
-  ;; Waveデータ開始位置（最大128）
-  f32 wave_data_start[128];
-}
-
-{@struct WaveTableWork
-  i32 wave_table_offset;
-  f32 base_sample_rate;
-  f32 table_sample_rate;
-  i32 counter;
-  f32 delta;
-  f32 pitch;
-  f32 value;
-}
-
-;;
-;; 波形メモリオシレータ（いわゆるサンプラー）  
-;; まだ手をつけていない
-;;
-
-{@struct WaveSample
-
-  ;; サンプル・サイズは任意
-  i32 size;
-  ;; フラグ
-  ;; bit 0: 1 ... ループあり 0... ループなし
-  i32 flag;
-  ;; ループ開始オフセット
-  i32 loop_start;
-  ;; ループ終了オフセット
-  i32 loop_end;
-  ;; Waveデータ開始
-  f32 wave_data_start;
-  ;; サンプルのサンプルレート
-  f32 sample_rate;
-}
-
-
-{@struct WaveFormWork
-  f32 counter;
-  f32 delta;
-  f32 value;
-}
-
-;;
+;; -----------------------
 ;; 音色パラメータ格納用
-;;
+;; -----------------------
 
 {@struct Timbre
   ;; オシレータ
@@ -203,9 +231,9 @@ EnvWork .... エンベロープのインスタンス制御用ワーク
 ;;  FilterParam filter;
 }
 
-;;
+;; ------------------------
 ;; 発音処理用ワーク
-;;
+;; ------------------------
 
 {@struct Voice 
   ;; フラグ
@@ -219,9 +247,9 @@ EnvWork .... エンベロープのインスタンス制御用ワーク
 ;;  FilterWork filter;
 }
 
-;;
+;; --------------------------------
 ;; メモリマップ 
-;;
+;; --------------------------------
 
 {@map
   ;; アロケート済みメモリのオフセット格納用
@@ -230,20 +258,23 @@ EnvWork .... エンベロープのインスタンス制御用ワーク
   f32 sample_rate;
   ;; サンプルレートの逆数 1 / sample_rate
   f32 delta;
-  ;; 波形テーブル(16個分)
-  WaveTable wave_table[16];
+  ;; 波形テーブル(32個分)のオフセットアドレスを格納
+  i32 wave_table[32];
   ;; 波形メモリ用ワーク
-  WaveTableWork wave_table_work[16];
+  WaveTableWork wave_table_work[32];
   ;; 音色（16音色分）
-  Timbre timbre[16];
+  Timbre timbre[32];
   ;; ボイス（同時発生8ボイス）
   Voice voice[8];
   ;; メモリの先頭位置
   i32 mem_start;
 }
 
-  ;; 簡易メモリアロケータ 
-  ;; 取ったら取りっぱなしのメモリーアロケータ
+
+;; -----------------------------------
+;; 簡易メモリアロケータ 
+;; 取ったら取りっぱなしのメモリアロケータ
+;; ------------------------------------
 
   ;; メモリ初期化
   (func $initMemory
@@ -254,13 +285,25 @@ EnvWork .... エンベロープのインスタンス制御用ワーク
   )
 
   ;; メモリのアロケート
-  (func $allocMemory
+  (func $allocateMemory
     (param $size i32)
     (result i32)
     (local $mem_offset i32)
     (local $mem_page i32)
+
+    ;; 8 byte 境界にそろえる
+    (local.set $size
+      (i32.and
+        (i32.add
+          (local.get $size)
+          (i32.const 0x7)
+        )
+        (i32.const 0xffff_fff8)
+      )    
+    )
+
     (if
-      (i32.gt 
+      (i32.gt_u
         (local.tee $mem_page
           (i32.shr_u
             (local.tee $mem_offset
@@ -271,12 +314,15 @@ EnvWork .... エンベロープのインスタンス制御用ワーク
         )
         (memory.size)
       )
+
       (then
         ;;メモリが足りない場合、必要な分だけページを拡張する
-        (memory.grow
-          (i32.sub
-            (local.get $mem_page)
-            (i32.const 1)
+        (drop
+          (memory.grow
+            (i32.sub
+              (local.get $mem_page)
+              (i32.const 1)
+            )
           )
         )
       )
@@ -287,6 +333,15 @@ EnvWork .... エンベロープのインスタンス制御用ワーク
       (local.get $mem_offset)
     )
     (local.get $mem_offset)
+  )
+
+  ;; 指定オフセットからのメモリを開放する
+  (func $freeMemory
+    (param $offset i32)
+    (i32.store
+      (&alloc_mem_offset;)
+      (local.get $offset)
+    )
   )
 
   (func $set_rate (param $r f32) 
@@ -301,10 +356,11 @@ EnvWork .... エンベロープのインスタンス制御用ワーク
     )
   )
 
-  ;;
-  ;;  Wave Table
-  ;;
+;; -----------------------------------
+;;  Wave Table
+;; -----------------------------------
 
+  ;; # wavetable オシレータの初期化 #
   (func $initWaveTableOscillator
     (param $oscillator_param_offset i32)
     (param $wave_table_offset i32)
@@ -325,26 +381,26 @@ EnvWork .... エンベロープのインスタンス制御用ワーク
       (local.get $wave_table_offset)
     )
   )
-
+ 
+  ;; # オシレータワークエリアの初期化 #
   (func $initOscillatorWork
     (param $osciilator_work_offset i32)
     (param $work_offset i32)
     (i32.store 
       (i32.add 
-        (&OscillatorWork.offset)
+        (&OscillatorWork.offset;)
         (local.get $osciilator_work_offset)
       )
       (local.get $work_offset)
     )
- )
+  )
 
+  ;; # wave tableの初期化 #
   (func $initWaveTable
     ;; メモリオフセット
     (param $wave_table_offset i32)
-    ;; サイズ（２のべき乗単位で2-128までの数値で指定）
+    ;; サイズ（２のべき乗単位で指定）
     (param $size i32)
-    ;; wave　dataのスタートオフセットを返す
-    (result i32)
 
     (i32.store
       (i32.add
@@ -364,21 +420,32 @@ EnvWork .... エンベロープのインスタンス制御用ワーク
         (i32.const 1)
       )
     )
-    
-    (return
-      (i32.add
-        (&WaveTable.wave_data_start;)
-        (local.get $wave_table_offset)
-      )
-    ) 
-    
   )
 
+  ;; # wave table用メモリのアロケートと初期化 #
+  (func $allocateWaveTable
+    (param $data_size i32)
+    (result i32)
+    (local $offset i32)
+    (call $initWaveTable
+      (local.tee $offset
+        (call $allocateMemory
+          (i32.add
+            (local.get $data_size)
+            (#WaveTable - 4;)
+          )    
+        )
+      )
+      (local.get $data_size)
+    )
+    (local.get $offset)
+  )
+
+  ;; # wave table workの初期化 #
   (func $initWaveTableWork
-    (param $oscillator_param_offset i32)
     (param $wave_table_work_offset i32)
     (param $wave_table_offset i32)
-
+    (param $base_frequency f32)
     
     (i32.store
       (i32.add 
@@ -398,11 +465,27 @@ EnvWork .... エンベロープのインスタンス制御用ワーク
 
     (f32.store 
       (i32.add
+        (&WaveTableWork.base_sample_rate;)
+        (local.get $wave_table_work_offset)
+      )
+      (f32.load (&sample_rate;))
+    )
+
+    (f32.store 
+      (i32.add
+        (&WaveTableWork.base_frequency;)
+        (local.get $wave_table_work_offset)
+      )
+      (local.get $base_frequency)
+    )
+
+    (f32.store 
+      (i32.add
         (&WaveTableWork.table_sample_rate;)
         (local.get $wave_table_work_offset)
       )
       (f32.mul
-        (f32.const 440 )
+        (local.get $base_frequency)
         (f32.convert_i32_s
           (i32.load
             (i32.add
@@ -453,6 +536,7 @@ EnvWork .... エンベロープのインスタンス制御用ワーク
     )
   )
 
+  ;; # wave data の読み出し #
   (func $readWaveTable
     (param $wave_table_work_offset i32)
     (result f32)
@@ -543,6 +627,31 @@ EnvWork .... エンベロープのインスタンス制御用ワーク
         )
 
         ;; deltaをリセットする
+
+        ;; table_sample_rateの更新
+        (f32.store
+          (i32.add
+            (&WaveTableWork.table_sample_rate;)
+            (local.get $wave_table_work_offset)
+          )
+          (f32.mul
+            (f32.load
+              (i32.add
+                (&WaveTableWork.base_frequency;)
+                (local.get $wave_table_work_offset)
+              )
+            )
+            (f32.convert_i32_s
+              (i32.load
+                (i32.add
+                  (&WaveTable.size;)
+                  (local.get $wave_table_offset)
+                )
+              )
+            )
+          ) 
+        )
+
         (f32.store 
           (i32.add
             (&WaveTableWork.delta;)
@@ -587,26 +696,51 @@ EnvWork .... エンベロープのインスタンス制御用ワーク
       )
     )
   )
+
+  ;; -------------------------------------
+  ;; LFO
+  ;; -------------------------------------
+
+  (func $initLFOParam
+    (param $lfo_param_offset)
+    (param $flag i32)
+    (param $wave_table_offset i32)
+    (param $level f32)
+    (param $base_frequency f32)
+  )
+
+  (func $initLFOWork
+    (param $lfo_param_offset)
+    (param $flag i32)
+    (param $wave_table_offset i32)
+    (param $level f32)
+    (param $base_frequency f32)
+  )
+
+  (func $doLFO
+    
+  
+  )
+
  
-  (;; 
-   ####################################
-    エンベロープジェネレータ 
-   ####################################
-  ;;)
+  ;; -------------------------------------
+  ;;  エンベロープジェネレータ 
+  ;; -------------------------------------
+  
   ;; ## 初期化 ##
   (func $initEnvelope 
     (param $env_param_offset i32)
     (param $sample_rate f32)
-    (param $attack f32)
-    (param $decay f32)
-    (param $sustain f32)
-    (param $release f32)
+    (param $attack_time f32)
+    (param $decay_time f32)
+    (param $sustain_level f32)
+    (param $release_time f32)
     
     ;; attack ;;
 
     (f32.store
-      (i32.add (&EnvParam.attack;) (local.get $env_param_offset))
-      (local.get $attack)
+      (i32.add (&EnvParam.attack_time;) (local.get $env_param_offset))
+      (local.get $attack_time)
     )
 
     (f32.store 
@@ -622,8 +756,8 @@ EnvWork .... エンベロープのインスタンス制御用ワーク
     ;; decay ;;;;;;;;
 
     (f32.store
-      (i32.add (&EnvParam.decay;) (local.get $env_param_offset))
-      (local.get $decay)
+      (i32.add (&EnvParam.decay_time;) (local.get $env_param_offset))
+      (local.get $decay_time)
     )
 
     (f32.store 
@@ -643,15 +777,15 @@ EnvWork .... エンベロープのインスタンス制御用ワーク
     ;; sustain ;;
 
     (f32.store
-      (i32.add (&EnvParam.sustain;) (local.get $env_param_offset))
-      (local.get $sustain)
+      (i32.add (&EnvParam.sustain_level;) (local.get $env_param_offset))
+      (local.get $sustain_level)
     )
 
     ;; release ;;
 
     (f32.store
-      (i32.add (&EnvParam.release;) (local.get $env_param_offset))
-      (local.get $release)
+      (i32.add (&EnvParam.release_time;) (local.get $env_param_offset))
+      (local.get $release_time)
     )
 
     (f32.store 
@@ -665,12 +799,13 @@ EnvWork .... エンベロープのインスタンス制御用ワーク
     )
   )
 
+  ;; # エンベロープ・ワークエリアの初期化 #
   (func $initEnvWork 
     (param $env_work_offset i32)
     (param $env_param_offset i32)
     
     ;; envelope parameter offset
-    (f32.store
+    (i32.store
       (i32.add (&EnvWork.env_param_offset;) (local.get $env_work_offset))
       (local.get $env_param_offset)
     )
@@ -701,6 +836,7 @@ EnvWork .... エンベロープのインスタンス制御用ワーク
 
   )
 
+  ;; ## key on 処理 ##
   (func $keyOnEnvelope (param $env_work_offset i32)
     ;; flag ;;
     (i32.store 
@@ -729,6 +865,7 @@ EnvWork .... エンベロープのインスタンス制御用ワーク
 
   )
 
+  ;; ## key off 処理 ##
   (func $KeyOffEnvelope 
     (param $env_work_offset i32)
     ;; flag ;;
@@ -751,6 +888,7 @@ EnvWork .... エンベロープのインスタンス制御用ワーク
     )    
   )
 
+  ;; ## エンベロープ処理 ##
   (func $doEnvelope 
     (param $env_work_offset i32)
     (result f32)
@@ -759,11 +897,10 @@ EnvWork .... エンベロープのインスタンス制御用ワーク
     (local $step i32)
     (local $value f32)
 
-    (local.get $env_param_offset
-      (i32.add
-        (i32.add (&EnvWork.env_param_offset;) (local.get $env_work_offset))
-      )
+    (local.set $env_param_offset
+      (i32.add (&EnvWork.env_param_offset;) (local.get $env_work_offset))
     )
+
     (local.set $counter 
       (f32.load 
         (i32.add (&EnvWork.counter;) (local.get $env_work_offset))
@@ -914,10 +1051,14 @@ EnvWork .... エンベロープのインスタンス制御用ワーク
       )
       (br $main)
     )
+    
+    ;; カウンタを更新
     (f32.store 
       (i32.add (&EnvWork.counter;) (local.get $env_work_offset))
       (local.get $counter)
     )
+
+    ;; level * eg を出力 
     (return 
       (f32.mul 
         (local.get $value)
