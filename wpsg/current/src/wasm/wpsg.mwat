@@ -701,12 +701,65 @@ EnvWork .... エンベロープのインスタンス制御用ワーク
   ;; LFO
   ;; -------------------------------------
 
-  (func $initLFOParam
-    (param $lfo_param_offset)
+  (func $initLFOParamenvelope
+    (param $lfo_param_offset i32)
     (param $flag i32)
     (param $wave_table_offset i32)
     (param $level f32)
     (param $base_frequency f32)
+    ;; lfo envelope param
+    (param $env_flag i32)
+    (param $attack_time f32)
+    (param $decay_time f32)
+    (param $sustain_level f32)
+    (param $decay_time f32)
+    
+    (i32.store
+      (i32.add
+        (&LFOParam.flag;)
+        (local.get $lfo_param_offset)
+      )
+      (local.get $flag)
+    )
+
+    (i32.store
+      (i32.add
+        (&LFOParam.wave_table_offset;)
+        (local.get $lfo_param_offset)
+      )
+      (local.get $wave_table_offset)
+    )
+
+    (f32.store
+      (i32.add
+        (&LFOParam.level;)
+        (local.get $lfo_param_offset)
+      )
+      (local.get $level)
+    )
+
+    (f32.store
+      (i32.add
+        (&LFOParam.base_frequency;)
+        (local.get $lfo_param_offset)
+      )
+      (local.get $base_frequency)
+    )
+
+    ;;  LFO Envelopeの初期化
+    (call $initEnvelope
+      (i32.add
+        (&LFOParam.envelope;)
+        (local.get $lfo_param_offset)
+      )
+      (local.get $env_flag)
+      (f32.load (&sample_rate;))
+      (local.get $attack_time)
+      (local.get $decay_time)
+      (local.get $sustain_level)
+      (local.get $release_time)
+    )
+
   )
 
   (func $initLFOWork
@@ -718,8 +771,8 @@ EnvWork .... エンベロープのインスタンス制御用ワーク
   )
 
   (func $doLFO
-    
-  
+    (param $lfo_work_offset i32)
+
   )
 
  
@@ -730,12 +783,23 @@ EnvWork .... エンベロープのインスタンス制御用ワーク
   ;; ## 初期化 ##
   (func $initEnvelope 
     (param $env_param_offset i32)
+    (param $flag i32)
     (param $sample_rate f32)
     (param $attack_time f32)
     (param $decay_time f32)
     (param $sustain_level f32)
     (param $release_time f32)
-    
+
+    ;; flag ;;
+
+    (i32.store
+      (i32.add
+        (&EnvParam.flag;)
+        (local.get $env_param_offset)
+      )
+      (local.get $flag)
+    )
+
     ;; attack ;;
 
     (f32.store
