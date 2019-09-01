@@ -2,7 +2,7 @@
   (import "env" "memory" (memory $memory 1 10 shared))
   (export "setRate" (func $set_rate))
   (export "initEnvelope" (func $initEnvelope))
-  (export "initEnvWork" (func $initEnvWork))
+  (export "initEnvelopeWork" (func $initEnvelopeWork))
   (export "keyOnEnvelope" (func $keyOnEnvelope))
   (export "keyOffEnvelope" (func $KeyOffEnvelope))
   (export "doEnvelope" (func $doEnvelope))
@@ -31,13 +31,13 @@ attack        release
 |              |
 keyon          keyoff
 
-EnvParam .... エンベロープのパラメータ格納用
-EnvWork .... エンベロープのインスタンス制御用ワーク
+Envelope .... エンベロープのパラメータ格納用
+EnvelopeWork .... エンベロープのインスタンス制御用ワーク
 
 ###############################################################
 ;;)
 
-{@struct EnvParam
+{@struct Envelope
   ;; bit 0:
   ;; 1 ... enable
   ;; 0 ... disable
@@ -53,7 +53,7 @@ EnvWork .... エンベロープのインスタンス制御用ワーク
   f32 release_delta;
 }
 
-{@struct EnvWork
+{@struct EnvelopeWork
   i32 env_param_offset;
   i32 flag;
   i32 step;
@@ -61,11 +61,30 @@ EnvWork .... エンベロープのインスタンス制御用ワーク
   f32 value;
 }
 
+;; -----------------------
+;; オシレータ抽象化構造体
+;; -----------------------
+
+{@struct Oscillator
+  ;; フラグ
+  ;; bit 0-4 : タイプ
+  ;;  0000 ... WaveTable
+  ;;  0001 ... WaveSample
+  i32 flag;
+  i32 offset;
+}
+
+{@struct OscillatorWork
+  i32 offset;
+}
+
+
 ;; --------------------------
 ;; 波形メモリオシレータ
 ;; いわゆるwsgとかsccみたいなの
 ;; --------------------------
 
+;; 波形メモリ・パラメータ
 {@struct WaveTable
   ;; サンプル・サイズは２のべき乗 (min:2)
   ;; 1周期分
@@ -75,6 +94,7 @@ EnvWork .... エンベロープのインスタンス制御用ワーク
   f32 wave_data_start;
 }
 
+;; 波形メモリ・ワークエリア
 {@struct WaveTableWork
   i32 wave_table_offset;
   f32 base_sample_rate;
@@ -87,7 +107,7 @@ EnvWork .... エンベロープのインスタンス制御用ワーク
 }
 
 ;; --------------------------
-;; 波形メモリオシレータ（いわゆるサンプラー）  
+;; 波形メモリオシレータ（サンプラタイプ）  
 ;; まだ手をつけていない
 ;; --------------------------
 
@@ -108,7 +128,6 @@ EnvWork .... エンベロープのインスタンス制御用ワーク
   f32 sample_rate;
 }
 
-
 {@struct WaveFormWork
   f32 counter;
   f32 delta;
@@ -116,34 +135,8 @@ EnvWork .... エンベロープのインスタンス制御用ワーク
 }
 
 ;; --------------------------
-;; LFO
-;; --------------------------
-
-;; LFOパラメータ
-{@struct LFOParam
-  ;; flag ;;
-  ;; #bit 0 
-  ;;   0 ... disable
-  ;;   1 ... enable
-  i32 flag;
-  ;; LFO波形
-  i32 wave_table_offset;
-  f32 level;
-  f32 base_frequency;
-  EnvParam envelope;
-}
-
-;; LFOワーク
-{@struct LFOWork
-  ;;
-  i32 flag;
-  WaveTableWork wave;
-  EnvWork envelope;
-  f32 value;
-}
-
-;; --------------------------
 ;; フィルター
+;; まだ実装できていない
 ;; --------------------------
 
 {@struct FilterParam
@@ -152,8 +145,7 @@ EnvWork .... エンベロープのインスタンス制御用ワーク
   f32 level;
   f32 freq;
   f32 resonance;
-  EnvParam envelope;
-  LFOParam lfo;
+  Envelope envelope;
   f32 counter;
 }
 
@@ -161,90 +153,47 @@ EnvWork .... エンベロープのインスタンス制御用ワーク
   i32 flag;
 }
 
-;; ---------------------
-;; 音量
-;; ---------------------
-
-{@struct AmplitudeParam
-  i32 flag;
-  f32 level;
-  EnvParam envelope;
-  LFOParam lfo;
-}
-
-{@struct AmplitudeWork
-  i32 flag;
-  f32 counter;
-}
-
-{@struct PitchParam
-  ;; 0 ... 無効
-  ;; 1 ... 有効
-  i32 flag;
-  ;; ピッチ初期値
-  f32 pitch;
-  ;; デチューン初期値
-  f32 detune;
-  ;; ピッチ・エンベロープ
-  EnvParam envelope;
-  ;; LFO 
-  LFOParam lfo;
-}
-
-{@struct PitchWork
-  ;; ... 無効
-  ;; ... 有効
-  i32 flag;
-  ;; ピッチの現在値
-  f32 pitch;
-  ;; エンベロープのワーク
-  EnvWork env;
-  ;; LFOのワークエリア
-  LFOWork lfo;
-}
-
-{@struct OscillatorParam
-  ;; フラグ
-  ;; bit 0-4 : タイプ
-  ;;  0000 ... WaveTable
-  ;;  0001 ... WaveSample
-  i32 flag;
-  i32 offset;
-}
-
-{@struct OscillatorWork
-  i32 offset;
-}
 
 ;; -----------------------
-;; 音色パラメータ格納用
+;; 音色
 ;; -----------------------
 
+;; 音色・パラメータ
 {@struct Timbre
-  ;; オシレータ
-  OscillatorParam oscillator;
-  ;; 音量
-  AmplitudeParam amp;
-  ;; ピッチ
-  PitchParam picth;
-  ;; フィルタ
-;;  FilterParam filter;
+  ;; # オシレータ
+  Oscillator oscillator;
+  ;; ピッチ・エンベロープ
+  Envelope pitch_envelope;
+  ;; ピッチ・LFO
+  Oscillator pitch_lfo;
+  ;; 音量エンベロープ
+  Envelope amplitude_envelope;
+  ;; 音量LFO
+  Oscillator amplitude_lfo;
 }
 
-;; ------------------------
-;; 発音処理用ワーク
-;; ------------------------
-
-{@struct Voice 
+;; 音色ワークエリア
+{@struct TimbreWork
   ;; フラグ
+  ;; bit 0
+  ;;  0 ... keyoff
+  ;;  1 ... keyon
   i32 flag;
   ;; オシレータワークエリア
   OscillatorWork oscillator;
-  ;; 音量ワークエリア
-  AmplitudeWork amp;
-  ;; ピッチワークエリア
-  PitchWork pitch;
-;;  FilterWork filter;
+  ;; ピッチ・エンベロープ
+  EnvelopeWork pitch_envelope;
+  ;; ピッチLFO
+  OscillatorWork pitch_lfo;
+
+  ;; 音量エンベロープ
+  EnvelopeWork amplitude_envelope;
+  ;; 音量LFO
+  OscillatorWork amplitude_lfo;
+  ;;  FilterWork filter;
+  ;; 出力レベル
+  f32 output_level;
+  f32 value;
 }
 
 ;; --------------------------------
@@ -260,12 +209,10 @@ EnvWork .... エンベロープのインスタンス制御用ワーク
   f32 delta;
   ;; 波形テーブル(32個分)のオフセットアドレスを格納
   i32 wave_table[32];
-  ;; 波形メモリ用ワーク
-  WaveTableWork wave_table_work[32];
-  ;; 音色（16音色分）
-  Timbre timbre[32];
-  ;; ボイス（同時発生8ボイス）
-  Voice voice[8];
+  ;; 音色
+  Timbre timbre;
+  ;; 音色ワーク
+  TimbreWork timbre_work;
   ;; メモリの先頭位置
   i32 mem_start;
 }
@@ -357,6 +304,89 @@ EnvWork .... エンベロープのインスタンス制御用ワーク
   )
 
 ;; -----------------------------------
+;; オシレータ
+;; -----------------------------------
+
+  ;; # オシレータの初期化
+  (func $initOscillator 
+    (param $oscillator_offset i32)
+    (param $oscillator_type i32)
+    (param $param_ i32)
+
+    (i32.store 
+      (i32.add
+        (&Oscillator.flag;)
+        (local.get $oscillator_type)
+      )
+      (local.get $oscillator_type)
+    )
+
+    (block $create_block
+      (block $wave_sample
+        (block $wave_table
+          (br_table $wave_table $wave_sample 
+            (local.get $oscillator_type)
+          )
+        )
+        ;; ## wave table ;;
+        ;; wave table の選択
+        (i32.store
+          (i32.add
+            (&Oscillator.offset;)
+            (local.get $oscillator_offset)
+          )
+          (i32.load
+            (i32.add
+              (i32.shl
+                (local.get $param_)
+                (i32.const 2)
+              )
+              (&wave_table;)
+            )
+          )
+        )
+        (return)
+      )
+      ;; wave sampleの場合
+    )
+  )
+
+  (func $allocateOscillatorWork
+    (param $oscillator_offset i32)
+    (result i32)
+    (local $oscillator_type i32)
+    (local $oscillator_work_offset i32)
+ 
+    (local.set $oscillator_type
+      (i32.and
+        (i32.load
+          (i32.add
+            (&Oscillator.flag;)
+            (local.get $oscillator_offset)
+          )
+        )
+        (i32.const 0xf)
+      )
+    )
+
+    (block $create_block
+      (block $wave_sample
+        (block $wave_table
+          (br_table $wave_table $wave_sample
+            (local.get $oscillator_type)
+          )
+        )
+        ;; # wave table
+        (local.set
+
+        )
+        (return)
+      )
+      ;; # wave sample
+    )
+  )
+
+;; -----------------------------------
 ;;  Wave Table
 ;; -----------------------------------
 
@@ -367,7 +397,7 @@ EnvWork .... エンベロープのインスタンス制御用ワーク
 
     (i32.store 
       (i32.add
-        (&OscillatorParam.flag;)
+        (&Oscillator.flag;)
         (local.get $oscillator_param_offset)
       )
       (i32.const 0)
@@ -375,7 +405,7 @@ EnvWork .... エンベロープのインスタンス制御用ワーク
 
     (i32.store 
       (i32.add
-        (&OscillatorParam.offset;)
+        (&Oscillator.offset;)
         (local.get $oscillator_param_offset)
       )
       (local.get $wave_table_offset)
@@ -696,86 +726,7 @@ EnvWork .... エンベロープのインスタンス制御用ワーク
       )
     )
   )
-
-  ;; -------------------------------------
-  ;; LFO
-  ;; -------------------------------------
-
-  (func $initLFOParamenvelope
-    (param $lfo_param_offset i32)
-    (param $flag i32)
-    (param $wave_table_offset i32)
-    (param $level f32)
-    (param $base_frequency f32)
-    ;; lfo envelope param
-    (param $env_flag i32)
-    (param $attack_time f32)
-    (param $decay_time f32)
-    (param $sustain_level f32)
-    (param $decay_time f32)
-    
-    (i32.store
-      (i32.add
-        (&LFOParam.flag;)
-        (local.get $lfo_param_offset)
-      )
-      (local.get $flag)
-    )
-
-    (i32.store
-      (i32.add
-        (&LFOParam.wave_table_offset;)
-        (local.get $lfo_param_offset)
-      )
-      (local.get $wave_table_offset)
-    )
-
-    (f32.store
-      (i32.add
-        (&LFOParam.level;)
-        (local.get $lfo_param_offset)
-      )
-      (local.get $level)
-    )
-
-    (f32.store
-      (i32.add
-        (&LFOParam.base_frequency;)
-        (local.get $lfo_param_offset)
-      )
-      (local.get $base_frequency)
-    )
-
-    ;;  LFO Envelopeの初期化
-    (call $initEnvelope
-      (i32.add
-        (&LFOParam.envelope;)
-        (local.get $lfo_param_offset)
-      )
-      (local.get $env_flag)
-      (f32.load (&sample_rate;))
-      (local.get $attack_time)
-      (local.get $decay_time)
-      (local.get $sustain_level)
-      (local.get $release_time)
-    )
-
-  )
-
-  (func $initLFOWork
-    (param $lfo_param_offset)
-    (param $flag i32)
-    (param $wave_table_offset i32)
-    (param $level f32)
-    (param $base_frequency f32)
-  )
-
-  (func $doLFO
-    (param $lfo_work_offset i32)
-
-  )
-
- 
+  
   ;; -------------------------------------
   ;;  エンベロープジェネレータ 
   ;; -------------------------------------
@@ -794,7 +745,7 @@ EnvWork .... エンベロープのインスタンス制御用ワーク
 
     (i32.store
       (i32.add
-        (&EnvParam.flag;)
+        (&Envelope.flag;)
         (local.get $env_param_offset)
       )
       (local.get $flag)
@@ -803,16 +754,16 @@ EnvWork .... エンベロープのインスタンス制御用ワーク
     ;; attack ;;
 
     (f32.store
-      (i32.add (&EnvParam.attack_time;) (local.get $env_param_offset))
+      (i32.add (&Envelope.attack_time;) (local.get $env_param_offset))
       (local.get $attack_time)
     )
 
     (f32.store 
-      (i32.add (&EnvParam.attack_delta;) (local.get $env_param_offset))
+      (i32.add (&Envelope.attack_delta;) (local.get $env_param_offset))
       (f32.div (f32.const 1)
         (f32.mul 
           (local.get $sample_rate)
-          (f32.load (i32.add (&EnvParam.attack_time;) (local.get $env_param_offset)))
+          (f32.load (i32.add (&Envelope.attack_time;) (local.get $env_param_offset)))
         )
       )
     )
@@ -820,20 +771,20 @@ EnvWork .... エンベロープのインスタンス制御用ワーク
     ;; decay ;;;;;;;;
 
     (f32.store
-      (i32.add (&EnvParam.decay_time;) (local.get $env_param_offset))
+      (i32.add (&Envelope.decay_time;) (local.get $env_param_offset))
       (local.get $decay_time)
     )
 
     (f32.store 
-      (i32.add (&EnvParam.decay_delta;) (local.get $env_param_offset))
+      (i32.add (&Envelope.decay_delta;) (local.get $env_param_offset))
       (f32.div 
         (f32.sub 
           (f32.const 1) 
-          (f32.load (i32.add (&EnvParam.sustain_level;) (local.get $env_param_offset)))
+          (f32.load (i32.add (&Envelope.sustain_level;) (local.get $env_param_offset)))
         )
         (f32.mul 
           (local.get $sample_rate)
-          (f32.load (i32.add (&EnvParam.decay_time;) (local.get $env_param_offset)))
+          (f32.load (i32.add (&Envelope.decay_time;) (local.get $env_param_offset)))
         )
       )
     )
@@ -841,60 +792,60 @@ EnvWork .... エンベロープのインスタンス制御用ワーク
     ;; sustain ;;
 
     (f32.store
-      (i32.add (&EnvParam.sustain_level;) (local.get $env_param_offset))
+      (i32.add (&Envelope.sustain_level;) (local.get $env_param_offset))
       (local.get $sustain_level)
     )
 
     ;; release ;;
 
     (f32.store
-      (i32.add (&EnvParam.release_time;) (local.get $env_param_offset))
+      (i32.add (&Envelope.release_time;) (local.get $env_param_offset))
       (local.get $release_time)
     )
 
     (f32.store 
-      (i32.add (&EnvParam.release_delta;) (local.get $env_param_offset))
-      (f32.div (f32.load (i32.add (&EnvParam.sustain_level;) (local.get $env_param_offset)))
+      (i32.add (&Envelope.release_delta;) (local.get $env_param_offset))
+      (f32.div (f32.load (i32.add (&Envelope.sustain_level;) (local.get $env_param_offset)))
         (f32.mul 
           (local.get $sample_rate)
-          (f32.load (i32.add (&EnvParam.release_time;) (local.get $env_param_offset)))
+          (f32.load (i32.add (&Envelope.release_time;) (local.get $env_param_offset)))
         )
       )
     )
   )
 
   ;; # エンベロープ・ワークエリアの初期化 #
-  (func $initEnvWork 
+  (func $initEnvelopeWork 
     (param $env_work_offset i32)
     (param $env_param_offset i32)
     
     ;; envelope parameter offset
     (i32.store
-      (i32.add (&EnvWork.env_param_offset;) (local.get $env_work_offset))
+      (i32.add (&EnvelopeWork.env_param_offset;) (local.get $env_work_offset))
       (local.get $env_param_offset)
     )
 
     ;; counter 
     (f32.store 
-      (i32.add (&EnvWork.counter;) (local.get $env_work_offset))
+      (i32.add (&EnvelopeWork.counter;) (local.get $env_work_offset))
       (f32.const 0)
     )
 
     ;; step
     (i32.store 
-      (i32.add (&EnvWork.step;) (local.get $env_work_offset))
+      (i32.add (&EnvelopeWork.step;) (local.get $env_work_offset))
       (i32.const 0)
     )
 
     ;; flag 
     (i32.store 
-      (i32.add (&EnvWork.flag;) (local.get $env_work_offset))
+      (i32.add (&EnvelopeWork.flag;) (local.get $env_work_offset))
       (i32.const 0)
     )
 
     ;; value 
     (f32.store 
-      (i32.add (&EnvWork.value;) (local.get $env_work_offset))
+      (i32.add (&EnvelopeWork.value;) (local.get $env_work_offset))
       (f32.const 0)
     )
 
@@ -904,26 +855,26 @@ EnvWork .... エンベロープのインスタンス制御用ワーク
   (func $keyOnEnvelope (param $env_work_offset i32)
     ;; flag ;;
     (i32.store 
-      (i32.add (&EnvWork.flag;) (local.get $env_work_offset))
+      (i32.add (&EnvelopeWork.flag;) (local.get $env_work_offset))
       (i32.or (i32.const 0x80000000)
-        (i32.load (i32.add (&EnvWork.flag;) (local.get $env_work_offset)))
+        (i32.load (i32.add (&EnvelopeWork.flag;) (local.get $env_work_offset)))
       )
     )
     ;; step ;;
     (i32.store 
-      (i32.add (&EnvWork.step;) (local.get $env_work_offset))
+      (i32.add (&EnvelopeWork.step;) (local.get $env_work_offset))
       (i32.const 0)
     )
 
     ;; counter ;; 
     (f32.store 
-      (i32.add (&EnvWork.counter;) (local.get $env_work_offset))
+      (i32.add (&EnvelopeWork.counter;) (local.get $env_work_offset))
       (f32.const 0)
     )
 
     ;; value ;; 
     (f32.store 
-      (i32.add (&EnvWork.value;) (local.get $env_work_offset))
+      (i32.add (&EnvelopeWork.value;) (local.get $env_work_offset))
       (f32.const 0)
     )
 
@@ -934,20 +885,20 @@ EnvWork .... エンベロープのインスタンス制御用ワーク
     (param $env_work_offset i32)
     ;; flag ;;
     (i32.store 
-      (i32.add (&EnvWork.flag;) (local.get $env_work_offset))
+      (i32.add (&EnvelopeWork.flag;) (local.get $env_work_offset))
       (i32.and 
        (i32.const 0x7fffffff)
-       (i32.load (i32.add (&EnvWork.flag;) (local.get $env_work_offset)))
+       (i32.load (i32.add (&EnvelopeWork.flag;) (local.get $env_work_offset)))
       )
     )
     ;; step ;;
     (i32.store 
-      (i32.add (&EnvWork.step;) (local.get $env_work_offset))
+      (i32.add (&EnvelopeWork.step;) (local.get $env_work_offset))
       (i32.const 3)
     )
     ;; counter
     (f32.store
-      (i32.add (&EnvWork.counter;) (local.get $env_work_offset))
+      (i32.add (&EnvelopeWork.counter;) (local.get $env_work_offset))
       (f32.const 0)
     )    
   )
@@ -962,18 +913,18 @@ EnvWork .... エンベロープのインスタンス制御用ワーク
     (local $value f32)
 
     (local.set $env_param_offset
-      (i32.add (&EnvWork.env_param_offset;) (local.get $env_work_offset))
+      (i32.add (&EnvelopeWork.env_param_offset;) (local.get $env_work_offset))
     )
 
     (local.set $counter 
       (f32.load 
-        (i32.add (&EnvWork.counter;) (local.get $env_work_offset))
+        (i32.add (&EnvelopeWork.counter;) (local.get $env_work_offset))
       )
     )
 
     (local.set $step
       (i32.load 
-        (i32.add (&EnvWork.step;) (local.get $env_work_offset))
+        (i32.add (&EnvelopeWork.step;) (local.get $env_work_offset))
       )
     )
 
@@ -983,7 +934,7 @@ EnvWork .... エンベロープのインスタンス制御用ワーク
 
     (local.set $value 
       (f32.load 
-        (i32.add (&EnvWork.value;) (local.get $env_work_offset))
+        (i32.add (&EnvelopeWork.value;) (local.get $env_work_offset))
       )
     )
 
@@ -1004,31 +955,31 @@ EnvWork .... エンベロープのインスタンス制御用ワーク
                       (local.get $counter)
                     )
                   )
-                  (f32.load (i32.add (&EnvParam.attack_time;) (local.get $env_param_offset)))
+                  (f32.load (i32.add (&Envelope.attack_time;) (local.get $env_param_offset)))
                  )
               (then
                 (i32.store
-                  (i32.add (&EnvWork.step;) (local.get $env_work_offset))
+                  (i32.add (&EnvelopeWork.step;) (local.get $env_work_offset))
                   (i32.const 1)
                 )
 
                 (f32.store
-                  (i32.add (&EnvWork.counter;) (local.get $env_work_offset))
+                  (i32.add (&EnvelopeWork.counter;) (local.get $env_work_offset))
                   (local.tee $counter
                     (f32.const 0)
                   )
                 )
-                (f32.store (i32.add (&EnvWork.value;) (local.get $env_work_offset))
+                (f32.store (i32.add (&EnvelopeWork.value;) (local.get $env_work_offset))
                   (local.tee $value 
                     (f32.const 1)
                   ) 
                 )
               )
               (else
-                (f32.store (i32.add (&EnvWork.value;) (local.get $env_work_offset) )
+                (f32.store (i32.add (&EnvelopeWork.value;) (local.get $env_work_offset) )
                   (local.tee $value
                     (f32.add (local.get $value)
-                      (f32.load (i32.add(&EnvParam.attack_delta;) (local.get $env_param_offset)))
+                      (f32.load (i32.add(&Envelope.attack_delta;) (local.get $env_param_offset)))
                     )
                   )
                 )
@@ -1044,33 +995,33 @@ EnvWork .... エンベロープのインスタンス制御用ワーク
                     (local.get $counter)
                   )
                 )
-                (f32.load (i32.add(&EnvParam.decay_time;) (local.get $env_param_offset)))
+                (f32.load (i32.add(&Envelope.decay_time;) (local.get $env_param_offset)))
                 )
             (then
               (i32.store
-                (i32.add (&EnvWork.step;) (local.get $env_work_offset))
+                (i32.add (&EnvelopeWork.step;) (local.get $env_work_offset))
                 (i32.const 2)
               )
 
               (f32.store
-                (i32.add (&EnvWork.counter;) (local.get $env_work_offset))
+                (i32.add (&EnvelopeWork.counter;) (local.get $env_work_offset))
                 (local.tee $counter
                   (f32.const 0)
                 )
               )
-              (f32.store (i32.add (&EnvWork.value;) (local.get $env_work_offset))
+              (f32.store (i32.add (&EnvelopeWork.value;) (local.get $env_work_offset))
                 (local.tee $value 
                   (f32.load 
-                      (i32.add (&EnvParam.sustain_level;) (local.get $env_param_offset))
+                      (i32.add (&Envelope.sustain_level;) (local.get $env_param_offset))
                   )
                 ) 
               )
             )
             (else
-              (f32.store (i32.add (&EnvWork.value;) (local.get $env_work_offset))
+              (f32.store (i32.add (&EnvelopeWork.value;) (local.get $env_work_offset))
                 (local.tee $value
                   (f32.sub (local.get $value)
-                    (f32.load (i32.add (&EnvParam.decay_delta;) (local.get $env_param_offset)))
+                    (f32.load (i32.add (&Envelope.decay_delta;) (local.get $env_param_offset)))
                   )
                 )
               )
@@ -1086,28 +1037,28 @@ EnvWork .... エンベロープのインスタンス制御用ワーク
                 (local.get $counter)
               )
             )
-            (f32.load (i32.add(&EnvParam.release_time;) (local.get $env_param_offset)))
+            (f32.load (i32.add(&Envelope.release_time;) (local.get $env_param_offset)))
             )
         (then
           (i32.store
-            (i32.add (&EnvWork.step;) (local.get $env_work_offset))
+            (i32.add (&EnvelopeWork.step;) (local.get $env_work_offset))
             (i32.const -1)
           )
           (f32.store
-            (i32.add (&EnvWork.counter;) (local.get $env_work_offset))
+            (i32.add (&EnvelopeWork.counter;) (local.get $env_work_offset))
             (local.tee $counter
               (f32.const 0)
             )
           )
-          (f32.store (i32.add (&EnvWork.value;) (local.get $env_work_offset))
+          (f32.store (i32.add (&EnvelopeWork.value;) (local.get $env_work_offset))
             (local.tee $value (f32.const 0)) 
           )
         )
         (else
-          (f32.store (i32.add (&EnvWork.value;) (local.get $env_work_offset))
+          (f32.store (i32.add (&EnvelopeWork.value;) (local.get $env_work_offset))
             (local.tee $value
               (f32.sub (local.get $value)
-                (f32.load (i32.add (&EnvParam.decay_delta;) (local.get $env_param_offset)))
+                (f32.load (i32.add (&Envelope.decay_delta;) (local.get $env_param_offset)))
               )
             )
           )
@@ -1118,7 +1069,7 @@ EnvWork .... エンベロープのインスタンス制御用ワーク
     
     ;; カウンタを更新
     (f32.store 
-      (i32.add (&EnvWork.counter;) (local.get $env_work_offset))
+      (i32.add (&EnvelopeWork.counter;) (local.get $env_work_offset))
       (local.get $counter)
     )
 
@@ -1126,8 +1077,13 @@ EnvWork .... エンベロープのインスタンス制御用ワーク
     (return 
       (f32.mul 
         (local.get $value)
-        (f32.load (i32.add (&EnvParam.level;) (local.get $env_param_offset)))
+        (f32.load (i32.add (&Envelope.level;) (local.get $env_param_offset)))
       )
     )
   )
+
 )
+
+;; --------------------------
+;; 音色
+;; --------------------------
