@@ -329,12 +329,8 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
           )
         )
         ;; ## wave table ;;
-        ;; wave table の選択
-        (i32.store
-          (i32.add
-            (&Oscillator.offset;)
-            (local.get $oscillator_offset)
-          )
+        (call $initWaveTableOscillator
+          (local.get $oscillator_offset)
           (i32.load
             (i32.add
               (i32.shl
@@ -351,11 +347,11 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
     )
   )
 
-  (func $allocateOscillatorWork
+  (func $initOscillatorWork
     (param $oscillator_offset i32)
-    (result i32)
+    (param $oscillator_work_offset i32)
     (local $oscillator_type i32)
-    (local $oscillator_work_offset i32)
+    (local $offset i32)
  
     (local.set $oscillator_type
       (i32.and
@@ -377,14 +373,33 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
           )
         )
         ;; # wave table
-        (local.set
-
+        (i32.store
+          (i32.add
+            (&OscillatorWork.offset;)
+            (local.get $oscillator_work_offset)
+          )
+          (local.tee $offset
+            (call $allocateMemory
+              (#WaveTableWork;)
+            )
+          )
         )
-        (return)
+        (call $initWaveTableWork
+          (local.get $offset)
+          (i32.load
+            (i32.add
+              (&Oscillator.offset;)
+              (local.get $oscillator_offset)
+            )
+          )
+          (f32.const 440)
+        )
       )
       ;; # wave sample
     )
   )
+
+  func()
 
 ;; -----------------------------------
 ;;  Wave Table
@@ -412,19 +427,6 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
     )
   )
  
-  ;; # オシレータワークエリアの初期化 #
-  (func $initOscillatorWork
-    (param $osciilator_work_offset i32)
-    (param $work_offset i32)
-    (i32.store 
-      (i32.add 
-        (&OscillatorWork.offset;)
-        (local.get $osciilator_work_offset)
-      )
-      (local.get $work_offset)
-    )
-  )
-
   ;; # wave tableの初期化 #
   (func $initWaveTable
     ;; メモリオフセット
@@ -1082,8 +1084,17 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
     )
   )
 
-)
-
 ;; --------------------------
 ;; 音色
 ;; --------------------------
+  (func $initTimbre
+    (param $timbre_offset i32)
+
+    (call $initOscillator
+
+    )
+  
+  )
+
+)
+
