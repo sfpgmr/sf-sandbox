@@ -10,16 +10,14 @@
   (export "allocateMemory" (func $allocateMemory))
   (export "freeMemory" (func $freeMemory))
 
-  (export "initWaveTableOscillator" (func $initWaveTableOscillator))
   (export "initWaveTable" (func $initWaveTable))
   (export "allocateWaveTable" (func $allocateWaveTable))
   (export "initWaveTableWork" (func $initWaveTableWork))
   (export "readWaveTable" (func $readWaveTable))
 
-  (type $oscillatorFunc (func (param i32) (result i32)))
-  (table 1 anyfunc )
-
-  (elm (i32.const 0) $readWaveTable)
+  (type $oscillatorFunc (func (param i32) (result f32)))
+  (table 1 anyfunc)
+  (elem (i32.const 0) $readWaveTable)
 
 (;;
 ###############################################################
@@ -337,7 +335,7 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
           )
         )
         ;; ## wave table ;;
-        (call $initWaveTableOscillator
+        (call $initWaveTable
           (local.get $oscillator_offset)
           (i32.load
             (i32.add
@@ -359,60 +357,54 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
     (param $oscillator_offset i32)
     (param $oscillator_work_offset i32)
     (local $oscillator_type i32)
-    (local $offset i32)
  
-    ;; オシレータ・タイプ
-    (i32.store 
-      (i32.add
-        (&OscillatorWork.call_index;)
-        (local.get $oscillator_offset)
-      )
-      (local.tee $oscillator_type
-        (i32.and
-          (i32.load
-            (i32.add
-              (&Oscillator.flag;)
-              (local.get $oscillator_offset)
-            )
-          )
-          (i32.const 0xf)
-        )
-      )
-    )
+    ;; ;; オシレータ・タイプ
+    ;; (i32.store 
+    ;;   (i32.add
+    ;;     (&OscillatorWork.call_index;)
+    ;;     (local.get $oscillator_offset)
+    ;;   )
+    ;;   (local.tee $oscillator_type
+    ;;     (i32.and
+    ;;       (i32.load
+    ;;         (i32.add
+    ;;           (&Oscillator.flag;)
+    ;;           (local.get $oscillator_offset)
+    ;;         )
+    ;;       )
+    ;;       (i32.const 0xf)
+    ;;     )
+    ;;   )
+    ;; )
 
 
-    (block $create_block
-      (block $wave_sample
-        (block $wave_table
-          (br_table $wave_table $wave_sample
-            (local.get $oscillator_type)
-          )
-        )
-        ;; # wave table
-        (i32.store
-          (i32.add
-            (&OscillatorWork.work_offset;)
-            (local.get $oscillator_work_offset)
-          )
-          (local.tee $offset
-            (call $allocateMemory
-              (#WaveTableWork;)
-            )
-          )
-        )
-        (call $initWaveTableWork
-          (local.get $offset)
-          (i32.load
-            (i32.add
-              (&Oscillator.offset;)
-              (local.get $oscillator_offset)
-            )
-          )
-          (f32.const 440)
-        )
-      )
-      ;; # wave sample
-    )
+    ;; (block $create_block
+    ;;   (block $wave_sample
+    ;;     (block $wave_table
+    ;;       (br_table $wave_table $wave_sample
+    ;;         (local.get $oscillator_type)
+    ;;       )
+    ;;     )
+    ;;     ;; # wave table
+    ;;     (i32.store
+    ;;       (i32.add
+    ;;         (&OscillatorWork.param_offset;)
+    ;;         (local.get $oscillator_work_offset)
+    ;;       )
+    ;;       (local.tee $offset
+    ;;         (call $allocateMemory
+    ;;           (#WaveTableWork;)
+    ;;         )
+    ;;       )
+    ;;     )
+    ;;     (call $initWaveTableWork
+    ;;       (local.get $offset)
+    ;;       (local.get $oscillator_work_offset)
+    ;;       (f32.const 440)
+    ;;     )
+    ;;   )
+    ;;   ;; # wave sample
+    ;; )
   )
 
 
@@ -530,7 +522,7 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
     ;;pitch
     (f32.store
       (i32.add
-        (&WaveTableWork.pitch;)
+        (&WaveTableWork.base.pitch;)
         (local.get $wave_table_work_offset)
       )
       (f32.const 1)
@@ -558,12 +550,18 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
     )
 
     (i32.store
-      (&WaveTableWork.base.param_offset;)
-      (local.get $offset)
+      (i32.add
+        (&WaveTableWork.base.param_offset;)
+        (local.get $wave_table_work_offset)
+      )
+      (local.get $wave_table_offset)
     )
 
     (i32.store
-      (&WaveTable.base.call_index;)
+      (i32.add
+        (&WaveTableWork.base.call_index;)
+        (local.get $wave_table_work_offset)
+      )
       (i32.const 0)
     )
   )
@@ -1091,62 +1089,69 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
 
   (func $processTimbre
     (param $timbre_work_offset i32)
-    (result i32)
+    (result f32)
     (local $oscillator_work_offset i32)
     (local $pitch_lfo_work_offset i32)
-    (local $pitch i32)
+    (local $pitch f32)
   
 
     (local.set $oscillator_work_offset
       (i32.load
-        (&TimbreWork.oscillator_offset;)
-        (local.get $timber_work_offset)
+        (&TimbreWork.oscillator_work_offset;)
+        (local.get $timbre_work_offset)
       )
     )
 
-    ;; Pitchの処理
-    (f32.mul
-     (f32.mul
-      (local.tee $pitch
-       (i32.load
-        (i32.add
-         (&TimbreWork.pitch;)
-         (local.get $timbre_work_offset)
-        )
-       )
-      )
-      (call_indirect (type $oscillatorFunc)
-       (local.tee $pitch_lfo_work_offset
-        (i32.load
-         (&TimbreWork.pitch_lfo;)
-         (local.get $timber_work_offset)
-        )
-       )
-       (i32.load
-        (i32.add
-         (&Oscillator.call_index;)
-         (local.get $oscillator_work_offset)
-        )
-       )
-      )
-      )
-  (call $doEnvelope
-   (i32.load
-    (&TimbreWork.pitch_envelope;)
-    (local.get $timber_work_offset)
-   )
-  )
-  )
-
+    ;; ;; Pitchの処理
+    ;; (f32.store
+    ;;   (i32.add
+    ;;     (&OscillatorWork.pitch;)
+    ;;     (local.get $oscillator_work_offset)
+    ;;   )
+    ;;   (f32.mul
+    ;;     (f32.mul
+    ;;       (local.tee $pitch
+    ;;         (f32.load
+    ;;           (i32.add
+    ;;             (&TimbreWork.pitch;)
+    ;;             (local.get $timbre_work_offset)
+    ;;           )
+    ;;         )
+    ;;       )
+    ;;       ;; pitch lfo
+    ;;       (call_indirect (type $oscillatorFunc) 
+    ;;         (local.tee $pitch_lfo_work_offset
+    ;;           (i32.load
+    ;;             (&TimbreWork.pitch_lfo_offset;)
+    ;;             (local.get $timbre_work_offset)
+    ;;           )
+    ;;         )
+    ;;         (i32.load
+    ;;           (i32.add
+    ;;             (&OscillatorWork.call_index;)
+    ;;             (local.get $oscillator_work_offset)
+    ;;           )
+    ;;         )
+    ;;       )
+    ;;     )        
+    ;;     ;; pitch envelope
+    ;;     (call $doEnvelope
+    ;;       (i32.load
+    ;;         (&TimbreWork.pitch_envelope;)
+    ;;         (local.get $timbre_work_offset)
+    ;;       )
+    ;;     )
+    ;;   )
+    ;; )
     ;; オシレータ
-    (local.get $oscillator_work_offset)
-    (call_indirect $oscillatorFunc
+    (call_indirect (type $oscillatorFunc)
       (i32.load
         (i32.add
-          (&Oscillator.call_index;)
+          (&OscillatorWork.call_index;)
           (local.get $oscillator_work_offset)
         )
       )
+      (local.get $oscillator_work_offset)
     )
   )
 )
