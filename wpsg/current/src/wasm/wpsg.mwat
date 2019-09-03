@@ -1093,7 +1093,8 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
     (param $timbre_work_offset i32)
     (result i32)
     (local $oscillator_work_offset i32)
-    (local $pitch_envelope_work_offset i32)
+    (local $pitch_lfo_work_offset i32)
+    (local $pitch i32)
   
 
     (local.set $oscillator_work_offset
@@ -1104,6 +1105,38 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
     )
 
     ;; Pitchの処理
+    (f32.mul
+     (f32.mul
+      (local.tee $pitch
+       (i32.load
+        (i32.add
+         (&TimbreWork.pitch;)
+         (local.get $timbre_work_offset)
+        )
+       )
+      )
+      (call_indirect (type $oscillatorFunc)
+       (local.tee $pitch_lfo_work_offset
+        (i32.load
+         (&TimbreWork.pitch_lfo;)
+         (local.get $timber_work_offset)
+        )
+       )
+       (i32.load
+        (i32.add
+         (&Oscillator.call_index;)
+         (local.get $oscillator_work_offset)
+        )
+       )
+      )
+      )
+  (call $doEnvelope
+   (i32.load
+    (&TimbreWork.pitch_envelope;)
+    (local.get $timber_work_offset)
+   )
+  )
+  )
 
     ;; オシレータ
     (local.get $oscillator_work_offset)
@@ -1114,7 +1147,6 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
           (local.get $oscillator_work_offset)
         )
       )
-      (i32.const 0xf)
     )
   )
 )
