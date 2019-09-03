@@ -16,7 +16,7 @@
   (export "readWaveTable" (func $readWaveTable))
 
   (type $oscillatorFunc (func (param i32) (result f32)))
-  (table 1 anyfunc)
+  (table  anyfunc)
   (elem (i32.const 0) $readWaveTable)
 
 (;;
