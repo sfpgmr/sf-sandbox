@@ -1087,6 +1087,33 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
 ;; 音色
 ;; --------------------------
 
+  (func $keyOnTimber
+    (param $timbre_work_offset i32)
+    ;; key on フラグのセット
+    (i32.store
+      (i32.add
+        (&TimberWork.flag;)
+        ($timbre_work_offset)
+      )
+      (i32.or
+        (i32.load
+          (i32.add
+            (&TimberWork.flag;)
+            ($timbre_work_offset)
+          )
+        )
+        (i32.const 0x1)
+      )
+    )
+
+    ;; envelopeのキーオン処理
+    
+
+  )
+
+  (func $keyOffTimbre
+    (param $timbre_work_offset i32)
+  )
 
   (func $processTimbre
     (param $timbre_work_offset i32)
