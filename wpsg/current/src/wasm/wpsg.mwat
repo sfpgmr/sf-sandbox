@@ -1,4 +1,6 @@
 (module
+  (type $oscillatorFunc (func (param i32) (result f32)))
+
   (import "env" "memory" (memory $memory 1 10 shared))
   (export "setRate" (func $set_rate))
   (export "initEnvelope" (func $initEnvelope))
@@ -13,10 +15,9 @@
   (export "initWaveTable" (func $initWaveTable))
   (export "allocateWaveTable" (func $allocateWaveTable))
   (export "initWaveTableWork" (func $initWaveTableWork))
-  (export "readWaveTable" (func $readWaveTable))
+  (export "readWaveTable"  (func $readWaveTable))
 
-  (type $oscillatorFunc (func (param i32) (result f32)))
-  (table  anyfunc)
+  (table 1 funcref)
   (elem (i32.const 0) $readWaveTable)
 
 (;;
@@ -190,12 +191,12 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
   ;; ピッチ・エンベロープ
   EnvelopeWork pitch_envelope;
   ;; ピッチLFO
-  i32 pitch_lfo_offset;
+  i32 pitch_lfo_work_offset;
 
   ;; 音量エンベロープ
   EnvelopeWork amplitude_envelope;
   ;; 音量LFO
-  i32 amplitude_lfo_offset;
+  i32 amplitude_lfo_work_offset;
   ;;  FilterWork filter;
   ;; 出力レベル
   f32 output_level;
@@ -567,7 +568,7 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
   )
 
   ;; # wave data の読み出し #
-  (func $readWaveTable
+  (func $readWaveTable (type $oscillatorFunc)
     (param $wave_table_work_offset i32)
     (result f32)
     (local $wave_table_offset i32)
@@ -1092,66 +1093,129 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
     (result f32)
     (local $oscillator_work_offset i32)
     (local $pitch_lfo_work_offset i32)
+    (local $amplitude_lfo_work_offset i32)
     (local $pitch f32)
-  
-
+    
     (local.set $oscillator_work_offset
       (i32.load
-        (&TimbreWork.oscillator_work_offset;)
-        (local.get $timbre_work_offset)
+        (i32.add
+          (&TimbreWork.oscillator_work_offset;)
+          (local.get $timbre_work_offset)
+        )
       )
     )
 
-    ;; ;; Pitchの処理
-    ;; (f32.store
-    ;;   (i32.add
-    ;;     (&OscillatorWork.pitch;)
-    ;;     (local.get $oscillator_work_offset)
-    ;;   )
-    ;;   (f32.mul
-    ;;     (f32.mul
-    ;;       (local.tee $pitch
-    ;;         (f32.load
-    ;;           (i32.add
-    ;;             (&TimbreWork.pitch;)
-    ;;             (local.get $timbre_work_offset)
-    ;;           )
-    ;;         )
-    ;;       )
-    ;;       ;; pitch lfo
-    ;;       (call_indirect (type $oscillatorFunc) 
-    ;;         (local.tee $pitch_lfo_work_offset
-    ;;           (i32.load
-    ;;             (&TimbreWork.pitch_lfo_offset;)
-    ;;             (local.get $timbre_work_offset)
-    ;;           )
-    ;;         )
-    ;;         (i32.load
-    ;;           (i32.add
-    ;;             (&OscillatorWork.call_index;)
-    ;;             (local.get $oscillator_work_offset)
-    ;;           )
-    ;;         )
-    ;;       )
-    ;;     )        
-    ;;     ;; pitch envelope
-    ;;     (call $doEnvelope
-    ;;       (i32.load
-    ;;         (&TimbreWork.pitch_envelope;)
-    ;;         (local.get $timbre_work_offset)
-    ;;       )
-    ;;     )
-    ;;   )
-    ;; )
-    ;; オシレータ
-    (call_indirect (type $oscillatorFunc)
-      (i32.load
-        (i32.add
-          (&OscillatorWork.call_index;)
-          (local.get $oscillator_work_offset)
+    ;; Pitchの処理
+    ;; pitch = pitch * lfo * envelope
+    (f32.store
+      (i32.add
+        (&OscillatorWork.pitch;)
+        (local.get $oscillator_work_offset)
+      )
+      (f32.mul
+        (f32.mul
+          ;; pitch
+          (local.tee $pitch
+            (f32.load
+              (i32.add
+                (&TimbreWork.pitch;)
+                (local.get $timbre_work_offset)
+              )
+            )
+          )
+          ;; lfo処理
+          (call_indirect (type $oscillatorFunc) 
+            (local.tee $pitch_lfo_work_offset
+              (i32.load
+                (i32.add
+                  (&TimbreWork.pitch_lfo_work_offset;)
+                  (local.get $timbre_work_offset)
+                )
+              )
+            )
+            (i32.load
+              (i32.add
+                (&OscillatorWork.call_index;)
+                (local.get $pitch_lfo_work_offset)
+              )
+            )
+          )          
+        )
+        ;; envelope
+        (call $doEnvelope
+          (i32.load
+            (i32.add
+              (&TimbreWork.pitch_envelope;)
+              (local.get $timbre_work_offset)
+            )
+          )
         )
       )
-      (local.get $oscillator_work_offset)
+    )
+
+    ;; オシレータ&音量処理
+    ;; out = oscillator_output * lfo * envelope * output_level
+    (f32.store 
+      (i32.add
+        (&TimbreWork.value;)
+        (local.get $timbre_work_offset)
+      )
+      (f32.mul 
+        (f32.mul
+          (f32.mul
+            ;; オシレータ
+            (call_indirect (type $oscillatorFunc)
+              (local.get $oscillator_work_offset)
+              (i32.load
+                (i32.add
+                  (&OscillatorWork.call_index;)
+                  (local.get $oscillator_work_offset)
+                )
+              )
+            )
+            ;; amplitude lfo
+            (call_indirect (type $oscillatorFunc) 
+              (local.tee $amplitude_lfo_work_offset
+                (i32.load
+                  (i32.add
+                    (&TimbreWork.amplitude_lfo_work_offset;)
+                    (local.get $timbre_work_offset)
+                  )
+                )
+              )
+              (i32.load
+                (i32.add
+                  (&OscillatorWork.call_index;)
+                  (local.get $amplitude_lfo_work_offset)
+                )
+              )
+            )          
+          )
+          ;; amplitude envelope
+          (call $doEnvelope
+            (i32.load
+              (i32.add
+                (&TimbreWork.amplitude_envelope;)
+                (local.get $timbre_work_offset)
+              )
+            )
+          )
+        )
+        ;; output level
+        (f32.load
+          (i32.add
+            (&TimbreWork.output_level;)
+            (local.get $timbre_work_offset)
+          )
+        )
+      )
+    )
+    ;; output 
+    (f32.load 
+      (i32.add
+        (&TimbreWork.value;)
+        (local.get $timbre_work_offset)
+      )
     )
   )
 )
