@@ -1087,19 +1087,19 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
 ;; 音色
 ;; --------------------------
 
-  (func $keyOnTimber
+  (func $keyOnTimbre
     (param $timbre_work_offset i32)
     ;; key on フラグのセット
     (i32.store
       (i32.add
-        (&TimberWork.flag;)
+        (&TimbreWork.flag;)
         ($timbre_work_offset)
       )
       (i32.or
         (i32.load
           (i32.add
-            (&TimberWork.flag;)
-            ($timbre_work_offset)
+            (&TimbreWork.flag;)
+            (local.get $timbre_work_offset)
           )
         )
         (i32.const 0x1)
@@ -1107,12 +1107,57 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
     )
 
     ;; envelopeのキーオン処理
-    
-
+    ;; pitch
+    (call $keyOnEnvelope
+      (i32.add
+        (&TimbreWork.pitch_envelope;)
+        (local.get $timbre_work_offset)
+      )
+    )
+    ;; amplitude
+    (call $keyOnEnvelope
+      (i32.add
+        (&TimbreWork.amplitude_envelope;)
+        (local.get $timbre_work_offset)
+      )
+    )
   )
 
   (func $keyOffTimbre
     (param $timbre_work_offset i32)
+    ;; key off  フラグのセット
+    (i32.store
+      (i32.add
+        (&TimbreWork.flag;)
+        ($timbre_work_offset)
+      )
+      (i32.and
+        (i32.load
+          (i32.add
+            (&TimbreWork.flag;)
+            (local.get $timbre_work_offset)
+          )
+        )
+        (i32.const 0xffff_fffe)
+      )
+    )
+
+    ;; envelopeのキーoff処理
+    ;; pitch
+    (call $keyOffEnvelope
+      (i32.add
+        (&TimbreWork.pitch_envelope;)
+        (local.get $timbre_work_offset)
+      )
+    )
+    ;; amplitude
+    (call $keyOffEnvelope
+      (i32.add
+        (&TimbreWork.amplitude_envelope;)
+        (local.get $timbre_work_offset)
+      )
+    )
+
   )
 
   (func $processTimbre
