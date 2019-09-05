@@ -6,7 +6,7 @@
   (export "initEnvelope" (func $initEnvelope))
   (export "initEnvelopeWork" (func $initEnvelopeWork))
   (export "keyOnEnvelope" (func $keyOnEnvelope))
-  (export "keyOffEnvelope" (func $KeyOffEnvelope))
+  (export "keyOffEnvelope" (func $keyOffEnvelope))
   (export "doEnvelope" (func $doEnvelope))
   (export "initMemory" (func $initMemory))
   (export "allocateMemory" (func $allocateMemory))
@@ -882,7 +882,7 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
   )
 
   ;; ## key off 処理 ##
-  (func $KeyOffEnvelope 
+  (func $keyOffEnvelope 
     (param $env_work_offset i32)
     ;; flag ;;
     (i32.store 
@@ -1093,7 +1093,7 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
     (i32.store
       (i32.add
         (&TimbreWork.flag;)
-        ($timbre_work_offset)
+        (local.get $timbre_work_offset)
       )
       (i32.or
         (i32.load
@@ -1129,7 +1129,7 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
     (i32.store
       (i32.add
         (&TimbreWork.flag;)
-        ($timbre_work_offset)
+        (local.get $timbre_work_offset)
       )
       (i32.and
         (i32.load
