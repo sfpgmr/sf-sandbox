@@ -1,3 +1,14 @@
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; 波形メモリ音源
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+
+{
+  $.OSC_FUNC_INDEX = 0;
+  $.OSC_CREATE_FUNC_INDEX = 1;
+}
+
 (module
   (type $oscillatorFunc (func (param i32) (result f32)))
 
@@ -17,8 +28,11 @@
   (export "initWaveTableWork" (func $initWaveTableWork))
   (export "readWaveTable"  (func $readWaveTable))
 
-  (table 1 funcref)
-  (elem (i32.const 0) $readWaveTable)
+  (table 2 funcref)
+  (elem (i32.const {$.OSC_FUNC_INDEX}) $readWaveTable)
+  (elem (i32.const {$.OSC_CREATE_FUNC_INDEX}) $createWaveTable)
+
+ 
 
 (;;
 ###############################################################
@@ -73,6 +87,9 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
   ;; bit 0-4 : タイプ
   ;;  0000 ... WaveTable
   ;;  0001 ... WaveSample
+  ;; bit 31
+  ;;  1 ... enable
+  ;;  0 ... disable
   i32 flag;
 }
 
@@ -181,6 +198,9 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
 ;; 音色ワークエリア
 {@struct TimbreWork
   ;; フラグ
+  ;; bit 31
+  ;;  0 ... enable
+  ;;  1 ... disable
   ;; bit 0
   ;;  0 ... keyoff
   ;;  1 ... keyon
@@ -314,18 +334,46 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
 ;; オシレータ
 ;; -----------------------------------
 
+  (func $createOscillator
+    (param $oscillator_type)
+    (result i32) ;; offset
+    (call_indirect
+      (local.get $oscillator_type)
+      (i32.add
+        (i32.const {$.OSC_CREATE_FUNC_INDEX})
+        (local.get $oscillator_type)
+      )
+    )
+  )
+
   ;; # オシレータの初期化
   (func $initOscillator 
     (param $oscillator_offset i32)
     (param $oscillator_type i32)
     (param $param_ i32)
+    (result i32)
 
+    ;; oscillator type
     (i32.store 
       (i32.add
         (&Oscillator.flag;)
         (local.get $oscillator_type)
       )
-      (local.get $oscillator_type)
+      (i32.or
+        (local.get $oscillator_type)
+        (i32.load
+          (i32.add
+            (&Oscillator.flag;)
+            (local.get $oscillator_offset)
+          )
+        )
+      )
+    )
+
+    ;; Oscillator typeに応じてオシレータを生成する
+    (call_indirect
+    
+    
     )
 
     (block $create_block
@@ -359,24 +407,24 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
     (param $oscillator_work_offset i32)
     (local $oscillator_type i32)
  
-    ;; ;; オシレータ・タイプ
-    ;; (i32.store 
-    ;;   (i32.add
-    ;;     (&OscillatorWork.call_index;)
-    ;;     (local.get $oscillator_offset)
-    ;;   )
-    ;;   (local.tee $oscillator_type
-    ;;     (i32.and
-    ;;       (i32.load
-    ;;         (i32.add
-    ;;           (&Oscillator.flag;)
-    ;;           (local.get $oscillator_offset)
-    ;;         )
-    ;;       )
-    ;;       (i32.const 0xf)
-    ;;     )
-    ;;   )
-    ;; )
+    ;; オシレータ・タイプ
+    (i32.store 
+      (i32.add
+        (&OscillatorWork.call_index;)
+        (local.get $oscillator_offset)
+      )
+      (local.tee $oscillator_type
+        (i32.and
+          (i32.load
+            (i32.add
+              (&Oscillator.flag;)
+              (local.get $oscillator_offset)
+            )
+          )
+          (i32.const 0xf)
+        )
+      )
+    )
 
 
     ;; (block $create_block
@@ -603,7 +651,7 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
         (local.set $wave_table_offset
           (i32.load
             (i32.add 
-              (&WaveTableWork.wave_table_offset;)
+              (&WaveTableWork.base.param_offset;)
               (local.get $wave_table_work_offset)
             )
           )
@@ -1125,7 +1173,7 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
 
   (func $keyOffTimbre
     (param $timbre_work_offset i32)
-    ;; key off  フラグのセット
+    ;; key off  フラグのリセット
     (i32.store
       (i32.add
         (&TimbreWork.flag;)
@@ -1168,21 +1216,19 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
     (local $amplitude_lfo_work_offset i32)
     (local $pitch f32)
     
-    (local.set $oscillator_work_offset
-      (i32.load
-        (i32.add
-          (&TimbreWork.oscillator_work_offset;)
-          (local.get $timbre_work_offset)
-        )
-      )
-    )
-
     ;; Pitchの処理
     ;; pitch = pitch * lfo * envelope
     (f32.store
       (i32.add
         (&OscillatorWork.pitch;)
-        (local.get $oscillator_work_offset)
+        (local.tee $oscillator_work_offset
+          (i32.load
+            (i32.add
+              (&TimbreWork.oscillator_work_offset;)
+              (local.get $timbre_work_offset)
+            )
+          )
+        )
       )
       (f32.mul
         (f32.mul
