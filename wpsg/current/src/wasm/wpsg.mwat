@@ -91,12 +91,14 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
   ;;  1 ... enable
   ;;  0 ... disable
   i32 flag;
+  i32 init_func_offset;
+  i32 process_func_offset;
 }
 
 ;; ワークエリア
+;; ワークエリアは１音につき128バイト割り当てられる
 {@struct OscillatorWork
   i32 param_offset;
-  i32 call_index;
   f32 pitch;
   f32 sample_rate;
   f32 value;
@@ -183,16 +185,16 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
 
 ;; 音色・パラメータ
 {@struct Timbre
-  ;; # オシレータ
-  i32 oscillator;
+  ;; # オシレータ・オフセット
+  i32 oscillator_offset;
   ;; ピッチ・エンベロープ
   Envelope pitch_envelope;
   ;; ピッチ・LFO
-  i32 pitch_lfo;
+  i32 pitch_lfo_offset;
   ;; 音量エンベロープ
   Envelope amplitude_envelope;
-  ;; 音量LFO
-  i32 amplitude_lfo;
+  ;; 音量LFO・オフセット
+  i32 amplitude_lfo_offset;
 }
 
 ;; 音色ワークエリア
@@ -205,18 +207,19 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
   ;;  0 ... keyoff
   ;;  1 ... keyon
   i32 flag;
+  i32 timbre_offset;
   f32 pitch;
-  ;; オシレータワークエリアへのオフセット
-  i32 oscillator_work_offset;
+  ;; オシレータ・ワークエリア（128バイト分）
+  i32 oscillator_work_offset[32];
   ;; ピッチ・エンベロープ
   EnvelopeWork pitch_envelope;
-  ;; ピッチLFO
-  i32 pitch_lfo_work_offset;
+  ;; ピッチLFO・ワークエリア(128バイト分)
+  i32 pitch_lfo_work_offset[32];
 
   ;; 音量エンベロープ
   EnvelopeWork amplitude_envelope;
-  ;; 音量LFO
-  i32 amplitude_lfo_work_offset;
+  ;; 音量LFO・ワークエリア
+  i32 amplitude_lfo_work_offset[16];
   ;;  FilterWork filter;
   ;; 出力レベル
   f32 output_level;
@@ -234,12 +237,14 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
   f32 sample_rate;
   ;; サンプルレートの逆数 1 / sample_rate
   f32 delta;
-  ;; 波形テーブル(32個分)のオフセットアドレスを格納
-  i32 wave_table[32];
-  ;; 音色
-  Timbre timbre;
-  ;; 音色ワーク
-  TimbreWork timbre_work;
+  ;; オシレータのオフセットアドレスを格納（合計32個）
+  i32 oscillator[32];
+  ;; 音色 (64個分)
+  Timbre timbre[64];
+  ;; 音色ワークへのオフセットアドレス
+  TimbreWork timbre_work[8];
+  ;; outputバッファへのオフセット・アドレス
+  i32 output_offset;
   ;; メモリの先頭位置
   i32 mem_start;
 }
@@ -318,6 +323,10 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
     )
   )
 
+;; ----------------------
+;; サンプリング周波数の設定
+;; ----------------------
+
   (func $set_rate (param $r f32) 
     (f32.store (&sample_rate;) 
       (local.get $r)
@@ -328,132 +337,6 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
         (local.get $r)
       )
     )
-  )
-
-;; -----------------------------------
-;; オシレータ
-;; -----------------------------------
-
-  (func $createOscillator
-    (param $oscillator_type)
-    (result i32) ;; offset
-    (call_indirect
-      (local.get $oscillator_type)
-      (i32.add
-        (i32.const {$.OSC_CREATE_FUNC_INDEX})
-        (local.get $oscillator_type)
-      )
-    )
-  )
-
-  ;; # オシレータの初期化
-  (func $initOscillator 
-    (param $oscillator_offset i32)
-    (param $oscillator_type i32)
-    (param $param_ i32)
-    (result i32)
-
-    ;; oscillator type
-    (i32.store 
-      (i32.add
-        (&Oscillator.flag;)
-        (local.get $oscillator_type)
-      )
-      (i32.or
-        (local.get $oscillator_type)
-        (i32.load
-          (i32.add
-            (&Oscillator.flag;)
-            (local.get $oscillator_offset)
-          )
-        )
-      )
-    )
-
-    ;; Oscillator typeに応じてオシレータを生成する
-    (call_indirect
-    
-    
-    )
-
-    (block $create_block
-      (block $wave_sample
-        (block $wave_table
-          (br_table $wave_table $wave_sample 
-            (local.get $oscillator_type)
-          )
-        )
-        ;; ## wave table ;;
-        (call $initWaveTable
-          (local.get $oscillator_offset)
-          (i32.load
-            (i32.add
-              (i32.shl
-                (local.get $param_)
-                (i32.const 2)
-              )
-              (&wave_table;)
-            )
-          )
-        )
-        (return)
-      )
-      ;; wave sampleの場合
-    )
-  )
-
-  (func $initOscillatorWork
-    (param $oscillator_offset i32)
-    (param $oscillator_work_offset i32)
-    (local $oscillator_type i32)
- 
-    ;; オシレータ・タイプ
-    (i32.store 
-      (i32.add
-        (&OscillatorWork.call_index;)
-        (local.get $oscillator_offset)
-      )
-      (local.tee $oscillator_type
-        (i32.and
-          (i32.load
-            (i32.add
-              (&Oscillator.flag;)
-              (local.get $oscillator_offset)
-            )
-          )
-          (i32.const 0xf)
-        )
-      )
-    )
-
-
-    ;; (block $create_block
-    ;;   (block $wave_sample
-    ;;     (block $wave_table
-    ;;       (br_table $wave_table $wave_sample
-    ;;         (local.get $oscillator_type)
-    ;;       )
-    ;;     )
-    ;;     ;; # wave table
-    ;;     (i32.store
-    ;;       (i32.add
-    ;;         (&OscillatorWork.param_offset;)
-    ;;         (local.get $oscillator_work_offset)
-    ;;       )
-    ;;       (local.tee $offset
-    ;;         (call $allocateMemory
-    ;;           (#WaveTableWork;)
-    ;;         )
-    ;;       )
-    ;;     )
-    ;;     (call $initWaveTableWork
-    ;;       (local.get $offset)
-    ;;       (local.get $oscillator_work_offset)
-    ;;       (f32.const 440)
-    ;;     )
-    ;;   )
-    ;;   ;; # wave sample
-    ;; )
   )
 
 
@@ -518,14 +401,6 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
     (param $wave_table_offset i32)
     (param $base_frequency f32)
     
-    (i32.store
-      (i32.add 
-        (&WaveTableWork.wave_table_offset;)
-        (local.get $wave_table_work_offset)
-      )
-      (local.get $wave_table_offset)
-    )
- 
     (f32.store 
       (i32.add
         (&WaveTableWork.base.sample_rate;)
@@ -606,13 +481,7 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
       (local.get $wave_table_offset)
     )
 
-    (i32.store
-      (i32.add
-        (&WaveTableWork.base.call_index;)
-        (local.get $wave_table_work_offset)
-      )
-      (i32.const 0)
-    )
+
   )
 
   ;; # wave data の読み出し #
@@ -1135,6 +1004,7 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
 ;; 音色
 ;; --------------------------
 
+
   (func $keyOnTimbre
     (param $timbre_work_offset i32)
     ;; key on フラグのセット
@@ -1215,6 +1085,16 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
     (local $pitch_lfo_work_offset i32)
     (local $amplitude_lfo_work_offset i32)
     (local $pitch f32)
+    (local $oscillator_offset i32)
+
+    (local.set $oscillator_offset
+      (i32.load
+        (i32.add
+          (&OscillatorWork.param_offset;)
+          (local.get $timbre_work_offset)
+        )
+      )
+    )
     
     ;; Pitchの処理
     ;; pitch = pitch * lfo * envelope
@@ -1253,8 +1133,13 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
             )
             (i32.load
               (i32.add
-                (&OscillatorWork.call_index;)
-                (local.get $pitch_lfo_work_offset)
+                (&Oscillator.process_func_offset;)
+                (i32.load
+                  (i32.add
+                    (&OscillatorWork.param_offset;)
+                    (local.get $pitch_lfo_work_offset)
+                  )            
+                )
               )
             )
           )          
@@ -1286,8 +1171,8 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
               (local.get $oscillator_work_offset)
               (i32.load
                 (i32.add
-                  (&OscillatorWork.call_index;)
-                  (local.get $oscillator_work_offset)
+                  (&Oscillator.process_func_offset;)
+                  (local.get $oscillator_offset)
                 )
               )
             )
@@ -1303,8 +1188,13 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
               )
               (i32.load
                 (i32.add
-                  (&OscillatorWork.call_index;)
-                  (local.get $amplitude_lfo_work_offset)
+                  (&Oscillator.process_func_offset;)
+                  (i32.load
+                    (i32.add
+                      (&OscillatorWork.param_offset;)
+                      (local.get $amplitude_lfo_work_offset)
+                    )
+                  )
                 )
               )
             )          
