@@ -89,7 +89,14 @@ window.addEventListener('load', async () => {
  const memory = new WebAssembly.Memory({initial:1,shared:true,maximum:10});
  let memoryMap = await (await fetch('./wpsg.context.json')).json();
  const wpsg = getInstance(await (await fetch('./wpsg.wasm')).arrayBuffer(), { env: { memory: memory } }).exports;
+
  wpsg.setRate(sampleRate);
+ const waveTableOffset = wpsg.allocateWaveTable(8);
+ console.log(waveTableOffset);
+ const waveTableOffset2 = wpsg.allocateWaveTable(8);
+ console.log(waveTableOffset2);
+ const waveTableOffset3 = wpsg.allocateWaveTable(8);
+ console.log(waveTableOffset3);
  
 //  const envParamView = new DataView(memory.buffer,envParam);
 
@@ -113,33 +120,33 @@ window.addEventListener('load', async () => {
 //  }
 
  // ヒープメモリの初期化
- wpsg.initMemory();
+//  wpsg.initMemory();
 
- // 
- const waveTable = new DataView(memory.buffer,wpsg.allocateWaveTable(4 /* 2のべき乗 */));
- const waveTableWork =new DataView(memory.buffer,getOffset(memoryMap.wave_table_work));
- // WaveTableの設定
- wpsg.initWaveTableWork(waveTableWork.byteOffset,waveTable.byteOffset,440);
+//  // 
+//  const waveTable = new DataView(memory.buffer,wpsg.allocateWaveTable(4 /* 2のべき乗 */));
+//  const waveTableWork =new DataView(memory.buffer,getOffset(memoryMap.wave_table_work));
+//  // WaveTableの設定
+//  wpsg.initWaveTableWork(waveTableWork.byteOffset,waveTable.byteOffset,440);
 
- // 波形データの設定
- let start_offset = getOffset(memoryMap.WaveTable.wave_data_start);
+//  // 波形データの設定
+//  let start_offset = getOffset(memoryMap.WaveTable.wave_data_start);
 
- // 矩形波を設定
- waveTable.setFloat32(start_offset,-1,true);
- waveTable.setFloat32(start_offset + 4,-0.5,true);
- waveTable.setFloat32(start_offset + 8 ,0.5,true);
- waveTable.setFloat32(start_offset + 12,1,true);
+//  // 矩形波を設定
+//  waveTable.setFloat32(start_offset,-1,true);
+//  waveTable.setFloat32(start_offset + 4,-0.5,true);
+//  waveTable.setFloat32(start_offset + 8 ,0.5,true);
+//  waveTable.setFloat32(start_offset + 12,1,true);
 
-//  for(let i = 0;i < 32;++i){
-//     waveTable.setFloat32(start_offset + i * 4,Math.sin(2.0 * Math.PI * (i / 32)),true);
+// //  for(let i = 0;i < 32;++i){
+// //     waveTable.setFloat32(start_offset + i * 4,Math.sin(2.0 * Math.PI * (i / 32)),true);
+// //  }
+
+
+//  // 波形生成
+//  for(let i = 0;i < sampleRate;++i){
+//    const v = wpsg.readWaveTable(waveTableWork.byteOffset);
+//    console.log(v);
 //  }
-
-
- // 波形生成
- for(let i = 0;i < sampleRate;++i){
-   const v = wpsg.readWaveTable(waveTableWork.byteOffset);
-   console.log(v);
- }
 
   // {
   //   let psg = (await WebAssembly.instantiateStreaming(fetch('./psg.wasm'))).instance.exports;
