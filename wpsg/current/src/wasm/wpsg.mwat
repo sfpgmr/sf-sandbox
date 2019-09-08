@@ -11,6 +11,7 @@
 
 (module
   (type $oscillatorFunc (func (param i32) (result f32)))
+;;  (memory $memory (export "memory") 1 10 shared)
 
   (import "env" "memory" (memory $memory 1 10 shared))
   (export "setRate" (func $set_rate))
@@ -288,14 +289,17 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
     (if
       (i32.gt_u
         (local.tee $mem_page
-          (i32.shr_u
-            (local.tee $mem_offset
-              (i32.add 
-                (local.get $size) 
-                (i32.load (&alloc_mem_offset;))
+          (i32.add
+            (i32.shr_u
+              (local.tee $mem_offset
+                (i32.add 
+                  (local.get $size) 
+                  (i32.load (&alloc_mem_offset;))
+                )
               )
+              (i32.const 16)
             )
-            (i32.const 16)
+            (i32.const 1)
           )
         )
         (memory.size)
@@ -303,14 +307,14 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
 
       (then
         ;;メモリが足りない場合、必要な分だけページを拡張する
-        (drop
-          (memory.grow
-            (i32.sub
-              (local.get $mem_page)
-              (i32.const 1)
-            )
-          )
+        (memory.grow
+          (i32.const 2)
+          ;; (i32.sub
+          ;;   (local.get $mem_page)
+          ;;   (memory.size)
+          ;; )
         )
+        (drop)
       )
     )
 
