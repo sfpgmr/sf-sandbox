@@ -4,20 +4,7 @@
   "Envelope": {
     "_attributes_": {
       "type": "StructDefinition",
-      "size": 36
-    },
-    "flag": {
-      "_attributes_": {
-        "type": "PrimitiveType",
-        "varType": "i32",
-        "size": 4,
-        "integer": true,
-        "unsigned": false,
-        "offset": 0,
-        "initData": null,
-        "num": 1,
-        "log2": 2
-      }
+      "size": 32
     },
     "level": {
       "_attributes_": {
@@ -26,7 +13,7 @@
         "size": 4,
         "integer": false,
         "unsigned": false,
-        "offset": 4,
+        "offset": 0,
         "initData": null,
         "num": 1,
         "log2": 2
@@ -39,7 +26,7 @@
         "size": 4,
         "integer": false,
         "unsigned": false,
-        "offset": 8,
+        "offset": 4,
         "initData": null,
         "num": 1,
         "log2": 2
@@ -52,7 +39,7 @@
         "size": 4,
         "integer": false,
         "unsigned": false,
-        "offset": 12,
+        "offset": 8,
         "initData": null,
         "num": 1,
         "log2": 2
@@ -65,7 +52,7 @@
         "size": 4,
         "integer": false,
         "unsigned": false,
-        "offset": 16,
+        "offset": 12,
         "initData": null,
         "num": 1,
         "log2": 2
@@ -78,7 +65,7 @@
         "size": 4,
         "integer": false,
         "unsigned": false,
-        "offset": 20,
+        "offset": 16,
         "initData": null,
         "num": 1,
         "log2": 2
@@ -91,7 +78,7 @@
         "size": 4,
         "integer": false,
         "unsigned": false,
-        "offset": 24,
+        "offset": 20,
         "initData": null,
         "num": 1,
         "log2": 2
@@ -104,7 +91,7 @@
         "size": 4,
         "integer": false,
         "unsigned": false,
-        "offset": 28,
+        "offset": 24,
         "initData": null,
         "num": 1,
         "log2": 2
@@ -117,7 +104,7 @@
         "size": 4,
         "integer": false,
         "unsigned": false,
-        "offset": 32,
+        "offset": 28,
         "initData": null,
         "num": 1,
         "log2": 2
@@ -200,7 +187,7 @@
       "type": "StructDefinition",
       "size": 8
     },
-    "flag": {
+    "oscillator_type": {
       "_attributes_": {
         "type": "PrimitiveType",
         "varType": "i32",
@@ -230,7 +217,7 @@
   "OscillatorWork": {
     "_attributes_": {
       "type": "StructDefinition",
-      "size": 16
+      "size": 20
     },
     "param_offset": {
       "_attributes_": {
@@ -245,12 +232,12 @@
         "log2": 2
       }
     },
-    "pitch": {
+    "flag": {
       "_attributes_": {
         "type": "PrimitiveType",
-        "varType": "f32",
+        "varType": "i32",
         "size": 4,
-        "integer": false,
+        "integer": true,
         "unsigned": false,
         "offset": 4,
         "initData": null,
@@ -258,7 +245,7 @@
         "log2": 2
       }
     },
-    "sample_rate": {
+    "pitch": {
       "_attributes_": {
         "type": "PrimitiveType",
         "varType": "f32",
@@ -271,7 +258,7 @@
         "log2": 2
       }
     },
-    "value": {
+    "sample_rate": {
       "_attributes_": {
         "type": "PrimitiveType",
         "varType": "f32",
@@ -279,6 +266,19 @@
         "integer": false,
         "unsigned": false,
         "offset": 12,
+        "initData": null,
+        "num": 1,
+        "log2": 2
+      }
+    },
+    "value": {
+      "_attributes_": {
+        "type": "PrimitiveType",
+        "varType": "f32",
+        "size": 4,
+        "integer": false,
+        "unsigned": false,
+        "offset": 16,
         "initData": null,
         "num": 1,
         "log2": 2
@@ -299,7 +299,7 @@
         "num": 1,
         "log2": 3
       },
-      "flag": {
+      "oscillator_type": {
         "_attributes_": {
           "type": "PrimitiveType",
           "varType": "i32",
@@ -369,12 +369,12 @@
   "WaveTableWork": {
     "_attributes_": {
       "type": "StructDefinition",
-      "size": 36
+      "size": 40
     },
     "base": {
       "_attributes_": {
         "type": "StructDefinition",
-        "size": 16,
+        "size": 20,
         "offset": 0,
         "initData": null,
         "num": 1,
@@ -393,12 +393,12 @@
           "log2": 2
         }
       },
-      "pitch": {
+      "flag": {
         "_attributes_": {
           "type": "PrimitiveType",
-          "varType": "f32",
+          "varType": "i32",
           "size": 4,
-          "integer": false,
+          "integer": true,
           "unsigned": false,
           "offset": 4,
           "initData": null,
@@ -406,7 +406,7 @@
           "log2": 2
         }
       },
-      "sample_rate": {
+      "pitch": {
         "_attributes_": {
           "type": "PrimitiveType",
           "varType": "f32",
@@ -419,7 +419,7 @@
           "log2": 2
         }
       },
-      "value": {
+      "sample_rate": {
         "_attributes_": {
           "type": "PrimitiveType",
           "varType": "f32",
@@ -427,6 +427,19 @@
           "integer": false,
           "unsigned": false,
           "offset": 12,
+          "initData": null,
+          "num": 1,
+          "log2": 2
+        }
+      },
+      "value": {
+        "_attributes_": {
+          "type": "PrimitiveType",
+          "varType": "f32",
+          "size": 4,
+          "integer": false,
+          "unsigned": false,
+          "offset": 16,
           "initData": null,
           "num": 1,
           "log2": 2
@@ -440,7 +453,7 @@
         "size": 4,
         "integer": true,
         "unsigned": false,
-        "offset": 16,
+        "offset": 20,
         "initData": null,
         "num": 1,
         "log2": 2
@@ -453,7 +466,7 @@
         "size": 4,
         "integer": false,
         "unsigned": false,
-        "offset": 20,
+        "offset": 24,
         "initData": null,
         "num": 1,
         "log2": 2
@@ -466,7 +479,7 @@
         "size": 4,
         "integer": false,
         "unsigned": false,
-        "offset": 24,
+        "offset": 28,
         "initData": null,
         "num": 1,
         "log2": 2
@@ -479,7 +492,7 @@
         "size": 4,
         "integer": true,
         "unsigned": false,
-        "offset": 28,
+        "offset": 32,
         "initData": null,
         "num": 1,
         "log2": 2
@@ -492,7 +505,7 @@
         "size": 4,
         "integer": false,
         "unsigned": false,
-        "offset": 32,
+        "offset": 36,
         "initData": null,
         "num": 1,
         "log2": 2
@@ -631,7 +644,7 @@
   "FilterParam": {
     "_attributes_": {
       "type": "StructDefinition",
-      "size": 60
+      "size": 56
     },
     "flag": {
       "_attributes_": {
@@ -701,24 +714,11 @@
     "envelope": {
       "_attributes_": {
         "type": "StructDefinition",
-        "size": 36,
+        "size": 32,
         "offset": 20,
         "initData": null,
         "num": 1,
         "log2": 5
-      },
-      "flag": {
-        "_attributes_": {
-          "type": "PrimitiveType",
-          "varType": "i32",
-          "size": 4,
-          "integer": true,
-          "unsigned": false,
-          "offset": 20,
-          "initData": null,
-          "num": 1,
-          "log2": 2
-        }
       },
       "level": {
         "_attributes_": {
@@ -727,7 +727,7 @@
           "size": 4,
           "integer": false,
           "unsigned": false,
-          "offset": 24,
+          "offset": 20,
           "initData": null,
           "num": 1,
           "log2": 2
@@ -740,7 +740,7 @@
           "size": 4,
           "integer": false,
           "unsigned": false,
-          "offset": 28,
+          "offset": 24,
           "initData": null,
           "num": 1,
           "log2": 2
@@ -753,7 +753,7 @@
           "size": 4,
           "integer": false,
           "unsigned": false,
-          "offset": 32,
+          "offset": 28,
           "initData": null,
           "num": 1,
           "log2": 2
@@ -766,7 +766,7 @@
           "size": 4,
           "integer": false,
           "unsigned": false,
-          "offset": 36,
+          "offset": 32,
           "initData": null,
           "num": 1,
           "log2": 2
@@ -779,7 +779,7 @@
           "size": 4,
           "integer": false,
           "unsigned": false,
-          "offset": 40,
+          "offset": 36,
           "initData": null,
           "num": 1,
           "log2": 2
@@ -792,7 +792,7 @@
           "size": 4,
           "integer": false,
           "unsigned": false,
-          "offset": 44,
+          "offset": 40,
           "initData": null,
           "num": 1,
           "log2": 2
@@ -805,7 +805,7 @@
           "size": 4,
           "integer": false,
           "unsigned": false,
-          "offset": 48,
+          "offset": 44,
           "initData": null,
           "num": 1,
           "log2": 2
@@ -818,7 +818,7 @@
           "size": 4,
           "integer": false,
           "unsigned": false,
-          "offset": 52,
+          "offset": 48,
           "initData": null,
           "num": 1,
           "log2": 2
@@ -832,7 +832,7 @@
         "size": 4,
         "integer": false,
         "unsigned": false,
-        "offset": 56,
+        "offset": 52,
         "initData": null,
         "num": 1,
         "log2": 2
@@ -861,9 +861,9 @@
   "Timbre": {
     "_attributes_": {
       "type": "StructDefinition",
-      "size": 84
+      "size": 92
     },
-    "oscillator_offset": {
+    "flag": {
       "_attributes_": {
         "type": "PrimitiveType",
         "varType": "i32",
@@ -876,42 +876,42 @@
         "log2": 2
       }
     },
+    "oscillator_offset": {
+      "_attributes_": {
+        "type": "PrimitiveType",
+        "varType": "i32",
+        "size": 4,
+        "integer": true,
+        "unsigned": false,
+        "offset": 4,
+        "initData": null,
+        "num": 1,
+        "log2": 2
+      }
+    },
+    "oscillator_base_frequency": {
+      "_attributes_": {
+        "type": "PrimitiveType",
+        "varType": "f32",
+        "size": 4,
+        "integer": false,
+        "unsigned": false,
+        "offset": 8,
+        "initData": null,
+        "num": 1,
+        "log2": 2
+      }
+    },
     "pitch_envelope": {
       "_attributes_": {
         "type": "StructDefinition",
-        "size": 36,
-        "offset": 4,
+        "size": 32,
+        "offset": 12,
         "initData": null,
         "num": 1,
         "log2": 5
       },
-      "flag": {
-        "_attributes_": {
-          "type": "PrimitiveType",
-          "varType": "i32",
-          "size": 4,
-          "integer": true,
-          "unsigned": false,
-          "offset": 4,
-          "initData": null,
-          "num": 1,
-          "log2": 2
-        }
-      },
       "level": {
-        "_attributes_": {
-          "type": "PrimitiveType",
-          "varType": "f32",
-          "size": 4,
-          "integer": false,
-          "unsigned": false,
-          "offset": 8,
-          "initData": null,
-          "num": 1,
-          "log2": 2
-        }
-      },
-      "attack_time": {
         "_attributes_": {
           "type": "PrimitiveType",
           "varType": "f32",
@@ -924,7 +924,7 @@
           "log2": 2
         }
       },
-      "decay_time": {
+      "attack_time": {
         "_attributes_": {
           "type": "PrimitiveType",
           "varType": "f32",
@@ -937,7 +937,7 @@
           "log2": 2
         }
       },
-      "sustain_level": {
+      "decay_time": {
         "_attributes_": {
           "type": "PrimitiveType",
           "varType": "f32",
@@ -950,7 +950,7 @@
           "log2": 2
         }
       },
-      "release_time": {
+      "sustain_level": {
         "_attributes_": {
           "type": "PrimitiveType",
           "varType": "f32",
@@ -963,7 +963,7 @@
           "log2": 2
         }
       },
-      "attack_delta": {
+      "release_time": {
         "_attributes_": {
           "type": "PrimitiveType",
           "varType": "f32",
@@ -976,7 +976,7 @@
           "log2": 2
         }
       },
-      "decay_delta": {
+      "attack_delta": {
         "_attributes_": {
           "type": "PrimitiveType",
           "varType": "f32",
@@ -989,7 +989,7 @@
           "log2": 2
         }
       },
-      "release_delta": {
+      "decay_delta": {
         "_attributes_": {
           "type": "PrimitiveType",
           "varType": "f32",
@@ -997,6 +997,19 @@
           "integer": false,
           "unsigned": false,
           "offset": 36,
+          "initData": null,
+          "num": 1,
+          "log2": 2
+        }
+      },
+      "release_delta": {
+        "_attributes_": {
+          "type": "PrimitiveType",
+          "varType": "f32",
+          "size": 4,
+          "integer": false,
+          "unsigned": false,
+          "offset": 40,
           "initData": null,
           "num": 1,
           "log2": 2
@@ -1010,7 +1023,20 @@
         "size": 4,
         "integer": true,
         "unsigned": false,
-        "offset": 40,
+        "offset": 44,
+        "initData": null,
+        "num": 1,
+        "log2": 2
+      }
+    },
+    "pitch_lfo_base_frequency": {
+      "_attributes_": {
+        "type": "PrimitiveType",
+        "varType": "f32",
+        "size": 4,
+        "integer": false,
+        "unsigned": false,
+        "offset": 48,
         "initData": null,
         "num": 1,
         "log2": 2
@@ -1019,39 +1045,13 @@
     "amplitude_envelope": {
       "_attributes_": {
         "type": "StructDefinition",
-        "size": 36,
-        "offset": 44,
+        "size": 32,
+        "offset": 52,
         "initData": null,
         "num": 1,
         "log2": 5
       },
-      "flag": {
-        "_attributes_": {
-          "type": "PrimitiveType",
-          "varType": "i32",
-          "size": 4,
-          "integer": true,
-          "unsigned": false,
-          "offset": 44,
-          "initData": null,
-          "num": 1,
-          "log2": 2
-        }
-      },
       "level": {
-        "_attributes_": {
-          "type": "PrimitiveType",
-          "varType": "f32",
-          "size": 4,
-          "integer": false,
-          "unsigned": false,
-          "offset": 48,
-          "initData": null,
-          "num": 1,
-          "log2": 2
-        }
-      },
-      "attack_time": {
         "_attributes_": {
           "type": "PrimitiveType",
           "varType": "f32",
@@ -1064,7 +1064,7 @@
           "log2": 2
         }
       },
-      "decay_time": {
+      "attack_time": {
         "_attributes_": {
           "type": "PrimitiveType",
           "varType": "f32",
@@ -1077,7 +1077,7 @@
           "log2": 2
         }
       },
-      "sustain_level": {
+      "decay_time": {
         "_attributes_": {
           "type": "PrimitiveType",
           "varType": "f32",
@@ -1090,7 +1090,7 @@
           "log2": 2
         }
       },
-      "release_time": {
+      "sustain_level": {
         "_attributes_": {
           "type": "PrimitiveType",
           "varType": "f32",
@@ -1103,7 +1103,7 @@
           "log2": 2
         }
       },
-      "attack_delta": {
+      "release_time": {
         "_attributes_": {
           "type": "PrimitiveType",
           "varType": "f32",
@@ -1116,7 +1116,7 @@
           "log2": 2
         }
       },
-      "decay_delta": {
+      "attack_delta": {
         "_attributes_": {
           "type": "PrimitiveType",
           "varType": "f32",
@@ -1129,7 +1129,7 @@
           "log2": 2
         }
       },
-      "release_delta": {
+      "decay_delta": {
         "_attributes_": {
           "type": "PrimitiveType",
           "varType": "f32",
@@ -1137,6 +1137,19 @@
           "integer": false,
           "unsigned": false,
           "offset": 76,
+          "initData": null,
+          "num": 1,
+          "log2": 2
+        }
+      },
+      "release_delta": {
+        "_attributes_": {
+          "type": "PrimitiveType",
+          "varType": "f32",
+          "size": 4,
+          "integer": false,
+          "unsigned": false,
+          "offset": 80,
           "initData": null,
           "num": 1,
           "log2": 2
@@ -1150,7 +1163,20 @@
         "size": 4,
         "integer": true,
         "unsigned": false,
-        "offset": 80,
+        "offset": 84,
+        "initData": null,
+        "num": 1,
+        "log2": 2
+      }
+    },
+    "amplitude_lfo_base_frequency": {
+      "_attributes_": {
+        "type": "PrimitiveType",
+        "varType": "f32",
+        "size": 4,
+        "integer": false,
+        "unsigned": false,
+        "offset": 88,
         "initData": null,
         "num": 1,
         "log2": 2
@@ -1419,7 +1445,7 @@
   },
   "_attributes_": {
     "type": "MemoryMap",
-    "size": 9076
+    "size": 9716
   },
   "alloc_mem_offset": {
     "_attributes_": {
@@ -1476,13 +1502,13 @@
   "timbre": {
     "_attributes_": {
       "type": "StructDefinition",
-      "size": 84,
+      "size": 92,
       "offset": 140,
       "initData": null,
       "num": 64,
       "log2": 6
     },
-    "oscillator_offset": {
+    "flag": {
       "_attributes_": {
         "type": "PrimitiveType",
         "varType": "i32",
@@ -1495,42 +1521,42 @@
         "log2": 2
       }
     },
+    "oscillator_offset": {
+      "_attributes_": {
+        "type": "PrimitiveType",
+        "varType": "i32",
+        "size": 4,
+        "integer": true,
+        "unsigned": false,
+        "offset": 144,
+        "initData": null,
+        "num": 1,
+        "log2": 2
+      }
+    },
+    "oscillator_base_frequency": {
+      "_attributes_": {
+        "type": "PrimitiveType",
+        "varType": "f32",
+        "size": 4,
+        "integer": false,
+        "unsigned": false,
+        "offset": 148,
+        "initData": null,
+        "num": 1,
+        "log2": 2
+      }
+    },
     "pitch_envelope": {
       "_attributes_": {
         "type": "StructDefinition",
-        "size": 36,
-        "offset": 4,
+        "size": 32,
+        "offset": 12,
         "initData": null,
         "num": 1,
         "log2": 5
       },
-      "flag": {
-        "_attributes_": {
-          "type": "PrimitiveType",
-          "varType": "i32",
-          "size": 4,
-          "integer": true,
-          "unsigned": false,
-          "offset": 4,
-          "initData": null,
-          "num": 1,
-          "log2": 2
-        }
-      },
       "level": {
-        "_attributes_": {
-          "type": "PrimitiveType",
-          "varType": "f32",
-          "size": 4,
-          "integer": false,
-          "unsigned": false,
-          "offset": 8,
-          "initData": null,
-          "num": 1,
-          "log2": 2
-        }
-      },
-      "attack_time": {
         "_attributes_": {
           "type": "PrimitiveType",
           "varType": "f32",
@@ -1543,7 +1569,7 @@
           "log2": 2
         }
       },
-      "decay_time": {
+      "attack_time": {
         "_attributes_": {
           "type": "PrimitiveType",
           "varType": "f32",
@@ -1556,7 +1582,7 @@
           "log2": 2
         }
       },
-      "sustain_level": {
+      "decay_time": {
         "_attributes_": {
           "type": "PrimitiveType",
           "varType": "f32",
@@ -1569,7 +1595,7 @@
           "log2": 2
         }
       },
-      "release_time": {
+      "sustain_level": {
         "_attributes_": {
           "type": "PrimitiveType",
           "varType": "f32",
@@ -1582,7 +1608,7 @@
           "log2": 2
         }
       },
-      "attack_delta": {
+      "release_time": {
         "_attributes_": {
           "type": "PrimitiveType",
           "varType": "f32",
@@ -1595,7 +1621,7 @@
           "log2": 2
         }
       },
-      "decay_delta": {
+      "attack_delta": {
         "_attributes_": {
           "type": "PrimitiveType",
           "varType": "f32",
@@ -1608,7 +1634,7 @@
           "log2": 2
         }
       },
-      "release_delta": {
+      "decay_delta": {
         "_attributes_": {
           "type": "PrimitiveType",
           "varType": "f32",
@@ -1616,6 +1642,19 @@
           "integer": false,
           "unsigned": false,
           "offset": 36,
+          "initData": null,
+          "num": 1,
+          "log2": 2
+        }
+      },
+      "release_delta": {
+        "_attributes_": {
+          "type": "PrimitiveType",
+          "varType": "f32",
+          "size": 4,
+          "integer": false,
+          "unsigned": false,
+          "offset": 40,
           "initData": null,
           "num": 1,
           "log2": 2
@@ -1629,7 +1668,20 @@
         "size": 4,
         "integer": true,
         "unsigned": false,
-        "offset": 180,
+        "offset": 184,
+        "initData": null,
+        "num": 1,
+        "log2": 2
+      }
+    },
+    "pitch_lfo_base_frequency": {
+      "_attributes_": {
+        "type": "PrimitiveType",
+        "varType": "f32",
+        "size": 4,
+        "integer": false,
+        "unsigned": false,
+        "offset": 188,
         "initData": null,
         "num": 1,
         "log2": 2
@@ -1638,39 +1690,13 @@
     "amplitude_envelope": {
       "_attributes_": {
         "type": "StructDefinition",
-        "size": 36,
-        "offset": 44,
+        "size": 32,
+        "offset": 52,
         "initData": null,
         "num": 1,
         "log2": 5
       },
-      "flag": {
-        "_attributes_": {
-          "type": "PrimitiveType",
-          "varType": "i32",
-          "size": 4,
-          "integer": true,
-          "unsigned": false,
-          "offset": 44,
-          "initData": null,
-          "num": 1,
-          "log2": 2
-        }
-      },
       "level": {
-        "_attributes_": {
-          "type": "PrimitiveType",
-          "varType": "f32",
-          "size": 4,
-          "integer": false,
-          "unsigned": false,
-          "offset": 48,
-          "initData": null,
-          "num": 1,
-          "log2": 2
-        }
-      },
-      "attack_time": {
         "_attributes_": {
           "type": "PrimitiveType",
           "varType": "f32",
@@ -1683,7 +1709,7 @@
           "log2": 2
         }
       },
-      "decay_time": {
+      "attack_time": {
         "_attributes_": {
           "type": "PrimitiveType",
           "varType": "f32",
@@ -1696,7 +1722,7 @@
           "log2": 2
         }
       },
-      "sustain_level": {
+      "decay_time": {
         "_attributes_": {
           "type": "PrimitiveType",
           "varType": "f32",
@@ -1709,7 +1735,7 @@
           "log2": 2
         }
       },
-      "release_time": {
+      "sustain_level": {
         "_attributes_": {
           "type": "PrimitiveType",
           "varType": "f32",
@@ -1722,7 +1748,7 @@
           "log2": 2
         }
       },
-      "attack_delta": {
+      "release_time": {
         "_attributes_": {
           "type": "PrimitiveType",
           "varType": "f32",
@@ -1735,7 +1761,7 @@
           "log2": 2
         }
       },
-      "decay_delta": {
+      "attack_delta": {
         "_attributes_": {
           "type": "PrimitiveType",
           "varType": "f32",
@@ -1748,7 +1774,7 @@
           "log2": 2
         }
       },
-      "release_delta": {
+      "decay_delta": {
         "_attributes_": {
           "type": "PrimitiveType",
           "varType": "f32",
@@ -1756,6 +1782,19 @@
           "integer": false,
           "unsigned": false,
           "offset": 76,
+          "initData": null,
+          "num": 1,
+          "log2": 2
+        }
+      },
+      "release_delta": {
+        "_attributes_": {
+          "type": "PrimitiveType",
+          "varType": "f32",
+          "size": 4,
+          "integer": false,
+          "unsigned": false,
+          "offset": 80,
           "initData": null,
           "num": 1,
           "log2": 2
@@ -1769,7 +1808,20 @@
         "size": 4,
         "integer": true,
         "unsigned": false,
-        "offset": 220,
+        "offset": 224,
+        "initData": null,
+        "num": 1,
+        "log2": 2
+      }
+    },
+    "amplitude_lfo_base_frequency": {
+      "_attributes_": {
+        "type": "PrimitiveType",
+        "varType": "f32",
+        "size": 4,
+        "integer": false,
+        "unsigned": false,
+        "offset": 228,
         "initData": null,
         "num": 1,
         "log2": 2
@@ -1780,7 +1832,7 @@
     "_attributes_": {
       "type": "StructDefinition",
       "size": 444,
-      "offset": 5516,
+      "offset": 6028,
       "initData": null,
       "num": 8,
       "log2": 8
@@ -1792,7 +1844,7 @@
         "size": 4,
         "integer": true,
         "unsigned": false,
-        "offset": 5516,
+        "offset": 6028,
         "initData": null,
         "num": 1,
         "log2": 2
@@ -1805,7 +1857,7 @@
         "size": 4,
         "integer": true,
         "unsigned": false,
-        "offset": 5520,
+        "offset": 6032,
         "initData": null,
         "num": 1,
         "log2": 2
@@ -1818,7 +1870,7 @@
         "size": 4,
         "integer": false,
         "unsigned": false,
-        "offset": 5524,
+        "offset": 6036,
         "initData": null,
         "num": 1,
         "log2": 2
@@ -1831,7 +1883,7 @@
         "size": 4,
         "integer": true,
         "unsigned": false,
-        "offset": 5528,
+        "offset": 6040,
         "initData": null,
         "num": 32,
         "log2": 2
@@ -1919,7 +1971,7 @@
         "size": 4,
         "integer": true,
         "unsigned": false,
-        "offset": 5676,
+        "offset": 6188,
         "initData": null,
         "num": 32,
         "log2": 2
@@ -2007,7 +2059,7 @@
         "size": 4,
         "integer": true,
         "unsigned": false,
-        "offset": 5824,
+        "offset": 6336,
         "initData": null,
         "num": 32,
         "log2": 2
@@ -2020,7 +2072,7 @@
         "size": 4,
         "integer": false,
         "unsigned": false,
-        "offset": 5952,
+        "offset": 6464,
         "initData": null,
         "num": 1,
         "log2": 2
@@ -2033,7 +2085,7 @@
         "size": 4,
         "integer": false,
         "unsigned": false,
-        "offset": 5956,
+        "offset": 6468,
         "initData": null,
         "num": 1,
         "log2": 2
@@ -2047,9 +2099,22 @@
       "size": 4,
       "integer": true,
       "unsigned": false,
-      "offset": 9068,
+      "offset": 9580,
       "initData": null,
       "num": 1,
+      "log2": 2
+    }
+  },
+  "sin_table": {
+    "_attributes_": {
+      "type": "PrimitiveType",
+      "varType": "f32",
+      "size": 4,
+      "integer": false,
+      "unsigned": false,
+      "offset": 9584,
+      "initData": null,
+      "num": 32,
       "log2": 2
     }
   },
@@ -2060,7 +2125,7 @@
       "size": 4,
       "integer": true,
       "unsigned": false,
-      "offset": 9072,
+      "offset": 9712,
       "initData": null,
       "num": 1,
       "log2": 2

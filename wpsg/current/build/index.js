@@ -2,6 +2,47 @@
   'use strict';
 
   //The MIT License (MIT)
+  //
+  //Copyright (c) 2015 Satoshi Fujiwara
+  //
+  //Permission is hereby granted, free of charge, to any person obtaining a copy
+  //of this software and associated documentation files (the "Software"), to deal
+  //in the Software without restriction, including without limitation the rights
+  //to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+  //copies of the Software, and to permit persons to whom the Software is
+  //furnished to do so, subject to the following conditions:
+  //
+  //The above copyright notice and this permission notice shall be included in
+  //all copies or substantial portions of the Software.
+  //
+  //THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+  //IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+  //FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+  //AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+  //LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+  //OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+  //THE SOFTWARE.
+
+
+  // エンディアンを調べる関数
+  function checkEndian(buffer = new ArrayBuffer(2)) {
+
+    if (buffer.byteLength == 1) return false;
+
+    const ua = new Uint16Array(buffer);
+    const v = new DataView(buffer);
+    v.setUint16(0, 1);
+    // ArrayBufferとDataViewの読み出し結果が異なればリトル・エンディアンである
+    if (ua[0] != v.getUint16()) {
+      ua[0] = 0;
+      return true;
+    }
+    ua[0] = 0;
+    // ビッグ・エンディアン
+    return false;
+  }
+
+  const littleEndian = checkEndian();
 
   // ブラウザのチェック
   function checkBrowser() {
@@ -39,22 +80,33 @@
     return inst;
   }
 
+  function getOffset(prop){
+    return prop._attributes_.offset;
+  }
+
   window.addEventListener('load', async () => {
    // 100ms分のバッファサイズを求める
    const sampleRate = 24000;
-   const memory = new WebAssembly.Memory({initial:1,shared:true,maximum:10});
-   await memory.grow(1);
-    let memoryMap = await (await fetch('./wpsg.context.json')).json();
+   const memory = new WebAssembly.Memory({initial:20,shared:true,maximum:20});
+   const memoryMap = await (await fetch('./wpsg.context.json')).json();
    const wpsg = getInstance(await (await fetch('./wpsg.wasm')).arrayBuffer(), { env: { memory: memory } }).exports;
+   const memoryView = new DataView(memory.buffer);
 
    wpsg.setRate(sampleRate);
    wpsg.initMemory();
-   const waveTableOffset = wpsg.allocateWaveTable(65536);
-   console.log(waveTableOffset);
-  //  const waveTableOffset2 = wpsg.allocateWaveTable(8);
-  //  console.log(waveTableOffset2);
-  //  const waveTableOffset3 = wpsg.allocateWaveTable(8);
-  //  console.log(waveTableOffset3);
+
+   const waveTableOffset = wpsg.allocateWaveTable(32);
+   memoryView.setInt32(getOffset(memoryMap.oscillator),waveTableOffset,littleEndian);
+
+   // Timbreのセットアップ
+   const timbreOffset = getOffset(memoryMap.timbre);
+   memoryView.setInt32(timbreOffset + getOffset(memoryMap.Timbre.oscillator_offset),waveTableOffset,littleEndian);
+   memoryView.setInt32(timbreOffset + getOffset(memoryMap.Timbre.pitch_envelope.attack_time),0.0,littleEndian);
+   memoryView.setInt32(timbreOffset + getOffset(memoryMap.Timbre.pitch_envelope.decay_time),0.25,littleEndian);
+   memoryView.setInt32(timbreOffset + getOffset(memoryMap.Timbre.pitch_envelope.sustain_level),0.5,littleEndian);
+
+
+
 
   //  for(let i = 0;i < 4096;++i){
   //    console.log(wpsg.allocateWaveTable(8));
