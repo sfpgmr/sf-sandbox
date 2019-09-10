@@ -80,33 +80,26 @@
     return inst;
   }
 
-  function getOffset(prop){
-    return prop._attributes_.offset;
-  }
-
   window.addEventListener('load', async () => {
    // 100ms分のバッファサイズを求める
    const sampleRate = 24000;
    const memory = new WebAssembly.Memory({initial:20,shared:true,maximum:20});
    const memoryMap = await (await fetch('./wpsg.context.json')).json();
    const wpsg = getInstance(await (await fetch('./wpsg.wasm')).arrayBuffer(), { env: { memory: memory } }).exports;
-   const memoryView = new DataView(memory.buffer);
 
    wpsg.setRate(sampleRate);
    wpsg.initMemory();
 
-   const waveTableOffset = wpsg.allocateWaveTable(32);
-   memoryView.setInt32(getOffset(memoryMap.oscillator),waveTableOffset,littleEndian);
-
-   // Timbreのセットアップ
-   const timbreOffset = getOffset(memoryMap.timbre);
-   memoryView.setInt32(timbreOffset + getOffset(memoryMap.Timbre.oscillator_offset),waveTableOffset,littleEndian);
-   memoryView.setInt32(timbreOffset + getOffset(memoryMap.Timbre.pitch_envelope.attack_time),0.0,littleEndian);
-   memoryView.setInt32(timbreOffset + getOffset(memoryMap.Timbre.pitch_envelope.decay_time),0.25,littleEndian);
-   memoryView.setInt32(timbreOffset + getOffset(memoryMap.Timbre.pitch_envelope.sustain_level),0.5,littleEndian);
-
-
-
+   const timbre = wpsg.initTestTimbre();
+   console.log(wpsg.processTimbre(timbre));
+   wpsg.keyOnTimbre(timbre);
+   for(let i = 0;i < 1000;++i){
+    console.log(wpsg.processTimbre(timbre));
+   }
+   wpsg.keyOffTimbre(timbre);
+   for(let i = 0;i < 1000;++i){
+    console.log(wpsg.processTimbre(timbre));
+   }
 
   //  for(let i = 0;i < 4096;++i){
   //    console.log(wpsg.allocateWaveTable(8));

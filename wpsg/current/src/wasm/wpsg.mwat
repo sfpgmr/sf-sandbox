@@ -33,6 +33,9 @@
 
   (export "initOutputBuffer" (func $initOutputBuffer))
   (export "initTestTimbre" (func $initTestTimbre))
+  (export "processTimbre" (func $processTimbre))
+  (export "keyOnTimbre" (func $keyOnTimbre))
+  (export "keyOffTimbre" (func $keyOffTimbre))
 
   (table 2 funcref)
   (elem (i32.const {$.OSC_FUNC_INDEX}) $readWaveTable)
@@ -713,6 +716,8 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
     (param $decay_time f32)
     (param $sustain_level f32)
     (param $release_time f32)
+    (param $level f32)
+    
 
     ;; attack ;;
 
@@ -774,6 +779,11 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
           (f32.load (i32.add (&Envelope.release_time;) (local.get $env_param_offset)))
         )
       )
+    )
+
+    (f32.store
+      (i32.add (&Envelope.level;) (local.get $env_param_offset))
+      (local.get $level)
     )
   )
 
@@ -1137,7 +1147,12 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
       (i32.load
         (i32.add
           (&Timbre.flag;)
-          (local.get $timbre_work_offset)
+          (i32.load
+            (i32.add
+              (&TimbreWork.timbre_offset;)
+              (local.get $timbre_work_offset)
+            )
+          )
         )
       )
     )
@@ -1146,7 +1161,10 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
       (i32.load
         (i32.add
           (&OscillatorWork.param_offset;)
-          (local.get $timbre_work_offset)
+          (i32.add
+            (&TimbreWork.oscillator_work_offset;)
+            (local.get $timbre_work_offset)
+          )
         )
       )
     )
@@ -1157,11 +1175,9 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
       (i32.add
         (&OscillatorWork.pitch;)
         (local.tee $oscillator_work_offset
-          (i32.load
-            (i32.add
-              (&TimbreWork.oscillator_work_offset;)
-              (local.get $timbre_work_offset)
-            )
+          (i32.add
+            (&TimbreWork.oscillator_work_offset;)
+            (local.get $timbre_work_offset)
           )
         )
       )
@@ -1181,11 +1197,9 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
             (f32.const 1) 
             (call_indirect (type $oscillatorFunc) 
               (local.tee $pitch_lfo_work_offset
-                (i32.load
-                  (i32.add
-                    (&TimbreWork.pitch_lfo_work_offset;)
-                    (local.get $timbre_work_offset)
-                  )
+                (i32.add
+                  (&TimbreWork.pitch_lfo_work_offset;)
+                  (local.get $timbre_work_offset)
                 )
               )
               (i32.load
@@ -1254,11 +1268,9 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
               (f32.const 1)
               (call_indirect (type $oscillatorFunc) 
                 (local.tee $amplitude_lfo_work_offset
-                  (i32.load
-                    (i32.add
-                      (&TimbreWork.amplitude_lfo_work_offset;)
-                      (local.get $timbre_work_offset)
-                    )
+                  (i32.add
+                    (&TimbreWork.amplitude_lfo_work_offset;)
+                    (local.get $timbre_work_offset)
                   )
                 )
                 (i32.load
@@ -1417,31 +1429,16 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
     )
 
     ;; ピッチ・エンベロープ
-    (f32.store
-      (&timbre[0].pitch_envelope.attack_time;)
-      (f32.const 2.0)
-    )
 
-    (f32.store
-      (&timbre[0].pitch_envelope.decay_time;)
-      (f32.const 2.0)
+    (call $initEnvelope
+      (&timbre[0].pitch_envelope;)
+      (f32.load (&sample_rate;))
+      (f32.const 2.0) ;; a
+      (f32.const 2.0) ;; d
+      (f32.const 1.0) ;; s
+      (f32.const 2.0) ;; r
+      (f32.const 1.0) ;; level
     )
-
-    (f32.store
-      (&timbre[0].pitch_envelope.sustain_level;)
-      (f32.const 1.0)
-    )
-
-    (f32.store
-      (&timbre[0].pitch_envelope.release_time;)
-      (f32.const 2.0)
-    )
-
-    (f32.store
-      (&timbre[0].pitch_envelope.level;)
-      (f32.const 1.0)
-    )
-
 
     ;; Pitch LFO
     (i32.store
@@ -1455,31 +1452,16 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
     )
 
     ;; 音量・エンベロープ
-    (f32.store
-      (&timbre[0].pitch_envelope.attack_time;)
+    
+    (call $initEnvelope
+      (&timbre[0].amplitude_envelope;)
+      (f32.load (&sample_rate;))
       (f32.const 0.0)
-    )
-
-    (f32.store
-      (&timbre[0].pitch_envelope.decay_time;)
       (f32.const 2.0)
-    )
-
-    (f32.store
-      (&timbre[0].pitch_envelope.sustain_level;)
       (f32.const 0.5)
-    )
-
-    (f32.store
-      (&timbre[0].pitch_envelope.release_time;)
       (f32.const 2.0)
-    )
-
-    (f32.store
-      (&timbre[0].pitch_envelope.level;)
       (f32.const 1.0)
     )
-
     ;; 音量LFO・オフセット
     (i32.store
       (&timbre[0].amplitude_lfo_offset;)
