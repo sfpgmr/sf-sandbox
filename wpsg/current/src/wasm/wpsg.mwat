@@ -1193,51 +1193,55 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
             )
           )
           ;; lfo処理
-          (select 
-            (f32.const 1) 
-            (call_indirect (type $oscillatorFunc) 
-              (local.tee $pitch_lfo_work_offset
-                (i32.add
-                  (&TimbreWork.pitch_lfo_work_offset;)
-                  (local.get $timbre_work_offset)
+          (if (result f32)
+            (i32.and
+              (local.get $timbre_flag)
+              (i32.const 0x2)
+            )
+            (then
+              (call_indirect (type $oscillatorFunc) 
+                (local.tee $pitch_lfo_work_offset
+                  (i32.add
+                    (&TimbreWork.pitch_lfo_work_offset;)
+                    (local.get $timbre_work_offset)
+                  )
                 )
-              )
-              (i32.load
-                (i32.add
-                  (&Oscillator.call_index;)
-                  (i32.load
-                    (i32.add
-                      (&OscillatorWork.param_offset;)
-                      (local.get $pitch_lfo_work_offset)
-                    )            
+                (i32.load
+                  (i32.add
+                    (&Oscillator.call_index;)
+                    (i32.load
+                      (i32.add
+                        (&OscillatorWork.param_offset;)
+                        (local.get $pitch_lfo_work_offset)
+                      )            
+                    )
                   )
                 )
               )
             )
-            (i32.eqz 
-              (i32.and
-                (local.get $timbre_flag)
-                (i32.const 0x2)
-              )
-            )        
+            (else
+             (f32.const 1) 
+            )
           )
         )
         ;; envelope
-        (select
-          (f32.const 1)
-          (call $doEnvelope
-            (i32.load
-              (i32.add
-                (&TimbreWork.pitch_envelope;)
-                (local.get $timbre_work_offset)
+        (if (result f32)
+          (i32.and
+            (local.get $timbre_flag)
+            (i32.const 0x1)
+          )
+          (then
+            (call $doEnvelope
+              (i32.load
+                (i32.add
+                  (&TimbreWork.pitch_envelope;)
+                  (local.get $timbre_work_offset)
+                )
               )
             )
           )
-          (i32.eqz
-            (i32.and
-              (local.get $timbre_flag)
-              (i32.const 0x1)
-            )
+          (else
+            (f32.const 1)
           )
         )
       )
@@ -1264,51 +1268,55 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
               )
             )
             ;; amplitude lfo
-            (select
-              (f32.const 1)
-              (call_indirect (type $oscillatorFunc) 
-                (local.tee $amplitude_lfo_work_offset
-                  (i32.add
-                    (&TimbreWork.amplitude_lfo_work_offset;)
-                    (local.get $timbre_work_offset)
+            (if (result f32)
+              (i32.and
+                (local.get $timbre_flag)
+                (i32.const 0x8)
+              )
+              (then
+                (call_indirect (type $oscillatorFunc) 
+                  (local.tee $amplitude_lfo_work_offset
+                    (i32.add
+                      (&TimbreWork.amplitude_lfo_work_offset;)
+                      (local.get $timbre_work_offset)
+                    )
                   )
-                )
-                (i32.load
-                  (i32.add
-                    (&Oscillator.call_index;)
-                    (i32.load
-                      (i32.add
-                        (&OscillatorWork.param_offset;)
-                        (local.get $amplitude_lfo_work_offset)
+                  (i32.load
+                    (i32.add
+                      (&Oscillator.call_index;)
+                      (i32.load
+                        (i32.add
+                          (&OscillatorWork.param_offset;)
+                          (local.get $amplitude_lfo_work_offset)
+                        )
                       )
                     )
                   )
                 )
               )
-              (i32.eqz
-                (i32.and
-                  (local.get $timbre_flag)
-                  (i32.const 0x8)
-                )
+              (else 
+                (f32.const 1)
               )
             )
           )
           ;; amplitude envelope
-          (select
-            (f32.const 1)
-            (call $doEnvelope
-              (i32.load
-                (i32.add
-                  (&TimbreWork.amplitude_envelope;)
-                  (local.get $timbre_work_offset)
+          (if (result f32)
+            (i32.and
+              (local.get $timbre_flag)
+              (i32.const 0x4)
+            )
+            (then
+              (call $doEnvelope
+                (i32.load
+                  (i32.add
+                    (&TimbreWork.amplitude_envelope;)
+                    (local.get $timbre_work_offset)
+                  )
                 )
               )
             )
-            (i32.eqz
-              (i32.and
-                (local.get $timbre_flag)
-                (i32.const 0x4)
-              )
+            (else
+              (f32.const 1)
             )
           )
         )
@@ -1419,7 +1427,7 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
     ;; フラグ
     (i32.store
       (&timbre[0].flag;)
-      (i32.const 0xf)
+      (i32.const 4)
     )
 
     ;; オシレータ
@@ -1427,6 +1435,12 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
       (&timbre[0].oscillator_offset;)
       (local.get $oscillator_offset)
     )
+
+    (f32.store
+      (&timbre[0].oscillator_base_frequency;)
+      (f32.const 440) ;; 440Hz
+    )
+
 
     ;; ピッチ・エンベロープ
 
