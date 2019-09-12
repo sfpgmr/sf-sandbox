@@ -90,7 +90,7 @@ window.addEventListener('load', async () => {
  const sampleRate = 8000;
  const memory = new WebAssembly.Memory({initial:20,shared:true,maximum:20});
  const memoryMap = await (await fetch('./wpsg.context.json')).json();
- const wpsg = getInstance(await (await fetch('./wpsg.wasm')).arrayBuffer(), { env: { memory: memory } }).exports;
+ const wpsg = getInstance(await (await fetch('./wpsg.wasm')).arrayBuffer(), { env: { memory: memory },imports : {sin:Math.sin,cos:Math.cos,exp:Math.exp,sinh:Math.sinh,pow:Math.pow} }).exports;
 
  wpsg.setRate(sampleRate);
  wpsg.initMemory();

@@ -7,6 +7,8 @@
 {
   $.OSC_FUNC_INDEX = 0;
   $.OSC_CREATE_FUNC_INDEX = 1;
+  $.FILTER_FUNC_INDEX = 8;
+  $.PIx2 = Math.PI * 2;
 }
 
 (module
@@ -14,6 +16,13 @@
 ;;  (memory $memory (export "memory") 1 10 shared)
 
   (import "env" "memory" (memory $memory 20 20 shared))
+
+  (import "imports" "sin" (func $sin (param $a f64) (result f64)))
+  (import "imports" "cos" (func $cos (param $a f64) (result f64)))
+  (import "imports" "sinh" (func $sinh (param $a f64) (result f64)))
+  (import "imports" "exp" (func $exp (param $a f64) (result f64)))
+  (import "imports" "pow" (func $pow (param $a f64) (result f64)))
+
   (export "setRate" (func $set_rate))
   (export "initEnvelope" (func $initEnvelope))
   (export "initEnvelopeWork" (func $initEnvelopeWork))
@@ -37,9 +46,11 @@
   (export "keyOnTimbre" (func $keyOnTimbre))
   (export "keyOffTimbre" (func $keyOffTimbre))
 
-  (table 2 funcref)
+
+  (table 16 funcref)
   (elem (i32.const {$.OSC_FUNC_INDEX}) $readWaveTable)
   ;;(elem (i32.const {$.OSC_CREATE_FUNC_INDEX}) $createWaveTable)
+  (elem (i32.const {$.FILTER_FUNC_INDEX}) $readWaveTable)
 
  
 
@@ -168,17 +179,33 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
 ;; --------------------------
 
 {@struct FilterParam
+  ;; bit 31 
+  ;; 1 ... enable
+  ;; 0 ... disable
   i32 flag;
+  ;; 0 ... low pass
+  ;; 1 ... high pass
+  ;; 2 ... band pass
+  ;; 3 ... notch
+  ;; 4 ... low shelf
+  ;; 5 ... high shelf
+  ;; 6 ... peaking
+  ;; 7 ... all pass
   i32 filter_type;
-  f32 level;
-  f32 freq;
-  f32 resonance;
-  Envelope envelope;
-  f32 counter;
+  f32 base_frequency;
+  f32 q;
+  f32 band_width;
+  f32 gain;
 }
 
 {@struct FilterWork
-  i32 flag;
+  i32 filter_param;
+  f32 a0,a1,a2,b0,b1,b2;
+  f32 freq_rate;
+  f32 current_frequency;
+  f32 in1,in2;
+  f32 out1,out2;
+  f32 value; 
 }
 
 
@@ -206,12 +233,23 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
   i32 pitch_lfo_offset;
   ;; ピッチ・LFOのベース周波数
   f32 pitch_lfo_base_frequency;
+  
   ;; 音量エンベロープ
   Envelope amplitude_envelope;
   ;; 音量LFO・オフセット
   i32 amplitude_lfo_offset;
   ;; 音量LFO・ベース周波数
   f32 amplitude_lfo_base_frequency;
+  
+  ;; フィルタ・パラメータ
+  FilterParam filter;
+  ;; フィルタ・エンベロープ
+  Envelope filter_envelope;
+  ;; フィルタ・LFO・オフセット
+  i32 filter_lfo_offset;
+  ;; フィルタLFO・ベース周波数
+  f32 filter_lfo_base_frequency;
+  
 }
 
 ;; 音色ワークエリア
@@ -237,7 +275,14 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
   EnvelopeWork amplitude_envelope;
   ;; 音量LFO・ワークエリア
   i32 amplitude_lfo_work_offset[32];
-  ;;  FilterWork filter;
+  
+  ;; フィルタ・ワークエリア
+  FilterWork filter;
+  ;; フィルタ・エンベロープ・ワークエリア
+  EnvelopeWork filter_envelope;
+  ;; フィルタLFO・ワークエリア
+  i32 filter_lfo_work_offset[32];
+
   ;; 出力レベル
   f32 output_level;
   f32 value;
@@ -1554,5 +1599,103 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
     (&timbre_work[0];)
  
   )
+
+  ;;;;;;;;;;;;;;;;;;;;;;;;;
+  ;; Filter 
+  ;; 以下サイトのC++コードを参考に実装
+  ;; http://vstcpp.wpblog.jp/?page_id=728
+  ;;;;;;;;;;;;;;;;;;;;;;;;;
+
+  (func $lowPassFilter
+    (param $filter_work i32)
+    (local $filter_param i32)
+    (local $cos_omega f32)
+    (local $alpha f32)
+    ;;
+    (local.set $filter_param
+      (i32.load
+        (local.get $filter_param)
+      )
+    )
+    ;; omega = 2.0f * 3.14159265f *  freq / samplerate;
+
+    (local.set $cos_omega
+      (f32.demote_f64 
+        (call $cos 
+          (f64.promote_f32 
+            (f32.mul
+              (f32.mul
+                (f32.const {$ Math.PI * 2; })
+                (f32.load
+                  (i32.add
+                    (&FilterWork.current_frequency;)
+                    (local.get $filter_work)
+                  )
+                )
+              )
+              (f32.load (&delta;))
+            )
+          )
+        )
+      )
+    )
+    ;; float alpha = sin(omega) / (2.0f * q);
+    (local.set $alpha
+      (f32.div
+        (f32.demote_f64 
+          (call $sin (f64.promote_f32 (local.get $omega)))
+        )
+        (f32.mul
+          (f32.const 2.0)
+          (f32.load
+            (i32.add
+              (&FilterParam.q;)
+              (local.get $filter_param)
+            )
+          )
+        )
+      ) 
+    )
+  
+    ;; フィルタ係数を求める。
+    ;; a0 = 1.0f + alpha;
+    (f32.store 
+      (i32.add
+        (&FilterWork.a0;)
+        (local.get $filter_work)
+      )
+      (f32.add
+        (f32.const 1.0)
+        (local.get $alpha)
+      )
+    )
+    ;; a1 = -2.0f * cos(omega);
+    (f32.store 
+      (i32.add
+        (&FilterWork.a1;)
+        (local.get $filter_work)
+      )
+      (f32.mul
+        (f32.const -2.0)
+        (local.get $cos_omega)
+      )
+    )
+    ;; a2 = 1.0f - alpha;
+    (f32.store 
+      (i32.add
+        (&FilterWork.a2;)
+        (local.get $filter_work)
+      )
+      (f32.sub
+        (f32.const 1.0)
+        (local.get $alpha)
+      )
+    )
+    ;; b0 = (1.0f - cos(omega)) / 2.0f;
+    
+    ;; b1 = 1.0f - cos(omega);
+    ;; b2 = (1.0f - cos(omega)) / 2.0f;  )
+  )
+
 )
 
