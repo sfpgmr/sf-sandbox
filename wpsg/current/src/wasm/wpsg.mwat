@@ -48,10 +48,13 @@
   (export "keyOffTimbre" (func $keyOffTimbre))
 
 
-  (table 16 funcref)
+  (table 32 funcref)
   (elem (i32.const {$.OSC_FUNC_INDEX}) $readWaveTable)
   ;;(elem (i32.const {$.OSC_CREATE_FUNC_INDEX}) $createWaveTable)
-  (elem (i32.const {$.FILTER_FUNC_INDEX}) $readWaveTable)
+  (elem 
+    (i32.const {$.FILTER_FUNC_INDEX}) 
+    $lowPassFilter $highPassFilter $bandPassFilter  $notchFilter $lowShelfFilter $HighShelfFilter $PeakingFilter $allPassFilter
+  )
 
  
 
@@ -2885,15 +2888,7 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
   ;; AllPass Filter
   ;; -----------------------
 
-	;; float omega = 2.0f * 3.14159265f *  freq / samplerate;
-	;; float alpha = sin(omega) / (2.0f * q);
  
-	;; a0 = 1.0f + alpha;
-	;; a1 = -2.0f * cos(omega);
-	;; a2 = 1.0f - alpha;
-	;; b0 = 1.0f - alpha;
-	;; b1 = -2.0f * cos(omega);
-	;; b2 = 1.0f + alpha;
 
   (func $allPassFilter
     (param $filter_work i32)
@@ -2936,61 +2931,26 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
       )
     )
 
-    ;; float alpha = sin(omega) * sinh(log(2.0f) / 2.0 * bw * omega / sin(omega));
-    (local.set $sin_omega
-      (f32.demote_f64
-        (local.tee $sin_omega_f64
-          (call $sin (local.get $omega))
-        )
-      )
-    )
-
+   	;; float alpha = sin(omega) / (2.0f * q);
     (local.set $alpha
       (f32.demote_f64
-        (f64.mul
-          (local.get $sin_omega_f64)
-          (call $sinh 
-            (f64.div
-              (f64.mul 
-                (f64.mul 
-                  (f64.const {$ Math.log(2.0) / 2.0; })
-                  (f64.promote_f32
-                    (f32.load 
-                      (i32.add (&FilterParam.band_width;) (local.get $filter_param))
-                    )
-                  )
-                )
-                (local.get $omega)
+        (f64.div
+          (call $sin (local.get $omega))
+          (f64.mul
+            (f64.const 2.0)
+            (f64.load
+              (i32.add
+                (&FilterParam.q;)
+                (local.get $filter_param)
               )
-              (local.get $sin_omega_f64)
             )
           )
         )
       )
     )
 
-  	;; float A = pow(10.0f, (gain / 40.0f));
-    (local.set $A
-      (f32.demote_f64
-        (call $pow
-          (f64.const 10.0)
-          (f64.mul 
-            (f64.promote_f32
-              (f32.load
-                (i32.add
-                  (&FilterParam.gain;)
-                  (local.get $filter_param)
-                )
-              )
-            )
-            (f64.const {$ 1 / 40.0 })
-          )
-        )
-      )
-    )
-  
     ;; フィルタ係数を求める。
-   	;; a0 = 1.0f + alpha / A;
+  	;; a0 = 1.0f + alpha;
     (f32.store 
       (i32.add
         (&FilterWork.a0;)
@@ -2998,14 +2958,11 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
       )
       (f32.add
         (f32.const 1)
-        (f32.div
-          (local.get $alpha)
-          (local.get $A)
-        )
+        (local.get $alpha)
       )
     )
 
-    ;; a1 = -2.0f * cos(omega);
+  	;; a1 = -2.0f * cos(omega);
     (f32.store 
       (i32.add
         (&FilterWork.a1;)
@@ -3017,7 +2974,7 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
       )
     )
 
-  	;; a2 = 1.0f - alpha / A;
+  	;; a2 = 1.0f - alpha;
     (f32.store 
       (i32.add
         (&FilterWork.a2;)
@@ -3025,25 +2982,19 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
       )
       (f32.sub
         (f32.const 1)
-        (f32.div
-          (local.get $alpha)
-          (local.get $A)
-        )
+        (local.get $alpha)
       )
     )
 
-  	;; b0 = 1.0f + alpha * A;
+    ;; b0 = 1.0f - alpha;
     (f32.store 
       (i32.add
         (&FilterWork.b0;)
         (local.get $filter_work)
       )
-      (f32.add
+      (f32.sub
         (f32.const 1.0)
-        (f32.mul
-          (local.get $alpha)
-          (local.get $A)
-        )
+        (local.get $alpha)
       )
     )
     
@@ -3059,20 +3010,215 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
       )
     )
 
-  	;; b2 = 1.0f - alpha * A;
+  	;; b2 = 1.0f + alpha;
     (f32.store 
       (i32.add
         (&FilterWork.b2;)
         (local.get $filter_work)
       )
-      (f32.sub
+      (f32.add
         (f32.const 1)
-        (f32.mul
-          (local.get $alpha)
-          (local.get $A)
+        (local.get $alpha)
+    )
+    )
+  ) 
+
+  ;; -----------------------
+  ;; filter処理の実行
+  ;; -----------------------
+ 
+	;; in2 = in1; // 2つ前の入力信号を更新
+	;; in1 = in;  // 1つ前の入力信号を更新
+ 
+	;; out2 = out1; // 2つ前の出力信号を更新
+	;; out1 = out;  // 1つ前の出力信号を更新
+ 
+	;; // 出力信号を返す
+	;; return out;
+
+  (func $processFilter 
+    (param $filter_work i32)
+    (param $in f32)
+    (result f32)
+    (local $filter_param i32)
+
+    (local $a0 f32)
+    (local $a1 f32)
+    (local $a2 f32)
+    (local $b0 f32)
+    (local $b1 f32)
+    (local $b2 f32)
+    (local $out f32)
+    (local $out1 f32)
+    (local $out2 f32)
+    (local $in1 f32)
+    (local $in2 f32)
+
+    (local.set $filter_param
+      (i32.load
+        (local.get $filter_param)
+      )
+    )
+
+    (local.set $a0
+      (f32.load
+        (i32.add 
+          (&FilterWork.a0;)
+          (local.get $filter_work)
         )
       )
     )
-  ) 
+    (local.set $a1
+      (f32.load
+        (i32.add 
+          (&FilterWork.a1;)
+          (local.get $filter_work)
+        )
+      )
+    )
+    (local.set $a2
+      (f32.load
+        (i32.add 
+          (&FilterWork.a2;)
+          (local.get $filter_work)
+        )
+      )
+    )
+    (local.set $b0
+      (f32.load
+        (i32.add 
+          (&FilterWork.b0;)
+          (local.get $filter_work)
+        )
+      )
+    )
+    (local.set $b1
+      (f32.load
+        (i32.add 
+          (&FilterWork.b1;)
+          (local.get $filter_work)
+        )
+      )
+    )
+    (local.set $b2
+      (f32.load
+        (i32.add 
+          (&FilterWork.b2;)
+          (local.get $filter_work)
+        )
+      )
+    )
+
+    (local.set $out1
+      (f32.load
+        (i32.add 
+          (&FilterWork.out1;)
+          (local.get $filter_work)
+        )
+      )
+    )
+    (local.set $out2
+      (f32.load
+        (i32.add 
+          (&FilterWork.out2;)
+          (local.get $filter_work)
+        )
+      )
+    )
+    (local.set $in1
+      (f32.load
+        (i32.add 
+          (&FilterWork.in1;)
+          (local.get $filter_work)
+        )
+      )
+    )
+    (local.set $in2
+      (f32.load
+        (i32.add 
+          (&FilterWork.in2;)
+          (local.get $filter_work)
+        )
+      )
+    )
+    ;; // 入力信号にフィルタを適用し、出力信号変数に保存。
+    ;; float out = b0 / a0 * in + b1 / a0 * in1 + b2 / a0 * in2
+    ;; 	- a1 / a0 * out1 - a2 / a0 * out2;
+    (local.set $out
+      (f32.sub
+        (f32.sub
+          (f32.add
+            (f32.mul 
+              (f32.div
+                (local.get $b0)
+                (local.get $a0)
+              )
+              (local.get $in)
+            )
+            (f32.add
+              (f32.mul
+                (f32.div
+                  (local.get $b1)
+                  (local.get $a0)
+                )
+                (local.get $in1)
+              )
+              (f32.mul
+                (f32.div
+                  (local.get $b2)
+                  (local.get $a0)
+                )
+                (local.get $in2)
+              )
+            )
+          )
+          (f32.mul
+            (f32.div
+              (local.get $a1)
+              (local.get $a0)
+            )
+            (local.get $out1)
+          )      
+        )
+        (f32.mul
+          (f32.div
+            (local.get $a2)
+            (local.get $a0)
+          )
+          (local.get $out2)
+        )
+      )
+    )
+
+    (f32.store
+      (i32.add
+        (&FilterWork.out2;)
+        (local.get $filter_work)
+      )
+      (local.get $out1)
+    )
+    (f32.store
+      (i32.add
+        (&FilterWork.out1;)
+        (local.get $filter_work)
+      )
+      (local.get $out)
+    )
+    (f32.store
+      (i32.add
+        (&FilterWork.in2;)
+        (local.get $filter_work)
+      )
+      (local.get $in1)
+    )
+    (f32.store
+      (i32.add
+        (&FilterWork.in1;)
+        (local.get $filter_work)
+      )
+      (local.get $in)
+    )
+    (local.get $out)
+  )
 )
 
