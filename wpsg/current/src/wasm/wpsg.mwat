@@ -1601,12 +1601,16 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
  
   )
 
-  ;;;;;;;;;;;;;;;;;;;;;;;;;
+  ;; ==================================
   ;; Filter 
   ;; 以下サイトのC++コードを参考に実装
   ;; http://vstcpp.wpblog.jp/?page_id=728
-  ;;;;;;;;;;;;;;;;;;;;;;;;;
+  ;; ==================================
+
+  ;; -----------------------
   ;; low pass filter
+  ;; -----------------------
+
   (func $lowPassFilter
     (param $filter_work i32)
     (local $filter_param i32)
@@ -1735,7 +1739,11 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
       )
     )
   )
+
+  ;; -----------------------
   ;; high pass filter
+  ;; -----------------------
+
   (func $highPassFilter
     (param $filter_work i32)
     (local $filter_param i32)
@@ -1865,8 +1873,11 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
     )
   )
 
-     ;; band pass filter
-    (func $notchFilter
+  ;; -----------------------
+  ;; Notch Filter
+  ;; -----------------------
+
+  (func $notchFilter
     (param $filter_work i32)
     (local $filter_param i32)
     (local $omega f64)
@@ -2001,8 +2012,11 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
     )
   )
 
-  ;; band pass filter
-	(func $bandPassFilter
+  ;; -----------------------
+  ;; Band Pass Filter
+  ;; -----------------------
+ 
+ 	(func $bandPassFilter
     (param $filter_work i32)
     (local $filter_param i32)
     (local $omega f64)
@@ -2135,10 +2149,10 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
     )
   )
 
+  ;; -----------------------
+  ;; Low Shelf Filter
+  ;; -----------------------
  
-	;; // フィルタ係数を求める。
-	;; b2 = A * ((A + 1.0f) - (A - 1.0f) * cos(omega) - beta * sin(omega));
-
   (func $lowShelfFilter
     (param $filter_work i32)
     (local $filter_param i32)
@@ -2408,5 +2422,657 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
     )
   )
 
+
+  ;; -----------------------
+  ;; High Shelf Filter
+  ;; -----------------------
+ 
+  (func $HighShelfFilter
+    (param $filter_work i32)
+    (local $filter_param i32)
+    (local $omega f64)
+    (local $cos_omega f32)
+    (local $sin_omega f32)
+    (local $alpha f32)
+    (local $A f32)
+    (local $beta f32)
+    ;;
+    (local.set $filter_param
+      (i32.load
+        (local.get $filter_param)
+      )
+    )
+
+    ;; omega = 2.0f * 3.14159265f *  freq / samplerate;
+    (local.set $cos_omega
+      (f32.demote_f64 
+        (call $cos 
+          (local.tee $omega
+            (f64.promote_f32 
+              (f32.mul
+                (f32.mul
+                  (f32.const {$ Math.PI * 2; })
+                  (f32.load
+                    (i32.add
+                      (&FilterWork.current_frequency;)
+                      (local.get $filter_work)
+                    )
+                  )
+                )
+                (f32.load (&delta;))
+              )
+            )
+          )
+        )
+      )
+    )
+
+  	;; float alpha = sin(omega) / (2.0f * q);
+    (local.set $sin_omega
+      (f32.demote_f64
+        (call $sin (local.get $omega))
+      )
+    )
+    (local.set $alpha
+      (f32.div
+        (local.get $sin_omega)
+        (f32.mul
+          (f32.const 2)
+          (f32.load
+            (i32.add
+              (&FilterParam.q;)
+              (local.get $filter_param)
+            )
+          )
+        )
+      )
+    )
+
+   	;; float A = pow(10.0f, (gain / 40.0f));
+    (local.set $A
+      (f32.demote_f64
+        (call $pow
+          (f64.const 10.0)
+          (f64.mul 
+            (f64.promote_f32
+              (f32.load
+                (i32.add
+                  (&FilterParam.gain;)
+                  (local.get $filter_param)
+                )
+              )
+            )
+            (f64.const {$ 1 / 40.0 })
+          )
+        )
+      )
+    )
+
+  	;; float beta = sqrt(A) / q;
+    (local.set $beta
+      (f32.demote_f64
+        (f64.div
+          (f64.sqrt
+            (f64.promote_f32
+              (local.get $A)
+            )        
+          )
+          (f64.promote_f32
+            (f32.load
+              (i32.add
+                (&FilterParam.q;)
+                (local.get $filter_param)
+              )
+            )
+          )
+        )
+      )
+    )
+
+  
+    ;; フィルタ係数を求める。
+    ;; a0 = (A + 1.0f) - (A - 1.0f) * cos(omega) + beta * sin(omega);
+    (f32.store 
+      (i32.add
+        (&FilterWork.a0;)
+        (local.get $filter_work)
+      )
+      (f32.add
+        (f32.sub
+          (f32.add
+            (local.get $A)
+            (f32.const 1)
+          )
+          (f32.mul
+            (f32.sub
+              (local.get $A)
+              (f32.const 1)
+            )
+            (local.get $cos_omega)
+          )
+        )
+        (f32.mul
+          (local.get $beta)
+          (local.get $sin_omega)
+        )
+      )
+    )
+
+    ;; a1 = 2.0f * ((A - 1.0f) - (A + 1.0f) * cos(omega));
+    (f32.store 
+      (i32.add
+        (&FilterWork.a1;)
+        (local.get $filter_work)
+      )
+      (f32.mul
+        (f32.const 2.0)
+        (f32.sub
+          (f32.sub
+            (local.get $A)
+            (f32.const 1)
+          )
+          (f32.mul
+            (f32.add
+              (local.get $A)
+              (f32.const 1)
+            )
+            (local.get $cos_omega)
+          )
+        )
+      )
+    )
+
+    ;; a2 = (A + 1.0f) - (A - 1.0f) * cos(omega) - beta * sin(omega);
+    (f32.store 
+      (i32.add
+        (&FilterWork.a2;)
+        (local.get $filter_work)
+      )
+      (f32.sub
+        (f32.add
+          (local.get $A)
+          (f32.const 1)
+        )
+        (f32.sub
+          (f32.mul
+            (f32.sub
+              (local.get $A)
+              (f32.const 1)
+            )
+            (local.get $cos_omega)
+          )
+          (f32.mul
+            (local.get $beta)
+            (local.get $sin_omega)
+          )
+        )
+      )
+    )
+
+    ;; b0 = A * ((A + 1.0f) + (A - 1.0f) * cos(omega) + beta * sin(omega));
+    (f32.store 
+      (i32.add
+        (&FilterWork.b0;)
+        (local.get $filter_work)
+      )
+      (f32.mul
+        (local.get $A)
+        (f32.add
+          (f32.add
+            (local.get $A)
+            (f32.const 1)
+          )
+          (f32.add
+            (f32.mul
+              (f32.sub
+                (local.get $A)
+                (f32.const 1)
+              )
+              (local.get $cos_omega)
+            )
+            (f32.mul
+              (local.get $beta)
+              (local.get $sin_omega)
+            )
+          )
+        )
+      )
+    )
+    
+    ;; b1 = -2.0f * A * ((A - 1.0f) + (A + 1.0f) * cos(omega));
+    (f32.store 
+      (i32.add
+        (&FilterWork.b1;)
+        (local.get $filter_work)
+      )
+      (f32.mul
+        (f32.mul
+          (f32.const -2.0)
+          (local.get $A)
+        )
+        (f32.add
+          (f32.sub
+            (local.get $A)
+            (f32.const 1)
+          )
+          (f32.mul
+            (f32.add
+              (local.get $A)
+              (f32.const 1)
+            )
+            (local.get $cos_omega)
+          )
+        )
+      )        
+    )
+
+    ;; b2 = A * ((A + 1.0f) + (A - 1.0f) * cos(omega) - beta * sin(omega));
+    (f32.store 
+      (i32.add
+        (&FilterWork.b2;)
+        (local.get $filter_work)
+      )
+      (f32.mul
+        (local.get $A)
+        (f32.add
+          (f32.add
+            (local.get $A)
+            (f32.const 1)
+          )
+          (f32.sub
+            (f32.mul
+              (f32.sub
+                (local.get $A)
+                (f32.const 1)
+              )
+              (local.get $cos_omega)
+            )
+            (f32.mul
+              (local.get $beta)
+              (local.get $sin_omega)
+            )
+          )
+        )
+      )
+    )
+  ) 
+
+  ;; -----------------------
+  ;; Peaking Filter
+  ;; -----------------------
+ 
+  (func $PeakingFilter
+    (param $filter_work i32)
+    (local $filter_param i32)
+    (local $omega f64)
+    (local $cos_omega f32)
+    (local $sin_omega f32)
+    (local $sin_omega_f64 f64)
+    (local $alpha f32)
+    (local $A f32)
+
+
+    (local.set $filter_param
+      (i32.load
+        (local.get $filter_param)
+      )
+    )
+
+    ;; omega = 2.0f * 3.14159265f *  freq / samplerate;
+    (local.set $cos_omega
+      (f32.demote_f64 
+        (call $cos 
+          (local.tee $omega
+            (f64.promote_f32 
+              (f32.mul
+                (f32.mul
+                  (f32.const {$ Math.PI * 2; })
+                  (f32.load
+                    (i32.add
+                      (&FilterWork.current_frequency;)
+                      (local.get $filter_work)
+                    )
+                  )
+                )
+                (f32.load (&delta;))
+              )
+            )
+          )
+        )
+      )
+    )
+
+    ;; float alpha = sin(omega) * sinh(log(2.0f) / 2.0 * bw * omega / sin(omega));
+    (local.set $sin_omega
+      (f32.demote_f64
+        (local.tee $sin_omega_f64
+          (call $sin (local.get $omega))
+        )
+      )
+    )
+
+    (local.set $alpha
+      (f32.demote_f64
+        (f64.mul
+          (local.get $sin_omega_f64)
+          (call $sinh 
+            (f64.div
+              (f64.mul 
+                (f64.mul 
+                  (f64.const {$ Math.log(2.0) / 2.0; })
+                  (f64.promote_f32
+                    (f32.load 
+                      (i32.add (&FilterParam.band_width;) (local.get $filter_param))
+                    )
+                  )
+                )
+                (local.get $omega)
+              )
+              (local.get $sin_omega_f64)
+            )
+          )
+        )
+      )
+    )
+
+  	;; float A = pow(10.0f, (gain / 40.0f));
+    (local.set $A
+      (f32.demote_f64
+        (call $pow
+          (f64.const 10.0)
+          (f64.mul 
+            (f64.promote_f32
+              (f32.load
+                (i32.add
+                  (&FilterParam.gain;)
+                  (local.get $filter_param)
+                )
+              )
+            )
+            (f64.const {$ 1 / 40.0 })
+          )
+        )
+      )
+    )
+  
+    ;; フィルタ係数を求める。
+   	;; a0 = 1.0f + alpha / A;
+    (f32.store 
+      (i32.add
+        (&FilterWork.a0;)
+        (local.get $filter_work)
+      )
+      (f32.add
+        (f32.const 1)
+        (f32.div
+          (local.get $alpha)
+          (local.get $A)
+        )
+      )
+    )
+
+    ;; a1 = -2.0f * cos(omega);
+    (f32.store 
+      (i32.add
+        (&FilterWork.a1;)
+        (local.get $filter_work)
+      )
+      (f32.mul
+        (f32.const -2.0)
+        (local.get $cos_omega)
+      )
+    )
+
+  	;; a2 = 1.0f - alpha / A;
+    (f32.store 
+      (i32.add
+        (&FilterWork.a2;)
+        (local.get $filter_work)
+      )
+      (f32.sub
+        (f32.const 1)
+        (f32.div
+          (local.get $alpha)
+          (local.get $A)
+        )
+      )
+    )
+
+  	;; b0 = 1.0f + alpha * A;
+    (f32.store 
+      (i32.add
+        (&FilterWork.b0;)
+        (local.get $filter_work)
+      )
+      (f32.add
+        (f32.const 1.0)
+        (f32.mul
+          (local.get $alpha)
+          (local.get $A)
+        )
+      )
+    )
+    
+  	;; b1 = -2.0f * cos(omega);
+    (f32.store 
+      (i32.add
+        (&FilterWork.b1;)
+        (local.get $filter_work)
+      )
+      (f32.mul
+        (f32.const -2.0)
+        (local.get $cos_omega)
+      )
+    )
+
+  	;; b2 = 1.0f - alpha * A;
+    (f32.store 
+      (i32.add
+        (&FilterWork.b2;)
+        (local.get $filter_work)
+      )
+      (f32.sub
+        (f32.const 1)
+        (f32.mul
+          (local.get $alpha)
+          (local.get $A)
+        )
+      )
+    )
+  ) 
+
+  ;; -----------------------
+  ;; AllPass Filter
+  ;; -----------------------
+
+	;; float omega = 2.0f * 3.14159265f *  freq / samplerate;
+	;; float alpha = sin(omega) / (2.0f * q);
+ 
+	;; a0 = 1.0f + alpha;
+	;; a1 = -2.0f * cos(omega);
+	;; a2 = 1.0f - alpha;
+	;; b0 = 1.0f - alpha;
+	;; b1 = -2.0f * cos(omega);
+	;; b2 = 1.0f + alpha;
+
+  (func $allPassFilter
+    (param $filter_work i32)
+    (local $filter_param i32)
+    (local $omega f64)
+    (local $cos_omega f32)
+    (local $sin_omega f32)
+    (local $sin_omega_f64 f64)
+    (local $alpha f32)
+    (local $A f32)
+
+
+    (local.set $filter_param
+      (i32.load
+        (local.get $filter_param)
+      )
+    )
+
+    ;; omega = 2.0f * 3.14159265f *  freq / samplerate;
+    (local.set $cos_omega
+      (f32.demote_f64 
+        (call $cos 
+          (local.tee $omega
+            (f64.promote_f32 
+              (f32.mul
+                (f32.mul
+                  (f32.const {$ Math.PI * 2; })
+                  (f32.load
+                    (i32.add
+                      (&FilterWork.current_frequency;)
+                      (local.get $filter_work)
+                    )
+                  )
+                )
+                (f32.load (&delta;))
+              )
+            )
+          )
+        )
+      )
+    )
+
+    ;; float alpha = sin(omega) * sinh(log(2.0f) / 2.0 * bw * omega / sin(omega));
+    (local.set $sin_omega
+      (f32.demote_f64
+        (local.tee $sin_omega_f64
+          (call $sin (local.get $omega))
+        )
+      )
+    )
+
+    (local.set $alpha
+      (f32.demote_f64
+        (f64.mul
+          (local.get $sin_omega_f64)
+          (call $sinh 
+            (f64.div
+              (f64.mul 
+                (f64.mul 
+                  (f64.const {$ Math.log(2.0) / 2.0; })
+                  (f64.promote_f32
+                    (f32.load 
+                      (i32.add (&FilterParam.band_width;) (local.get $filter_param))
+                    )
+                  )
+                )
+                (local.get $omega)
+              )
+              (local.get $sin_omega_f64)
+            )
+          )
+        )
+      )
+    )
+
+  	;; float A = pow(10.0f, (gain / 40.0f));
+    (local.set $A
+      (f32.demote_f64
+        (call $pow
+          (f64.const 10.0)
+          (f64.mul 
+            (f64.promote_f32
+              (f32.load
+                (i32.add
+                  (&FilterParam.gain;)
+                  (local.get $filter_param)
+                )
+              )
+            )
+            (f64.const {$ 1 / 40.0 })
+          )
+        )
+      )
+    )
+  
+    ;; フィルタ係数を求める。
+   	;; a0 = 1.0f + alpha / A;
+    (f32.store 
+      (i32.add
+        (&FilterWork.a0;)
+        (local.get $filter_work)
+      )
+      (f32.add
+        (f32.const 1)
+        (f32.div
+          (local.get $alpha)
+          (local.get $A)
+        )
+      )
+    )
+
+    ;; a1 = -2.0f * cos(omega);
+    (f32.store 
+      (i32.add
+        (&FilterWork.a1;)
+        (local.get $filter_work)
+      )
+      (f32.mul
+        (f32.const -2.0)
+        (local.get $cos_omega)
+      )
+    )
+
+  	;; a2 = 1.0f - alpha / A;
+    (f32.store 
+      (i32.add
+        (&FilterWork.a2;)
+        (local.get $filter_work)
+      )
+      (f32.sub
+        (f32.const 1)
+        (f32.div
+          (local.get $alpha)
+          (local.get $A)
+        )
+      )
+    )
+
+  	;; b0 = 1.0f + alpha * A;
+    (f32.store 
+      (i32.add
+        (&FilterWork.b0;)
+        (local.get $filter_work)
+      )
+      (f32.add
+        (f32.const 1.0)
+        (f32.mul
+          (local.get $alpha)
+          (local.get $A)
+        )
+      )
+    )
+    
+  	;; b1 = -2.0f * cos(omega);
+    (f32.store 
+      (i32.add
+        (&FilterWork.b1;)
+        (local.get $filter_work)
+      )
+      (f32.mul
+        (f32.const -2.0)
+        (local.get $cos_omega)
+      )
+    )
+
+  	;; b2 = 1.0f - alpha * A;
+    (f32.store 
+      (i32.add
+        (&FilterWork.b2;)
+        (local.get $filter_work)
+      )
+      (f32.sub
+        (f32.const 1)
+        (f32.mul
+          (local.get $alpha)
+          (local.get $A)
+        )
+      )
+    )
+  ) 
 )
 
