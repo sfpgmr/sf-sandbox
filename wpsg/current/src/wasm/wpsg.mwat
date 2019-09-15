@@ -11,6 +11,7 @@
   $.PIx2 = Math.PI * 2;
 }
 
+
 (module
   (type $oscillatorFunc (func (param i32) (result f32)))
   (type $filterFunc (func (param i32)))
@@ -182,7 +183,7 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
 ;; フィルター
 ;; --------------------------
 
-{@struct FilterParam
+{@struct Filter
   ;; bit 31 
   ;; 1 ... enable
   ;; 0 ... disable
@@ -203,7 +204,7 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
 }
 
 {@struct FilterWork
-  i32 filter_param;
+  i32 filter;
   f32 a0,a1,a2,b0,b1,b2;
   f32 freq_rate;
   f32 current_frequency;
@@ -248,7 +249,7 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
   f32 amplitude_lfo_base_frequency;
   
   ;; フィルタ・パラメータ
-  FilterParam filter;
+  Filter filter;
   ;; フィルタ・エンベロープ
   Envelope filter_envelope;
   ;; フィルタ・LFO・オフセット
@@ -1195,7 +1196,7 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
     (local $oscillator_offset i32)
     (local $timbre_flag i32)
     (local $filter_value f32)
-    (local $filter_param i32)
+    (local $filter i32)
 
     (local.set $timbre_flag
       (i32.load
@@ -1352,7 +1353,7 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
       )
     )
     ;; フィルタの更新
-    (local.set $filter_param
+    (local.set $filter
       (i32.load
         (i32.add
           (&TimbreWork.filter;)
@@ -1389,8 +1390,8 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
           (f32.mul
             (f32.load
               (i32.add
-                (&FilterParam.base_frequency;)
-                (local.get $filter_param)
+                (&Filter.base_frequency;)
+                (local.get $filter)
               )
             )
             (local.get $filter_value)
@@ -1404,7 +1405,7 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
           )
           (i32.load
             (i32.add
-              (&FilterParam.filter_type;)
+              (&Filter.filter_type;)
               (i32.load
                 (i32.add
                   (&TimbreWork.filter;)
@@ -1535,9 +1536,9 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
     (local.get $offset)
   )
 
-  ;;
+  ;; --------------------------------
   ;; test用 Timbreのセットアップ
-  ;;
+  ;; --------------------------------
 
   (func $initTestTimbre
     (result i32)
@@ -1546,6 +1547,7 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
     (local $offset_dest i32)
     (local $oscillator_offset i32)
     (local $timbre_offset i32)
+    
     ;; オシレータ0のセットアップ
     (i32.store
       (&oscillator[0];)
@@ -1555,6 +1557,7 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
         )
       )
     )
+
     ;; sinデータのコピー
     (block $sin_data_copy
       (local.set $loop_counter (i32.const 32))
@@ -1687,7 +1690,7 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
       (f32.const 20) ;; 20Hz
     )
 
-　  ;; Timbre ワークのセットアップ 
+    ;; Timbre ワークのセットアップ 
     
     ;; フラグ
     (i32.store
@@ -1783,14 +1786,14 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
 
   (func $lowPassFilter
     (param $filter_work i32)
-    (local $filter_param i32)
+    (local $filter i32)
     (local $omega f32)
     (local $cos_omega f32)
     (local $alpha f32)
     ;;
-    (local.set $filter_param
+    (local.set $filter
       (i32.load
-        (local.get $filter_param)
+        (local.get $filter)
       )
     )
     ;; omega = 2.0f * 3.14159265f *  freq / samplerate;
@@ -1827,8 +1830,8 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
           (f32.const 2.0)
           (f32.load
             (i32.add
-              (&FilterParam.q;)
-              (local.get $filter_param)
+              (&Filter.q;)
+              (local.get $filter)
             )
           )
         )
@@ -1916,14 +1919,14 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
 
   (func $highPassFilter
     (param $filter_work i32)
-    (local $filter_param i32)
+    (local $filter i32)
     (local $omega f32)
     (local $cos_omega f32)
     (local $alpha f32)
     ;;
-    (local.set $filter_param
+    (local.set $filter
       (i32.load
-        (local.get $filter_param)
+        (local.get $filter)
       )
     )
     ;; omega = 2.0f * 3.14159265f *  freq / samplerate;
@@ -1960,8 +1963,8 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
           (f32.const 2.0)
           (f32.load
             (i32.add
-              (&FilterParam.q;)
-              (local.get $filter_param)
+              (&Filter.q;)
+              (local.get $filter)
             )
           )
         )
@@ -2049,15 +2052,15 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
 
   (func $notchFilter
     (param $filter_work i32)
-    (local $filter_param i32)
+    (local $filter i32)
     (local $omega f64)
     (local $cos_omega f32)
     (local $sin_omega f64)
     (local $alpha f32)
     ;;
-    (local.set $filter_param
+    (local.set $filter
       (i32.load
-        (local.get $filter_param)
+        (local.get $filter)
       )
     )
 
@@ -2101,7 +2104,7 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
                   (f64.promote_f32
                     (f32.load
                       (i32.add
-                        (&FilterParam.band_width;)
+                        (&Filter.band_width;)
                         (local.get $filter_work)
                       )
                     )
@@ -2188,15 +2191,15 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
  
  	(func $bandPassFilter
     (param $filter_work i32)
-    (local $filter_param i32)
+    (local $filter i32)
     (local $omega f64)
     (local $cos_omega f32)
     (local $sin_omega f64)
     (local $alpha f32)
     ;;
-    (local.set $filter_param
+    (local.set $filter
       (i32.load
-        (local.get $filter_param)
+        (local.get $filter)
       )
     )
     ;; omega = 2.0f * 3.14159265f *  freq / samplerate;
@@ -2240,7 +2243,7 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
                   (f64.promote_f32
                     (f32.load
                       (i32.add
-                        (&FilterParam.band_width;)
+                        (&Filter.band_width;)
                         (local.get $filter_work)
                       )
                     )
@@ -2325,7 +2328,7 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
  
   (func $lowShelfFilter
     (param $filter_work i32)
-    (local $filter_param i32)
+    (local $filter i32)
     (local $omega f64)
     (local $cos_omega f32)
     (local $sin_omega f32)
@@ -2333,9 +2336,9 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
     (local $A f32)
     (local $beta f32)
     ;;
-    (local.set $filter_param
+    (local.set $filter
       (i32.load
-        (local.get $filter_param)
+        (local.get $filter)
       )
     )
 
@@ -2376,8 +2379,8 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
           (f32.const 2)
           (f32.load
             (i32.add
-              (&FilterParam.q;)
-              (local.get $filter_param)
+              (&Filter.q;)
+              (local.get $filter)
             )
           )
         )
@@ -2392,8 +2395,8 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
             (f64.promote_f32
               (f32.load
                 (i32.add
-                  (&FilterParam.gain;)
-                  (local.get $filter_param)
+                  (&Filter.gain;)
+                  (local.get $filter)
                 )
               )
             )
@@ -2415,8 +2418,8 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
           (f64.promote_f32
             (f32.load
               (i32.add
-                (&FilterParam.q;)
-                (local.get $filter_param)
+                (&Filter.q;)
+                (local.get $filter)
               )
             )
           )
@@ -2599,7 +2602,7 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
  
   (func $HighShelfFilter
     (param $filter_work i32)
-    (local $filter_param i32)
+    (local $filter i32)
     (local $omega f64)
     (local $cos_omega f32)
     (local $sin_omega f32)
@@ -2607,9 +2610,9 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
     (local $A f32)
     (local $beta f32)
     ;;
-    (local.set $filter_param
+    (local.set $filter
       (i32.load
-        (local.get $filter_param)
+        (local.get $filter)
       )
     )
 
@@ -2650,8 +2653,8 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
           (f32.const 2)
           (f32.load
             (i32.add
-              (&FilterParam.q;)
-              (local.get $filter_param)
+              (&Filter.q;)
+              (local.get $filter)
             )
           )
         )
@@ -2667,8 +2670,8 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
             (f64.promote_f32
               (f32.load
                 (i32.add
-                  (&FilterParam.gain;)
-                  (local.get $filter_param)
+                  (&Filter.gain;)
+                  (local.get $filter)
                 )
               )
             )
@@ -2690,8 +2693,8 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
           (f64.promote_f32
             (f32.load
               (i32.add
-                (&FilterParam.q;)
-                (local.get $filter_param)
+                (&Filter.q;)
+                (local.get $filter)
               )
             )
           )
@@ -2873,7 +2876,7 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
  
   (func $PeakingFilter
     (param $filter_work i32)
-    (local $filter_param i32)
+    (local $filter i32)
     (local $omega f64)
     (local $cos_omega f32)
     (local $sin_omega f32)
@@ -2882,9 +2885,9 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
     (local $A f32)
 
 
-    (local.set $filter_param
+    (local.set $filter
       (i32.load
-        (local.get $filter_param)
+        (local.get $filter)
       )
     )
 
@@ -2932,7 +2935,7 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
                   (f64.const {$ Math.log(2.0) / 2.0; })
                   (f64.promote_f32
                     (f32.load 
-                      (i32.add (&FilterParam.band_width;) (local.get $filter_param))
+                      (i32.add (&Filter.band_width;) (local.get $filter))
                     )
                   )
                 )
@@ -2954,8 +2957,8 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
             (f64.promote_f32
               (f32.load
                 (i32.add
-                  (&FilterParam.gain;)
-                  (local.get $filter_param)
+                  (&Filter.gain;)
+                  (local.get $filter)
                 )
               )
             )
@@ -3057,7 +3060,7 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
 
   (func $allPassFilter
     (param $filter_work i32)
-    (local $filter_param i32)
+    (local $filter i32)
     (local $omega f64)
     (local $cos_omega f32)
     (local $sin_omega f32)
@@ -3066,9 +3069,9 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
     (local $A f32)
 
 
-    (local.set $filter_param
+    (local.set $filter
       (i32.load
-        (local.get $filter_param)
+        (local.get $filter)
       )
     )
 
@@ -3105,8 +3108,8 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
             (f64.const 2.0)
             (f64.load
               (i32.add
-                (&FilterParam.q;)
-                (local.get $filter_param)
+                (&Filter.q;)
+                (local.get $filter)
               )
             )
           )
@@ -3189,22 +3192,14 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
   ) 
 
   ;; -----------------------
-  ;; filter処理の実行
+  ;; filterの実行
   ;; -----------------------
  
-	;; in1 = in;  // 1つ前の入力信号を更新
- 
-	;; out2 = out1; // 2つ前の出力信号を更新
-	;; out1 = out;  // 1つ前の出力信号を更新
- 
-	;; // 出力信号を返す
-	;; return out;
-
-  (func $processFilter 
+   (func $processFilter 
     (param $filter_work i32)
     (param $in f32)
     (result f32)
-    (local $filter_param i32)
+    (local $filter i32)
 
     (local $a0 f32)
     (local $a1 f32)
@@ -3218,9 +3213,9 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
     (local $in1 f32)
     (local $in2 f32)
 
-    (local.set $filter_param
+    (local.set $filter
       (i32.load
-        (local.get $filter_param)
+        (local.get $filter)
       )
     )
 
@@ -3354,7 +3349,7 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
         )
       )
     )
-
+  	;; out2 = out1; // 2つ前の出力信号を更新
     (f32.store
       (i32.add
         (&FilterWork.out2;)
@@ -3362,6 +3357,8 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
       )
       (local.get $out1)
     )
+
+  	;; out1 = out;  // 1つ前の出力信号を更新
     (f32.store
       (i32.add
         (&FilterWork.out1;)
@@ -3378,7 +3375,7 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
       )
       (local.get $in1)
     )
-
+  	;; in1 = in;  // 1つ前の入力信号を更新
     (f32.store
       (i32.add
         (&FilterWork.in1;)
@@ -3386,7 +3383,177 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
       )
       (local.get $in)
     )
+  	;; // 出力信号を返す
     (local.get $out)
+  )
+
+  (func $initFilter
+    (param $filter i32)
+    (param $flag i32)
+    (param $filter_type i32)
+    (param $base_frequency f32)
+    (param $q f32)
+    (param $band_width f32)
+    (param $gain f32)
+
+    (i32.store
+      (i32.add
+        (&Filter.flag;)
+        (local.get $filter)
+      )
+      (local.get $flag)
+    )
+
+    (i32.store
+      (i32.add
+        (&Filter.filter_type;)
+        (local.get $filter)
+      )
+      (local.get $filter_type)
+    )
+
+    (f32.store
+      (i32.add
+        (&Filter.base_frequency;)
+        (local.get $filter)
+      )
+      (local.get $base_frequency)
+    )
+
+    (f32.store
+      (i32.add
+        (&Filter.q;)
+        (local.get $filter)
+      )
+      (local.get $q)
+    )
+
+    (f32.store
+      (i32.add
+        (&Filter.band_width;)
+        (local.get $filter)
+      )
+      (local.get $band_width)
+    )
+
+    (f32.store
+      (i32.add
+        (&Filter.gain;)
+        (local.get $filter)
+      )
+      (local.get $gain)
+    ) 
+  )
+  
+  (func $initFilterWork
+    (param $filter i32)
+    (param $filter_work i32)
+
+    (i32.store
+      (local.get $filter_work)
+      (local.get $filter)
+    )
+
+    (f32.store
+      (i32.add
+        (&FilterWork.a0;)
+        (local.get $filter_work)
+      )
+      (f32.const 1)
+    )
+
+    (f32.store
+      (i32.add
+        (&FilterWork.a1;)
+        (local.get $filter_work)
+      )
+      (f32.const 0)
+    )
+
+    (f32.store
+      (i32.add
+        (&FilterWork.a2;)
+        (local.get $filter_work)
+      )
+      (f32.const 0)
+    )
+    
+    (f32.store
+      (i32.add
+        (&FilterWork.b0;)
+        (local.get $filter_work)
+      )
+      (f32.const 1)
+    )
+
+    (f32.store
+      (i32.add
+        (&FilterWork.b1;)
+        (local.get $filter_work)
+      )
+      (f32.const 0)
+    )
+
+    (f32.store
+      (i32.add
+        (&FilterWork.b2;)
+        (local.get $filter_work)
+      )
+      (f32.const 0)
+    )
+
+    (f32.store
+      (i32.add
+        (&FilterWork.freq_rate;)
+        (local.get $filter_work)
+      )
+      (f32.const 1)
+    )
+
+    (f32.store
+      (i32.add
+        (&FilterWork.current_frequency;)
+        (local.get $filter_work)
+      )
+      (f32.load
+        (i32.add
+          (&Filter.base_frequency;)
+          (local.get $filter)
+        )
+      )
+    )
+
+    (f32.store
+      (i32.add
+        (&FilterWork.in1;)
+        (local.get $filter_work)
+      )
+      (f32.const 0)
+    )
+
+    (f32.store
+      (i32.add
+        (&FilterWork.in2;)
+        (local.get $filter_work)
+      )
+      (f32.const 0)
+    )
+
+    (f32.store
+      (i32.add
+        (&FilterWork.out1;)
+        (local.get $filter_work)
+      )
+      (f32.const 0)
+    )
+
+    (f32.store
+      (i32.add
+        (&FilterWork.out2;)
+        (local.get $filter_work)
+      )
+      (f32.const 0)
+    )
   )
 )
 
