@@ -646,9 +646,9 @@
   "Filter": {
     "_attributes_": {
       "type": "StructDefinition",
-      "size": 24
+      "size": 20
     },
-    "flag": {
+    "filter_type": {
       "_attributes_": {
         "type": "PrimitiveType",
         "varType": "i32",
@@ -661,19 +661,6 @@
         "log2": 2
       }
     },
-    "filter_type": {
-      "_attributes_": {
-        "type": "PrimitiveType",
-        "varType": "i32",
-        "size": 4,
-        "integer": true,
-        "unsigned": false,
-        "offset": 4,
-        "initData": null,
-        "num": 1,
-        "log2": 2
-      }
-    },
     "base_frequency": {
       "_attributes_": {
         "type": "PrimitiveType",
@@ -681,7 +668,7 @@
         "size": 4,
         "integer": false,
         "unsigned": false,
-        "offset": 8,
+        "offset": 4,
         "initData": null,
         "num": 1,
         "log2": 2
@@ -694,7 +681,7 @@
         "size": 4,
         "integer": false,
         "unsigned": false,
-        "offset": 12,
+        "offset": 8,
         "initData": null,
         "num": 1,
         "log2": 2
@@ -707,7 +694,7 @@
         "size": 4,
         "integer": false,
         "unsigned": false,
-        "offset": 16,
+        "offset": 12,
         "initData": null,
         "num": 1,
         "log2": 2
@@ -720,7 +707,7 @@
         "size": 4,
         "integer": false,
         "unsigned": false,
-        "offset": 20,
+        "offset": 16,
         "initData": null,
         "num": 1,
         "log2": 2
@@ -918,7 +905,7 @@
   "Timbre": {
     "_attributes_": {
       "type": "StructDefinition",
-      "size": 156
+      "size": 152
     },
     "flag": {
       "_attributes_": {
@@ -1242,13 +1229,13 @@
     "filter": {
       "_attributes_": {
         "type": "StructDefinition",
-        "size": 24,
+        "size": 20,
         "offset": 92,
         "initData": null,
         "num": 1,
         "log2": 4
       },
-      "flag": {
+      "filter_type": {
         "_attributes_": {
           "type": "PrimitiveType",
           "varType": "i32",
@@ -1261,19 +1248,6 @@
           "log2": 2
         }
       },
-      "filter_type": {
-        "_attributes_": {
-          "type": "PrimitiveType",
-          "varType": "i32",
-          "size": 4,
-          "integer": true,
-          "unsigned": false,
-          "offset": 96,
-          "initData": null,
-          "num": 1,
-          "log2": 2
-        }
-      },
       "base_frequency": {
         "_attributes_": {
           "type": "PrimitiveType",
@@ -1281,7 +1255,7 @@
           "size": 4,
           "integer": false,
           "unsigned": false,
-          "offset": 100,
+          "offset": 96,
           "initData": null,
           "num": 1,
           "log2": 2
@@ -1294,7 +1268,7 @@
           "size": 4,
           "integer": false,
           "unsigned": false,
-          "offset": 104,
+          "offset": 100,
           "initData": null,
           "num": 1,
           "log2": 2
@@ -1307,7 +1281,7 @@
           "size": 4,
           "integer": false,
           "unsigned": false,
-          "offset": 108,
+          "offset": 104,
           "initData": null,
           "num": 1,
           "log2": 2
@@ -1320,7 +1294,7 @@
           "size": 4,
           "integer": false,
           "unsigned": false,
-          "offset": 112,
+          "offset": 108,
           "initData": null,
           "num": 1,
           "log2": 2
@@ -1331,7 +1305,7 @@
       "_attributes_": {
         "type": "StructDefinition",
         "size": 32,
-        "offset": 116,
+        "offset": 112,
         "initData": null,
         "num": 1,
         "log2": 5
@@ -1343,7 +1317,7 @@
           "size": 4,
           "integer": false,
           "unsigned": false,
-          "offset": 116,
+          "offset": 112,
           "initData": null,
           "num": 1,
           "log2": 2
@@ -1356,7 +1330,7 @@
           "size": 4,
           "integer": false,
           "unsigned": false,
-          "offset": 120,
+          "offset": 116,
           "initData": null,
           "num": 1,
           "log2": 2
@@ -1369,7 +1343,7 @@
           "size": 4,
           "integer": false,
           "unsigned": false,
-          "offset": 124,
+          "offset": 120,
           "initData": null,
           "num": 1,
           "log2": 2
@@ -1382,7 +1356,7 @@
           "size": 4,
           "integer": false,
           "unsigned": false,
-          "offset": 128,
+          "offset": 124,
           "initData": null,
           "num": 1,
           "log2": 2
@@ -1395,7 +1369,7 @@
           "size": 4,
           "integer": false,
           "unsigned": false,
-          "offset": 132,
+          "offset": 128,
           "initData": null,
           "num": 1,
           "log2": 2
@@ -1408,7 +1382,7 @@
           "size": 4,
           "integer": false,
           "unsigned": false,
-          "offset": 136,
+          "offset": 132,
           "initData": null,
           "num": 1,
           "log2": 2
@@ -1421,7 +1395,7 @@
           "size": 4,
           "integer": false,
           "unsigned": false,
-          "offset": 140,
+          "offset": 136,
           "initData": null,
           "num": 1,
           "log2": 2
@@ -1434,7 +1408,7 @@
           "size": 4,
           "integer": false,
           "unsigned": false,
-          "offset": 144,
+          "offset": 140,
           "initData": null,
           "num": 1,
           "log2": 2
@@ -1448,7 +1422,7 @@
         "size": 4,
         "integer": true,
         "unsigned": false,
-        "offset": 148,
+        "offset": 144,
         "initData": null,
         "num": 1,
         "log2": 2
@@ -1461,7 +1435,7 @@
         "size": 4,
         "integer": false,
         "unsigned": false,
-        "offset": 152,
+        "offset": 148,
         "initData": null,
         "num": 1,
         "log2": 2
@@ -2010,7 +1984,7 @@
   },
   "_attributes_": {
     "type": "MemoryMap",
-    "size": 15444
+    "size": 15188
   },
   "alloc_mem_offset": {
     "_attributes_": {
@@ -2067,7 +2041,7 @@
   "timbre": {
     "_attributes_": {
       "type": "StructDefinition",
-      "size": 156,
+      "size": 152,
       "offset": 140,
       "initData": null,
       "num": 64,
@@ -2395,13 +2369,13 @@
     "filter": {
       "_attributes_": {
         "type": "StructDefinition",
-        "size": 24,
+        "size": 20,
         "offset": 232,
         "initData": null,
         "num": 1,
         "log2": 4
       },
-      "flag": {
+      "filter_type": {
         "_attributes_": {
           "type": "PrimitiveType",
           "varType": "i32",
@@ -2414,19 +2388,6 @@
           "log2": 2
         }
       },
-      "filter_type": {
-        "_attributes_": {
-          "type": "PrimitiveType",
-          "varType": "i32",
-          "size": 4,
-          "integer": true,
-          "unsigned": false,
-          "offset": 236,
-          "initData": null,
-          "num": 1,
-          "log2": 2
-        }
-      },
       "base_frequency": {
         "_attributes_": {
           "type": "PrimitiveType",
@@ -2434,7 +2395,7 @@
           "size": 4,
           "integer": false,
           "unsigned": false,
-          "offset": 240,
+          "offset": 236,
           "initData": null,
           "num": 1,
           "log2": 2
@@ -2447,7 +2408,7 @@
           "size": 4,
           "integer": false,
           "unsigned": false,
-          "offset": 244,
+          "offset": 240,
           "initData": null,
           "num": 1,
           "log2": 2
@@ -2460,7 +2421,7 @@
           "size": 4,
           "integer": false,
           "unsigned": false,
-          "offset": 248,
+          "offset": 244,
           "initData": null,
           "num": 1,
           "log2": 2
@@ -2473,7 +2434,7 @@
           "size": 4,
           "integer": false,
           "unsigned": false,
-          "offset": 252,
+          "offset": 248,
           "initData": null,
           "num": 1,
           "log2": 2
@@ -2484,7 +2445,7 @@
       "_attributes_": {
         "type": "StructDefinition",
         "size": 32,
-        "offset": 256,
+        "offset": 252,
         "initData": null,
         "num": 1,
         "log2": 5
@@ -2496,7 +2457,7 @@
           "size": 4,
           "integer": false,
           "unsigned": false,
-          "offset": 256,
+          "offset": 252,
           "initData": null,
           "num": 1,
           "log2": 2
@@ -2509,7 +2470,7 @@
           "size": 4,
           "integer": false,
           "unsigned": false,
-          "offset": 260,
+          "offset": 256,
           "initData": null,
           "num": 1,
           "log2": 2
@@ -2522,7 +2483,7 @@
           "size": 4,
           "integer": false,
           "unsigned": false,
-          "offset": 264,
+          "offset": 260,
           "initData": null,
           "num": 1,
           "log2": 2
@@ -2535,7 +2496,7 @@
           "size": 4,
           "integer": false,
           "unsigned": false,
-          "offset": 268,
+          "offset": 264,
           "initData": null,
           "num": 1,
           "log2": 2
@@ -2548,7 +2509,7 @@
           "size": 4,
           "integer": false,
           "unsigned": false,
-          "offset": 272,
+          "offset": 268,
           "initData": null,
           "num": 1,
           "log2": 2
@@ -2561,7 +2522,7 @@
           "size": 4,
           "integer": false,
           "unsigned": false,
-          "offset": 276,
+          "offset": 272,
           "initData": null,
           "num": 1,
           "log2": 2
@@ -2574,7 +2535,7 @@
           "size": 4,
           "integer": false,
           "unsigned": false,
-          "offset": 280,
+          "offset": 276,
           "initData": null,
           "num": 1,
           "log2": 2
@@ -2587,7 +2548,7 @@
           "size": 4,
           "integer": false,
           "unsigned": false,
-          "offset": 284,
+          "offset": 280,
           "initData": null,
           "num": 1,
           "log2": 2
@@ -2601,7 +2562,7 @@
         "size": 4,
         "integer": true,
         "unsigned": false,
-        "offset": 288,
+        "offset": 284,
         "initData": null,
         "num": 1,
         "log2": 2
@@ -2614,7 +2575,7 @@
         "size": 4,
         "integer": false,
         "unsigned": false,
-        "offset": 292,
+        "offset": 288,
         "initData": null,
         "num": 1,
         "log2": 2
@@ -2625,7 +2586,7 @@
     "_attributes_": {
       "type": "StructDefinition",
       "size": 648,
-      "offset": 10124,
+      "offset": 9868,
       "initData": null,
       "num": 8,
       "log2": 9
@@ -2637,7 +2598,7 @@
         "size": 4,
         "integer": true,
         "unsigned": false,
-        "offset": 10124,
+        "offset": 9868,
         "initData": null,
         "num": 1,
         "log2": 2
@@ -2650,7 +2611,7 @@
         "size": 4,
         "integer": true,
         "unsigned": false,
-        "offset": 10128,
+        "offset": 9872,
         "initData": null,
         "num": 1,
         "log2": 2
@@ -2663,7 +2624,7 @@
         "size": 4,
         "integer": false,
         "unsigned": false,
-        "offset": 10132,
+        "offset": 9876,
         "initData": null,
         "num": 1,
         "log2": 2
@@ -2676,7 +2637,7 @@
         "size": 4,
         "integer": true,
         "unsigned": false,
-        "offset": 10136,
+        "offset": 9880,
         "initData": null,
         "num": 32,
         "log2": 2
@@ -2686,7 +2647,7 @@
       "_attributes_": {
         "type": "StructDefinition",
         "size": 20,
-        "offset": 10264,
+        "offset": 10008,
         "initData": null,
         "num": 1,
         "log2": 4
@@ -2698,7 +2659,7 @@
           "size": 4,
           "integer": true,
           "unsigned": false,
-          "offset": 10264,
+          "offset": 10008,
           "initData": null,
           "num": 1,
           "log2": 2
@@ -2711,7 +2672,7 @@
           "size": 4,
           "integer": true,
           "unsigned": false,
-          "offset": 10268,
+          "offset": 10012,
           "initData": null,
           "num": 1,
           "log2": 2
@@ -2724,7 +2685,7 @@
           "size": 4,
           "integer": true,
           "unsigned": false,
-          "offset": 10272,
+          "offset": 10016,
           "initData": null,
           "num": 1,
           "log2": 2
@@ -2737,7 +2698,7 @@
           "size": 4,
           "integer": false,
           "unsigned": false,
-          "offset": 10276,
+          "offset": 10020,
           "initData": null,
           "num": 1,
           "log2": 2
@@ -2750,7 +2711,7 @@
           "size": 4,
           "integer": false,
           "unsigned": false,
-          "offset": 10280,
+          "offset": 10024,
           "initData": null,
           "num": 1,
           "log2": 2
@@ -2764,7 +2725,7 @@
         "size": 4,
         "integer": true,
         "unsigned": false,
-        "offset": 10284,
+        "offset": 10028,
         "initData": null,
         "num": 32,
         "log2": 2
@@ -2774,7 +2735,7 @@
       "_attributes_": {
         "type": "StructDefinition",
         "size": 20,
-        "offset": 10412,
+        "offset": 10156,
         "initData": null,
         "num": 1,
         "log2": 4
@@ -2786,7 +2747,7 @@
           "size": 4,
           "integer": true,
           "unsigned": false,
-          "offset": 10412,
+          "offset": 10156,
           "initData": null,
           "num": 1,
           "log2": 2
@@ -2799,7 +2760,7 @@
           "size": 4,
           "integer": true,
           "unsigned": false,
-          "offset": 10416,
+          "offset": 10160,
           "initData": null,
           "num": 1,
           "log2": 2
@@ -2812,7 +2773,7 @@
           "size": 4,
           "integer": true,
           "unsigned": false,
-          "offset": 10420,
+          "offset": 10164,
           "initData": null,
           "num": 1,
           "log2": 2
@@ -2825,7 +2786,7 @@
           "size": 4,
           "integer": false,
           "unsigned": false,
-          "offset": 10424,
+          "offset": 10168,
           "initData": null,
           "num": 1,
           "log2": 2
@@ -2838,7 +2799,7 @@
           "size": 4,
           "integer": false,
           "unsigned": false,
-          "offset": 10428,
+          "offset": 10172,
           "initData": null,
           "num": 1,
           "log2": 2
@@ -2852,7 +2813,7 @@
         "size": 4,
         "integer": true,
         "unsigned": false,
-        "offset": 10432,
+        "offset": 10176,
         "initData": null,
         "num": 32,
         "log2": 2
@@ -2862,7 +2823,7 @@
       "_attributes_": {
         "type": "StructDefinition",
         "size": 56,
-        "offset": 10560,
+        "offset": 10304,
         "initData": null,
         "num": 1,
         "log2": 5
@@ -2874,7 +2835,7 @@
           "size": 4,
           "integer": true,
           "unsigned": false,
-          "offset": 10560,
+          "offset": 10304,
           "initData": null,
           "num": 1,
           "log2": 2
@@ -2887,7 +2848,7 @@
           "size": 4,
           "integer": false,
           "unsigned": false,
-          "offset": 10564,
+          "offset": 10308,
           "initData": null,
           "num": 1,
           "log2": 2
@@ -2900,7 +2861,7 @@
           "size": 4,
           "integer": false,
           "unsigned": false,
-          "offset": 10568,
+          "offset": 10312,
           "initData": null,
           "num": 1,
           "log2": 2
@@ -2913,7 +2874,7 @@
           "size": 4,
           "integer": false,
           "unsigned": false,
-          "offset": 10572,
+          "offset": 10316,
           "initData": null,
           "num": 1,
           "log2": 2
@@ -2926,7 +2887,7 @@
           "size": 4,
           "integer": false,
           "unsigned": false,
-          "offset": 10576,
+          "offset": 10320,
           "initData": null,
           "num": 1,
           "log2": 2
@@ -2939,7 +2900,7 @@
           "size": 4,
           "integer": false,
           "unsigned": false,
-          "offset": 10580,
+          "offset": 10324,
           "initData": null,
           "num": 1,
           "log2": 2
@@ -2952,7 +2913,7 @@
           "size": 4,
           "integer": false,
           "unsigned": false,
-          "offset": 10584,
+          "offset": 10328,
           "initData": null,
           "num": 1,
           "log2": 2
@@ -2965,7 +2926,7 @@
           "size": 4,
           "integer": false,
           "unsigned": false,
-          "offset": 10588,
+          "offset": 10332,
           "initData": null,
           "num": 1,
           "log2": 2
@@ -2978,7 +2939,7 @@
           "size": 4,
           "integer": false,
           "unsigned": false,
-          "offset": 10592,
+          "offset": 10336,
           "initData": null,
           "num": 1,
           "log2": 2
@@ -2991,7 +2952,7 @@
           "size": 4,
           "integer": false,
           "unsigned": false,
-          "offset": 10596,
+          "offset": 10340,
           "initData": null,
           "num": 1,
           "log2": 2
@@ -3004,7 +2965,7 @@
           "size": 4,
           "integer": false,
           "unsigned": false,
-          "offset": 10600,
+          "offset": 10344,
           "initData": null,
           "num": 1,
           "log2": 2
@@ -3017,7 +2978,7 @@
           "size": 4,
           "integer": false,
           "unsigned": false,
-          "offset": 10604,
+          "offset": 10348,
           "initData": null,
           "num": 1,
           "log2": 2
@@ -3030,7 +2991,7 @@
           "size": 4,
           "integer": false,
           "unsigned": false,
-          "offset": 10608,
+          "offset": 10352,
           "initData": null,
           "num": 1,
           "log2": 2
@@ -3043,7 +3004,7 @@
           "size": 4,
           "integer": false,
           "unsigned": false,
-          "offset": 10612,
+          "offset": 10356,
           "initData": null,
           "num": 1,
           "log2": 2
@@ -3054,7 +3015,7 @@
       "_attributes_": {
         "type": "StructDefinition",
         "size": 20,
-        "offset": 10616,
+        "offset": 10360,
         "initData": null,
         "num": 1,
         "log2": 4
@@ -3066,7 +3027,7 @@
           "size": 4,
           "integer": true,
           "unsigned": false,
-          "offset": 10616,
+          "offset": 10360,
           "initData": null,
           "num": 1,
           "log2": 2
@@ -3079,7 +3040,7 @@
           "size": 4,
           "integer": true,
           "unsigned": false,
-          "offset": 10620,
+          "offset": 10364,
           "initData": null,
           "num": 1,
           "log2": 2
@@ -3092,7 +3053,7 @@
           "size": 4,
           "integer": true,
           "unsigned": false,
-          "offset": 10624,
+          "offset": 10368,
           "initData": null,
           "num": 1,
           "log2": 2
@@ -3105,7 +3066,7 @@
           "size": 4,
           "integer": false,
           "unsigned": false,
-          "offset": 10628,
+          "offset": 10372,
           "initData": null,
           "num": 1,
           "log2": 2
@@ -3118,7 +3079,7 @@
           "size": 4,
           "integer": false,
           "unsigned": false,
-          "offset": 10632,
+          "offset": 10376,
           "initData": null,
           "num": 1,
           "log2": 2
@@ -3132,7 +3093,7 @@
         "size": 4,
         "integer": true,
         "unsigned": false,
-        "offset": 10636,
+        "offset": 10380,
         "initData": null,
         "num": 32,
         "log2": 2
@@ -3145,7 +3106,7 @@
         "size": 4,
         "integer": false,
         "unsigned": false,
-        "offset": 10764,
+        "offset": 10508,
         "initData": null,
         "num": 1,
         "log2": 2
@@ -3158,7 +3119,7 @@
         "size": 4,
         "integer": false,
         "unsigned": false,
-        "offset": 10768,
+        "offset": 10512,
         "initData": null,
         "num": 1,
         "log2": 2
@@ -3172,7 +3133,7 @@
       "size": 4,
       "integer": true,
       "unsigned": false,
-      "offset": 15308,
+      "offset": 15052,
       "initData": null,
       "num": 1,
       "log2": 2
@@ -3185,7 +3146,7 @@
       "size": 4,
       "integer": false,
       "unsigned": false,
-      "offset": 15312,
+      "offset": 15056,
       "initData": null,
       "num": 32,
       "log2": 2
@@ -3198,7 +3159,7 @@
       "size": 4,
       "integer": true,
       "unsigned": false,
-      "offset": 15440,
+      "offset": 15184,
       "initData": null,
       "num": 1,
       "log2": 2
