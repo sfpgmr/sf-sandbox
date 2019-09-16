@@ -820,7 +820,9 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
             (br $main)
           )
           ;; ### decay ###
-          (if (f32.ge            
+          (if 
+            (f32.or
+              (f32.ge            
                 (local.tee $counter
                   (f32.add 
                     (f32.load (i32.const 8 (; delta ;)))
@@ -828,7 +830,12 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
                   )
                 )
                 (f32.load (i32.add(i32.const 8 (; Envelope.decay_time ;)) (local.get $env_param_offset)))
-                )
+              )
+              (f32.le
+                (local.get $value)
+                (f32.load (i32.add(i32.const 12 (; Envelope.sustain_level ;)) (local.get $env_param_offset)))
+              )
+            )
             (then
               (i32.store
                 (i32.add (i32.const 8 (; EnvelopeWork.step ;)) (local.get $env_work_offset))
@@ -862,7 +869,9 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
           (br $main)
         )
       ;; ### release ###
-      (if (f32.ge            
+      (if 
+        (f32.or 
+          (f32.ge            
             (local.tee $counter
               (f32.add 
                 (f32.load (i32.const 8 (; delta ;)))
@@ -870,7 +879,12 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
               )
             )
             (f32.load (i32.add(i32.const 16 (; Envelope.release_time ;)) (local.get $env_param_offset)))
-            )
+          )
+          (f32.le 
+            (local.get $value)
+            (f32.const 0.000001)
+          )
+        )
         (then
           (i32.store
             (i32.add (i32.const 8 (; EnvelopeWork.step ;)) (local.get $env_work_offset))
@@ -890,7 +904,7 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
           (f32.store (i32.add (i32.const 16 (; EnvelopeWork.value ;)) (local.get $env_work_offset))
             (local.tee $value
               (f32.sub (local.get $value)
-                (f32.load (i32.add (i32.const 24 (; Envelope.decay_delta ;)) (local.get $env_param_offset)))
+                (f32.load (i32.add (i32.const 28 (; Envelope.release_delta ;)) (local.get $env_param_offset)))
               )
             )
           )

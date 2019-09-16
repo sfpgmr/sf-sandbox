@@ -59,7 +59,7 @@ self.addEventListener('message',(message) => {
 			break;
 	}
 });
-let keyon = 50;
+let keyon = 100;
 let keyflag = false;
 function process() {
 	if (play) {
