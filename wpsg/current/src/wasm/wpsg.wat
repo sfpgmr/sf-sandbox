@@ -1436,7 +1436,7 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
     ;; フラグ
     (i32.store
       (i32.const 140 (; timbre.flag ;))
-      (i32.const 0x6)
+      (i32.const 0x4)
     )
 
     ;; オシレータ
@@ -3435,13 +3435,84 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
   
   )
 
-  ;; render
+  ;; process
   (func $process
- 
+     (;; local変数 ;;)
+    (local $woffset i32) 
+    (local $roffset i32)
+    (local $buffer_mask i32)
+    (local $buffer_start i32)
+;;    (if (i32.eq (i32.load (&read_offset;)) (i32.load (&write_offset;)))
+;;      (then
+;;        (return) 
+;;      ) 
+;;    )
+
+    (local.set $woffset 
+      (i32.load (i32.const 15068 (; write_offset ;)))
+    )
+    (local.set $roffset 
+      (i32.load (i32.const 15064 (; read_offset ;)))
+    )
+
+    (local.set $buffer_mask
+      (i32.load (i32.const 15060 (; output_buffer_mask ;)))
+    )
+
+    (local.set $buffer_start
+      (i32.load (i32.const 15052 (; output_buffer_offset ;))) 
+    )
+
+    (block $render_exit
+      (loop $render_loop
+        (br_if $render_exit (i32.eq (local.get $roffset) (local.get $woffset)))
+        (f32.store 
+          (i32.add 
+            (local.get $buffer_start) 
+            (local.get $woffset)
+          )
+          (call $processTimbre
+            (i32.const 9868 (; timbre_work ;))
+          )
+        )
+        (local.set $woffset 
+          (i32.and
+            (i32.add (local.get $woffset) (i32.const 4))
+            (local.get $buffer_mask)
+          )
+        )
+        (br $render_loop)
+      )
+    )
+
+    (i32.atomic.store (i32.const 15068 (; write_offset ;)) (local.get $woffset))
+
   )
   ;; fill
-  (func $fill
+  (func $fill 
+    (local $end i32) 
+    (local $woffset i32) 
+    (local $output f32)
 
+    (local.set $woffset (i32.load (i32.const 15052 (; output_buffer_offset ;))))
+
+    (local.set $end
+      (i32.add (local.get $woffset) (i32.load (i32.const 15056 (; output_buffer_size ;))))
+    )
+ 
+    (block $fill_exit
+      (loop $fill_loop
+        (br_if $fill_exit (i32.gt_s (local.get $woffset) (local.get $end)))
+
+        (f32.store (local.get $woffset)
+          (call $processTimbre
+            (i32.const 9868 (; timbre_work ;))
+          )
+        )
+        (local.set $woffset (i32.add (local.get $woffset) (i32.const 4)))
+        (br $fill_loop)
+      )
+    )
   )
 )
 

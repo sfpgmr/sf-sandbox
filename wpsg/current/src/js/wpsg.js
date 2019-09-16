@@ -24,11 +24,11 @@ class PSG extends AudioWorkletProcessor {
   init({memory,bufferStart = 0,readOffset,writeOffset,bufferSize,endian})
   {
 //    const module = new WebAssembly.Module(wasmBinary);
-    this.buffer = new Float32Array(memory.buffer,bufferStart,bufferSize / 4);
+    //this.buffer = new Float32Array(memory.buffer,bufferStart,bufferSize / 4);
     this.readOffset = new Int32Array(memory.buffer,readOffset);
     this.writeOffset = new Int32Array(memory.buffer,writeOffset);
     this.dataView = new DataView(memory.buffer);
-    this.bufferStart = bufferStart;
+    this.bufferStart = this.dataView.getInt32(bufferStart,endian);
     this.bufferSize = this.dataView.getInt32(bufferSize,endian);
     this.bufferMask = (this.bufferSize - 1) & 0xffffffff;
     this.memory = memory;

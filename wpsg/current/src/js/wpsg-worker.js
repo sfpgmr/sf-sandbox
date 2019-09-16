@@ -6,7 +6,7 @@ class PSGWorker {
 		const instance = new WebAssembly.Instance(module, { env: { memory: memory },imports : {sin:Math.sin,cos:Math.cos,exp:Math.exp,sinh:Math.sinh,pow:Math.pow} });
 		this.memory = memory;
 		this.module = instance.exports;
-		this.module.initTestTimbre();
+		this.timbre = this.module.initTestTimbre();
 		this.enable = true;
 		this.endian = endian;
 		this.dv = new DataView(memory.buffer);
@@ -21,6 +21,16 @@ class PSGWorker {
 	{
 		this.module.fill();
 	}
+
+	keyOn(){
+		this.module.keyOnTimbre(this.timbre);
+	}
+
+	keyOff(){
+		this.module.keyOffTimbre(this.timbre);
+	}
+
+	
 }
 
 self.addEventListener('message',(message) => {
@@ -49,10 +59,21 @@ self.addEventListener('message',(message) => {
 			break;
 	}
 });
-
+let keyon = 100;
+let keyflag = false;
 function process() {
 	if (play) {
 		setTimeout(process, 25);
+	}
+	--keyon;
+	if(keyon == 0){
+		keyon = 50;
+		if(keyflag){
+			wpsg.keyOn();
+		} else {
+			wpsg.keyOff();
+		}
+		keyflag != keyflag;
 	}
 	wpsg.process();
 }
