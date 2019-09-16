@@ -821,7 +821,7 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
           )
           ;; ### decay ###
           (if 
-            (f32.or
+            (i32.or
               (f32.ge            
                 (local.tee $counter
                   (f32.add 
@@ -870,7 +870,7 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
         )
       ;; ### release ###
       (if 
-        (f32.or 
+        (i32.or 
           (f32.ge            
             (local.tee $counter
               (f32.add 
@@ -1492,7 +1492,7 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
     (call $initEnvelope
       (i32.const 192 (; timbre.amplitude_envelope ;))
       (f32.load (i32.const 4 (; sample_rate ;)))
-      (f32.const 0.0)
+      (f32.const 0.5)
       (f32.const 2.0)
       (f32.const 0.5)
       (f32.const 2.0)
