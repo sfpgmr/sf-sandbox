@@ -42,12 +42,14 @@
   (export "initWaveTableWork" (func $initWaveTableWork))
   (export "readWaveTable"  (func $readWaveTable))
 
-  (export "initOutputBuffer" (func $initOutputBuffer))
   (export "initTestTimbre" (func $initTestTimbre))
   (export "processTimbre" (func $processTimbre))
   (export "keyOnTimbre" (func $keyOnTimbre))
   (export "keyOffTimbre" (func $keyOffTimbre))
 
+  (export "initOutputBuffer" (func $initOutputBuffer))
+  (export "process" (func $process))
+  (export "fill" (func $fill))
 
   (table 32 funcref)
   (elem (i32.const (; $.OSC_FUNC_INDEX ;)0) $readWaveTable)
@@ -137,7 +139,7 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
 ;; メモリマップ 
 ;; --------------------------------
 
-(data (i32.const 15056) "\00\00\00\00\c2\c5\47\3e\15\ef\c3\3e\da\39\0e\3f\f3\04\35\3f\31\db\54\3f\5e\83\6c\3f\be\14\7b\3f\00\00\80\3f\be\14\7b\3f\5e\83\6c\3f\31\db\54\3f\f3\04\35\3f\da\39\0e\3f\15\ef\c3\3e\c2\c5\47\3e\32\31\0d\25\c2\c5\47\be\15\ef\c3\be\da\39\0e\bf\f3\04\35\bf\31\db\54\bf\5e\83\6c\bf\be\14\7b\bf\00\00\80\bf\be\14\7b\bf\5e\83\6c\bf\31\db\54\bf\f3\04\35\bf\da\39\0e\bf\15\ef\c3\be\c2\c5\47\be")
+(data (i32.const 15072) "\00\00\00\00\c2\c5\47\3e\15\ef\c3\3e\da\39\0e\3f\f3\04\35\3f\31\db\54\3f\5e\83\6c\3f\be\14\7b\3f\00\00\80\3f\be\14\7b\3f\5e\83\6c\3f\31\db\54\3f\f3\04\35\3f\da\39\0e\3f\15\ef\c3\3e\c2\c5\47\3e\32\31\0d\25\c2\c5\47\be\15\ef\c3\be\da\39\0e\bf\f3\04\35\bf\31\db\54\bf\5e\83\6c\bf\be\14\7b\bf\00\00\80\bf\be\14\7b\bf\5e\83\6c\bf\31\db\54\bf\f3\04\35\bf\da\39\0e\bf\15\ef\c3\be\c2\c5\47\be")
 
 
 ;; -----------------------------------
@@ -149,7 +151,7 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
   (func $initMemory
     (i32.store
       (i32.const 0 (; alloc_mem_offset ;))
-      (i32.const 15184 (; mem_start ;))  
+      (i32.const 15200 (; mem_start ;))  
     )
   )
 
@@ -664,7 +666,7 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
     ;; step
     (i32.store 
       (i32.add (i32.const 8 (; EnvelopeWork.step ;)) (local.get $env_work_offset))
-      (i32.const 0)
+      (i32.const -1)
     )
 
     ;; flag 
@@ -743,7 +745,7 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
     (local $value f32)
 
     (local.set $env_param_offset
-      (i32.add (i32.const 0 (; EnvelopeWork.env_param_offset ;)) (local.get $env_work_offset))
+      (i32.load (i32.add (i32.const 0 (; EnvelopeWork.env_param_offset ;)) (local.get $env_work_offset)))
     )
 
     (local.set $counter 
@@ -951,6 +953,13 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
         (local.get $timbre_work)
       )
     )
+    ;; filter
+    (call $keyOnEnvelope
+      (i32.add
+        (i32.const 492 (; TimbreWork.filter_envelope ;))
+        (local.get $timbre_work)
+      )
+    )
   )
 
   (func $keyOffTimbre
@@ -984,6 +993,14 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
     (call $keyOffEnvelope
       (i32.add
         (i32.const 288 (; TimbreWork.amplitude_envelope ;))
+        (local.get $timbre_work)
+      )
+    )
+
+    ;; filter
+    (call $keyOffEnvelope
+      (i32.add
+        (i32.const 492 (; TimbreWork.filter_envelope ;))
         (local.get $timbre_work)
       )
     )
@@ -1092,11 +1109,9 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
           )
           (then
             (call $doEnvelope
-              (i32.load
-                (i32.add
-                  (i32.const 140 (; TimbreWork.pitch_envelope ;))
-                  (local.get $timbre_work)
-                )
+              (i32.add
+                (i32.const 140 (; TimbreWork.pitch_envelope ;))
+                (local.get $timbre_work)
               )
             )
           )
@@ -1121,11 +1136,9 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
               (i32.and (local.get $timbre_flag) (i32.const 32))
               (then
                 (call $doEnvelope
-                  (i32.load
-                    (i32.add
-                      (i32.const 492 (; TimbreWork.filter_envelope ;))
-                      (local.get $timbre_work)
-                    )
+                  (i32.add
+                    (i32.const 492 (; TimbreWork.filter_envelope ;))
+                    (local.get $timbre_work)
                   )
                 )
               )
@@ -1321,11 +1334,9 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
             )
             (then
               (call $doEnvelope
-                (i32.load
-                  (i32.add
-                    (i32.const 288 (; TimbreWork.amplitude_envelope ;))
-                    (local.get $timbre_work)
-                  )
+                (i32.add
+                  (i32.const 288 (; TimbreWork.amplitude_envelope ;))
+                  (local.get $timbre_work)
                 )
               )
             )
@@ -1352,25 +1363,7 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
     )
   )
 
-  ;; 
-  ;; output buffer
-  ;;
-
-
-  (func $initOutputBuffer 
-    (param $size i32)
-    (result i32)
-    (local $offset i32)
-    (i32.store 
-      (i32.const 15052 (; output_buffer_offset ;))
-      (local.tee $offset
-        (call $allocateMemory
-          (local.get $size)
-        )
-      )
-    )
-    (local.get $offset)
-  )
+ 
 
   ;; --------------------------------
   ;; test用 Timbreのセットアップ
@@ -1397,7 +1390,7 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
     ;; sinデータのコピー
     (block $sin_data_copy
       (local.set $loop_counter (i32.const 32))
-      (local.set $offset_src (i32.const 15056 (; sin_table ;))) 
+      (local.set $offset_src (i32.const 15072 (; sin_table ;))) 
       (local.set $offset_dest 
         (i32.add
           (i32.const 16 (; WaveTable.wave_data_start ;))
@@ -1443,7 +1436,7 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
     ;; フラグ
     (i32.store
       (i32.const 140 (; timbre.flag ;))
-      (i32.const 0x7f)
+      (i32.const 0x6)
     )
 
     ;; オシレータ
@@ -1459,7 +1452,6 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
 
 
     ;; ピッチ・エンベロープ
-
     (call $initEnvelope
       (i32.const 152 (; timbre.pitch_envelope ;))
       (f32.load (i32.const 4 (; sample_rate ;)))
@@ -3395,6 +3387,61 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
       )
       (f32.const 0)
     )
+  )
+
+  ;; --------------------------- 
+  ;; output buffer
+  ;; --------------------------- 
+
+  (func $initOutputBuffer 
+    (param $size i32)
+    (result i32)
+    (local $offset i32)
+    (i32.store 
+      (i32.const 15052 (; output_buffer_offset ;))
+      (local.tee $offset
+        (call $allocateMemory
+          (local.get $size)
+        )
+      )
+    )
+    
+    (i32.store
+      (i32.const 15056 (; output_buffer_size ;))
+      (local.get $size)
+    )
+
+    (i32.store
+      (i32.const 15060 (; output_buffer_mask ;))
+      (i32.sub
+        (local.get $size)
+        (i32.const 1)
+      )
+    )
+    (call $resetBuffer)
+    (local.get $offset)
+  )
+
+  (func $resetBuffer
+    (i32.store
+      (i32.const 15064 (; read_offset ;))
+      (i32.const 0)
+    )
+ 
+    (i32.store
+      (i32.const 15068 (; write_offset ;))
+      (i32.const 0)
+    )
+  
+  )
+
+  ;; render
+  (func $process
+ 
+  )
+  ;; fill
+  (func $fill
+
   )
 )
 

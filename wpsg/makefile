@@ -11,7 +11,7 @@ $(TARGET): $(SRC_FILES)
 	rollup -c
 
 $(MWASM_LIB): $(MWASM_SRC)
-	mwasm --enable-threads $< -o $@ 
+	mwasm --enable-threads --enable-simd $< -o $@ 
 
 .PHONY: run
 run: $(TARGET) $(MWASM_LIB)

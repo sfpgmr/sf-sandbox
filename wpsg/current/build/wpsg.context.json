@@ -1984,7 +1984,7 @@
   },
   "_attributes_": {
     "type": "MemoryMap",
-    "size": 15188
+    "size": 15204
   },
   "alloc_mem_offset": {
     "_attributes_": {
@@ -3139,6 +3139,58 @@
       "log2": 2
     }
   },
+  "output_buffer_size": {
+    "_attributes_": {
+      "type": "PrimitiveType",
+      "varType": "i32",
+      "size": 4,
+      "integer": true,
+      "unsigned": false,
+      "offset": 15056,
+      "initData": null,
+      "num": 1,
+      "log2": 2
+    }
+  },
+  "output_buffer_mask": {
+    "_attributes_": {
+      "type": "PrimitiveType",
+      "varType": "i32",
+      "size": 4,
+      "integer": true,
+      "unsigned": false,
+      "offset": 15060,
+      "initData": null,
+      "num": 1,
+      "log2": 2
+    }
+  },
+  "read_offset": {
+    "_attributes_": {
+      "type": "PrimitiveType",
+      "varType": "i32",
+      "size": 4,
+      "integer": true,
+      "unsigned": false,
+      "offset": 15064,
+      "initData": null,
+      "num": 1,
+      "log2": 2
+    }
+  },
+  "write_offset": {
+    "_attributes_": {
+      "type": "PrimitiveType",
+      "varType": "i32",
+      "size": 4,
+      "integer": true,
+      "unsigned": false,
+      "offset": 15068,
+      "initData": null,
+      "num": 1,
+      "log2": 2
+    }
+  },
   "sin_table": {
     "_attributes_": {
       "type": "PrimitiveType",
@@ -3146,7 +3198,7 @@
       "size": 4,
       "integer": false,
       "unsigned": false,
-      "offset": 15056,
+      "offset": 15072,
       "initData": null,
       "num": 32,
       "log2": 2
@@ -3159,7 +3211,7 @@
       "size": 4,
       "integer": true,
       "unsigned": false,
-      "offset": 15184,
+      "offset": 15200,
       "initData": null,
       "num": 1,
       "log2": 2

@@ -1,37 +1,25 @@
-let psg, play = false;
+let wpsg, play = false;
 
 class PSGWorker {
-	constructor({ wasmBinary, memory, clock = 3580000, sampleRate = 44100, bufferStart = 0, readOffset, writeOffset, bufferSize,endian }) {
+	constructor({ wasmBinary, memory, sampleRate = 44100, endian }) {
 		const module = new WebAssembly.Module(wasmBinary);
-		const instance = new WebAssembly.Instance(module, { env: { memory: memory } });
+		const instance = new WebAssembly.Instance(module, { env: { memory: memory },imports : {sin:Math.sin,cos:Math.cos,exp:Math.exp,sinh:Math.sinh,pow:Math.pow} });
 		this.memory = memory;
 		this.module = instance.exports;
-		this.module.init(clock, sampleRate);
-		this.module.reset();
+		this.module.initTestTimbre();
 		this.enable = true;
 		this.endian = endian;
-		this.writeOffset = writeOffset / 4;
-		this.readOffset = readOffset / 4;
 		this.dv = new DataView(memory.buffer);
 		this.array = new Uint32Array(memory.buffer);
-		this.bufferStart = bufferStart;
-		this.bufferSize = bufferSize;
-		this.bufferMask = Atomics.load(this.array,bufferSize / 4) - 1;
 	}
 
-	render() {
-		// const ro = Atomics.load(this.array,this.readOffset) ;
-		// let wo = Atomics.load(this.array,this.writeOffset);
+	process() {
+		this.module.process();
+	}
 
-		// while(wo != ro){
-		// 	let o = this.module.calc() / 16384;
-		// 	this.dv.setFloat32(wo + this.bufferStart,o,this.endian);
-		// 	wo =  (wo + 4) & this.bufferMask;
-		// }
-
-		// Atomics.store(this.array,this.writeOffset,wo);
-
-		this.module.render();
+	fill()
+	{
+		this.module.fill();
 	}
 }
 
@@ -39,52 +27,34 @@ self.addEventListener('message',(message) => {
 	const m = message.data;
 	switch (m.message) {
 		case 'init':
-			if (!psg) {
-				psg = new PSGWorker(m);
+			if (!wpsg) {
+				wpsg = new PSGWorker(m);
 			}
 			self.postMessage({message:'init'});
 			break;
 		case 'play':
-			if (!play && psg && psg.enable) {
+			if (!play && wpsg && wpsg.enable) {
 				play = true;
-				//psg.module.reset();
-				//psg.module.fill();
-				render();
+				process();
 			}
 			break;
 		case 'stop':
 			play = false;
 			break;
-		case 'writeReg':
-			if (psg.enable) {
-				psg.module.writeReg(m.reg, m.value);
-				postMessage({
-					check: psg.module.readReg(m.reg) == m.value,
-					value: m.value,
-					read: psg.module.readReg(m.reg),
-					reg: m.reg
-				});
-			}
-			break;
 		case `fill`:
-			if (psg.enable) {
-				psg.module.fill();
+			if (wpsg.enable) {
+				wpsg.module.fill();
 				postMessage('fill done.');
 			}
 			break;
-		case 'calc':
-			if(psg.enable){
-				let out = psg.module.calc();
-				postMessage(out);
-			}
 	}
 });
 
-function render() {
+function process() {
 	if (play) {
-		setTimeout(render, 25);
+		setTimeout(process, 25);
 	}
-	psg.render();
+	wpsg.process();
 }
 
 

@@ -74,32 +74,35 @@
     alert('このページで使用する機能をサポートしていません。');
   }
 
-  async function getInstance(obj, imports = {}) {
-    const bin = await WebAssembly.compile(obj);
-    const inst = await WebAssembly.instantiate(bin, imports);
-    return inst;
+  function getOffset(prop){
+    return prop._attributes_.offset;
   }
 
   window.addEventListener('load', async () => {
-   // 100ms分のバッファサイズを求める
-   const sampleRate = 8000;
-   const memory = new WebAssembly.Memory({initial:20,shared:true,maximum:20});
-   const memoryMap = await (await fetch('./wpsg.context.json')).json();
-   const wpsg = (await getInstance(await (await fetch('./wpsg.wasm')).arrayBuffer(), { env: { memory: memory },imports : {sin:Math.sin,cos:Math.cos,exp:Math.exp,sinh:Math.sinh,pow:Math.pow} })).exports;
+  //  // 100ms分のバッファサイズを求める
+  //  const memory = new WebAssembly.Memory({initial:20,shared:true,maximum:20});
+  //  const memoryMap = await (await fetch('./wpsg.context.json')).json();
 
-   wpsg.setRate(sampleRate);
-   wpsg.initMemory();
+  //  const wpsg = (await getInstance(await (await fetch('./wpsg.wasm')).arrayBuffer(), { env: { memory: memory },imports : {sin:Math.sin,cos:Math.cos,exp:Math.exp,sinh:Math.sinh,pow:Math.pow} })).exports;
 
-   const timbre = wpsg.initTestTimbre();
-   console.log(wpsg.processTimbre(timbre));
-   wpsg.keyOnTimbre(timbre);
-   for(let i = 0;i < 8000;++i){
-    console.log(wpsg.processTimbre(timbre));
-   }
-   wpsg.keyOffTimbre(timbre);
-   for(let i = 0;i < 8000;++i){
-    console.log(wpsg.processTimbre(timbre));
-   }
+  //  wpsg.setRate(sampleRate);
+  //  wpsg.initMemory();
+
+  //  const timbre = wpsg.initTestTimbre();
+  //  for(let i = 0;i < 100;++i){
+  //   console.log(wpsg.processTimbre(timbre));
+  //  }
+
+  //  console.log('key on');
+  //  wpsg.keyOnTimbre(timbre);
+  //  for(let i = 0;i < 1000;++i){
+  //   console.log(wpsg.processTimbre(timbre));
+  //  }
+  //  console.log('key off');
+  //  wpsg.keyOffTimbre(timbre);
+  //  for(let i = 0;i < 1000;++i){
+  //   console.log(wpsg.processTimbre(timbre));
+  //  }
 
   //  for(let i = 0;i < 4096;++i){
   //    console.log(wpsg.allocateWaveTable(8));
@@ -191,13 +194,10 @@
     //   }
     // }
 
-    // let psg,psgBin,memoryMap,psgWorker,audioctx,wasmModule,wasmFuncs;
-    // let play = false;
-    // let vol;
-    // let enable = 0x3f;
-    // let envShape = 0;
-    // const littleEndian = checkEndian();
-    // const startButton = document.getElementById('start');
+    let psg,psgBin,memoryMap,psgWorker,audioctx,wasmModule,wasmFuncs;
+    let play = false;
+    let vol;
+    const startButton = document.getElementById('start');
     // let inputs = document.querySelectorAll('input');
 
     // for (const i of inputs) {
@@ -289,143 +289,128 @@
     //   });
     // });
 
-    // startButton.addEventListener('click', async () => {
+    startButton.addEventListener('click', async () => {
 
-    //   if (!psg) {
-    //     // Shared Memoryの利用
-    //     // wasmバイナリの読み込み
-    //     psgBin = await (await fetch('./wpsg.wasm')).arrayBuffer();
+      if (!psg) {
+        // Shared Memoryの利用
+        // wasmバイナリの読み込み
+        psgBin = await (await fetch('./wpsg.wasm')).arrayBuffer();
         
-    //     memoryMap = await fetch('./wpsg.context.json');
-    //     memoryMap = await memoryMap.json();
+        memoryMap = await fetch('./wpsg.context.json');
+        memoryMap = await memoryMap.json();
+
+        audioctx = new AudioContext();
+        // 100ms分のバッファサイズを求める
+        let audioBufferSize = Math.pow(2,Math.ceil(Math.log2(audioctx.sampleRate * 4 * 0.1 )));
+
+        const memory = new WebAssembly.Memory({initial:20,shared:true,maximum:20});
         
+        wasmModule = await WebAssembly.compile(psgBin);
+        wasmFuncs = (await WebAssembly.instantiate(wasmModule,{ env: { memory: memory },imports : {sin:Math.sin,cos:Math.cos,exp:Math.exp,sinh:Math.sinh,pow:Math.pow} })).exports;
 
-    //     function getOffset(prop){
-    //       return prop._attributes_.offset;
-    //     }
-
-    //     function getSize(prop){
-    //       return prop._attributes_.size;
-    //     }
-
-    //     audioctx = new AudioContext();
-    //     // 100ms分のバッファサイズを求める
-    //     let audioBufferSize = Math.pow(2,Math.ceil(Math.log2(audioctx.sampleRate * 4 * 0.1 )));
-    //     let pageSize = Math.ceil((audioBufferSize + getSize(memoryMap)) / 65536);
-    //     const memory = new WebAssembly.Memory({initial:pageSize,shared:true,maximum:10});
-        
-    //     wasmModule = new WebAssembly.Module(psgBin);
-    //     wasmFuncs = (new WebAssembly.Instance(wasmModule, { env: { memory: memory } })).exports;
-    
-
-    //     const ia = new Int32Array(memory.buffer);
-    //     Atomics.store(ia,getOffset(memoryMap.buffer_size) >> 2,audioBufferSize);
-    //     //nt32(getOffset(memoryMap.buffer_size) >> 2,audioBufferSize,true);
+        wasmFuncs.setRate(audioctx.sampleRate);
+        wasmFuncs.initMemory();
+        wasmFuncs.initOutputBuffer(audioBufferSize);
+        // Atomics.store(ia,getOffset(memoryMap.buffer_size) >> 2,audioBufferSize);
       
-    //     await audioctx.audioWorklet.addModule("./wpsg.js");
-    //     psg = new AudioWorkletNode(audioctx, "PSG", {
-    //       outputChannelCount: [2]
-    //     });
+        await audioctx.audioWorklet.addModule("./wpsg.js");
+        psg = new AudioWorkletNode(audioctx, "PSG", {
+          outputChannelCount: [2]
+        });
 
-    //     psgWorker = new Worker('./wpsg-worker.js');
-    //     psgWorker.onmessage = function (e) {
-    //       console.log(e.data);
-    //     };
+        psgWorker = new Worker('./wpsg-worker.js');
+        psgWorker.onmessage = function (e) {
+          console.log(e.data);
+        };
 
-    //     psgWorker.onerror = function(e){
-    //       console.log(e);
-    //     }
+        psgWorker.onerror = function(e){
+          console.log(e);
+        };
 
+        psg.port.postMessage({
+          message:'init',
+          memory:memory,
+          bufferStart:getOffset(memoryMap.output_buffer_offset),
+          readOffset:getOffset(memoryMap.read_offset),
+          writeOffset:getOffset(memoryMap.write_offset),
+          bufferSize:getOffset(memoryMap.output_buffer_size),
+          sampleRate:audioctx.sampleRate,
+          endian:littleEndian
+        });
 
-    //     psg.port.postMessage({
-    //       message:'init',
-    //       memory:memory,
-    //       bufferStart:getOffset(memoryMap.buffer_start),
-    //       readOffset:getOffset(memoryMap.read_offset),
-    //       writeOffset:getOffset(memoryMap.write_offset),
-    //       bufferSize:getOffset(memoryMap.buffer_size),
-    //       sampleRate:audioctx.sampleRate,
-    //       endian:littleEndian
-    //     });
+        psgWorker.postMessage({
+          message:'init',
+          wasmBinary:psgBin,
+          memory:memory,
+          sampleRate:audioctx.sampleRate,
+          endian:littleEndian
+        });
 
-    //     psgWorker.postMessage({
-    //       message:'init',
-    //       wasmBinary:psgBin,
-    //       memory:memory,
-    //       bufferStart:getOffset(memoryMap.buffer_start),
-    //       readOffset:getOffset(memoryMap.read_offset),
-    //       writeOffset:getOffset(memoryMap.write_offset),
-    //       bufferSize:getOffset(memoryMap.buffer_size),
-    //       clock:17900000,
-    //       sampleRate:audioctx.sampleRate,
-    //       endian:littleEndian
-    //     });
-
-    //     // psgWorker.writeReg = (function (reg, value) {
-    //     //   this.postMessage(
-    //     //     {
-    //     //       message: 'writeReg', reg: reg, value: value
-    //     //     }
-    //     //   )
-    //     // }).bind(psgWorker);
+        // psgWorker.writeReg = (function (reg, value) {
+        //   this.postMessage(
+        //     {
+        //       message: 'writeReg', reg: reg, value: value
+        //     }
+        //   )
+        // }).bind(psgWorker);
 
 
 
-    //     // psgWorker.writeReg(0, 0x5d);
-    //     // psgWorker.writeReg(1, 0xd);
-    //     // psgWorker.writeReg(2, 0x5d);
-    //     // psgWorker.writeReg(3, 0x1);
-    //     // psgWorker.writeReg(4, 0x5d);
-    //     // psgWorker.writeReg(5, 0x2);
-    //     // psgWorker.writeReg(6, 0x10);
-    //     // psgWorker.writeReg(12, 2);
-    //     // psgWorker.writeReg(13, 0b1001);
-    //     // psgWorker.writeReg(8, 0b1111);
-    //     // psgWorker.writeReg(7, 0b111);
-    //     // for (let i = 0; i < 128; ++i) {
-    //     //   psgWorker.postMessage({message:'calc'});
-    //     // }
-    //     // for(let i = 0;i < 65536;++i){
-    //     //   psgWorker.postMessage({message:'calc'});
-    //     // }
+        // psgWorker.writeReg(0, 0x5d);
+        // psgWorker.writeReg(1, 0xd);
+        // psgWorker.writeReg(2, 0x5d);
+        // psgWorker.writeReg(3, 0x1);
+        // psgWorker.writeReg(4, 0x5d);
+        // psgWorker.writeReg(5, 0x2);
+        // psgWorker.writeReg(6, 0x10);
+        // psgWorker.writeReg(12, 2);
+        // psgWorker.writeReg(13, 0b1001);
+        // psgWorker.writeReg(8, 0b1111);
+        // psgWorker.writeReg(7, 0b111);
+        // for (let i = 0; i < 128; ++i) {
+        //   psgWorker.postMessage({message:'calc'});
+        // }
+        // for(let i = 0;i < 65536;++i){
+        //   psgWorker.postMessage({message:'calc'});
+        // }
 
-    //     //psgWorker.postMessage({message:'fill'});
+        //psgWorker.postMessage({message:'fill'});
 
 
 
 
-    //     vol = new GainNode(audioctx, { gain: 1.0 });
-    //     psg.connect(vol).connect(audioctx.destination);
-    //   }
+        vol = new GainNode(audioctx, { gain: 1.0 });
+        psg.connect(vol).connect(audioctx.destination);
+      }
 
-    //   if (!play) {
-    //     for (const i of inputs) {
-    //       i.disabled = '';
-    //     }
-    //     play = true;
-    //     // psgWorker.writeReg(8, 0b10000);
-    //     // psgWorker.writeReg(9, 0b10000);
-    //     // psgWorker.writeReg(10, 0b10000);
-    //     // psgWorker.writeReg(12, 0xe);
-    //     // psgWorker.writeReg(13, 0b1000);
-    //     //wasmFuncs.writeReg(7, enable);
-    //     psgWorker.postMessage({message:'play'});
-    //     psg.port.postMessage({message:'play'});
-    //     // psg.writeReg(6, 0b10000);
-    //     vol.gain.value = 1.0;
-    //     startButton.innerText = 'PSG-OFF';
-    //   } else {
-    //     play = false;
-    //     psg.port.postMessage({message:'stop'});
-    //     //psgWorker.writeReg(7, 0x3f);
-    //     psgWorker.postMessage({message:'stop'});
-    //     vol.gain.value = 0.0;
-    //     startButton.innerText = 'PSG-ON';
-    //   }
-    // });
+      if (!play) {
+        // for (const i of inputs) {
+        //   i.disabled = '';
+        // }
+        play = true;
+        // psgWorker.writeReg(8, 0b10000);
+        // psgWorker.writeReg(9, 0b10000);
+        // psgWorker.writeReg(10, 0b10000);
+        // psgWorker.writeReg(12, 0xe);
+        // psgWorker.writeReg(13, 0b1000);
+        //wasmFuncs.writeReg(7, enable);
+        psgWorker.postMessage({message:'play'});
+        psg.port.postMessage({message:'play'});
+        // psg.writeReg(6, 0b10000);
+        vol.gain.value = 1.0;
+        startButton.innerText = 'PSG-OFF';
+      } else {
+        play = false;
+        psg.port.postMessage({message:'stop'});
+        //psgWorker.writeReg(7, 0x3f);
+        psgWorker.postMessage({message:'stop'});
+        vol.gain.value = 0.0;
+        startButton.innerText = 'PSG-ON';
+      }
+    });
 
 
-    // startButton.removeAttribute('disabled');
+      startButton.removeAttribute('disabled');
   });
 
 }());
