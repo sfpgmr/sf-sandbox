@@ -59,21 +59,21 @@ self.addEventListener('message',(message) => {
 			break;
 	}
 });
-let keyon = 100;
-let keyflag = false;
+let keyon = 1;
+let keyflag = true;
 function process() {
 	if (play) {
 		setTimeout(process, 25);
 	}
 	--keyon;
 	if(keyon == 0){
-		keyon = 50;
+		keyon = 20;
 		if(keyflag){
 			wpsg.keyOn();
 		} else {
 			wpsg.keyOff();
 		}
-		keyflag != keyflag;
+		keyflag = !keyflag;
 	}
 	wpsg.process();
 }

@@ -1664,10 +1664,10 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
     (call $initEnvelope
       (&timbre[0].pitch_envelope;)
       (f32.load (&sample_rate;))
-      (f32.const 2.0) ;; a
-      (f32.const 2.0) ;; d
-      (f32.const 1.0) ;; s
-      (f32.const 2.0) ;; r
+      (f32.const 0.00015) ;; a
+      (f32.const 0.15) ;; d
+      (f32.const 0.2) ;; s
+      (f32.const 0.2) ;; r
       (f32.const 1.0) ;; level
     )
 
@@ -1679,7 +1679,7 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
 
     (f32.store
       (&timbre[0].pitch_lfo_base_frequency;)
-      (f32.const 20) ;; 20Hz
+      (f32.const 5) ;; 20Hz
     )
 
     ;; 音量・エンベロープ
@@ -1687,10 +1687,10 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
     (call $initEnvelope
       (&timbre[0].amplitude_envelope;)
       (f32.load (&sample_rate;))
+      (f32.const 0.001)
       (f32.const 0.5)
-      (f32.const 2.0)
       (f32.const 0.5)
-      (f32.const 2.0)
+      (f32.const 0.25)
       (f32.const 1.0)
     )
     ;; 音量LFO・オフセット

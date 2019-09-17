@@ -57,26 +57,45 @@
   <p>WPSG-ONボタンでパラメータUIが有効になります。</p>
   <button class="siimple-btn siimple-btn--orange" id="start" disabled>WPSG-ON</button>
   <div class="siimple-tabs siimple-tabs--boxed" id="WPSG-Ch-Tabs">
-    <div class="siimple-tabs-item siimple-tabs-item--selected" id="WPSG-Ch-A" data-ch="0">Ch A</div>
-    <div class="siimple-tabs-item" id="WPSG-Ch-B" data-ch="1">Ch B</div>
-    <div class="siimple-tabs-item" id="WPSG-Ch-C" data-ch="2">Ch C</div>
-    <div class="siimple-tabs-item" id="WPSG-Ch-D" data-ch="3">Ch D</div>
-    <div class="siimple-tabs-item" id="WPSG-Ch-E" data-ch="4">Ch E</div>
+    <div class="siimple-tabs-item siimple-tabs-item--selected" id="WaveTable" data-ch="0">WaveTable</div>
+    <div class="siimple-tabs-item" id="TImbre" data-ch="1">Timbre</div>
   </div>
   <div class="siimple-grid">
-    <div class="siimple-grid-row">
-        <div class="siimple-grid-col siimple-grid-col--3 siimple-grid-col--sm-12">
-          <label class="siimple-label">
-            Enable 
-          </label>
-        </div>
-        <div class="siimple-grid-col siimple-grid-col--9 siimple-grid-col--sm-12">
-          <div class="siimple-switch">
-            <input type="checkbox" id="WPSG-Enable" >
-            <label for="WPSG-Enable"></label>
-            </div>
-        </div>
-    </div>
+      <div class="siimple-grid-row">
+          <div class="siimple-grid-col siimple-grid-col--3 siimple-grid-col--sm-12">
+            <label class="siimple-label">
+              No. 
+            </label>
+          </div>
+          <div class="siimple-grid-col siimple-grid-col--9 siimple-grid-col--sm-12">
+              <select class="siimple-select">
+                  <option selected>Option 1</option>
+                  <option>Option 2</option>
+                  <option>Option 3</option>
+              </select>
+          </div>
+      </div>
+      <div class="siimple-grid-row">
+          <div class="siimple-grid-col siimple-grid-col--3 siimple-grid-col--sm-12">
+            <label class="siimple-label">
+              length
+            </label>
+          </div>
+          <div class="siimple-grid-col siimple-grid-col--9 siimple-grid-col--sm-12">
+              <select class="siimple-select">
+                  <option selected>2</option>
+                  <option>4</option>
+                  <option>8</option>
+                  <option>16</option>
+                  <option>32</option>
+                  <option>64</option>
+                  <option>128</option>
+                  <option>256</option>
+                  <option>512</option>
+              </select>
+          </div>
+      </div>
+ 
     <div class="siimple-grid-row">
         <div class="siimple-grid-col siimple-grid-col--3 siimple-grid-col--sm-12 ">
           <label class="siimple-label">
@@ -85,11 +104,12 @@
         </div>
   
         <div class="siimple-grid-col siimple-grid-col--9 siimple-grid-col--sm-8">
-            <canvas id="WPSG-Wave-Table" width="256" height="256" style="background:#000"></canvas>
+            <canvas id="WPSG-Wave-Table" width="512" height="256" style="background:#000"></canvas>
         </div>
  
     </div>
-      
+<!--
+     
     <div class="siimple-grid-row">
       <div class="siimple-grid-col siimple-grid-col--3 siimple-grid-col--sm-12 ">
         <label class="siimple-label">
@@ -105,7 +125,6 @@
         <span id="WPSG-Freq-Text" class="siimple-tag siimple-tag--primary siimple-tag--rounded"></span>
       </div>
     </div>
-
     <div class="siimple-grid-row">
       <div class="siimple-grid-col siimple-grid-col--3 siimple-grid-col--sm-12">
         <label class="siimple-label">
@@ -119,6 +138,7 @@
         <span id="WPSG-Volume-Text" class="siimple-tag siimple-tag--primary siimple-tag--rounded"></span>
       </div>
     </div>
+    -->
   </div>
   <script src="./index.js"></script>
 </body>
