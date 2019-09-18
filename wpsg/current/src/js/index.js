@@ -67,7 +67,7 @@ function checkBrowser() {
 
 let browser = checkBrowser();
 
-if(browser !== 'chrome'){
+if (browser !== 'chrome') {
   alert('このページで使用する機能をサポートしていません。');
 }
 
@@ -77,148 +77,171 @@ async function getInstance(obj, imports = {}) {
   return inst;
 }
 
-function getOffset(prop){
+function getOffset(prop) {
   return prop._attributes_.offset;
 }
 
-function getSize(prop){
+function getSize(prop) {
   return prop._attributes_.size;
 }
 
 window.addEventListener('load', async () => {
-//  // 100ms分のバッファサイズを求める
-//  const memory = new WebAssembly.Memory({initial:20,shared:true,maximum:20});
-//  const memoryMap = await (await fetch('./wpsg.context.json')).json();
 
-//  const wpsg = (await getInstance(await (await fetch('./wpsg.wasm')).arrayBuffer(), { env: { memory: memory },imports : {sin:Math.sin,cos:Math.cos,exp:Math.exp,sinh:Math.sinh,pow:Math.pow} })).exports;
-
-//  wpsg.setRate(sampleRate);
-//  wpsg.initMemory();
-
-//  const timbre = wpsg.initTestTimbre();
-//  for(let i = 0;i < 100;++i){
-//   console.log(wpsg.processTimbre(timbre));
-//  }
-
-//  console.log('key on');
-//  wpsg.keyOnTimbre(timbre);
-//  for(let i = 0;i < 1000;++i){
-//   console.log(wpsg.processTimbre(timbre));
-//  }
-//  console.log('key off');
-//  wpsg.keyOffTimbre(timbre);
-//  for(let i = 0;i < 1000;++i){
-//   console.log(wpsg.processTimbre(timbre));
-//  }
-
-//  for(let i = 0;i < 4096;++i){
-//    console.log(wpsg.allocateWaveTable(8));
-//  }
- 
-//  const envParamView = new DataView(memory.buffer,envParam);
-
-//  envParamView.setFloat32(4,1.0,true);// ouput level
-//  envParamView.setFloat32(8,0.5,true);// attack_time;
-//  envParamView.setFloat32(12,0.5,true);// decay_time;
-//  envParamView.setFloat32(16,0.5,true);// sustain_level;
-//  envParamView.setFloat32(20,0.5,true);// release_time;
-
-//  wpsg.initEnvelope(envParam,sampleRate);
-//  wpsg.keyOnEnvelope(envWork);
-
-//  for(let i = 0,e = (2 * sampleRate) | 0;i < e;++i){
-//    console.log(wpsg.doEnvelope(envParam,envWork));
-//  }
-
-//  wpsg.keyOffEnvelope(envWork);
-
-//  for(let i = 0,e = (0.6 * sampleRate) | 0;i < e;++i){
-//    console.log(wpsg.doEnvelope(envParam,envWork));
-//  }
-
- // ヒープメモリの初期化
-//  wpsg.initMemory();
-
-//  // 
-//  const waveTable = new DataView(memory.buffer,wpsg.allocateWaveTable(4 /* 2のべき乗 */));
-//  const waveTableWork =new DataView(memory.buffer,getOffset(memoryMap.wave_table_work));
-//  // WaveTableの設定
-//  wpsg.initWaveTableWork(waveTableWork.byteOffset,waveTable.byteOffset,440);
-
-//  // 波形データの設定
-//  let start_offset = getOffset(memoryMap.WaveTable.wave_data_start);
-
-//  // 矩形波を設定
-//  waveTable.setFloat32(start_offset,-1,true);
-//  waveTable.setFloat32(start_offset + 4,-0.5,true);
-//  waveTable.setFloat32(start_offset + 8 ,0.5,true);
-//  waveTable.setFloat32(start_offset + 12,1,true);
-
-// //  for(let i = 0;i < 32;++i){
-// //     waveTable.setFloat32(start_offset + i * 4,Math.sin(2.0 * Math.PI * (i / 32)),true);
-// //  }
-
-
-//  // 波形生成
-//  for(let i = 0;i < sampleRate;++i){
-//    const v = wpsg.readWaveTable(waveTableWork.byteOffset);
-//    console.log(v);
-//  }
-
-  // {
-  //   let psg = (await WebAssembly.instantiateStreaming(fetch('./psg.wasm'))).instance.exports;
-  //   psg.init(3580000, 44100);
-  //   psg.reset();
-  //   psg.setRate(44100);
-  //   psg.setQuality(1);
-  //   psg.setVolumeMode(1);
-  //   let a = psg.setMask(0xff);
-  //   console.log(a);
-  //   let b = psg.toggleMask(0);
-  //   console.log(a == b);
-  //   psg.reset();
-  //   console.log(psg.readIo());
-  //   //console.log(psg.writeIO);
-  //   //console.log(psg.writeIO);
-  //   for (let i = 0; i < 16; ++i) {
-  //     psg.writeReg(i, i);
-  //     console.log(i, psg.readReg(i), i == psg.readReg(i));
-  //   }
-  //   //debugger;
-  //   psg.writeReg(0, 0x5d);
-  //   psg.writeReg(1, 0xd);
-  //   psg.writeReg(2, 0x5d);
-  //   psg.writeReg(3, 0x1);
-  //   psg.writeReg(4, 0x5d);
-  //   psg.writeReg(5, 0x2);
-  //   psg.writeReg(6, 0x10);
-  //   psg.writeReg(12, 2);
-  //   psg.writeReg(13, 0b1001);
-  //   psg.writeReg(8, 0b10000);
-  //   psg.writeReg(7, 0b111110);
-  //   for (let i = 0; i < 256; ++i) {
-  //     console.log(psg.calc());
-  //   }
-  // }
-
-  let psg,psgBin,memoryMap,psgWorker,audioctx,wasmModule,wasmFuncs;
+  let psg, psgBin, memoryMap, psgWorker, audioctx, wasmModule, wasmFuncs;
   let play = false;
   let vol;
   const startButton = document.getElementById('start');
-  // let inputs = document.querySelectorAll('input');
+  let inputs = document.querySelectorAll('input');
+
+  // 
+  for (const i of inputs) {
+    i.disabled = 'disabled';
+  }
+
+  inputs = document.querySelectorAll('textarea');
 
   // for (const i of inputs) {
   //   i.disabled = 'disabled';
   // }
 
-  // window.addEventListener("unload",()=>{
-  //   if(psgWorker){
-  //     psgWorker.terminate();
-  //   }
-  //   if(audioctx){
-  //     audioctx.close();
-  //   }
-  // });
+
+  window.addEventListener("unload", () => {
+    if (psgWorker) {
+      psgWorker.terminate();
+    }
+    if (audioctx) {
+      audioctx.close();
+    }
+  });
+
+  // Wave Table エディタ
+  let waveTableSize = 32;
+  const canvasWitdh = 512,canvasHeight = 256;
+  let pixelWidth = (512 / waveTableSize) | 0;
+  let isDrawing = false, drawPosition = {x:0,y:0};
+
+  const waveTableLength = document.getElementById('wavetable-length');
+  waveTableLength.addEventListener('change',(e)=>{
+    waveTableSize = e.target.value;
+    pixelWidth = (canvasWitdh / waveTableSize) | 0;
+  });
+
+  const waveTableCanvas = document.getElementById("WPSG-Wave-Table"),
+    context = waveTableCanvas.getContext("2d");
+
+
+  function calcPos(e){
+    const rect = waveTableCanvas.getBoundingClientRect();
+    drawPosition.x = (((e.clientX - rect.left) / pixelWidth )  | 0) * pixelWidth;
+    drawPosition.y = (e.clientY - rect.top) | 0;
+  }
+
+  waveTableCanvas.addEventListener('mousedown', e => {
+    calcPos(e);
+    isDrawing = true;
+  });
+
+  waveTableCanvas.addEventListener('mousemove', e => {
+    if (isDrawing === true) {
+      let sx = drawPosition.x;
+      let sy = drawPosition.y;
+      let halfHeight = canvasHeight / 2;
+      calcPos(e);
+      // x
+      let ex = drawPosition.x;
+      let w = (Math.abs(ex - sx) + pixelWidth) | 0;
+      if(ex < sx){
+        sx = ex;
+      }
+
+      // y
+      let wy;
+      if(sy < halfHeight){
+        wy =  halfHeight - sy;
+      } else {
+        wy = sy - halfHeight;
+        sy = halfHeight;
+      }
+      
+      context.fillStyle = 'black';
+      context.fillRect(sx, 0, w, 256);
+
+      context.fillStyle = 'red';
+      context.fillRect(sx, sy, w, wy);
+    }
+  });
+
+  waveTableCanvas.addEventListener('mouseup', e => {
+    if (isDrawing === true) {
+      isDrawing = false;
+    }
+  });
+
+  waveTableCanvas
+  .addEventListener("click", (e) => {
+      context.fillStyle = 'red';
+      const rect = waveTableCanvas.getBoundingClientRect();
+      context.fillRect(e.clientX - rect.left, e.clientY - rect.top, 1, 1);
+      e.preventDefault = true;
+    }, false);
+
+  const formulaInfo = document.getElementById('result-fomula');
+  formulaInfo.style.display = 'none';
+  
+  function showFormulaInfo (display,message){
+    if(display){
+      formulaInfo.style.display = '';
+      formulaInfo.innerText = message;
+    } else {
+      formulaInfo.style.display = 'none';
+    }
+  }
+
+  const formula = document.getElementById('formula');
+  const applyFormula = document.getElementById('apply-formula')
+  applyFormula.addEventListener('click',function(e){
+    showFormulaInfo(false);
+    // 簡易チェック
+    if(formula.value.match(/(alert)|(console)/))
+    {
+      showFormulaInfo(true,'error:console,alertは使用できません。');
+      e.preventDefault = true;
+      return false;
+    }
+    drawFormula(formula.value);
+  })
+
+  function drawFormula(code){
+    let f = new Function('t','return (' + code + ');');
+    for(let x = 0,ex = waveTableSize; x < ex;++x){
+      let t = x / ex * Math.PI * 2;
+      let y = f(t) ;
+      if(y > 1.0) y = 1.0;
+      if(y < -1.0) y = -1.0;
+
+      let halfHeight = canvasHeight / 2;
+      y = halfHeight - (y * halfHeight);
+      let wy;
+      if(y < halfHeight){
+        wy =  halfHeight - y;
+      } else {
+        wy = y - halfHeight;
+        y = halfHeight;
+      }
+
+      context.fillStyle = 'black';
+      context.fillRect(x * pixelWidth, 0, pixelWidth, 256);
+
+      context.fillStyle = 'red';
+      context.fillRect(x * pixelWidth, y, pixelWidth, wy);
+
+    }
+  }
+
+    
+
+
+
 
   // ['A', 'B', 'C'].forEach((ch, i) => {
   //   // Tone
@@ -228,7 +251,7 @@ window.addEventListener('load', async () => {
   //     wasmFuncs.writeReg(i * 2, this.value & 0xff);
   //     wasmFuncs.writeReg(i * 2 + 1, (this.value & 0xf00) >> 8);
   //   });
-    
+
 
   //   // Noise On/OFF
   //   const noise = document.getElementById('Noise-' + ch);
@@ -302,26 +325,26 @@ window.addEventListener('load', async () => {
       // Shared Memoryの利用
       // wasmバイナリの読み込み
       psgBin = await (await fetch('./wpsg.wasm')).arrayBuffer();
-      
+
       memoryMap = await fetch('./wpsg.context.json');
       memoryMap = await memoryMap.json();
 
       audioctx = new AudioContext();
       // 100ms分のバッファサイズを求める
-      let audioBufferSize = Math.pow(2,Math.ceil(Math.log2(audioctx.sampleRate * 4 * 0.1 )));
+      let audioBufferSize = Math.pow(2, Math.ceil(Math.log2(audioctx.sampleRate * 4 * 0.1)));
 
-      const memory = new WebAssembly.Memory({initial:20,shared:true,maximum:20});
-      
+      const memory = new WebAssembly.Memory({ initial: 20, shared: true, maximum: 20 });
+
       wasmModule = await WebAssembly.compile(psgBin);
-      wasmFuncs = (await WebAssembly.instantiate(wasmModule,{ env: { memory: memory },imports : {sin:Math.sin,cos:Math.cos,exp:Math.exp,sinh:Math.sinh,pow:Math.pow} })).exports;
+      wasmFuncs = (await WebAssembly.instantiate(wasmModule, { env: { memory: memory }, imports: { sin: Math.sin, cos: Math.cos, exp: Math.exp, sinh: Math.sinh, pow: Math.pow } })).exports;
 
       wasmFuncs.setRate(audioctx.sampleRate);
       wasmFuncs.initMemory();
       wasmFuncs.initOutputBuffer(audioBufferSize);
-  
+
       const ia = new Int32Array(memory.buffer);
       // Atomics.store(ia,getOffset(memoryMap.buffer_size) >> 2,audioBufferSize);
-    
+
       await audioctx.audioWorklet.addModule("./wpsg.js");
       psg = new AudioWorkletNode(audioctx, "PSG", {
         outputChannelCount: [2]
@@ -332,61 +355,28 @@ window.addEventListener('load', async () => {
         console.log(e.data);
       };
 
-      psgWorker.onerror = function(e){
+      psgWorker.onerror = function (e) {
         console.log(e);
       }
 
       psg.port.postMessage({
-        message:'init',
-        memory:memory,
-        bufferStart:getOffset(memoryMap.output_buffer_offset),
-        readOffset:getOffset(memoryMap.read_offset),
-        writeOffset:getOffset(memoryMap.write_offset),
-        bufferSize:getOffset(memoryMap.output_buffer_size),
-        sampleRate:audioctx.sampleRate,
-        endian:littleEndian
+        message: 'init',
+        memory: memory,
+        bufferStart: getOffset(memoryMap.output_buffer_offset),
+        readOffset: getOffset(memoryMap.read_offset),
+        writeOffset: getOffset(memoryMap.write_offset),
+        bufferSize: getOffset(memoryMap.output_buffer_size),
+        sampleRate: audioctx.sampleRate,
+        endian: littleEndian
       });
 
       psgWorker.postMessage({
-        message:'init',
-        wasmBinary:psgBin,
-        memory:memory,
-        sampleRate:audioctx.sampleRate,
-        endian:littleEndian
+        message: 'init',
+        wasmBinary: psgBin,
+        memory: memory,
+        sampleRate: audioctx.sampleRate,
+        endian: littleEndian
       });
-
-      // psgWorker.writeReg = (function (reg, value) {
-      //   this.postMessage(
-      //     {
-      //       message: 'writeReg', reg: reg, value: value
-      //     }
-      //   )
-      // }).bind(psgWorker);
-
-
-
-      // psgWorker.writeReg(0, 0x5d);
-      // psgWorker.writeReg(1, 0xd);
-      // psgWorker.writeReg(2, 0x5d);
-      // psgWorker.writeReg(3, 0x1);
-      // psgWorker.writeReg(4, 0x5d);
-      // psgWorker.writeReg(5, 0x2);
-      // psgWorker.writeReg(6, 0x10);
-      // psgWorker.writeReg(12, 2);
-      // psgWorker.writeReg(13, 0b1001);
-      // psgWorker.writeReg(8, 0b1111);
-      // psgWorker.writeReg(7, 0b111);
-      // for (let i = 0; i < 128; ++i) {
-      //   psgWorker.postMessage({message:'calc'});
-      // }
-      // for(let i = 0;i < 65536;++i){
-      //   psgWorker.postMessage({message:'calc'});
-      // }
-
-      //psgWorker.postMessage({message:'fill'});
-
-
-
 
       vol = new GainNode(audioctx, { gain: 1.0 });
       psg.connect(vol).connect(audioctx.destination);
@@ -403,21 +393,21 @@ window.addEventListener('load', async () => {
       // psgWorker.writeReg(12, 0xe);
       // psgWorker.writeReg(13, 0b1000);
       //wasmFuncs.writeReg(7, enable);
-      psgWorker.postMessage({message:'play'});
-      psg.port.postMessage({message:'play'});
+      psgWorker.postMessage({ message: 'play' });
+      psg.port.postMessage({ message: 'play' });
       // psg.writeReg(6, 0b10000);
       vol.gain.value = 1.0;
       startButton.innerText = 'PSG-OFF';
     } else {
       play = false;
-      psg.port.postMessage({message:'stop'});
+      psg.port.postMessage({ message: 'stop' });
       //psgWorker.writeReg(7, 0x3f);
-      psgWorker.postMessage({message:'stop'});
+      psgWorker.postMessage({ message: 'stop' });
       vol.gain.value = 0.0;
       startButton.innerText = 'PSG-ON';
     }
   });
 
 
-    startButton.removeAttribute('disabled');
+  startButton.removeAttribute('disabled');
 });

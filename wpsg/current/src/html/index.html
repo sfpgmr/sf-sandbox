@@ -82,12 +82,12 @@
             </label>
           </div>
           <div class="siimple-grid-col siimple-grid-col--9 siimple-grid-col--sm-12">
-              <select class="siimple-select">
+              <select class="siimple-select" id="wavetable-length">
                   <option selected>2</option>
                   <option>4</option>
                   <option>8</option>
                   <option>16</option>
-                  <option>32</option>
+                  <option selected>32</option>
                   <option>64</option>
                   <option>128</option>
                   <option>256</option>
@@ -108,7 +108,21 @@
         </div>
  
     </div>
-<!--
+    <div class="siimple-grid-row">
+      <div class="siimple-grid-col siimple-grid-col--3 siimple-grid-col--sm-12 ">
+        <label class="siimple-label">
+          Wave Formula
+        </label>
+      </div>
+      <div class="siimple-grid-col siimple-grid-col--9 siimple-grid-col--sm-8">
+        <textarea class="siimple-textarea siimple-textarea--fluid" rows="8" id="formula"></textarea>
+        <div>&nbsp;</div>
+        <div class="siimple-btn siimple-btn--primary" id="apply-formula" >Apply Formula</div>
+        <div>&nbsp;</div>
+        <div class="siimple-tip siimple-tip--error" id="result-fomula"></div>
+        </div>
+  </div>
+  <!--
      
     <div class="siimple-grid-row">
       <div class="siimple-grid-col siimple-grid-col--3 siimple-grid-col--sm-12 ">
