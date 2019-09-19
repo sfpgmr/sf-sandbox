@@ -41,6 +41,7 @@
   (export "allocateWaveTable" (func $allocateWaveTable))
   (export "initWaveTableWork" (func $initWaveTableWork))
   (export "readWaveTable"  (func $readWaveTable))
+  (export "setWaveTableSize" (func $setWaveTableSize))
 
   (export "initTestTimbre" (func $initTestTimbre))
   (export "processTimbre" (func $processTimbre))
@@ -454,7 +455,26 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
       )
       (i32.const 0)
     )
+
+    (call $setWaveTableSize
+      (local.get $wave_table_offset)
+      (local.get $size)
+    )
     
+    ;; 初期化メソッド・音声処理メソッドへのインデックス
+    (i32.store
+      (i32.add
+        (&Oscillator.call_index;)
+        (local.get $wave_table_offset)
+      )
+      (i32.const 0)
+    )
+  )
+
+  ;; size update method 
+  (func $setWaveTableSize
+    (param $wave_table_offset i32)
+    (param $size i32)
     (i32.store
       (i32.add
         (&WaveTable.size;)
@@ -472,15 +492,6 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
         (local.get $size)
         (i32.const 1)
       )
-    )
-
-    ;; 初期化メソッド・音声処理メソッドへのインデックス
-    (i32.store
-      (i32.add
-        (&Oscillator.call_index;)
-        (local.get $wave_table_offset)
-      )
-      (i32.const 0)
     )
   )
 
@@ -1587,15 +1598,22 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
     (local $timbre_offset i32)
     
     ;; オシレータ0のセットアップ
+    ;; 512サンプル分取る
     (i32.store
       (&oscillator[0];)
       (local.tee $oscillator_offset
         (call $allocateWaveTable
-          (i32.const 32)
+          (i32.const 512)
         )
       )
     )
-
+ 
+    ;; sizeを32サンプルにセット
+    (call $setWaveTableSize
+      (local.get $oscillator_offset)
+      (i32.const 32)
+    )
+  
     ;; sinデータのコピー
     (block $sin_data_copy
       (local.set $loop_counter (i32.const 32))

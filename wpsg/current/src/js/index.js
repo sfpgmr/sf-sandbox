@@ -85,25 +85,33 @@ function getSize(prop) {
   return prop._attributes_.size;
 }
 
-window.addEventListener('load', async () => {
-
-  let psg, psgBin, memoryMap, psgWorker, audioctx, wasmModule, wasmFuncs;
-  let play = false;
-  let vol;
-  const startButton = document.getElementById('start');
+function disableInputs(disabled = true){
+  let d = disabled ? 'disabled' : '';
   let inputs = document.querySelectorAll('input');
-
-  // 
   for (const i of inputs) {
-    i.disabled = 'disabled';
+    i.disabled = d;
+  }
+  inputs = document.querySelectorAll('textarea');
+  for (const i of inputs) {
+    i.disabled = d;
+  }
+  inputs = document.querySelectorAll('select');
+  for (const i of inputs) {
+    i.disabled = d;
   }
 
-  inputs = document.querySelectorAll('textarea');
+}
 
-  // for (const i of inputs) {
-  //   i.disabled = 'disabled';
-  // }
+let psg, psgBin, memoryMap, psgWorker, audioctx, wasmModule, wasmFuncs;
+let play = false;
+let vol ;
+let sharedMemory,sharedMemoryView;
 
+window.addEventListener('load', async () => {
+
+  const startButton = document.getElementById('start');
+
+  disableInputs(true);
 
   window.addEventListener("unload", () => {
     if (psgWorker) {
@@ -114,134 +122,166 @@ window.addEventListener('load', async () => {
     }
   });
 
-  // Wave Table エディタ
-  let waveTableSize = 32;
-  const canvasWitdh = 512,canvasHeight = 256;
-  let pixelWidth = (512 / waveTableSize) | 0;
-  let isDrawing = false, drawPosition = {x:0,y:0};
+// Wave Table エディタ
+let waveTableSize = 32;
+const canvasWidth = 512,canvasHeight = 256;
+let pixelWidth = (512 / waveTableSize) | 0;
+let isDrawing = false, drawPosition = {x:0,y:0};
 
-  const waveTableLength = document.getElementById('wavetable-length');
-  waveTableLength.addEventListener('change',(e)=>{
-    waveTableSize = e.target.value;
-    pixelWidth = (canvasWitdh / waveTableSize) | 0;
-  });
+const waveTableLength = document.getElementById('wavetable-length');
+waveTableLength.addEventListener('change',(e)=>{
+  waveTableSize = e.target.value;
+  pixelWidth = (canvasWidth / waveTableSize) | 0;
+});
 
-  const waveTableCanvas = document.getElementById("WPSG-Wave-Table"),
-    context = waveTableCanvas.getContext("2d");
+const waveTableCanvas = document.getElementById("WPSG-Wave-Table"),
+  context = waveTableCanvas.getContext("2d");
 
 
-  function calcPos(e){
-    const rect = waveTableCanvas.getBoundingClientRect();
-    drawPosition.x = (((e.clientX - rect.left) / pixelWidth )  | 0) * pixelWidth;
-    drawPosition.y = (e.clientY - rect.top) | 0;
-  }
+function calcPos(e){
+  const rect = waveTableCanvas.getBoundingClientRect();
+  drawPosition.x = (((e.clientX - rect.left) / pixelWidth )  | 0) * pixelWidth;
+  drawPosition.y = (e.clientY - rect.top) | 0;
+}
 
-  waveTableCanvas.addEventListener('mousedown', e => {
+waveTableCanvas.addEventListener('mousedown', e => {
+  calcPos(e);
+  isDrawing = play;
+});
+
+waveTableCanvas.addEventListener('mousemove', e => {
+  if (isDrawing === true) {
+    let sx = drawPosition.x;
+    let sy = drawPosition.y;
+    let halfHeight = canvasHeight / 2;
     calcPos(e);
-    isDrawing = true;
-  });
-
-  waveTableCanvas.addEventListener('mousemove', e => {
-    if (isDrawing === true) {
-      let sx = drawPosition.x;
-      let sy = drawPosition.y;
-      let halfHeight = canvasHeight / 2;
-      calcPos(e);
-      // x
-      let ex = drawPosition.x;
-      let w = (Math.abs(ex - sx) + pixelWidth) | 0;
-      if(ex < sx){
-        sx = ex;
-      }
-
-      // y
-      let wy;
-      if(sy < halfHeight){
-        wy =  halfHeight - sy;
-      } else {
-        wy = sy - halfHeight;
-        sy = halfHeight;
-      }
-      
-      context.fillStyle = 'black';
-      context.fillRect(sx, 0, w, 256);
-
-      context.fillStyle = 'red';
-      context.fillRect(sx, sy, w, wy);
+    // x
+    let ex = drawPosition.x;
+    let w = (Math.abs(ex - sx) + pixelWidth) | 0;
+    if(ex < sx){
+      sx = ex;
     }
-  });
 
-  waveTableCanvas.addEventListener('mouseup', e => {
-    if (isDrawing === true) {
-      isDrawing = false;
-    }
-  });
-
-  waveTableCanvas
-  .addEventListener("click", (e) => {
-      context.fillStyle = 'red';
-      const rect = waveTableCanvas.getBoundingClientRect();
-      context.fillRect(e.clientX - rect.left, e.clientY - rect.top, 1, 1);
-      e.preventDefault = true;
-    }, false);
-
-  const formulaInfo = document.getElementById('result-fomula');
-  formulaInfo.style.display = 'none';
-  
-  function showFormulaInfo (display,message){
-    if(display){
-      formulaInfo.style.display = '';
-      formulaInfo.innerText = message;
+    // y
+    let wy;
+    if(sy < halfHeight){
+      wy =  halfHeight - sy;
     } else {
-      formulaInfo.style.display = 'none';
+      wy = sy - halfHeight;
+      sy = halfHeight;
     }
-  }
-
-  const formula = document.getElementById('formula');
-  const applyFormula = document.getElementById('apply-formula')
-  applyFormula.addEventListener('click',function(e){
-    showFormulaInfo(false);
-    // 簡易チェック
-    if(formula.value.match(/(alert)|(console)/))
-    {
-      showFormulaInfo(true,'error:console,alertは使用できません。');
-      e.preventDefault = true;
-      return false;
-    }
-    drawFormula(formula.value);
-  })
-
-  function drawFormula(code){
-    let f = new Function('t','return (' + code + ');');
-    for(let x = 0,ex = waveTableSize; x < ex;++x){
-      let t = x / ex * Math.PI * 2;
-      let y = f(t) ;
-      if(y > 1.0) y = 1.0;
-      if(y < -1.0) y = -1.0;
-
-      let halfHeight = canvasHeight / 2;
-      y = halfHeight - (y * halfHeight);
-      let wy;
-      if(y < halfHeight){
-        wy =  halfHeight - y;
-      } else {
-        wy = y - halfHeight;
-        y = halfHeight;
-      }
-
-      context.fillStyle = 'black';
-      context.fillRect(x * pixelWidth, 0, pixelWidth, 256);
-
-      context.fillStyle = 'red';
-      context.fillRect(x * pixelWidth, y, pixelWidth, wy);
-
-    }
-  }
-
     
+    context.fillStyle = 'black';
+    context.fillRect(sx, 0, w, 256);
+
+    context.fillStyle = 'red';
+    context.fillRect(sx, sy, w, wy);
+  }
+});
+
+waveTableCanvas.addEventListener('mouseup', e => {
+  if (isDrawing === true) {
+    isDrawing = false;
+  }
+});
+
+waveTableCanvas
+.addEventListener("click", (e) => {
+    context.fillStyle = 'red';
+    const rect = waveTableCanvas.getBoundingClientRect();
+    context.fillRect(e.clientX - rect.left, e.clientY - rect.top, 1, 1);
+    e.preventDefault = true;
+  }, false);
+
+const formulaInfo = document.getElementById('result-fomula');
+formulaInfo.style.display = 'none';
+
+function showFormulaInfo (display,message){
+  if(display){
+    formulaInfo.style.display = '';
+    formulaInfo.innerText = message;
+  } else {
+    formulaInfo.style.display = 'none';
+  }
+}
 
 
+const formula = document.getElementById('formula');
+const applyFormula = document.getElementById('apply-formula');
 
+applyFormula.addEventListener('click',function(e){
+  showFormulaInfo(false);
+  // 簡易チェック
+  if(formula.value.match(/(alert)|(console)/))
+  {
+    showFormulaInfo(true,'error:console,alertは使用できません。');
+    e.preventDefault = true;
+    return false;
+  }
+  drawFormula(formula.value);
+})
+
+function drawFormula(code){
+  let f = new Function('t','return ' + code );
+  for(let x = 0,i = 0,ei = waveTableSize; i < ei;++i,x+=pixelWidth){
+    let t = i / waveTableSize * 2 - 1;
+    let y = f(t) ;
+    if(y > 1.0) y = 1.0;
+    if(y < -1.0) y = -1.0;
+
+    setValueToMemory(x,y);
+
+    let halfHeight = canvasHeight / 2;
+    y = halfHeight - (y * halfHeight);
+    let wy;
+    if(y < halfHeight){
+      wy =  halfHeight - y;
+    } else {
+      wy = y - halfHeight;
+      y = halfHeight;
+    }
+
+    context.fillStyle = 'black';
+    context.fillRect(x, 0, pixelWidth, 256);
+
+    context.fillStyle = 'red';
+    context.fillRect(x, y, pixelWidth, wy);
+
+  }
+}
+
+function drawMemory(oscillatorNo = 0){
+  const wavedata_offset = sharedMemoryView.getInt32(getOffset(memoryMap.oscillator) + oscillatorNo  * 4,littleEndian) + getOffset(memoryMap.WaveTable.wave_data_start);
+
+  for(let i = 0,x = 0,xdelta = canvasWidth / waveTableSize;i < waveTableSize;++i,x+=xdelta){
+    const halfHeight = canvasHeight / 2;
+    let y = halfHeight - halfHeight * sharedMemoryView.getFloat32(wavedata_offset + i * 4,littleEndian);
+
+    context.fillStyle = 'black';
+    context.fillRect(x , 0, pixelWidth, 256);
+
+    let wy;
+    if(y < halfHeight){
+      wy =  halfHeight - y;
+    } else {
+      wy = y - halfHeight;
+      y = halfHeight;
+    }
+
+    context.fillStyle = 'red';
+    context.fillRect(x , y, pixelWidth, wy);
+
+  }
+
+}
+
+function setValueToMemory(x,y,oscillatorNo = 0){
+  const wavedata_offset = sharedMemoryView.getInt32(getOffset(memoryMap.oscillator) + oscillatorNo  * 4,littleEndian) + getOffset(memoryMap.WaveTable.wave_data_start)
+   + ((x / waveTableSize) | 0) * 4;
+  const halfHeight = canvasHeight / 2;
+  y = Math.max(Math.min(((halfHeight - y) / halfHeight),1.0),-1.0); 
+  sharedMemoryView.setFloat32(wavedata_offset,y);
+}
 
   // ['A', 'B', 'C'].forEach((ch, i) => {
   //   // Tone
@@ -333,16 +373,17 @@ window.addEventListener('load', async () => {
       // 100ms分のバッファサイズを求める
       let audioBufferSize = Math.pow(2, Math.ceil(Math.log2(audioctx.sampleRate * 4 * 0.1)));
 
-      const memory = new WebAssembly.Memory({ initial: 20, shared: true, maximum: 20 });
+      sharedMemory = new WebAssembly.Memory({ initial: 20, shared: true, maximum: 20 });
+      sharedMemoryView = new DataView(sharedMemory.buffer);
 
       wasmModule = await WebAssembly.compile(psgBin);
-      wasmFuncs = (await WebAssembly.instantiate(wasmModule, { env: { memory: memory }, imports: { sin: Math.sin, cos: Math.cos, exp: Math.exp, sinh: Math.sinh, pow: Math.pow } })).exports;
+      wasmFuncs = (await WebAssembly.instantiate(wasmModule, { env: { memory: sharedMemory }, imports: { sin: Math.sin, cos: Math.cos, exp: Math.exp, sinh: Math.sinh, pow: Math.pow } })).exports;
 
       wasmFuncs.setRate(audioctx.sampleRate);
       wasmFuncs.initMemory();
       wasmFuncs.initOutputBuffer(audioBufferSize);
 
-      const ia = new Int32Array(memory.buffer);
+      const ia = new Int32Array(sharedMemory.buffer);
       // Atomics.store(ia,getOffset(memoryMap.buffer_size) >> 2,audioBufferSize);
 
       await audioctx.audioWorklet.addModule("./wpsg.js");
@@ -352,6 +393,12 @@ window.addEventListener('load', async () => {
 
       psgWorker = new Worker('./wpsg-worker.js');
       psgWorker.onmessage = function (e) {
+        if(e.data.message){
+          if(e.data.message == 'init'){
+            disableInputs(false);
+            drawMemory();
+          }
+        }
         console.log(e.data);
       };
 
@@ -361,7 +408,7 @@ window.addEventListener('load', async () => {
 
       psg.port.postMessage({
         message: 'init',
-        memory: memory,
+        memory: sharedMemory,
         bufferStart: getOffset(memoryMap.output_buffer_offset),
         readOffset: getOffset(memoryMap.read_offset),
         writeOffset: getOffset(memoryMap.write_offset),
@@ -373,19 +420,17 @@ window.addEventListener('load', async () => {
       psgWorker.postMessage({
         message: 'init',
         wasmBinary: psgBin,
-        memory: memory,
+        memory: sharedMemory,
         sampleRate: audioctx.sampleRate,
         endian: littleEndian
       });
 
       vol = new GainNode(audioctx, { gain: 1.0 });
       psg.connect(vol).connect(audioctx.destination);
+
     }
 
     if (!play) {
-      // for (const i of inputs) {
-      //   i.disabled = '';
-      // }
       play = true;
       // psgWorker.writeReg(8, 0b10000);
       // psgWorker.writeReg(9, 0b10000);
@@ -399,6 +444,7 @@ window.addEventListener('load', async () => {
       vol.gain.value = 1.0;
       startButton.innerText = 'PSG-OFF';
     } else {
+      disableInputs(true);
       play = false;
       psg.port.postMessage({ message: 'stop' });
       //psgWorker.writeReg(7, 0x3f);
@@ -411,3 +457,6 @@ window.addEventListener('load', async () => {
 
   startButton.removeAttribute('disabled');
 });
+
+
+
