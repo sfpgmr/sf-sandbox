@@ -57,10 +57,11 @@
   <p>WPSG-ONボタンでパラメータUIが有効になります。</p>
   <button class="siimple-btn siimple-btn--orange" id="start" disabled>WPSG-ON</button>
   <div class="siimple-tabs siimple-tabs--boxed" id="WPSG-Ch-Tabs">
-    <div class="siimple-tabs-item siimple-tabs-item--selected" id="WaveTable" data-ch="0">WaveTable</div>
-    <div class="siimple-tabs-item" id="TImbre" data-ch="1">Timbre</div>
+    <div class="siimple-tabs-item siimple-tabs-item--selected" id="WaveTableTab" >WaveTable</div>
+    <div class="siimple-tabs-item" id="TimbreTab" >Timbre</div>
+    <div class="siimple-tabs-item" id="SequencerTab" >Sequencer</div>
   </div>
-  <div class="siimple-grid">
+  <div class="siimple-grid" id="WaveTableGrid">
       <div class="siimple-grid-row">
           <div class="siimple-grid-col siimple-grid-col--3 siimple-grid-col--sm-12">
             <label class="siimple-label">
@@ -120,8 +121,9 @@
         <div class="siimple-btn siimple-btn--primary" id="apply-formula" >Apply Formula</div>
         <div>&nbsp;</div>
         <div class="siimple-tip siimple-tip--error" id="result-fomula"></div>
-        </div>
-  </div>
+        <div  class="siimple-btn siimple-btn--primary" id="redraw">redraw</div>
+      </div>
+    </div>
   <!--
      
     <div class="siimple-grid-row">
@@ -153,6 +155,21 @@
       </div>
     </div>
     -->
+  </div>
+  <div class="siimple-grid" id="TimbreGrid">
+    <div class="siimple-grid-row">
+      <div class="siimple-grid-col siimple-grid-col--3 siimple-grid-col--sm-12">
+        <label class="siimple-label">
+          Volume
+        </label>
+      </div>
+      <div class="siimple-grid-col siimple-grid-col--4 siimple-grid-col--sm-8">
+        <input type="range" min="0" max="15" value="0" id="" />
+      </div>
+      <div class="siimple-grid-col siimple-grid-col--1 siimple-grid-col--sm-4">
+        <span id="WPSG-Volume-Text" class="siimple-tag siimple-tag--primary siimple-tag--rounded"></span>
+      </div>
+    </div>
   </div>
   <script src="./index.js"></script>
 </body>

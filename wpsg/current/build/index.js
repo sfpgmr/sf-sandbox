@@ -95,7 +95,7 @@
 
   }
 
-  let psg, psgBin, memoryMap, psgWorker, audioctx, wasmModule, wasmFuncs;
+  let psg, psgBin, memoryMap, psgWorker, audioctx, wasmModule, wasmFuncs,timbre;
   let play = false;
   let vol ;
   let sharedMemory,sharedMemoryView;
@@ -124,8 +124,16 @@
   const waveTableLength = document.getElementById('wavetable-length');
   waveTableLength.addEventListener('change',(e)=>{
     waveTableSize = e.target.value;
+    setWaveTableSize(waveTableSize);
     pixelWidth = (canvasWidth / waveTableSize) | 0;
   });
+
+  function setWaveTableSize(size,oscillatorNo = 0){
+    const wavetable_offset = sharedMemoryView.getInt32(getOffset(memoryMap.oscillator) + oscillatorNo  * 4,littleEndian);
+    const wavetable_work_offset = timbre + getOffset(memoryMap.TimbreWork.oscillator_work_offset);
+    wasmFuncs.setWaveTableSize(wavetable_offset,size);
+    wasmFuncs.initWaveTableWork(wavetable_work_offset,wavetable_offset,440);
+  }
 
   const waveTableCanvas = document.getElementById("WPSG-Wave-Table"),
     context = waveTableCanvas.getContext("2d");
@@ -148,11 +156,16 @@
       let sy = drawPosition.y;
       let halfHeight = canvasHeight / 2;
       calcPos(e);
+
       // x
       let ex = drawPosition.x;
       let w = (Math.abs(ex - sx) + pixelWidth) | 0;
       if(ex < sx){
         sx = ex;
+      }
+
+      for(let i = 0;i < w;i += pixelWidth){
+        setValueToMemory(sx + i,sy);      
       }
 
       // y
@@ -172,7 +185,7 @@
     }
   });
 
-  waveTableCanvas.addEventListener('mouseup', e => {
+  window.addEventListener('mouseup', e => {
     if (isDrawing === true) {
       isDrawing = false;
     }
@@ -216,14 +229,16 @@
 
   function drawFormula(code){
     let f = new Function('t','return ' + code );
-    for(let x = 0,ex = waveTableSize; x < ex;++x){
-      let t = x / ex * 2 - 1;
+    for(let x = 0,i = 0,ei = waveTableSize; i < ei;++i,x+=pixelWidth){
+      let t = i / waveTableSize * 2 - 1;
       let y = f(t) ;
       if(y > 1.0) y = 1.0;
       if(y < -1.0) y = -1.0;
 
+
       let halfHeight = canvasHeight / 2;
       y = halfHeight - (y * halfHeight);
+      setValueToMemory(x,y);
       let wy;
       if(y < halfHeight){
         wy =  halfHeight - y;
@@ -233,13 +248,14 @@
       }
 
       context.fillStyle = 'black';
-      context.fillRect(x * pixelWidth, 0, pixelWidth, 256);
+      context.fillRect(x, 0, pixelWidth, 256);
 
       context.fillStyle = 'red';
-      context.fillRect(x * pixelWidth, y, pixelWidth, wy);
+      context.fillRect(x, y, pixelWidth, wy);
 
     }
   }
+
 
   function drawMemory(oscillatorNo = 0){
     const wavedata_offset = sharedMemoryView.getInt32(getOffset(memoryMap.oscillator) + oscillatorNo  * 4,littleEndian) + getOffset(memoryMap.WaveTable.wave_data_start);
@@ -265,6 +281,47 @@
     }
 
   }
+
+  const redraw = document.getElementById('redraw');
+  redraw.addEventListener('click',
+  (e)=>{
+    drawMemory();
+  }
+  );
+
+  function setValueToMemory(x,y,oscillatorNo = 0){
+    const wavedata_offset = 
+      sharedMemoryView.getInt32(getOffset(memoryMap.oscillator) + oscillatorNo  * 4,littleEndian) + getOffset(memoryMap.WaveTable.wave_data_start)
+     + ((x / pixelWidth) | 0) * 4;
+    const halfHeight = canvasHeight / 2;
+    y = Math.max(Math.min(((halfHeight - y) / halfHeight),1.0),-1.0); 
+    sharedMemoryView.setFloat32(wavedata_offset,y,littleEndian);
+  }
+
+  const waveTableGrid = document.getElementById('WaveTableGrid');
+  const timbreGrid = document.getElementById('TimbreGrid');
+  const waveTableTab = document.getElementById('WaveTableTab');
+  const timbreTab = document.getElementById('TimbreTab');
+
+  timbreGrid.style.display = 'none';
+
+  waveTableTab.addEventListener('click',(e)=>{
+    
+    timbreTab.classList.remove('siimple-tabs-item--selected');
+    timbreGrid.style.display = 'none';
+
+    waveTableGrid.style.display = '';
+    waveTableTab.classList.add('siimple-tabs-item--selected');
+  });
+
+  timbreTab.addEventListener('click',(e)=>{
+    timbreTab.classList.add('siimple-tabs-item--selected');
+    timbreGrid.style.display = '';
+
+    waveTableGrid.style.display = 'none';
+    waveTableTab.classList.remove('siimple-tabs-item--selected');
+  });
+
 
     // ['A', 'B', 'C'].forEach((ch, i) => {
     //   // Tone
@@ -378,6 +435,7 @@
         psgWorker.onmessage = function (e) {
           if(e.data.message){
             if(e.data.message == 'init'){
+              timbre = e.data.timbre;
               disableInputs(false);
               drawMemory();
             }
@@ -436,8 +494,6 @@
         startButton.innerText = 'PSG-ON';
       }
     });
-
-
     startButton.removeAttribute('disabled');
   });
 

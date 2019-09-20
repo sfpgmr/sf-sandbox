@@ -102,7 +102,7 @@ function disableInputs(disabled = true){
 
 }
 
-let psg, psgBin, memoryMap, psgWorker, audioctx, wasmModule, wasmFuncs;
+let psg, psgBin, memoryMap, psgWorker, audioctx, wasmModule, wasmFuncs,timbre;
 let play = false;
 let vol ;
 let sharedMemory,sharedMemoryView;
@@ -131,8 +131,16 @@ let isDrawing = false, drawPosition = {x:0,y:0};
 const waveTableLength = document.getElementById('wavetable-length');
 waveTableLength.addEventListener('change',(e)=>{
   waveTableSize = e.target.value;
+  setWaveTableSize(waveTableSize);
   pixelWidth = (canvasWidth / waveTableSize) | 0;
 });
+
+function setWaveTableSize(size,oscillatorNo = 0){
+  const wavetable_offset = sharedMemoryView.getInt32(getOffset(memoryMap.oscillator) + oscillatorNo  * 4,littleEndian);
+  const wavetable_work_offset = timbre + getOffset(memoryMap.TimbreWork.oscillator_work_offset);
+  wasmFuncs.setWaveTableSize(wavetable_offset,size);
+  wasmFuncs.initWaveTableWork(wavetable_work_offset,wavetable_offset,440);
+}
 
 const waveTableCanvas = document.getElementById("WPSG-Wave-Table"),
   context = waveTableCanvas.getContext("2d");
@@ -155,11 +163,16 @@ waveTableCanvas.addEventListener('mousemove', e => {
     let sy = drawPosition.y;
     let halfHeight = canvasHeight / 2;
     calcPos(e);
+
     // x
     let ex = drawPosition.x;
     let w = (Math.abs(ex - sx) + pixelWidth) | 0;
     if(ex < sx){
       sx = ex;
+    }
+
+    for(let i = 0;i < w;i += pixelWidth){
+      setValueToMemory(sx + i,sy);      
     }
 
     // y
@@ -179,7 +192,7 @@ waveTableCanvas.addEventListener('mousemove', e => {
   }
 });
 
-waveTableCanvas.addEventListener('mouseup', e => {
+window.addEventListener('mouseup', e => {
   if (isDrawing === true) {
     isDrawing = false;
   }
@@ -229,10 +242,10 @@ function drawFormula(code){
     if(y > 1.0) y = 1.0;
     if(y < -1.0) y = -1.0;
 
-    setValueToMemory(x,y);
 
     let halfHeight = canvasHeight / 2;
     y = halfHeight - (y * halfHeight);
+    setValueToMemory(x,y);
     let wy;
     if(y < halfHeight){
       wy =  halfHeight - y;
@@ -249,6 +262,7 @@ function drawFormula(code){
 
   }
 }
+
 
 function drawMemory(oscillatorNo = 0){
   const wavedata_offset = sharedMemoryView.getInt32(getOffset(memoryMap.oscillator) + oscillatorNo  * 4,littleEndian) + getOffset(memoryMap.WaveTable.wave_data_start);
@@ -275,13 +289,46 @@ function drawMemory(oscillatorNo = 0){
 
 }
 
+const redraw = document.getElementById('redraw');
+redraw.addEventListener('click',
+(e)=>{
+  drawMemory();
+}
+);
+
 function setValueToMemory(x,y,oscillatorNo = 0){
-  const wavedata_offset = sharedMemoryView.getInt32(getOffset(memoryMap.oscillator) + oscillatorNo  * 4,littleEndian) + getOffset(memoryMap.WaveTable.wave_data_start)
-   + ((x / waveTableSize) | 0) * 4;
+  const wavedata_offset = 
+    sharedMemoryView.getInt32(getOffset(memoryMap.oscillator) + oscillatorNo  * 4,littleEndian) + getOffset(memoryMap.WaveTable.wave_data_start)
+   + ((x / pixelWidth) | 0) * 4;
   const halfHeight = canvasHeight / 2;
   y = Math.max(Math.min(((halfHeight - y) / halfHeight),1.0),-1.0); 
-  sharedMemoryView.setFloat32(wavedata_offset,y);
+  sharedMemoryView.setFloat32(wavedata_offset,y,littleEndian);
 }
+
+const waveTableGrid = document.getElementById('WaveTableGrid');
+const timbreGrid = document.getElementById('TimbreGrid');
+const waveTableTab = document.getElementById('WaveTableTab');
+const timbreTab = document.getElementById('TimbreTab');
+
+timbreGrid.style.display = 'none';
+
+waveTableTab.addEventListener('click',(e)=>{
+  
+  timbreTab.classList.remove('siimple-tabs-item--selected');
+  timbreGrid.style.display = 'none';
+
+  waveTableGrid.style.display = '';
+  waveTableTab.classList.add('siimple-tabs-item--selected');
+});
+
+timbreTab.addEventListener('click',(e)=>{
+  timbreTab.classList.add('siimple-tabs-item--selected');
+  timbreGrid.style.display = '';
+
+  waveTableGrid.style.display = 'none';
+  waveTableTab.classList.remove('siimple-tabs-item--selected');
+});
+
 
   // ['A', 'B', 'C'].forEach((ch, i) => {
   //   // Tone
@@ -395,6 +442,7 @@ function setValueToMemory(x,y,oscillatorNo = 0){
       psgWorker.onmessage = function (e) {
         if(e.data.message){
           if(e.data.message == 'init'){
+            timbre = e.data.timbre;
             disableInputs(false);
             drawMemory();
           }
@@ -453,8 +501,6 @@ function setValueToMemory(x,y,oscillatorNo = 0){
       startButton.innerText = 'PSG-ON';
     }
   });
-
-
   startButton.removeAttribute('disabled');
 });
 

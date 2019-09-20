@@ -40,7 +40,7 @@ self.addEventListener('message',(message) => {
 			if (!wpsg) {
 				wpsg = new PSGWorker(m);
 			}
-			self.postMessage({message:'init'});
+			self.postMessage({message:'init',timbre:wpsg.timbre});
 			break;
 		case 'play':
 			if (!play && wpsg && wpsg.enable) {
@@ -67,7 +67,7 @@ function process() {
 	}
 	--keyon;
 	if(keyon == 0){
-		keyon = 20;
+		keyon = 50;
 		if(keyflag){
 			wpsg.keyOn();
 		} else {
