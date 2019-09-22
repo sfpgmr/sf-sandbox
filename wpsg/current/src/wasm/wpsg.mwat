@@ -113,6 +113,7 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
   ;;  0000 ... WaveTable
   ;;  0001 ... WaveSample
   i32 oscillator_type;
+  f32 level;
   ;; 間接呼び出し用インデックス
   i32 call_index;
 }
@@ -247,6 +248,7 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
   i32 amplitude_lfo_offset;
   ;; 音量LFO・ベース周波数
   f32 amplitude_lfo_base_frequency;
+  
   
   ;; フィルタ・パラメータ
   Filter filter;
@@ -448,6 +450,7 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
     (param $wave_table_offset i32)
     ;; サイズ（２のべき乗単位で指定）
     (param $size i32)
+    (param $level f32)
 
     (i32.store 
       (i32.add
@@ -469,6 +472,13 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
         (local.get $wave_table_offset)
       )
       (i32.const 0)
+    )
+    (f32.store
+      (i32.add
+        (&Oscillator.level;)
+        (local.get $wave_table_offset)
+      )
+      (local.get $level)
     )
   )
 
@@ -512,6 +522,7 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
         )
       )
       (local.get $data_size)
+      (f32.const 1)
     )
 
     (local.get $offset)
@@ -539,19 +550,37 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
       (local.get $base_frequency)
     )
 
+
+    ;;pitch
+    (f32.store
+      (i32.add
+        (&WaveTableWork.base.pitch;)
+        (local.get $wave_table_work_offset)
+      )
+      (f32.const 1)
+    )
+
     (f32.store 
       (i32.add
         (&WaveTableWork.table_sample_rate;)
         (local.get $wave_table_work_offset)
       )
       (f32.mul
-        (local.get $base_frequency)
-        (f32.convert_i32_s
-          (i32.load
-            (i32.add
-              (&WaveTable.size;)
-              (local.get $wave_table_offset)
+        (f32.mul
+          (local.get $base_frequency)
+          (f32.convert_i32_s
+            (i32.load
+              (i32.add
+                (&WaveTable.size;)
+                (local.get $wave_table_offset)
+              )
             )
+          )
+        )
+        (f32.load
+          (i32.add
+            (&OscillatorWork.pitch;)
+            (local.get $wave_table_work_offset)
           )
         )
       )
@@ -565,14 +594,6 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
       (i32.const 0)
     )
 
-    ;;pitch
-    (f32.store
-      (i32.add
-        (&WaveTableWork.base.pitch;)
-        (local.get $wave_table_work_offset)
-      )
-      (f32.const 1)
-    )
 
     ;; delta
     (f32.store
@@ -658,35 +679,43 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
             (local.get $wave_table_work_offset)
           )
           (local.tee $value
-            (f32.load
-              (i32.add 
-                (i32.shl 
-                  (local.tee $counter
-                    (i32.and
-                      (i32.add
-                        (i32.load 
-                          (i32.add
-                            (&WaveTableWork.counter;)
-                            (local.get $wave_table_work_offset)
-                          )
-                        )
-                        (i32.const 1)
-                      )
-                      (i32.load 
-                        (i32.add 
-                          (&WaveTable.wave_size_mask;)
-                          (local.get $wave_table_offset)
-                        )
-                      )
-                    )
-                  )
-                  (i32.const 2)
-                )
-                (i32.add 
-                  (&WaveTable.wave_data_start;)
+            (f32.mul
+              (f32.load
+                (i32.add
+                  (&Oscillator.level;)
                   (local.get $wave_table_offset)
                 )
               )
+              (f32.load
+                (i32.add 
+                  (i32.shl 
+                    (local.tee $counter
+                      (i32.and
+                        (i32.add
+                          (i32.load 
+                            (i32.add
+                              (&WaveTableWork.counter;)
+                              (local.get $wave_table_work_offset)
+                            )
+                          )
+                          (i32.const 1)
+                        )
+                        (i32.load 
+                          (i32.add 
+                            (&WaveTable.wave_size_mask;)
+                            (local.get $wave_table_offset)
+                          )
+                        )
+                      )
+                    )
+                    (i32.const 2)
+                  )
+                  (i32.add 
+                    (&WaveTable.wave_data_start;)
+                    (local.get $wave_table_offset)
+                  )
+                )
+              )              
             )
           )
         )
@@ -1572,20 +1601,23 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
                 (i32.const 0x8)
               )
               (then
-                (call_indirect (type $oscillatorFunc) 
-                  (local.tee $amplitude_lfo_work_offset
-                    (i32.add
-                      (&TimbreWork.amplitude_lfo_work_offset;)
-                      (local.get $timbre_work)
+                (f32.add
+                  (f32.const 1)
+                  (call_indirect (type $oscillatorFunc) 
+                    (local.tee $amplitude_lfo_work_offset
+                      (i32.add
+                        (&TimbreWork.amplitude_lfo_work_offset;)
+                        (local.get $timbre_work)
+                      )
                     )
-                  )
-                  (i32.load
-                    (i32.add
-                      (&Oscillator.call_index;)
-                      (i32.load
-                        (i32.add
-                          (&OscillatorWork.param_offset;)
-                          (local.get $amplitude_lfo_work_offset)
+                    (i32.load
+                      (i32.add
+                        (&Oscillator.call_index;)
+                        (i32.load
+                          (i32.add
+                            (&OscillatorWork.param_offset;)
+                            (local.get $amplitude_lfo_work_offset)
+                          )
                         )
                       )
                     )

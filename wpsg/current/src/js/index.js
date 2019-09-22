@@ -344,8 +344,11 @@ window.addEventListener('load', async () => {
   const ampEGReleaseText = document.getElementById('amplitude-release-text');
   const ampEGLevelText = document.getElementById('amplitude-level-text');
 
+  const ampLFO = document.getElementById('amplitude-lfo-sw');
   const ampLFOPitch = document.getElementById('amplitude-lfo-pitch');
   const ampLFOPitchText = document.getElementById('amplitude-lfo-pitch-text');
+  const ampLFOLevel = document.getElementById('amplitude-lfo-level');
+  const ampLFOLevelText = document.getElementById('amplitude-lfo-level-text');
  
   function getTimbreFlagInfo(){
     let timbreOffset = sharedMemoryView.getUint32(timbre + getOffset(memoryMap.TimbreWork.timbre_offset),littleEndian);
@@ -422,13 +425,29 @@ window.addEventListener('load', async () => {
     sharedMemoryView.setFloat32(offset,e.srcElement.value,littleEndian);
   });
 
+  ampLFO.addEventListener('click',(e)=>{
+    const timbreFlagInfo = getTimbreFlagInfo();
+    if(e.srcElement.checked){
+      timbreFlagInfo.value |= 0x8;
+    } else {
+      timbreFlagInfo.value &= 0xfffffff7;
+    }
+    setTimbreFlagInfo(timbreFlagInfo);
+  });
+
   ampLFOPitch.addEventListener('change',(e)=>{
     ampLFOPitchText.value = e.srcElement.value;
     let lfoWorkOffset = timbre + getOffset(memoryMap.TimbreWork.amplitude_lfo_work_offset);
     let offset = getOffset(memoryMap.OscillatorWork.pitch) + lfoWorkOffset;
     sharedMemoryView.setFloat32(offset,e.srcElement.value,littleEndian);
   });
-
+  
+  ampLFOLevel.addEventListener('change',(e)=>{
+    ampLFOLevelText.value = e.srcElement.value;
+    let lfoOffset = sharedMemoryView.getUint32(timbre + getOffset(memoryMap.TimbreWork.amplitude_lfo_work_offset),littleEndian) + getOffset(memoryMap.Oscillator.level);
+    sharedMemoryView.setFloat32(lfoOffset,e.srcElement.value,littleEndian);
+  });
+  
   //ampEGAttack.addEventListener('')
 
 

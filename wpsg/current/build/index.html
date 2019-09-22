@@ -248,8 +248,8 @@
       </div>
       <div class="siimple-grid-col siimple-grid-col--9 siimple-grid-col--sm-12">
         <div class="siimple-switch siimple-switch--error">
-          <input type="checkbox" id="pitch-lfo-sw">
-          <label for="pitch-lfo-sw"></labeel>
+          <input type="checkbox" id="amplitude-lfo-sw">
+          <label for="amplitude-lfo-sw"></labeel>
         </div>
       </div>
     </div>
@@ -260,7 +260,7 @@
         </label>
       </div>
       <div class="siimple-grid-col siimple-grid-col--9 siimple-grid-col--sm-12">
-          <select class="siimple-select" id="pitch-lfo-Wave-No">
+          <select class="siimple-select" id="amplitude-lfo-Wave-No">
               <option selected>1</option>
               <option>2</option>
               <option>3</option>
@@ -270,17 +270,30 @@
     <div class="siimple-grid-row">
       <div class="siimple-grid-col siimple-grid-col--3 siimple-grid-col--sm-12">
         <label class="siimple-label">
-          LFO Freq
+          LFO Rate
         </label>
       </div>
       <div class="siimple-grid-col siimple-grid-col--6 siimple-grid-col--sm-8">
-        <input type="range" min="0.001" step="0.01" max="20000.0" value="0.001" id="pitch-lfo-freq" />
+        <input type="range" min="0.001" step="0.001" max="4.0" value="0.001" id="amplitude-lfo-pitch" />
       </div>
       <div class="siimple-grid-col siimple-grid-col--3 siimple-grid-col--sm-4">
-          <input type="text" class="siimple-input" id="pitch-lfo-freq" ></input>
+        <input type="text" class="siimple-input" id="amplitude-lfo-pitch-text" ></input>
       </div>
     </div>
-  </div>
+    <div class="siimple-grid-row">
+        <div class="siimple-grid-col siimple-grid-col--3 siimple-grid-col--sm-12">
+          <label class="siimple-label">
+            LFO Level
+          </label>
+        </div>
+        <div class="siimple-grid-col siimple-grid-col--6 siimple-grid-col--sm-8">
+          <input type="range" min="0.001" step="0.001" max="1.0" value="0.001" id="amplitude-lfo-level" />
+        </div>
+        <div class="siimple-grid-col siimple-grid-col--3 siimple-grid-col--sm-4">
+          <input type="text" class="siimple-input" id="amplitude-lfo-level-text" ></input>
+        </div>
+      </div>
+    </div>
   <script src="./index.js"></script>
 </body>
 
