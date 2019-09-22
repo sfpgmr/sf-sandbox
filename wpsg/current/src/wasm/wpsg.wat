@@ -27,6 +27,7 @@
 
   (export "setRate" (func $set_rate))
   (export "initEnvelope" (func $initEnvelope))
+  (export "updateEnvelope" (func $updateEnvelope))
   (export "initEnvelopeWork" (func $initEnvelopeWork))
   (export "keyOnEnvelope" (func $keyOnEnvelope))
   (export "keyOffEnvelope" (func $keyOffEnvelope))
@@ -655,6 +656,56 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
       (i32.add (i32.const 0 (; Envelope.level ;)) (local.get $env_param_offset))
       (local.get $level)
     )
+  )
+
+    ;; ## 初期化 ##
+  (func $updateEnvelope 
+    (param $env_param_offset i32)
+    (local $sample_rate f32)
+
+    (local.set $sample_rate
+      (f32.load (i32.const 4 (; sample_rate ;)))
+    )
+    
+
+    ;; attack ;;
+
+    (f32.store 
+      (i32.add (i32.const 20 (; Envelope.attack_delta ;)) (local.get $env_param_offset))
+      (f32.div (f32.const 1)
+        (f32.mul 
+          (local.get $sample_rate)
+          (f32.load (i32.add (i32.const 4 (; Envelope.attack_time ;)) (local.get $env_param_offset)))
+        )
+      )
+    )
+
+    ;; decay ;;;;;;;;
+
+    (f32.store 
+      (i32.add (i32.const 24 (; Envelope.decay_delta ;)) (local.get $env_param_offset))
+      (f32.div 
+        (f32.sub 
+          (f32.const 1) 
+          (f32.load (i32.add (i32.const 12 (; Envelope.sustain_level ;)) (local.get $env_param_offset)))
+        )
+        (f32.mul 
+          (local.get $sample_rate)
+          (f32.load (i32.add (i32.const 8 (; Envelope.decay_time ;)) (local.get $env_param_offset)))
+        )
+      )
+    )
+
+    (f32.store 
+      (i32.add (i32.const 28 (; Envelope.release_delta ;)) (local.get $env_param_offset))
+      (f32.div (f32.load (i32.add (i32.const 12 (; Envelope.sustain_level ;)) (local.get $env_param_offset)))
+        (f32.mul 
+          (local.get $sample_rate)
+          (f32.load (i32.add (i32.const 16 (; Envelope.release_time ;)) (local.get $env_param_offset)))
+        )
+      )
+    )
+
   )
 
   ;; # エンベロープ・ワークエリアの初期化 #
@@ -1468,7 +1519,7 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
     ;; フラグ
     (i32.store
       (i32.const 140 (; timbre.flag ;))
-      (i32.const 0x4)
+      (i32.const 0x0)
     )
 
     ;; オシレータ

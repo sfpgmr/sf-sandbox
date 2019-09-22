@@ -78,7 +78,7 @@
     return prop._attributes_.offset;
   }
 
-  function disableInputs(disabled = true){
+  function disableInputs(disabled = true) {
     let d = disabled ? 'disabled' : '';
     let inputs = document.querySelectorAll('input');
     for (const i of inputs) {
@@ -95,10 +95,10 @@
 
   }
 
-  let psg, psgBin, memoryMap, psgWorker, audioctx, wasmModule, wasmFuncs,timbre;
+  let psg, psgBin, memoryMap, psgWorker, audioctx, wasmModule, wasmFuncs, timbre;
   let play = false;
-  let vol ;
-  let sharedMemory,sharedMemoryView;
+  let vol;
+  let sharedMemory, sharedMemoryView;
 
   window.addEventListener('load', async () => {
 
@@ -115,212 +115,294 @@
       }
     });
 
-  // Wave Table エディタ
-  let waveTableSize = 32;
-  const canvasWidth = 512,canvasHeight = 256;
-  let pixelWidth = (512 / waveTableSize) | 0;
-  let isDrawing = false, drawPosition = {x:0,y:0};
+    // Wave Table エディタ
+    let waveTableSize = 32;
+    const canvasWidth = 512, canvasHeight = 256;
+    let pixelWidth = (512 / waveTableSize) | 0;
+    let isDrawing = false, drawPosition = { x: 0, y: 0 };
 
-  const waveTableLength = document.getElementById('wavetable-length');
-  waveTableLength.addEventListener('change',(e)=>{
-    waveTableSize = e.target.value;
-    setWaveTableSize(waveTableSize);
-    pixelWidth = (canvasWidth / waveTableSize) | 0;
-  });
+    const waveTableLength = document.getElementById('wavetable-length');
+    waveTableLength.addEventListener('change', (e) => {
+      waveTableSize = e.target.value;
+      setWaveTableSize(waveTableSize);
+      pixelWidth = (canvasWidth / waveTableSize) | 0;
+    });
 
-  function setWaveTableSize(size,oscillatorNo = 0){
-    const wavetable_offset = sharedMemoryView.getInt32(getOffset(memoryMap.oscillator) + oscillatorNo  * 4,littleEndian);
-    const wavetable_work_offset = timbre + getOffset(memoryMap.TimbreWork.oscillator_work_offset);
-    wasmFuncs.setWaveTableSize(wavetable_offset,size);
-    wasmFuncs.initWaveTableWork(wavetable_work_offset,wavetable_offset,440);
-  }
-
-  const waveTableCanvas = document.getElementById("WPSG-Wave-Table"),
-    context = waveTableCanvas.getContext("2d");
-
-
-  function calcPos(e){
-    const rect = waveTableCanvas.getBoundingClientRect();
-    drawPosition.x = (((e.clientX - rect.left) / pixelWidth )  | 0) * pixelWidth;
-    drawPosition.y = (e.clientY - rect.top) | 0;
-  }
-
-  waveTableCanvas.addEventListener('mousedown', e => {
-    calcPos(e);
-    isDrawing = play;
-  });
-
-  waveTableCanvas.addEventListener('mousemove', e => {
-    if (isDrawing === true) {
-      let sx = drawPosition.x;
-      let sy = drawPosition.y;
-      let halfHeight = canvasHeight / 2;
-      calcPos(e);
-
-      // x
-      let ex = drawPosition.x;
-      let w = (Math.abs(ex - sx) + pixelWidth) | 0;
-      if(ex < sx){
-        sx = ex;
-      }
-
-      for(let i = 0;i < w;i += pixelWidth){
-        setValueToMemory(sx + i,sy);      
-      }
-
-      // y
-      let wy;
-      if(sy < halfHeight){
-        wy =  halfHeight - sy;
-      } else {
-        wy = sy - halfHeight;
-        sy = halfHeight;
-      }
-      
-      context.fillStyle = 'black';
-      context.fillRect(sx, 0, w, 256);
-
-      context.fillStyle = 'red';
-      context.fillRect(sx, sy, w, wy);
+    function setWaveTableSize(size, oscillatorNo = 0) {
+      const wavetable_offset = sharedMemoryView.getInt32(getOffset(memoryMap.oscillator) + oscillatorNo * 4, littleEndian);
+      const wavetable_work_offset = timbre + getOffset(memoryMap.TimbreWork.oscillator_work_offset);
+      wasmFuncs.setWaveTableSize(wavetable_offset, size);
+      wasmFuncs.initWaveTableWork(wavetable_work_offset, wavetable_offset, 440);
     }
-  });
 
-  window.addEventListener('mouseup', e => {
-    if (isDrawing === true) {
-      isDrawing = false;
-    }
-  });
+    const waveTableCanvas = document.getElementById("WPSG-Wave-Table"),
+      context = waveTableCanvas.getContext("2d");
 
-  waveTableCanvas
-  .addEventListener("click", (e) => {
-      context.fillStyle = 'red';
+
+    function calcPos(e) {
       const rect = waveTableCanvas.getBoundingClientRect();
-      context.fillRect(e.clientX - rect.left, e.clientY - rect.top, 1, 1);
-      e.preventDefault = true;
-    }, false);
-
-  const formulaInfo = document.getElementById('result-fomula');
-  formulaInfo.style.display = 'none';
-
-  function showFormulaInfo (display,message){
-    if(display){
-      formulaInfo.style.display = '';
-      formulaInfo.innerText = message;
-    } else {
-      formulaInfo.style.display = 'none';
+      drawPosition.x = (((e.clientX - rect.left) / pixelWidth) | 0) * pixelWidth;
+      drawPosition.y = (e.clientY - rect.top) | 0;
     }
-  }
 
+    waveTableCanvas.addEventListener('mousedown', e => {
+      calcPos(e);
+      isDrawing = play;
+    });
 
-  const formula = document.getElementById('formula');
-  const applyFormula = document.getElementById('apply-formula');
+    waveTableCanvas.addEventListener('mousemove', e => {
+      if (isDrawing === true) {
+        let sx = drawPosition.x;
+        let sy = drawPosition.y;
+        let halfHeight = canvasHeight / 2;
+        calcPos(e);
 
-  applyFormula.addEventListener('click',function(e){
-    showFormulaInfo(false);
-    // 簡易チェック
-    if(formula.value.match(/(alert)|(console)/))
-    {
-      showFormulaInfo(true,'error:console,alertは使用できません。');
-      e.preventDefault = true;
-      return false;
-    }
-    drawFormula(formula.value);
-  });
+        // x
+        let ex = drawPosition.x;
+        let w = (Math.abs(ex - sx) + pixelWidth) | 0;
+        if (ex < sx) {
+          sx = ex;
+        }
 
-  function drawFormula(code){
-    let f = new Function('t','return ' + code );
-    for(let x = 0,i = 0,ei = waveTableSize; i < ei;++i,x+=pixelWidth){
-      let t = i / waveTableSize * 2 - 1;
-      let y = f(t) ;
-      if(y > 1.0) y = 1.0;
-      if(y < -1.0) y = -1.0;
+        for (let i = 0; i < w; i += pixelWidth) {
+          setValueToMemory(sx + i, sy);
+        }
 
+        // y
+        let wy;
+        if (sy < halfHeight) {
+          wy = halfHeight - sy;
+        } else {
+          wy = sy - halfHeight;
+          sy = halfHeight;
+        }
 
-      let halfHeight = canvasHeight / 2;
-      y = halfHeight - (y * halfHeight);
-      setValueToMemory(x,y);
-      let wy;
-      if(y < halfHeight){
-        wy =  halfHeight - y;
+        context.fillStyle = 'black';
+        context.fillRect(sx, 0, w, 256);
+
+        context.fillStyle = 'red';
+        context.fillRect(sx, sy, w, wy);
+      }
+    });
+
+    window.addEventListener('mouseup', e => {
+      if (isDrawing === true) {
+        isDrawing = false;
+      }
+    });
+
+    waveTableCanvas
+      .addEventListener("click", (e) => {
+        context.fillStyle = 'red';
+        const rect = waveTableCanvas.getBoundingClientRect();
+        context.fillRect(e.clientX - rect.left, e.clientY - rect.top, 1, 1);
+        e.preventDefault = true;
+      }, false);
+
+    const formulaInfo = document.getElementById('result-fomula');
+    formulaInfo.style.display = 'none';
+
+    function showFormulaInfo(display, message) {
+      if (display) {
+        formulaInfo.style.display = '';
+        formulaInfo.innerText = message;
       } else {
-        wy = y - halfHeight;
-        y = halfHeight;
+        formulaInfo.style.display = 'none';
+      }
+    }
+
+
+    const formula = document.getElementById('formula');
+    const applyFormula = document.getElementById('apply-formula');
+
+    applyFormula.addEventListener('click', function (e) {
+      showFormulaInfo(false);
+      // 簡易チェック
+      if (formula.value.match(/(alert)|(console)/)) {
+        showFormulaInfo(true, 'error:console,alertは使用できません。');
+        e.preventDefault = true;
+        return false;
+      }
+      drawFormula(formula.value);
+    });
+
+    function drawFormula(code) {
+      let f = new Function('t', 'return ' + code);
+      for (let x = 0, i = 0, ei = waveTableSize; i < ei; ++i, x += pixelWidth) {
+        let t = i / waveTableSize * 2 - 1;
+        let y = f(t);
+        if (y > 1.0) y = 1.0;
+        if (y < -1.0) y = -1.0;
+
+
+        let halfHeight = canvasHeight / 2;
+        y = halfHeight - (y * halfHeight);
+        setValueToMemory(x, y);
+        let wy;
+        if (y < halfHeight) {
+          wy = halfHeight - y;
+        } else {
+          wy = y - halfHeight;
+          y = halfHeight;
+        }
+
+        context.fillStyle = 'black';
+        context.fillRect(x, 0, pixelWidth, 256);
+
+        context.fillStyle = 'red';
+        context.fillRect(x, y, pixelWidth, wy);
+
+      }
+    }
+
+
+    function drawMemory(oscillatorNo = 0) {
+      const wavedata_offset = sharedMemoryView.getInt32(getOffset(memoryMap.oscillator) + oscillatorNo * 4, littleEndian) + getOffset(memoryMap.WaveTable.wave_data_start);
+
+      for (let i = 0, x = 0, xdelta = canvasWidth / waveTableSize; i < waveTableSize; ++i, x += xdelta) {
+        const halfHeight = canvasHeight / 2;
+        let y = halfHeight - halfHeight * sharedMemoryView.getFloat32(wavedata_offset + i * 4, littleEndian);
+
+        context.fillStyle = 'black';
+        context.fillRect(x, 0, pixelWidth, 256);
+
+        let wy;
+        if (y < halfHeight) {
+          wy = halfHeight - y;
+        } else {
+          wy = y - halfHeight;
+          y = halfHeight;
+        }
+
+        context.fillStyle = 'red';
+        context.fillRect(x, y, pixelWidth, wy);
+
       }
 
-      context.fillStyle = 'black';
-      context.fillRect(x, 0, pixelWidth, 256);
-
-      context.fillStyle = 'red';
-      context.fillRect(x, y, pixelWidth, wy);
-
     }
-  }
 
+    const redraw = document.getElementById('redraw');
+    redraw.addEventListener('click',
+      (e) => {
+        drawMemory();
+      }
+    );
 
-  function drawMemory(oscillatorNo = 0){
-    const wavedata_offset = sharedMemoryView.getInt32(getOffset(memoryMap.oscillator) + oscillatorNo  * 4,littleEndian) + getOffset(memoryMap.WaveTable.wave_data_start);
-
-    for(let i = 0,x = 0,xdelta = canvasWidth / waveTableSize;i < waveTableSize;++i,x+=xdelta){
+    function setValueToMemory(x, y, oscillatorNo = 0) {
+      const wavedata_offset =
+        sharedMemoryView.getInt32(getOffset(memoryMap.oscillator) + oscillatorNo * 4, littleEndian) + getOffset(memoryMap.WaveTable.wave_data_start)
+        + ((x / pixelWidth) | 0) * 4;
       const halfHeight = canvasHeight / 2;
-      let y = halfHeight - halfHeight * sharedMemoryView.getFloat32(wavedata_offset + i * 4,littleEndian);
-
-      context.fillStyle = 'black';
-      context.fillRect(x , 0, pixelWidth, 256);
-
-      let wy;
-      if(y < halfHeight){
-        wy =  halfHeight - y;
-      } else {
-        wy = y - halfHeight;
-        y = halfHeight;
-      }
-
-      context.fillStyle = 'red';
-      context.fillRect(x , y, pixelWidth, wy);
-
+      y = Math.max(Math.min(((halfHeight - y) / halfHeight), 1.0), -1.0);
+      sharedMemoryView.setFloat32(wavedata_offset, y, littleEndian);
     }
 
-  }
+    const waveTableGrid = document.getElementById('WaveTableGrid');
+    const timbreGrid = document.getElementById('TimbreGrid');
+    const waveTableTab = document.getElementById('WaveTableTab');
+    const timbreTab = document.getElementById('TimbreTab');
 
-  const redraw = document.getElementById('redraw');
-  redraw.addEventListener('click',
-  (e)=>{
-    drawMemory();
-  }
-  );
-
-  function setValueToMemory(x,y,oscillatorNo = 0){
-    const wavedata_offset = 
-      sharedMemoryView.getInt32(getOffset(memoryMap.oscillator) + oscillatorNo  * 4,littleEndian) + getOffset(memoryMap.WaveTable.wave_data_start)
-     + ((x / pixelWidth) | 0) * 4;
-    const halfHeight = canvasHeight / 2;
-    y = Math.max(Math.min(((halfHeight - y) / halfHeight),1.0),-1.0); 
-    sharedMemoryView.setFloat32(wavedata_offset,y,littleEndian);
-  }
-
-  const waveTableGrid = document.getElementById('WaveTableGrid');
-  const timbreGrid = document.getElementById('TimbreGrid');
-  const waveTableTab = document.getElementById('WaveTableTab');
-  const timbreTab = document.getElementById('TimbreTab');
-
-  timbreGrid.style.display = 'none';
-
-  waveTableTab.addEventListener('click',(e)=>{
-    
-    timbreTab.classList.remove('siimple-tabs-item--selected');
     timbreGrid.style.display = 'none';
 
-    waveTableGrid.style.display = '';
-    waveTableTab.classList.add('siimple-tabs-item--selected');
-  });
+    waveTableTab.addEventListener('click', (e) => {
 
-  timbreTab.addEventListener('click',(e)=>{
-    timbreTab.classList.add('siimple-tabs-item--selected');
-    timbreGrid.style.display = '';
+      timbreTab.classList.remove('siimple-tabs-item--selected');
+      timbreGrid.style.display = 'none';
 
-    waveTableGrid.style.display = 'none';
-    waveTableTab.classList.remove('siimple-tabs-item--selected');
-  });
+      waveTableGrid.style.display = '';
+      waveTableTab.classList.add('siimple-tabs-item--selected');
+    });
+
+    timbreTab.addEventListener('click', (e) => {
+      timbreTab.classList.add('siimple-tabs-item--selected');
+      timbreGrid.style.display = '';
+
+      waveTableGrid.style.display = 'none';
+      waveTableTab.classList.remove('siimple-tabs-item--selected');
+    });
+
+    // Amplitude Parameter
+
+    const ampEnvelope = document.getElementById('amplitude-envelope-sw');
+    const ampEGAttack = document.getElementById('amplitude-attack');
+    const ampEGDecay = document.getElementById('amplitude-decay');
+    const ampEGSustain = document.getElementById('amplitude-sustain');
+    const ampEGRelease = document.getElementById('amplitude-release');
+    const ampEGLevel = document.getElementById('amplitude-level');
+    const ampEGAttackText = document.getElementById('amplitude-attack-text');
+    const ampEGDecayText = document.getElementById('amplitude-decay-text');
+    const ampEGSustainText = document.getElementById('amplitude-sustain-text');
+    const ampEGReleaseText = document.getElementById('amplitude-release-text');
+    const ampEGLevelText = document.getElementById('amplitude-level-text');
+   
+    function getTimbreFlagInfo(){
+      let timbreOffset = sharedMemoryView.getUint32(timbre + getOffset(memoryMap.TimbreWork.timbre_offset),littleEndian);
+      let timbreFlagOffset = timbreOffset + getOffset(memoryMap.Timbre.flag);
+      return  {
+        offset:timbreFlagOffset, 
+        value:sharedMemoryView.getUint32(timbreFlagOffset,littleEndian)
+      };
+    }
+
+    function setTimbreFlagInfo(timbreFlagInfo){
+      sharedMemoryView.setUint32(timbreFlagInfo.offset,timbreFlagInfo.value,littleEndian);
+    }
+
+    ampEnvelope.addEventListener('click',(e)=>{
+      const timbreFlagInfo = getTimbreFlagInfo();
+      if(e.srcElement.checked){
+        timbreFlagInfo.value |= 0x4;
+      } else {
+        timbreFlagInfo.value &= 0xfffffffb;
+      }
+      setTimbreFlagInfo(timbreFlagInfo);
+    });
+
+    ampEGAttack.addEventListener('change',(e)=>{
+      ampEGAttackText.value = e.srcElement.value;
+      let envParamOffset = timbre + getOffset(memoryMap.TimbreWork.amplitude_envelope.env_param_offset);
+      let envelopeOffset = sharedMemoryView.getUint32(envParamOffset,littleEndian);
+      let attackOffset = envelopeOffset + getOffset(memoryMap.Envelope.attack_time);
+      sharedMemoryView.setFloat32(attackOffset,e.srcElement.value,littleEndian);
+      wasmFuncs.updateEnvelope(envelopeOffset);
+    });
+
+    ampEGDecay.addEventListener('change',(e)=>{
+      ampEGDecayText.value = e.srcElement.value;
+      let envParamOffset = timbre + getOffset(memoryMap.TimbreWork.amplitude_envelope.env_param_offset);
+      let envelopeOffset = sharedMemoryView.getUint32(envParamOffset,littleEndian);
+      let offset = envelopeOffset + getOffset(memoryMap.Envelope.decay_time);
+      sharedMemoryView.setFloat32(offset,e.srcElement.value,littleEndian);
+      wasmFuncs.updateEnvelope(envelopeOffset);
+    });
+
+    ampEGSustain.addEventListener('change',(e)=>{
+      ampEGSustainText.value = e.srcElement.value;
+      let envParamOffset = timbre + getOffset(memoryMap.TimbreWork.amplitude_envelope.env_param_offset);
+      let envelopeOffset = sharedMemoryView.getUint32(envParamOffset,littleEndian);
+      let offset = envelopeOffset + getOffset(memoryMap.Envelope.sustain_level);
+      sharedMemoryView.setFloat32(offset,e.srcElement.value,littleEndian);
+      wasmFuncs.updateEnvelope(envelopeOffset);
+    });
+
+    ampEGRelease.addEventListener('change',(e)=>{
+      ampEGReleaseText.value = e.srcElement.value;
+      let envParamOffset = timbre + getOffset(memoryMap.TimbreWork.amplitude_envelope.env_param_offset);
+      let envelopeOffset = sharedMemoryView.getUint32(envParamOffset,littleEndian);
+      let offset = envelopeOffset + getOffset(memoryMap.Envelope.release_time);
+      sharedMemoryView.setFloat32(offset,e.srcElement.value,littleEndian);
+      wasmFuncs.updateEnvelope(envelopeOffset);
+    });
+
+    ampEGLevel.addEventListener('change',(e)=>{
+      ampEGLevelText.value = e.srcElement.value;
+      let envParamOffset = timbre + getOffset(memoryMap.TimbreWork.amplitude_envelope.env_param_offset);
+      let envelopeOffset = sharedMemoryView.getUint32(envParamOffset,littleEndian);
+      let offset = envelopeOffset + getOffset(memoryMap.Envelope.level);
+      sharedMemoryView.setFloat32(offset,e.srcElement.value,littleEndian);
+    });
+
+    //ampEGAttack.addEventListener('')
 
 
     // ['A', 'B', 'C'].forEach((ch, i) => {
@@ -433,8 +515,8 @@
 
         psgWorker = new Worker('./wpsg-worker.js');
         psgWorker.onmessage = function (e) {
-          if(e.data.message){
-            if(e.data.message == 'init'){
+          if (e.data.message) {
+            if (e.data.message == 'init') {
               timbre = e.data.timbre;
               disableInputs(false);
               drawMemory();
