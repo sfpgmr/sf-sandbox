@@ -1634,8 +1634,6 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
     )
   )
 
- 
-
   ;; --------------------------------
   ;; test用 Timbreのセットアップ
   ;; --------------------------------
@@ -1645,7 +1643,9 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
     (local $loop_counter i32)
     (local $offset_src i32)
     (local $offset_dest i32)
+    (local $offset_dest1 i32)
     (local $oscillator_offset i32)
+    (local $oscillator1_offset i32)
     (local $timbre_offset i32)
     
     ;; オシレータ0のセットアップ
@@ -1658,10 +1658,25 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
         )
       )
     )
+    ;; オシレータ1のセットアップ
+    ;; 32サンプル分取る
+    (i32.store
+      (&oscillator[1];)
+      (local.tee $oscillator1_offset
+        (call $allocateWaveTable
+          (i32.const 32)
+        )
+      )
+    )
  
     ;; sizeを32サンプルにセット
     (call $setWaveTableSize
       (local.get $oscillator_offset)
+      (i32.const 32)
+    )
+
+    (call $setWaveTableSize
+      (local.get $oscillator1_offset)
       (i32.const 32)
     )
   
@@ -1675,6 +1690,13 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
           (i32.load (&oscillator[0];) )
         )
       )
+      (local.set $offset_dest1 
+        (i32.add
+          (&WaveTable.wave_data_start;)
+          (i32.load (&oscillator[1];) )
+        )
+      )
+
       (loop $sin_loop
         (br_if $sin_data_copy
           (i32.eqz
@@ -1692,9 +1714,21 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
           (f32.load (local.get $offset_src))
         )
 
+        (f32.store
+          (local.get $offset_dest1)
+          (f32.load (local.get $offset_src))
+        )
+
         (local.set $offset_dest
           (i32.add
             (local.get $offset_dest)
+            (i32.const 4)
+          )
+        )
+
+        (local.set $offset_dest1
+          (i32.add
+            (local.get $offset_dest1)
             (i32.const 4)
           )
         )
@@ -1743,12 +1777,12 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
     ;; Pitch LFO
     (i32.store
       (&timbre[0].pitch_lfo_offset;)
-      (local.get $oscillator_offset)
+      (local.get $oscillator1_offset)
     )
 
     (f32.store
       (&timbre[0].pitch_lfo_base_frequency;)
-      (f32.const 5) ;; 20Hz
+      (f32.const 20) ;; 20Hz
     )
 
     ;; 音量・エンベロープ
@@ -1762,10 +1796,11 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
       (f32.const 0.25)
       (f32.const 1.0)
     )
+   
     ;; 音量LFO・オフセット
     (i32.store
       (&timbre[0].amplitude_lfo_offset;)
-      (local.get $oscillator_offset)
+      (local.get $oscillator1_offset)
     )
 
     (f32.store

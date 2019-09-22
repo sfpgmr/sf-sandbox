@@ -337,11 +337,15 @@ window.addEventListener('load', async () => {
   const ampEGSustain = document.getElementById('amplitude-sustain');
   const ampEGRelease = document.getElementById('amplitude-release');
   const ampEGLevel = document.getElementById('amplitude-level');
+
   const ampEGAttackText = document.getElementById('amplitude-attack-text');
   const ampEGDecayText = document.getElementById('amplitude-decay-text');
   const ampEGSustainText = document.getElementById('amplitude-sustain-text');
   const ampEGReleaseText = document.getElementById('amplitude-release-text');
   const ampEGLevelText = document.getElementById('amplitude-level-text');
+
+  const ampLFOPitch = document.getElementById('amplitude-lfo-pitch');
+  const ampLFOPitchText = document.getElementById('amplitude-lfo-pitch-text');
  
   function getTimbreFlagInfo(){
     let timbreOffset = sharedMemoryView.getUint32(timbre + getOffset(memoryMap.TimbreWork.timbre_offset),littleEndian);
@@ -407,6 +411,21 @@ window.addEventListener('load', async () => {
     let envParamOffset = timbre + getOffset(memoryMap.TimbreWork.amplitude_envelope.env_param_offset);
     let envelopeOffset = sharedMemoryView.getUint32(envParamOffset,littleEndian);
     let offset = envelopeOffset + getOffset(memoryMap.Envelope.level);
+    sharedMemoryView.setFloat32(offset,e.srcElement.value,littleEndian);
+  });
+
+  ampEGLevel.addEventListener('change',(e)=>{
+    ampEGLevelText.value = e.srcElement.value;
+    let envParamOffset = timbre + getOffset(memoryMap.TimbreWork.amplitude_envelope.env_param_offset);
+    let envelopeOffset = sharedMemoryView.getUint32(envParamOffset,littleEndian);
+    let offset = envelopeOffset + getOffset(memoryMap.Envelope.level);
+    sharedMemoryView.setFloat32(offset,e.srcElement.value,littleEndian);
+  });
+
+  ampLFOPitch.addEventListener('change',(e)=>{
+    ampLFOPitchText.value = e.srcElement.value;
+    let lfoWorkOffset = timbre + getOffset(memoryMap.TimbreWork.amplitude_lfo_work_offset);
+    let offset = getOffset(memoryMap.OscillatorWork.pitch) + lfoWorkOffset;
     sharedMemoryView.setFloat32(offset,e.srcElement.value,littleEndian);
   });
 
