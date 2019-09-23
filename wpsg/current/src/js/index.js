@@ -444,10 +444,10 @@ window.addEventListener('load', async () => {
   
   ampLFOLevel.addEventListener('change',(e)=>{
     ampLFOLevelText.value = e.srcElement.value;
-    let lfoOffset = sharedMemoryView.getUint32(timbre + getOffset(memoryMap.TimbreWork.amplitude_lfo_work_offset),littleEndian) + getOffset(memoryMap.Oscillator.level);
+    let lfoOffset = timbre + getOffset(memoryMap.TimbreWork.amplitude_lfo_work_offset) + getOffset(memoryMap.OscillatorWork.level);
     sharedMemoryView.setFloat32(lfoOffset,e.srcElement.value,littleEndian);
   });
-  
+
   //ampEGAttack.addEventListener('')
 
 
