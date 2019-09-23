@@ -440,84 +440,26 @@
       sharedMemoryView.setFloat32(lfoOffset,e.srcElement.value,littleEndian);
     });
 
-    //ampEGAttack.addEventListener('')
+    // Filter Parameter
 
+    const filterEnvelope = document.getElementById('filter-envelope-sw');
+    const filterEGAttack = document.getElementById('filter-attack');
+    const filterEGDecay = document.getElementById('filter-decay');
+    const filterEGSustain = document.getElementById('filter-sustain');
+    const filterEGRelease = document.getElementById('filter-release');
+    const filterEGLevel = document.getElementById('filter-level');
 
-    // ['A', 'B', 'C'].forEach((ch, i) => {
-    //   // Tone
-    //   const period = document.getElementById(ch + '-Period');
-    //   period.addEventListener('input', function () {
-    //     document.getElementById(ch + '-Period-Text').innerText = this.value;
-    //     wasmFuncs.writeReg(i * 2, this.value & 0xff);
-    //     wasmFuncs.writeReg(i * 2 + 1, (this.value & 0xf00) >> 8);
-    //   });
+    const filterEGAttackText = document.getElementById('filter-attack-text');
+    const filterEGDecayText = document.getElementById('filter-decay-text');
+    const filterEGSustainText = document.getElementById('filter-sustain-text');
+    const filterEGReleaseText = document.getElementById('filter-release-text');
+    const filterEGLevelText = document.getElementById('filter-level-text');
 
-
-    //   // Noise On/OFF
-    //   const noise = document.getElementById('Noise-' + ch);
-    //   noise.addEventListener('click', function () {
-    //     const m = (1 << (i + 3)) ^ 0x3f;
-    //     let v = ((this.checked ? 0 : 1) << (i + 3));
-    //     enable = (enable & m) | v;
-    //     wasmFuncs.writeReg(7, enable);
-    //   });
-
-    //   // Tone On/OFF
-    //   const tone = document.getElementById('Tone-' + ch);
-    //   tone.addEventListener('click', function () {
-    //     const m = (1 << i) ^ 0x3f;
-    //     let v = ((this.checked ? 0 : 1) << i);
-    //     enable = (enable & m) | v;
-    //     wasmFuncs.writeReg(7, enable);
-    //   });
-
-
-    //   // Volume 
-    //   const volume = document.getElementById('Volume-' + ch);
-    //   volume.addEventListener('input', function () {
-    //     document.getElementById('Volume-' + ch + '-Text').innerText = this.value;
-    //     let v = document.getElementById('Env-' + ch).checked ? 16 : 0 | this.value;
-    //     wasmFuncs.writeReg(8 + i, v);
-    //   });
-
-    //   // Envelope On/Off
-    //   const env = document.getElementById('Env-' + ch);
-    //   env.addEventListener('click', function () {
-    //     let v = this.checked ? 16 : 0;
-    //     v = v | volume.value;
-    //     wasmFuncs.writeReg(8 + i, v);
-    //   });
-
-    // });
-
-    // // Noise Period
-
-    // const noise = document.getElementById('Noise-Period');
-    // noise.addEventListener('input', function () {
-    //   document.getElementById('Noise-Period-Text').innerText = this.value;
-    //   wasmFuncs.writeReg(6, this.value);
-    // });
-
-    // // Enevlope Period
-
-    // const envPeriod = document.getElementById('Env-Period');
-    // envPeriod.addEventListener('input', function () {
-    //   document.getElementById('Env-Period-Text').innerText = this.value;
-    //   wasmFuncs.writeReg(11, this.value & 0xff);
-    //   wasmFuncs.writeReg(12, (this.value & 0xff00) >> 8);
-    // });
-
-    // // Envelope Shape
-
-    // ['Continue', 'Attack', 'Alternate', 'Hold'].reverse().forEach((p, i) => {
-    //   const param = document.getElementById(p);
-    //   param.addEventListener('click', function () {
-    //     let m = (1 << i) ^ 0xf;
-    //     let v = (this.checked ? 1 : 0) << i;
-    //     envShape = (envShape & m) | v;
-    //     wasmFuncs.writeReg(13, envShape);
-    //   });
-    // });
+    const filterLFO = document.getElementById('filter-lfo-sw');
+    const filterLFOPitch = document.getElementById('filter-lfo-pitch');
+    const filterLFOPitchText = document.getElementById('filter-lfo-pitch-text');
+    const filterLFOLevel = document.getElementById('filter-lfo-level');
+    const filterLFOLevelText = document.getElementById('filter-lfo-level-text');
 
     startButton.addEventListener('click', async () => {
 
