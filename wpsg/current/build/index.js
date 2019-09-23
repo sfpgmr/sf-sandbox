@@ -355,92 +355,79 @@
       sharedMemoryView.setUint32(timbreFlagInfo.offset,timbreFlagInfo.value,littleEndian);
     }
 
-    ampEnvelope.addEventListener('click',(e)=>{
+    function updateEnvelopeParam(value,inputText,envelopeName,propName){
+      inputText.value = value;
+      let envParamOffset = timbre + getOffset(memoryMap.TimbreWork[envelopeName].env_param_offset);
+      let envelopeOffset = sharedMemoryView.getUint32(envParamOffset,littleEndian);
+      let offset = envelopeOffset + getOffset(memoryMap.Envelope[propName]);
+      sharedMemoryView.setFloat32(offset,value,littleEndian);
+      wasmFuncs.updateEnvelope(envelopeOffset);
+    }
+
+    function updateTimbreFlagInfo(condition,value){
       const timbreFlagInfo = getTimbreFlagInfo();
-      if(e.srcElement.checked){
-        timbreFlagInfo.value |= 0x4;
+      if(condition){
+        timbreFlagInfo.value |= value;
       } else {
-        timbreFlagInfo.value &= 0xfffffffb;
+        timbreFlagInfo.value &= (0xffffffff ^ value);
       }
       setTimbreFlagInfo(timbreFlagInfo);
+    }
+
+    function updateLFOParam(value,inputText,lfoWorkOffsetName,lfoPropName){
+      inputText.value = value;
+      let lfoWorkOffset = timbre + getOffset(memoryMap.TimbreWork[lfoWorkOffsetName]);
+      let offset = getOffset(memoryMap.OscillatorWork[lfoPropName]) + lfoWorkOffset;
+      sharedMemoryView.setFloat32(offset,value,littleEndian);
+    }
+
+    ampEnvelope.addEventListener('click',(e)=>{
+      updateTimbreFlagInfo(e.srcElement.checked,0x4);
     });
 
     ampEGAttack.addEventListener('change',(e)=>{
-      ampEGAttackText.value = e.srcElement.value;
-      let envParamOffset = timbre + getOffset(memoryMap.TimbreWork.amplitude_envelope.env_param_offset);
-      let envelopeOffset = sharedMemoryView.getUint32(envParamOffset,littleEndian);
-      let attackOffset = envelopeOffset + getOffset(memoryMap.Envelope.attack_time);
-      sharedMemoryView.setFloat32(attackOffset,e.srcElement.value,littleEndian);
-      wasmFuncs.updateEnvelope(envelopeOffset);
+      updateEnvelopeParam(e.srcElement.value,ampEGAttackText,'amplitude_envelope','attack_time');
     });
 
     ampEGDecay.addEventListener('change',(e)=>{
-      ampEGDecayText.value = e.srcElement.value;
-      let envParamOffset = timbre + getOffset(memoryMap.TimbreWork.amplitude_envelope.env_param_offset);
-      let envelopeOffset = sharedMemoryView.getUint32(envParamOffset,littleEndian);
-      let offset = envelopeOffset + getOffset(memoryMap.Envelope.decay_time);
-      sharedMemoryView.setFloat32(offset,e.srcElement.value,littleEndian);
-      wasmFuncs.updateEnvelope(envelopeOffset);
+      updateEnvelopeParam(e.srcElement.value,ampEGDecayText,'amplitude_envelope','decay_time');
     });
 
     ampEGSustain.addEventListener('change',(e)=>{
-      ampEGSustainText.value = e.srcElement.value;
-      let envParamOffset = timbre + getOffset(memoryMap.TimbreWork.amplitude_envelope.env_param_offset);
-      let envelopeOffset = sharedMemoryView.getUint32(envParamOffset,littleEndian);
-      let offset = envelopeOffset + getOffset(memoryMap.Envelope.sustain_level);
-      sharedMemoryView.setFloat32(offset,e.srcElement.value,littleEndian);
-      wasmFuncs.updateEnvelope(envelopeOffset);
+      updateEnvelopeParam(e.srcElement.value,ampEGSustainText,'amplitude_envelope','sustain_level');
     });
 
     ampEGRelease.addEventListener('change',(e)=>{
-      ampEGReleaseText.value = e.srcElement.value;
-      let envParamOffset = timbre + getOffset(memoryMap.TimbreWork.amplitude_envelope.env_param_offset);
-      let envelopeOffset = sharedMemoryView.getUint32(envParamOffset,littleEndian);
-      let offset = envelopeOffset + getOffset(memoryMap.Envelope.release_time);
-      sharedMemoryView.setFloat32(offset,e.srcElement.value,littleEndian);
-      wasmFuncs.updateEnvelope(envelopeOffset);
+      updateEnvelopeParam(e.srcElement.value,ampEGReleaseText,'amplitude_envelope','release_time');
     });
 
     ampEGLevel.addEventListener('change',(e)=>{
-      ampEGLevelText.value = e.srcElement.value;
-      let envParamOffset = timbre + getOffset(memoryMap.TimbreWork.amplitude_envelope.env_param_offset);
-      let envelopeOffset = sharedMemoryView.getUint32(envParamOffset,littleEndian);
-      let offset = envelopeOffset + getOffset(memoryMap.Envelope.level);
-      sharedMemoryView.setFloat32(offset,e.srcElement.value,littleEndian);
-    });
-
-    ampEGLevel.addEventListener('change',(e)=>{
-      ampEGLevelText.value = e.srcElement.value;
-      let envParamOffset = timbre + getOffset(memoryMap.TimbreWork.amplitude_envelope.env_param_offset);
-      let envelopeOffset = sharedMemoryView.getUint32(envParamOffset,littleEndian);
-      let offset = envelopeOffset + getOffset(memoryMap.Envelope.level);
-      sharedMemoryView.setFloat32(offset,e.srcElement.value,littleEndian);
+      updateEnvelopeParam(e.srcElement.value,ampEGLevelText,'amplitude_envelope','level');
     });
 
     ampLFO.addEventListener('click',(e)=>{
-      const timbreFlagInfo = getTimbreFlagInfo();
-      if(e.srcElement.checked){
-        timbreFlagInfo.value |= 0x8;
-      } else {
-        timbreFlagInfo.value &= 0xfffffff7;
-      }
-      setTimbreFlagInfo(timbreFlagInfo);
+      updateTimbreFlagInfo(e.srcElement.checked,0x8);
     });
 
     ampLFOPitch.addEventListener('change',(e)=>{
-      ampLFOPitchText.value = e.srcElement.value;
-      let lfoWorkOffset = timbre + getOffset(memoryMap.TimbreWork.amplitude_lfo_work_offset);
-      let offset = getOffset(memoryMap.OscillatorWork.pitch) + lfoWorkOffset;
-      sharedMemoryView.setFloat32(offset,e.srcElement.value,littleEndian);
+      updateLFOParam(e.srcElement.value,ampLFOPitchText,'amplitude_lfo_work_offset','pitch');
     });
     
     ampLFOLevel.addEventListener('change',(e)=>{
-      ampLFOLevelText.value = e.srcElement.value;
-      let lfoOffset = timbre + getOffset(memoryMap.TimbreWork.amplitude_lfo_work_offset) + getOffset(memoryMap.OscillatorWork.level);
-      sharedMemoryView.setFloat32(lfoOffset,e.srcElement.value,littleEndian);
+      updateLFOParam(e.srcElement.value,ampLFOLevelText,'amplitude_lfo_work_offset','level');
     });
 
     // Filter Parameter
+    const filterEnable = document.getElementById('filter-sw');
+    const filterType = document.getElementById('filter-type');
+    const filterQ = document.getElementById('filter-q');
+    const filterQText = document.getElementById('filter-q-text');
+    const filterFrequency = document.getElementById('filter-frequency');
+    const filterFrequencyText = document.getElementById('filter-frequency-text');
+    const filterBandwidth = document.getElementById('filter-bandwidth');
+    const filterBandwidthText = document.getElementById('filter-bandwidth-text');
+    const filterGain = document.getElementById('filter-gain');
+    const filterGainText = document.getElementById('filter-gain-text');
 
     const filterEnvelope = document.getElementById('filter-envelope-sw');
     const filterEGAttack = document.getElementById('filter-attack');
@@ -460,6 +447,81 @@
     const filterLFOPitchText = document.getElementById('filter-lfo-pitch-text');
     const filterLFOLevel = document.getElementById('filter-lfo-level');
     const filterLFOLevelText = document.getElementById('filter-lfo-level-text');
+
+    function updateFilterValue(value,inputText,propName){
+      inputText.value = value;
+      const filterWorkOffset = timbre + getOffset(memoryMap.TimbreWork.filter);
+      const filterOffset = sharedMemoryView.getUint32(filterWorkOffset,littleEndian);
+      const filterQOffset = filterOffset + getOffset(memoryMap.Filter[propName]);
+      sharedMemoryView.setFloat32(filterQOffset,value,littleEndian);
+    }
+
+
+    filterEnable.addEventListener('change',(e)=>{
+      updateTimbreFlagInfo(e.srcElement.checked,0x10);
+    });
+
+    filterType.addEventListener('change',(e)=>{
+      const filterType = e.srcElement.value;
+      const filterWorkOffset = timbre + getOffset(memoryMap.TimbreWork.filter);
+      const filterOffset = sharedMemoryView.getUint32(filterWorkOffset,littleEndian);
+      wasmFuncs.initFilter(filterOffset,filterType,filterFrequency.value,filterQ.value,filterBandwidth.value,filterGain.value);
+      wasmFuncs.initFilterWork(filterOffset,filterWorkOffset);
+      // フィルタのタイプに応じてコントロールを有効化・無効化する必要あり
+    });
+
+    filterQ.addEventListener('change',(e)=>{
+      updateFilterValue(e.srcElement.value,filterQText,'q');
+    });
+
+    filterFrequency.addEventListener('change',(e)=>{
+      updateFilterValue(e.srcElement.value,filterFrequencyText,'base_frequency');
+    });
+
+    filterBandwidth.addEventListener('change',(e)=>{
+      updateFilterValue(e.srcElement.value,filterBandwidthText,'band_width');
+    });
+
+    filterGain.addEventListener('change',(e)=>{
+      updateFilterValue(e.srcElement.value,filterGainText,'gain');
+    });
+
+    filterEnvelope.addEventListener('click',(e)=>{
+      updateTimbreFlagInfo(e.srcElement.checked,0x20);
+    });
+
+    filterEGAttack.addEventListener('change',(e)=>{
+      updateEnvelopeParam(e.srcElement.value,filterEGAttackText,'filter_envelope','attack_time');
+    });
+
+    filterEGDecay.addEventListener('change',(e)=>{
+      updateEnvelopeParam(e.srcElement.value,filterEGDecayText,'filter_envelope','decay_time');
+    });
+
+    filterEGSustain.addEventListener('change',(e)=>{
+      updateEnvelopeParam(e.srcElement.value,filterEGSustainText,'filter_envelope','sutain_level');
+    });
+
+    filterEGRelease.addEventListener('change',(e)=>{
+      updateEnvelopeParam(e.srcElement.value,filterEGReleaseText,'filter_envelope','release_time');
+    });
+
+    filterEGLevel.addEventListener('change',(e)=>{
+      updateEnvelopeParam(e.srcElement.value,filterEGLevelText,'filter_envelope','level');
+    });
+
+    filterLFO.addEventListener('click',(e)=>{
+      updateTimbreFlagInfo(e.srcElement.checked,0x40);
+    });
+
+    filterLFOPitch.addEventListener('change',(e)=>{
+      updateLFOParam(e.srcElement.value,filterLFOPitchText,'filter_lfo_work_offset','pitch');
+    });
+    
+    filterLFOLevel.addEventListener('change',(e)=>{
+      updateLFOParam(e.srcElement.value,filterLFOLevelText,'filter_lfo_work_offset','level');
+    });
+
 
     startButton.addEventListener('click', async () => {
 
