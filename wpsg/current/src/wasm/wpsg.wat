@@ -161,8 +161,8 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
   )
 )
 
-;; メモリのアロケート
-(func $allocateMemory
+  ;; メモリのアロケート
+  (func $allocateMemory
   (param $size i32)
   (result i32)
   (local $mem_offset i32)
@@ -1291,62 +1291,49 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
         )
       )
 
-      (if 
-        (f32.ne 
-          (local.get $filter_value)
+      ;; フィルタ値を更新
+      (f32.store
+        (i32.add
+          (i32.const 464 (; TimbreWork.filter.freq_rate ;))
+          (local.get $timbre_work)
+        )
+        (local.get $filter_value)
+      )
+
+      (f32.store
+        (i32.add
+        (i32.const 468 (; TimbreWork.filter.current_frequency ;))
+        (local.get $timbre_work)
+        )
+        (f32.mul
           (f32.load
             (i32.add
-              (i32.const 464 (; TimbreWork.filter.freq_rate ;))
-              (local.get $timbre_work)
+              (i32.const 4 (; Filter.base_frequency ;))
+              (local.get $filter)
             )
           )
+          (local.get $filter_value)
         )
-        (then
-          ;; フィルタ値を更新
-          (f32.store
-            (i32.add
-              (i32.const 464 (; TimbreWork.filter.freq_rate ;))
-              (local.get $timbre_work)
-            )
-            (local.get $filter_value)
-          )
+      )
 
-          (f32.store
+      (call_indirect (type $filterFunc)
+        (i32.add
+          (i32.const 436 (; TimbreWork.filter ;))
+          (local.get $timbre_work)
+        )
+        (i32.add
+          (i32.load
             (i32.add
-            (i32.const 468 (; TimbreWork.filter.current_frequency ;))
-            (local.get $timbre_work)
-            )
-            (f32.mul
-              (f32.load
-                (i32.add
-                  (i32.const 4 (; Filter.base_frequency ;))
-                  (local.get $filter)
-                )
-              )
-              (local.get $filter_value)
-            )
-          )
-
-          (call_indirect (type $filterFunc)
-            (i32.add
-              (i32.const 436 (; TimbreWork.filter ;))
-              (local.get $timbre_work)
-            )
-            (i32.add
+              (i32.const 0 (; Filter.filter_type ;))
               (i32.load
                 (i32.add
-                  (i32.const 0 (; Filter.filter_type ;))
-                  (i32.load
-                    (i32.add
-                      (i32.const 436 (; TimbreWork.filter ;))
-                      (local.get $timbre_work)
-                    )
-                  )
+                  (i32.const 436 (; TimbreWork.filter ;))
+                  (local.get $timbre_work)
                 )
               )
-              (i32.const (; $.FILTER_FUNC_INDEX ;)8)
             )
           )
+          (i32.const (; $.FILTER_FUNC_INDEX ;)8)
         )
       )
     )

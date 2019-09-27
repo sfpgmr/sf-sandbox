@@ -339,7 +339,7 @@
           </label>
         </div>
         <div class="siimple-grid-col siimple-grid-col--6 siimple-grid-col--sm-8">
-          <input type="range" min="0.001" step="0.001" max="4.0" value="0.001" id="filter-q" />
+          <input type="range" min="0.001" step="0.001" max="1.0" value="0.001" id="filter-q" />
         </div>
         <div class="siimple-grid-col siimple-grid-col--3 siimple-grid-col--sm-4">
           <input type="text" class="siimple-input" id="filter-q-text"></input>
@@ -352,7 +352,7 @@
           </label>
         </div>
         <div class="siimple-grid-col siimple-grid-col--6 siimple-grid-col--sm-8">
-          <input type="range" min="0.001" step="0.001" max="4.0" value="0.001" id="filter-frequency" />
+          <input type="range" min="0.001" step="0.001" max="20000" value="0.001" id="filter-frequency" />
         </div>
         <div class="siimple-grid-col siimple-grid-col--3 siimple-grid-col--sm-4">
           <input type="text" class="siimple-input" id="filter-frequency-text"></input>
@@ -366,7 +366,7 @@
           </label>
         </div>
         <div class="siimple-grid-col siimple-grid-col--6 siimple-grid-col--sm-8">
-          <input type="range" min="0.001" step="0.001" max="4.0" value="0.001" id="filter-bandwidth" />
+          <input type="range" min="0.001" step="0.001" max="20000.0" value="0.001" id="filter-bandwidth" />
         </div>
         <div class="siimple-grid-col siimple-grid-col--3 siimple-grid-col--sm-4">
           <input type="text" class="siimple-input" id="filter-bandwidth-text"></input>
@@ -380,7 +380,7 @@
           </label>
         </div>
         <div class="siimple-grid-col siimple-grid-col--6 siimple-grid-col--sm-8">
-          <input type="range" min="0.001" step="0.001" max="4.0" value="0.001" id="filter-gain" />
+          <input type="range" min="0.001" step="0.001" max="1.0" value="0.001" id="filter-gain" />
         </div>
         <div class="siimple-grid-col siimple-grid-col--3 siimple-grid-col--sm-4">
           <input type="text" class="siimple-input" id="filter-gain-text"></input>
@@ -518,6 +518,142 @@
         <input type="text" class="siimple-input" id="filter-lfo-level-text"></input>
       </div>
     </div>
+    <div class="siimple-grid-row">
+      <div class="siimple-grid-col siimple-grid-col--12 siimple-grid-col--sm-12 siimple--bg-dark siimple--color-white">
+        pitch
+      </div>
+    </div>
+    <div class="siimple-grid-row">
+      <div class="siimple-grid-col siimple-grid-col--3 siimple-grid-col--sm-12">
+        <label class="siimple-label">
+          Envelope
+        </label>
+      </div>
+      <div class="siimple-grid-col siimple-grid-col--9 siimple-grid-col--sm-12">
+        <div class="siimple-switch siimple-switch--error">
+          <input type="checkbox" id="pitch-envelope-sw">
+          <label for="pitch-envelope-sw"></labeel>
+        </div>
+      </div>
+    </div>
+    <div class="siimple-grid-row">
+      <div class="siimple-grid-col siimple-grid-col--3 siimple-grid-col--sm-12">
+        <label class="siimple-label">
+          Attack
+        </label>
+      </div>
+      <div class="siimple-grid-col siimple-grid-col--6 siimple-grid-col--sm-8">
+        <input type="range" min="0.001" max="10.0" step="0.001" value="0.001" id="pitch-attack" />
+      </div>
+      <div class="siimple-grid-col siimple-grid-col--3 siimple-grid-col--sm-4">
+        <input type="text" class="siimple-input" id="pitch-attack-text"></input>
+      </div>
+    </div>
+    <div class="siimple-grid-row">
+      <div class="siimple-grid-col siimple-grid-col--3 siimple-grid-col--sm-12">
+        <label class="siimple-label">
+          Decay
+        </label>
+      </div>
+      <div class="siimple-grid-col siimple-grid-col--6 siimple-grid-col--sm-8">
+        <input type="range" min="0.001" max="10.0" step="0.001" value="0.001" id="pitch-decay" />
+      </div>
+      <div class="siimple-grid-col siimple-grid-col--3 siimple-grid-col--sm-4">
+        <input type="text" class="siimple-input" id="pitch-decay-text"></input>
+      </div>
+    </div>
+    <div class="siimple-grid-row">
+      <div class="siimple-grid-col siimple-grid-col--3 siimple-grid-col--sm-12">
+        <label class="siimple-label">
+          Suatain
+        </label>
+      </div>
+      <div class="siimple-grid-col siimple-grid-col--6 siimple-grid-col--sm-8">
+        <input type="range" min="0.001" max="1.0" step="0.001" value="0.001" id="pitch-sustain" />
+      </div>
+      <div class="siimple-grid-col siimple-grid-col--3 siimple-grid-col--sm-4">
+        <input type="text" class="siimple-input" id="pitch-sustain-text"></input>
+      </div>
+    </div>
+    <div class="siimple-grid-row">
+      <div class="siimple-grid-col siimple-grid-col--3 siimple-grid-col--sm-12">
+        <label class="siimple-label">
+          Release
+        </label>
+      </div>
+      <div class="siimple-grid-col siimple-grid-col--6 siimple-grid-col--sm-8">
+        <input type="range" min="0.001" max="10.0" step="0.001" value="0.001" id="pitch-release" />
+      </div>
+      <div class="siimple-grid-col siimple-grid-col--3 siimple-grid-col--sm-4">
+        <input type="text" class="siimple-input" id="pitch-release-text"></input>
+      </div>
+    </div>
+    <div class="siimple-grid-row">
+      <div class="siimple-grid-col siimple-grid-col--3 siimple-grid-col--sm-12">
+        <label class="siimple-label">
+          level
+        </label>
+      </div>
+      <div class="siimple-grid-col siimple-grid-col--6 siimple-grid-col--sm-8">
+        <input type="range" min="0.001" max="1.0" step="0.001" value="0.001" id="pitch-level" />
+      </div>
+      <div class="siimple-grid-col siimple-grid-col--3 siimple-grid-col--sm-4">
+        <input type="text" class="siimple-input" id="pitch-level-text"></input>
+      </div>
+    </div>
+    <div class="siimple-grid-row">
+      <div class="siimple-grid-col siimple-grid-col--3 siimple-grid-col--sm-12">
+        <label class="siimple-label">
+          LFO
+        </label>
+      </div>
+      <div class="siimple-grid-col siimple-grid-col--9 siimple-grid-col--sm-12">
+        <div class="siimple-switch siimple-switch--error">
+          <input type="checkbox" id="pitch-lfo-sw">
+          <label for="pitch-lfo-sw"></label>
+        </div>
+      </div>
+    </div>
+    <div class="siimple-grid-row">
+      <div class="siimple-grid-col siimple-grid-col--3 siimple-grid-col--sm-12">
+        <label class="siimple-label">
+          LFO Wave No.
+        </label>
+      </div>
+      <div class="siimple-grid-col siimple-grid-col--9 siimple-grid-col--sm-12">
+        <select class="siimple-select" id="pitch-lfo-Wave-No">
+          <option selected>1</option>
+          <option>2</option>
+          <option>3</option>
+        </select>
+      </div>
+    </div>
+    <div class="siimple-grid-row">
+      <div class="siimple-grid-col siimple-grid-col--3 siimple-grid-col--sm-12">
+        <label class="siimple-label">
+          LFO Rate
+        </label>
+      </div>
+      <div class="siimple-grid-col siimple-grid-col--6 siimple-grid-col--sm-8">
+        <input type="range" min="0.001" step="0.001" max="4.0" value="0.001" id="pitch-lfo-pitch" />
+      </div>
+      <div class="siimple-grid-col siimple-grid-col--3 siimple-grid-col--sm-4">
+        <input type="text" class="siimple-input" id="pitch-lfo-pitch-text"></input>
+      </div>
+    </div>
+    <div class="siimple-grid-row">
+      <div class="siimple-grid-col siimple-grid-col--3 siimple-grid-col--sm-12">
+        <label class="siimple-label">
+          LFO Level
+        </label>
+      </div>
+      <div class="siimple-grid-col siimple-grid-col--6 siimple-grid-col--sm-8">
+        <input type="range" min="0.001" step="0.001" max="1.0" value="0.001" id="pitch-lfo-level" />
+      </div>
+      <div class="siimple-grid-col siimple-grid-col--3 siimple-grid-col--sm-4">
+        <input type="text" class="siimple-input" id="pitch-lfo-level-text"></input>
+      </div>
+    </div>    
   </div>
   <script src="./index.js"></script>
 </body>

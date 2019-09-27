@@ -385,23 +385,23 @@
       updateTimbreFlagInfo(e.srcElement.checked,0x4);
     });
 
-    ampEGAttack.addEventListener('change',(e)=>{
+    ampEGAttack.addEventListener('input',(e)=>{
       updateEnvelopeParam(e.srcElement.value,ampEGAttackText,'amplitude_envelope','attack_time');
     });
 
-    ampEGDecay.addEventListener('change',(e)=>{
+    ampEGDecay.addEventListener('input',(e)=>{
       updateEnvelopeParam(e.srcElement.value,ampEGDecayText,'amplitude_envelope','decay_time');
     });
 
-    ampEGSustain.addEventListener('change',(e)=>{
+    ampEGSustain.addEventListener('input',(e)=>{
       updateEnvelopeParam(e.srcElement.value,ampEGSustainText,'amplitude_envelope','sustain_level');
     });
 
-    ampEGRelease.addEventListener('change',(e)=>{
+    ampEGRelease.addEventListener('input',(e)=>{
       updateEnvelopeParam(e.srcElement.value,ampEGReleaseText,'amplitude_envelope','release_time');
     });
 
-    ampEGLevel.addEventListener('change',(e)=>{
+    ampEGLevel.addEventListener('input',(e)=>{
       updateEnvelopeParam(e.srcElement.value,ampEGLevelText,'amplitude_envelope','level');
     });
 
@@ -409,11 +409,11 @@
       updateTimbreFlagInfo(e.srcElement.checked,0x8);
     });
 
-    ampLFOPitch.addEventListener('change',(e)=>{
+    ampLFOPitch.addEventListener('input',(e)=>{
       updateLFOParam(e.srcElement.value,ampLFOPitchText,'amplitude_lfo_work_offset','pitch');
     });
     
-    ampLFOLevel.addEventListener('change',(e)=>{
+    ampLFOLevel.addEventListener('input',(e)=>{
       updateLFOParam(e.srcElement.value,ampLFOLevelText,'amplitude_lfo_work_offset','level');
     });
 
@@ -470,19 +470,19 @@
       // フィルタのタイプに応じてコントロールを有効化・無効化する必要あり
     });
 
-    filterQ.addEventListener('change',(e)=>{
+    filterQ.addEventListener('input',(e)=>{
       updateFilterValue(e.srcElement.value,filterQText,'q');
     });
 
-    filterFrequency.addEventListener('change',(e)=>{
+    filterFrequency.addEventListener('input',(e)=>{
       updateFilterValue(e.srcElement.value,filterFrequencyText,'base_frequency');
     });
 
-    filterBandwidth.addEventListener('change',(e)=>{
+    filterBandwidth.addEventListener('input',(e)=>{
       updateFilterValue(e.srcElement.value,filterBandwidthText,'band_width');
     });
 
-    filterGain.addEventListener('change',(e)=>{
+    filterGain.addEventListener('input',(e)=>{
       updateFilterValue(e.srcElement.value,filterGainText,'gain');
     });
 
@@ -490,23 +490,23 @@
       updateTimbreFlagInfo(e.srcElement.checked,0x20);
     });
 
-    filterEGAttack.addEventListener('change',(e)=>{
+    filterEGAttack.addEventListener('input',(e)=>{
       updateEnvelopeParam(e.srcElement.value,filterEGAttackText,'filter_envelope','attack_time');
     });
 
-    filterEGDecay.addEventListener('change',(e)=>{
+    filterEGDecay.addEventListener('input',(e)=>{
       updateEnvelopeParam(e.srcElement.value,filterEGDecayText,'filter_envelope','decay_time');
     });
 
-    filterEGSustain.addEventListener('change',(e)=>{
-      updateEnvelopeParam(e.srcElement.value,filterEGSustainText,'filter_envelope','sutain_level');
+    filterEGSustain.addEventListener('input',(e)=>{
+      updateEnvelopeParam(e.srcElement.value,filterEGSustainText,'filter_envelope','sustain_level');
     });
 
-    filterEGRelease.addEventListener('change',(e)=>{
+    filterEGRelease.addEventListener('input',(e)=>{
       updateEnvelopeParam(e.srcElement.value,filterEGReleaseText,'filter_envelope','release_time');
     });
 
-    filterEGLevel.addEventListener('change',(e)=>{
+    filterEGLevel.addEventListener('input',(e)=>{
       updateEnvelopeParam(e.srcElement.value,filterEGLevelText,'filter_envelope','level');
     });
 
@@ -514,13 +514,72 @@
       updateTimbreFlagInfo(e.srcElement.checked,0x40);
     });
 
-    filterLFOPitch.addEventListener('change',(e)=>{
+    filterLFOPitch.addEventListener('input',(e)=>{
       updateLFOParam(e.srcElement.value,filterLFOPitchText,'filter_lfo_work_offset','pitch');
     });
     
-    filterLFOLevel.addEventListener('change',(e)=>{
+    filterLFOLevel.addEventListener('input',(e)=>{
       updateLFOParam(e.srcElement.value,filterLFOLevelText,'filter_lfo_work_offset','level');
     });
+
+
+    // pitch
+
+    const pitchEnvelope = document.getElementById('pitch-envelope-sw');
+    const pitchEGAttack = document.getElementById('pitch-attack');
+    const pitchEGDecay = document.getElementById('pitch-decay');
+    const pitchEGSustain = document.getElementById('pitch-sustain');
+    const pitchEGRelease = document.getElementById('pitch-release');
+    const pitchEGLevel = document.getElementById('pitch-level');
+
+    const pitchEGAttackText = document.getElementById('pitch-attack-text');
+    const pitchEGDecayText = document.getElementById('pitch-decay-text');
+    const pitchEGSustainText = document.getElementById('pitch-sustain-text');
+    const pitchEGReleaseText = document.getElementById('pitch-release-text');
+    const pitchEGLevelText = document.getElementById('pitch-level-text');
+
+    const pitchLFO = document.getElementById('pitch-lfo-sw');
+    const pitchLFOPitch = document.getElementById('pitch-lfo-pitch');
+    const pitchLFOPitchText = document.getElementById('pitch-lfo-pitch-text');
+    const pitchLFOLevel = document.getElementById('pitch-lfo-level');
+    const pitchLFOLevelText = document.getElementById('pitch-lfo-level-text');
+
+    pitchEnvelope.addEventListener('click',(e)=>{
+      updateTimbreFlagInfo(e.srcElement.checked,0x1);
+    });
+
+    pitchEGAttack.addEventListener('input',(e)=>{
+      updateEnvelopeParam(e.srcElement.value,pitchEGAttackText,'pitch_envelope','attack_time');
+    });
+
+    pitchEGDecay.addEventListener('input',(e)=>{
+      updateEnvelopeParam(e.srcElement.value,pitchEGDecayText,'pitch_envelope','decay_time');
+    });
+
+    pitchEGSustain.addEventListener('input',(e)=>{
+      updateEnvelopeParam(e.srcElement.value,pitchEGSustainText,'pitch_envelope','sustain_level');
+    });
+
+    pitchEGRelease.addEventListener('input',(e)=>{
+      updateEnvelopeParam(e.srcElement.value,pitchEGReleaseText,'pitch_envelope','release_time');
+    });
+
+    pitchEGLevel.addEventListener('input',(e)=>{
+      updateEnvelopeParam(e.srcElement.value,pitchEGLevelText,'pitch_envelope','level');
+    });
+
+    pitchLFO.addEventListener('click',(e)=>{
+      updateTimbreFlagInfo(e.srcElement.checked,0x2);
+    });
+
+    pitchLFOPitch.addEventListener('input',(e)=>{
+      updateLFOParam(e.srcElement.value,pitchLFOPitchText,'pitch_lfo_work_offset','pitch');
+    });
+    
+    pitchLFOLevel.addEventListener('input',(e)=>{
+      updateLFOParam(e.srcElement.value,pitchLFOLevelText,'pitch_lfo_work_offset','level');
+    });
+
 
 
     startButton.addEventListener('click', async () => {

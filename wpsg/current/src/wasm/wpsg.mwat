@@ -128,7 +128,7 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
   i32 flag;
   f32 pitch;
   f32 level;
-  f32 sample_rate;
+  i64 sample_rate;
   f32 value;
 }
 
@@ -141,10 +141,10 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
 ;; 波形メモリ・パラメータ
 {@struct WaveTable 
   Oscillator base;
-  ;; サンプル・サイズは２のべき乗 (min:2)
+  ;; サンプル・サイズは２のべき乗 (min:2,max:512)
   ;; 1周期分
   i32 size;
-  i32 wave_size_mask;
+  i64 wave_size_mask;
   ;; Waveデータ開始位置
   f32 wave_data_start;
 }
@@ -153,10 +153,10 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
 {@struct WaveTableWork 
   OscillatorWork base;
   i32 wave_table_offset;
-  f32 base_frequency;
-  f32 table_sample_rate;
-  i32 counter;
-  f32 delta;
+  i64 base_frequency;
+  i64 table_index;
+  i64 pitch_work;
+  i64 delta;
 }
 
 ;; --------------------------
@@ -358,8 +358,8 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
   )
 )
 
-;; メモリのアロケート
-(func $allocateMemory
+  ;; メモリのアロケート
+  (func $allocateMemory
   (param $size i32)
   (result i32)
   (local $mem_offset i32)
@@ -489,14 +489,19 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
     (local.get $size)
   )
 
-  (i32.store
+  (i64.store
     (i32.add
       (&WaveTable.wave_size_mask;)
       (local.get $wave_table_offset)
     )
-    (i32.sub
-      (local.get $size)
-      (i32.const 1)
+    (i64.shl
+      (i64.sub
+        (i64.extend_i32_u
+          (local.get $size)
+        )
+        (i64.const 1)
+      )
+      (i32.const 32)
     )
   )
 )
@@ -527,7 +532,15 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
   (param $wave_table_work_offset i32)
   (param $wave_table_offset i32)
   (param $base_frequency f32)
+  (local $base_frequency_i64 i64)
   
+
+  (local.set $base_frequency_i64
+    (i64.trunc_f32_u
+      (local.get $base_frequency)
+    )
+  )
+
   (f32.store 
     (i32.add
       (&WaveTableWork.base.sample_rate;)
@@ -536,12 +549,12 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
     (f32.load (&sample_rate;))
   )
 
-  (f32.store 
+  (i64.store 
     (i32.add
       (&WaveTableWork.base_frequency;)
       (local.get $wave_table_work_offset)
     )
-    (local.get $base_frequency)
+    (local.get $base_frequency_i64)
   )
 
   (f32.store
@@ -561,54 +574,57 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
     )
     (f32.const 1)
   )
-
-  (f32.store 
-    (i32.add
-      (&WaveTableWork.table_sample_rate;)
+  (i64.store
+    (i64.add
+      (&WaveTableWork.pitch_work;)
       (local.get $wave_table_work_offset)
     )
-    (f32.mul
-      (f32.mul
-        (local.get $base_frequency)
-        (f32.convert_i32_s
-          (i32.load
-            (i32.add
-              (&WaveTable.size;)
-              (local.get $wave_table_offset)
+    (i64.const 0x100000000)
+  )
+
+  (i64.store 
+    (i32.add
+      (&WaveTableWork.delta;)
+      (local.get $wave_table_work_offset)
+    )
+    (i64.div
+      (i64.mul
+        (i64.mul
+          (local.get $base_frequency_i64)
+          (i64.shl
+            (i64.extend_i32_u
+              (i32.load
+                (i32.add
+                  (&WaveTable.size;)
+                  (local.get $wave_table_offset)
+                )
+              )
             )
+            (i32.const 32)
+          )
+        )
+        (i64.load
+          (i32.add
+            (&WaveTableWork.pitch_work;)
+            (local.get $wave_table_work_offset)
           )
         )
       )
-      (f32.load
+      (i64.load
         (i32.add
-          (&OscillatorWork.pitch;)
+          (&WaveTableWork.base.sample_rate;)
           (local.get $wave_table_work_offset)
         )
       )
     )
   )
 
-  (i32.store
+  (i64.store
     (i32.add
-      (&WaveTableWork.counter;)
+      (&WaveTableWork.table_index;)
       (local.get $wave_table_work_offset)
     )
-    (i32.const 0)
-  )
-
-
-  ;; delta
-  (f32.store
-    (i32.add
-      (&WaveTableWork.delta;)
-      (local.get $wave_table_work_offset)
-    )
-    (f32.load
-      (i32.add
-        (&WaveTableWork.base.sample_rate;)
-        (local.get $wave_table_work_offset)
-      )
-    )
+    (i64.const 0)
   )
 
   ;; value
@@ -629,7 +645,6 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
     (local.get $wave_table_offset)
   )
 
-
 )
 
 ;; # wave data の読み出し #
@@ -637,160 +652,74 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
   (param $wave_table_work_offset i32)
   (result f32)
   (local $wave_table_offset i32)
-  (local $counter i32)
+  (local $table_index i64)
+  (local $delta i64)
   (local $value f32)
-  (local $delta f32)
 
-  (if 
-    (f32.le
-      (local.tee $delta
-        (f32.sub 
-          (local.tee $delta
-            (f32.load
-              (i32.add 
-                (&WaveTableWork.delta;)
-                (local.get $wave_table_work_offset)
-              )
-            )
-          )
-          (f32.load
-            (i32.add
-              (&WaveTableWork.table_sample_rate;)
-              (local.get $wave_table_work_offset)
-            )
-          )
-        )
-      )
-      (f32.const 0)
+  (local.get $table_index
+    (i32.add
+      (&WaveTableWork.table_index;)
+      (local.get $wave_table_work_offset)
     )
+  )
 
-    (then
-      (local.set $wave_table_offset
-        (i32.load
-          (i32.add 
-            (&WaveTableWork.base.param_offset;)
-            (local.get $wave_table_work_offset)
-          )
-        )
-      )
-      
-      ;; delta を進め、波形データを$valueにセットする
-      (f32.store 
+  (local.get $delta
+    (i32.add
+      (&WaveTableWork.delta;)
+      (local.get $wave_table_work_offset)
+    )
+  )
+
+  (i64.store
+    (i32.add
+      (local.get $table_index)
+      (local.get $delta)
+    )
+    (local.tee $table_index
+      (i64.and
         (i32.add
-          (&WaveTableWork.base.value;)
-          (local.get $wave_table_work_offset)
+          (local.get $table_index)
+          (local.get $delta)
         )
-        (local.tee $value
-          (f32.mul
-            (f32.load
-              (i32.add
-                (&OscillatorWork.level;)
-                (local.get $wave_table_work_offset)
-              )
-            )
-            (f32.load
-              (i32.add 
-                (i32.shl 
-                  (local.tee $counter
-                    (i32.and
-                      (i32.add
-                        (i32.load 
-                          (i32.add
-                            (&WaveTableWork.counter;)
-                            (local.get $wave_table_work_offset)
-                          )
-                        )
-                        (i32.const 1)
-                      )
-                      (i32.load 
-                        (i32.add 
-                          (&WaveTable.wave_size_mask;)
-                          (local.get $wave_table_offset)
-                        )
-                      )
-                    )
-                  )
-                  (i32.const 2)
-                )
-                (i32.add 
-                  (&WaveTable.wave_data_start;)
-                  (local.get $wave_table_offset)
-                )
-              )
-            )              
+        (i64.load
+          (i32.add
+            (&WaveTable.wave_size_mask;)
+            (local.get $wave_table_offset)
           )
         )
       )
-
-      (i32.store 
-        (i32.add
-          (&WaveTableWork.counter;)
-          (local.get $wave_table_work_offset)
-        )
-        (local.get $counter)
-      )
-
-      ;; deltaをリセットする
-
-      ;; table_sample_rateの更新
-      (f32.store
-        (i32.add
-          (&WaveTableWork.table_sample_rate;)
-          (local.get $wave_table_work_offset)
-        )
-        (f32.mul
-          (f32.load
-            (i32.add
-              (&WaveTableWork.base_frequency;)
-              (local.get $wave_table_work_offset)
-            )
-          )
-          (f32.convert_i32_s
-            (i32.load
-              (i32.add
-                (&WaveTable.size;)
-                (local.get $wave_table_offset)
-              )
-            )
-          )
-        ) 
-      )
-
-      (f32.store 
-        (i32.add
-          (&WaveTableWork.delta;)
-          (local.get $wave_table_work_offset)
-        )
-        (local.tee $delta
-          (f32.add 
-            (local.get $delta)
-            (f32.mul
-              (f32.load
-                (i32.add
-                  (&WaveTableWork.base.sample_rate;)
-                  (local.get $wave_table_work_offset)
-                )
-              )
-              (f32.load
-                (i32.add
-                  (&WaveTableWork.base.pitch;)
-                  (local.get $wave_table_work_offset)
-                )
-              )
-            )
-          )
-        ) 
-      )
-      (return (local.get $value))
     )
   )
 
   (f32.store 
     (i32.add
-      (&WaveTableWork.delta;)
+      (&WaveTableWork.base.value;)
       (local.get $wave_table_work_offset)
     )
-    (local.get $delta )
+    (local.tee $value
+      (f32.mul
+        (f32.load
+          (i32.add
+            (&OscillatorWork.level;)
+            (local.get $wave_table_work_offset)
+          )
+        )
+        (f32.load
+          (i32.add
+            (i32.wrap_i64
+              (i64.shr_u
+                (local.get $table_index)
+                (i32.const 32)
+              )
+            )
+            (i32.add 
+              (&WaveTable.wave_data_start;)
+              (local.get $wave_table_offset)
+            )
+          )
+        )
+      )
+    )
   )
 
   (f32.load
@@ -1488,62 +1417,49 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
         )
       )
 
-      (if 
-        (f32.ne 
-          (local.get $filter_value)
+      ;; フィルタ値を更新
+      (f32.store
+        (i32.add
+          (&TimbreWork.filter.freq_rate;)
+          (local.get $timbre_work)
+        )
+        (local.get $filter_value)
+      )
+
+      (f32.store
+        (i32.add
+        (&TimbreWork.filter.current_frequency;)
+        (local.get $timbre_work)
+        )
+        (f32.mul
           (f32.load
             (i32.add
-              (&TimbreWork.filter.freq_rate;)
-              (local.get $timbre_work)
+              (&Filter.base_frequency;)
+              (local.get $filter)
             )
           )
+          (local.get $filter_value)
         )
-        (then
-          ;; フィルタ値を更新
-          (f32.store
-            (i32.add
-              (&TimbreWork.filter.freq_rate;)
-              (local.get $timbre_work)
-            )
-            (local.get $filter_value)
-          )
+      )
 
-          (f32.store
+      (call_indirect (type $filterFunc)
+        (i32.add
+          (&TimbreWork.filter;)
+          (local.get $timbre_work)
+        )
+        (i32.add
+          (i32.load
             (i32.add
-            (&TimbreWork.filter.current_frequency;)
-            (local.get $timbre_work)
-            )
-            (f32.mul
-              (f32.load
-                (i32.add
-                  (&Filter.base_frequency;)
-                  (local.get $filter)
-                )
-              )
-              (local.get $filter_value)
-            )
-          )
-
-          (call_indirect (type $filterFunc)
-            (i32.add
-              (&TimbreWork.filter;)
-              (local.get $timbre_work)
-            )
-            (i32.add
+              (&Filter.filter_type;)
               (i32.load
                 (i32.add
-                  (&Filter.filter_type;)
-                  (i32.load
-                    (i32.add
-                      (&TimbreWork.filter;)
-                      (local.get $timbre_work)
-                    )
-                  )
+                  (&TimbreWork.filter;)
+                  (local.get $timbre_work)
                 )
               )
-              (i32.const {$.FILTER_FUNC_INDEX})
             )
           )
+          (i32.const {$.FILTER_FUNC_INDEX})
         )
       )
     )
