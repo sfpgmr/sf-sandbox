@@ -722,12 +722,8 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
     )
   )
 
-  (f32.load
-    (i32.add
-      (&WaveTableWork.base.value;)
-      (local.get $wave_table_work_offset)
-    )
-  )
+  (local.get $value)
+
 )
 
 ;; -------------------------------------
