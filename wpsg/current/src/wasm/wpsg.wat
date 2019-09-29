@@ -350,19 +350,23 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
     )
   )
 
-  (f32.store 
-    (i32.add
-      (i32.const 16 (; WaveTableWork.base.sample_rate ;))
-      (local.get $wave_table_work_offset)
-    )
+  (f32.store
+    
+(i32.add
+  (i32.const 16 (; WaveTableWork.base.sample_rate ;))
+  (local.get $wave_table_work_offset)
+)
+ 
     (f32.load (i32.const 4 (; sample_rate ;)))
   )
 
-  (i64.store 
-    (i32.add
-      (i32.const 32 (; WaveTableWork.base_frequency ;))
-      (local.get $wave_table_work_offset)
-    )
+  (i64.store
+    
+(i32.add
+  (i32.const 32 (; WaveTableWork.base_frequency ;))
+  (local.get $wave_table_work_offset)
+)
+ 
     (local.get $base_frequency_i64)
   )
 
@@ -467,40 +471,48 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
   (local $delta i64)
   (local $value f32)
 
-  (local.get $table_index
-    (i32.add
-      (i32.const 40 (; WaveTableWork.table_index ;))
-      (local.get $wave_table_work_offset)
-    )
-  )
-
-  (local.get $delta
-    (i32.add
-      (i32.const 56 (; WaveTableWork.delta ;))
-      (local.get $wave_table_work_offset)
-    )
-  )
-
-  (i64.store
-    (i32.add
+  (local.set $table_index
+    (i64.load
       
 (i32.add
   (i32.const 40 (; WaveTableWork.table_index ;))
   (local.get $wave_table_work_offset)
 )
-
+    
     )
+  )
+
+  (local.set $delta
+    (i64.load
+      
+(i32.add
+  (i32.const 56 (; WaveTableWork.delta ;))
+  (local.get $wave_table_work_offset)
+)
+ 
+    )
+  )
+
+  (i64.store
+    
+(i32.add
+  (i32.const 40 (; WaveTableWork.table_index ;))
+  (local.get $wave_table_work_offset)
+)
+
     (local.tee $table_index
       (i64.and
-        (i32.add
+        (i64.add
           (local.get $table_index)
           (local.get $delta)
         )
-        (i64.load
-          (i32.add
-            (i32.const 12 (; WaveTable.wave_size_mask ;))
-            (local.get $wave_table_offset)
-          )
+        (i64.load 
+          
+(i32.add
+  (i32.const 12 (; WaveTable.wave_size_mask ;))
+  (local.get $wave_table_offset)
+)
+
         )
       )
     )
@@ -516,10 +528,12 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
     (local.tee $value
       (f32.mul
         (f32.load
-          (i32.add
-            (i32.const 12 (; OscillatorWork.level ;))
-            (local.get $wave_table_work_offset)
-          )
+          
+(i32.add
+  (i32.const 12 (; OscillatorWork.level ;))
+  (local.get $wave_table_work_offset)
+)
+
         )
         (f32.load
           (i32.add
@@ -529,7 +543,7 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
                 (i64.const 32)
               )
             )
-            (i32.add 
+            (i32.add
               (i32.const 20 (; WaveTable.wave_data_start ;))
               (local.get $wave_table_offset)
             )
