@@ -19,6 +19,7 @@
 {@end_macro_def}
 
 
+
 (module
   (type $oscillatorFunc (func (param i32) (result f32)))
   (type $filterFunc (func (param i32)))
@@ -461,6 +462,7 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
   (param $wave_table_offset i32)
   ;; サイズ（２のべき乗単位で指定）
   (param $size i32)
+
   (i32.store 
     {@@offset &WaveTable.base.oscillator_type;,$wave_table_offset } 
     (i32.const 0)
@@ -528,6 +530,36 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
   (local.get $offset)
 )
 
+{@macro_def calc_delta(base_freq,table_offset,table_work_offset)}
+(i64.div_u
+  (i64.mul
+    (i64.mul
+      (base_freq)
+      (i64.extend_i32_u
+        (i32.load
+          (i32.add
+            (&WaveTable.size;)
+            (local.get table_offset)
+          )
+        )
+      )
+    )
+    (i64.load
+      (i32.add
+        (&WaveTableWork.pitch_work;)
+        (local.get table_work_offset)
+      )
+    )
+  )
+  (i64.load
+    (i32.add
+      (&WaveTableWork.base.sample_rate;)
+      (local.get table_work_offset)
+    )
+  )
+)
+{@end_macro_def}
+
 ;; # wave table workの初期化 #
 (func $initWaveTableWork
   (param $wave_table_work_offset i32)
@@ -553,62 +585,25 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
   )
 
   (f32.store
-    (i32.add
-      (&OscillatorWork.level;)
-      (local.get $wave_table_work_offset)
-    )
+    {@@offset &OscillatorWork.level;,$wave_table_work_offset} 
     (f32.const 1)
   )
 
 
   ;;pitch
   (f32.store
-    (i32.add
-      (&WaveTableWork.base.pitch;)
-      (local.get $wave_table_work_offset)
-    )
+    {@@offset &WaveTableWork.base.pitch;,$wave_table_work_offset} 
     (f32.const 1)
   )
+
   (i64.store
     {@@offset &WaveTableWork.pitch_work;,$wave_table_work_offset}
     (i64.const 0x100000000)
   )
 
   (i64.store 
-    (i32.add
-      (&WaveTableWork.delta;)
-      (local.get $wave_table_work_offset)
-    )
-    (i64.div_u
-      (i64.mul
-        (i64.mul
-          (local.get $base_frequency_i64)
-          (i64.shl
-            (i64.extend_i32_u
-              (i32.load
-                (i32.add
-                  (&WaveTable.size;)
-                  (local.get $wave_table_offset)
-                )
-              )
-            )
-            (i64.const 32)
-          )
-        )
-        (i64.load
-          (i32.add
-            (&WaveTableWork.pitch_work;)
-            (local.get $wave_table_work_offset)
-          )
-        )
-      )
-      (i64.load
-        (i32.add
-          (&WaveTableWork.base.sample_rate;)
-          (local.get $wave_table_work_offset)
-        )
-      )
-    )
+    {@@offset &WaveTableWork.delta;,$wave_table_work_offset}
+    {@@calc_delta local.get $base_frequency_i64,$wave_table_offset,$wave_table_work_offset}
   )
 
   (i64.store
@@ -647,6 +642,12 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
   (local $table_index i64)
   (local $delta i64)
   (local $value f32)
+
+  (local.set $wave_table_offset
+    (i32.load 
+      {@@offset  &WaveTableWork.base.param_offset;,$wave_table_work_offset} 
+    )
+  )
 
   (local.set $table_index
     (i64.load
