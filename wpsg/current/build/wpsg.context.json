@@ -3,6 +3,263 @@
   "OSC_CREATE_FUNC_INDEX": 1,
   "FILTER_FUNC_INDEX": 8,
   "PIx2": 6.283185307179586,
+  "offset": {
+    "type": "MacroDefinition",
+    "macroName": "offset",
+    "macroParams": {
+      "type": "MacroParams",
+      "value": [
+        "offset_literal",
+        "offset_base"
+      ],
+      "start": {
+        "offset": 260,
+        "line": 14,
+        "column": 19
+      },
+      "end": {
+        "offset": 288,
+        "line": 14,
+        "column": 47
+      }
+    },
+    "macroBody": [
+      {
+        "type": "WhiteSpace",
+        "value": "\r\n",
+        "start": {
+          "offset": 289,
+          "line": 14,
+          "column": 48
+        },
+        "end": {
+          "offset": 291,
+          "line": 15,
+          "column": 1
+        }
+      },
+      {
+        "type": "Parenthesis",
+        "kind": "(",
+        "start": {
+          "offset": 291,
+          "line": 15,
+          "column": 1
+        },
+        "end": {
+          "offset": 292,
+          "line": 15,
+          "column": 2
+        }
+      },
+      {
+        "type": "Identifier",
+        "name": "i32.add",
+        "start": {
+          "offset": 292,
+          "line": 15,
+          "column": 2
+        },
+        "end": {
+          "offset": 299,
+          "line": 15,
+          "column": 9
+        }
+      },
+      {
+        "type": "WhiteSpace",
+        "value": "\r\n  ",
+        "start": {
+          "offset": 299,
+          "line": 15,
+          "column": 9
+        },
+        "end": {
+          "offset": 303,
+          "line": 16,
+          "column": 3
+        }
+      },
+      {
+        "type": "Parenthesis",
+        "kind": "(",
+        "start": {
+          "offset": 303,
+          "line": 16,
+          "column": 3
+        },
+        "end": {
+          "offset": 304,
+          "line": 16,
+          "column": 4
+        }
+      },
+      {
+        "type": "Identifier",
+        "name": "offset_literal",
+        "start": {
+          "offset": 304,
+          "line": 16,
+          "column": 4
+        },
+        "end": {
+          "offset": 318,
+          "line": 16,
+          "column": 18
+        }
+      },
+      {
+        "type": "Parenthesis",
+        "kind": ")",
+        "start": {
+          "offset": 318,
+          "line": 16,
+          "column": 18
+        },
+        "end": {
+          "offset": 319,
+          "line": 16,
+          "column": 19
+        }
+      },
+      {
+        "type": "WhiteSpace",
+        "value": "\r\n  ",
+        "start": {
+          "offset": 319,
+          "line": 16,
+          "column": 19
+        },
+        "end": {
+          "offset": 323,
+          "line": 17,
+          "column": 3
+        }
+      },
+      {
+        "type": "Parenthesis",
+        "kind": "(",
+        "start": {
+          "offset": 323,
+          "line": 17,
+          "column": 3
+        },
+        "end": {
+          "offset": 324,
+          "line": 17,
+          "column": 4
+        }
+      },
+      {
+        "type": "Identifier",
+        "name": "local.get",
+        "start": {
+          "offset": 324,
+          "line": 17,
+          "column": 4
+        },
+        "end": {
+          "offset": 333,
+          "line": 17,
+          "column": 13
+        }
+      },
+      {
+        "type": "WhiteSpace",
+        "value": " ",
+        "start": {
+          "offset": 333,
+          "line": 17,
+          "column": 13
+        },
+        "end": {
+          "offset": 334,
+          "line": 17,
+          "column": 14
+        }
+      },
+      {
+        "type": "Identifier",
+        "name": "offset_base",
+        "start": {
+          "offset": 334,
+          "line": 17,
+          "column": 14
+        },
+        "end": {
+          "offset": 345,
+          "line": 17,
+          "column": 25
+        }
+      },
+      {
+        "type": "Parenthesis",
+        "kind": ")",
+        "start": {
+          "offset": 345,
+          "line": 17,
+          "column": 25
+        },
+        "end": {
+          "offset": 346,
+          "line": 17,
+          "column": 26
+        }
+      },
+      {
+        "type": "WhiteSpace",
+        "value": "\r\n",
+        "start": {
+          "offset": 346,
+          "line": 17,
+          "column": 26
+        },
+        "end": {
+          "offset": 348,
+          "line": 18,
+          "column": 1
+        }
+      },
+      {
+        "type": "Parenthesis",
+        "kind": ")",
+        "start": {
+          "offset": 348,
+          "line": 18,
+          "column": 1
+        },
+        "end": {
+          "offset": 349,
+          "line": 18,
+          "column": 2
+        }
+      },
+      {
+        "type": "WhiteSpace",
+        "value": "\r\n",
+        "start": {
+          "offset": 349,
+          "line": 18,
+          "column": 2
+        },
+        "end": {
+          "offset": 351,
+          "line": 19,
+          "column": 1
+        }
+      }
+    ],
+    "start": {
+      "offset": 242,
+      "line": 14,
+      "column": 1
+    },
+    "end": {
+      "offset": 367,
+      "line": 19,
+      "column": 17
+    }
+  },
   "Envelope": {
     "_attributes_": {
       "type": "StructDefinition",
@@ -219,7 +476,7 @@
   "OscillatorWork": {
     "_attributes_": {
       "type": "StructDefinition",
-      "size": 24
+      "size": 28
     },
     "param_offset": {
       "_attributes_": {
@@ -276,14 +533,14 @@
     "sample_rate": {
       "_attributes_": {
         "type": "PrimitiveType",
-        "varType": "f32",
-        "size": 4,
-        "integer": false,
+        "varType": "i64",
+        "size": 8,
+        "integer": true,
         "unsigned": false,
         "offset": 16,
         "initData": null,
         "num": 1,
-        "log2": 2
+        "log2": 3
       }
     },
     "value": {
@@ -293,7 +550,7 @@
         "size": 4,
         "integer": false,
         "unsigned": false,
-        "offset": 20,
+        "offset": 24,
         "initData": null,
         "num": 1,
         "log2": 2
@@ -303,7 +560,7 @@
   "WaveTable": {
     "_attributes_": {
       "type": "StructDefinition",
-      "size": 20
+      "size": 24
     },
     "base": {
       "_attributes_": {
@@ -357,14 +614,14 @@
     "wave_size_mask": {
       "_attributes_": {
         "type": "PrimitiveType",
-        "varType": "i32",
-        "size": 4,
+        "varType": "i64",
+        "size": 8,
         "integer": true,
         "unsigned": false,
         "offset": 12,
         "initData": null,
         "num": 1,
-        "log2": 2
+        "log2": 3
       }
     },
     "wave_data_start": {
@@ -374,7 +631,7 @@
         "size": 4,
         "integer": false,
         "unsigned": false,
-        "offset": 16,
+        "offset": 20,
         "initData": null,
         "num": 1,
         "log2": 2
@@ -384,12 +641,12 @@
   "WaveTableWork": {
     "_attributes_": {
       "type": "StructDefinition",
-      "size": 44
+      "size": 64
     },
     "base": {
       "_attributes_": {
         "type": "StructDefinition",
-        "size": 24,
+        "size": 28,
         "offset": 0,
         "initData": null,
         "num": 1,
@@ -450,14 +707,14 @@
       "sample_rate": {
         "_attributes_": {
           "type": "PrimitiveType",
-          "varType": "f32",
-          "size": 4,
-          "integer": false,
+          "varType": "i64",
+          "size": 8,
+          "integer": true,
           "unsigned": false,
           "offset": 16,
           "initData": null,
           "num": 1,
-          "log2": 2
+          "log2": 3
         }
       },
       "value": {
@@ -467,7 +724,7 @@
           "size": 4,
           "integer": false,
           "unsigned": false,
-          "offset": 20,
+          "offset": 24,
           "initData": null,
           "num": 1,
           "log2": 2
@@ -481,7 +738,7 @@
         "size": 4,
         "integer": true,
         "unsigned": false,
-        "offset": 24,
+        "offset": 28,
         "initData": null,
         "num": 1,
         "log2": 2
@@ -490,53 +747,53 @@
     "base_frequency": {
       "_attributes_": {
         "type": "PrimitiveType",
-        "varType": "f32",
-        "size": 4,
-        "integer": false,
-        "unsigned": false,
-        "offset": 28,
-        "initData": null,
-        "num": 1,
-        "log2": 2
-      }
-    },
-    "table_sample_rate": {
-      "_attributes_": {
-        "type": "PrimitiveType",
-        "varType": "f32",
-        "size": 4,
-        "integer": false,
+        "varType": "i64",
+        "size": 8,
+        "integer": true,
         "unsigned": false,
         "offset": 32,
         "initData": null,
         "num": 1,
-        "log2": 2
+        "log2": 3
       }
     },
-    "counter": {
+    "table_index": {
       "_attributes_": {
         "type": "PrimitiveType",
-        "varType": "i32",
-        "size": 4,
+        "varType": "i64",
+        "size": 8,
         "integer": true,
         "unsigned": false,
-        "offset": 36,
+        "offset": 40,
         "initData": null,
         "num": 1,
-        "log2": 2
+        "log2": 3
+      }
+    },
+    "pitch_work": {
+      "_attributes_": {
+        "type": "PrimitiveType",
+        "varType": "i64",
+        "size": 8,
+        "integer": true,
+        "unsigned": false,
+        "offset": 48,
+        "initData": null,
+        "num": 1,
+        "log2": 3
       }
     },
     "delta": {
       "_attributes_": {
         "type": "PrimitiveType",
-        "varType": "f32",
-        "size": 4,
-        "integer": false,
+        "varType": "i64",
+        "size": 8,
+        "integer": true,
         "unsigned": false,
-        "offset": 40,
+        "offset": 56,
         "initData": null,
         "num": 1,
-        "log2": 2
+        "log2": 3
       }
     }
   },
