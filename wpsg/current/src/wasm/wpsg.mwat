@@ -530,11 +530,18 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
   (local.get $offset)
 )
 
+{@macro_def mul_fixed(a,b)}
+(i64.shr_u 
+  (i64.mul (a) (b))
+  (i32.const 32)
+)
+{@end_macro_def}
+
 {@macro_def calc_delta(base_freq,table_offset,table_work_offset)}
 (i64.div_u
   (i64.mul
-    (i64.mul
-      (base_freq)
+    {@@mul_fixed
+      base_freq,
       (i64.extend_i32_u
         (i32.load
           (i32.add
@@ -543,7 +550,7 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
           )
         )
       )
-    )
+    }
     (i64.load
       (i32.add
         (&WaveTableWork.pitch_work;)

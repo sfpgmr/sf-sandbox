@@ -340,6 +340,8 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
 
 
 
+
+
 ;; # wave table workの初期化 #
 (func $initWaveTableWork
   (param $wave_table_work_offset i32)
@@ -416,17 +418,20 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
     
 (i64.div_u
   (i64.mul
-    (i64.mul
-      (local.get $base_frequency_i64)
-      (i64.extend_i32_u
+    
+(i64.shr_u 
+  (i64.mul (base_freq) ((i64.extend_i32_u
         (i32.load
           (i32.add
             (i32.const 8 (; WaveTable.size ;))
-            (local.get $wave_table_offset)
+            (local.get table_offset)
           )
         )
       )
-    )
+    ))
+  (i32.const +32)
+)
+
     (i64.load
       (i32.add
         (i32.const 48 (; WaveTableWork.pitch_work ;))
