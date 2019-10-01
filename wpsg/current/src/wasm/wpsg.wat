@@ -9,6 +9,7 @@
   $.OSC_CREATE_FUNC_INDEX = 1;
   $.FILTER_FUNC_INDEX = 8;
   $.PIx2 = Math.PI * 2;
+  $.FIXED_POINT = 16;
  ;)
 
 
@@ -293,18 +294,22 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
   (param $wave_table_offset i32)
   (param $size i32)
   (i32.store
-    (i32.add
-      (i32.const 8 (; WaveTable.size ;))
-      (local.get $wave_table_offset)
-    )
+    
+(i32.add
+  (i32.const 8 (; WaveTable.size ;))
+  (local.get $wave_table_offset)
+)
+
     (local.get $size)
   )
 
   (i64.store
-    (i32.add
-      (i32.const 12 (; WaveTable.wave_size_mask ;))
-      (local.get $wave_table_offset)
-    )
+    
+(i32.add
+  (i32.const 12 (; WaveTable.wave_size_mask ;))
+  (local.get $wave_table_offset)
+)
+
     (i64.shl
       (i64.sub
         (i64.extend_i32_u
@@ -312,7 +317,7 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
         )
         (i64.const 1)
       )
-      (i64.const 32)
+      (i64.const (; $.FIXED_POINT ;)16)
     )
   )
 )
@@ -337,6 +342,12 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
 
   (local.get $offset)
 )
+
+
+
+
+
+
 
 
 
@@ -405,7 +416,7 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
   (local.get $wave_table_work_offset)
 )
 
-    (i64.const 0x100000000)
+    (i64.const 0x10000)
   )
 
   (i64.store 
@@ -416,28 +427,46 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
 )
 
     
+
 (i64.div_u
-  (i64.mul
+  (i64.shl
     
 (i64.shr_u 
-  (i64.mul (base_freq) ((i64.extend_i32_u
-        (i32.load
-          (i32.add
-            (i32.const 8 (; WaveTable.size ;))
-            (local.get table_offset)
+  (i64.mul 
+(i64.shr_u 
+  (i64.mul 
+(i64.shl 
+  (local.get $base_frequency_i64)
+  (i64.const (; $.FIXED_POINT ;)16)
+)
+ 
+(i64.shl 
+  (i64.extend_i32_u
+          (i32.load
+            (i32.add
+              (i32.const 8 (; WaveTable.size ;))
+              (local.get $wave_table_offset)
+            )
           )
         )
-      )
-    ))
-  (i32.const +32)
+      
+  (i64.const (; $.FIXED_POINT ;)16)
 )
 
-    (i64.load
+    )
+  (i64.const (; $.FIXED_POINT ;)16)
+)
+ (i64.load
       (i32.add
         (i32.const 48 (; WaveTableWork.pitch_work ;))
         (local.get $wave_table_work_offset)
       )
     )
+  )
+  (i64.const (; $.FIXED_POINT ;)16)
+)
+
+    (i64.const (; $.FIXED_POINT ;)16)
   )
   (i64.load
     (i32.add
@@ -445,7 +474,9 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
       (local.get $wave_table_work_offset)
     )
   )
+
 )
+
 
   )
 
@@ -566,7 +597,7 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
             (i32.wrap_i64
               (i64.shr_u
                 (local.get $table_index)
-                (i64.const 32)
+                (i64.const (; $.FIXED_POINT ;)16)
               )
             )
             (i32.add

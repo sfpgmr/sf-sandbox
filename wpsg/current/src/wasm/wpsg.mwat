@@ -9,6 +9,7 @@
   $.OSC_CREATE_FUNC_INDEX = 1;
   $.FILTER_FUNC_INDEX = 8;
   $.PIx2 = Math.PI * 2;
+  $.FIXED_POINT = 16;
 }
 
 {@macro_def offset(offset_literal,offset_base)}
@@ -485,18 +486,12 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
   (param $wave_table_offset i32)
   (param $size i32)
   (i32.store
-    (i32.add
-      (&WaveTable.size;)
-      (local.get $wave_table_offset)
-    )
+    {@@offset &WaveTable.size;,$wave_table_offset}
     (local.get $size)
   )
 
   (i64.store
-    (i32.add
-      (&WaveTable.wave_size_mask;)
-      (local.get $wave_table_offset)
-    )
+    {@@offset &WaveTable.wave_size_mask;,$wave_table_offset}
     (i64.shl
       (i64.sub
         (i64.extend_i32_u
@@ -504,7 +499,7 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
         )
         (i64.const 1)
       )
-      (i64.const 32)
+      (i64.const {$.FIXED_POINT})
     )
   )
 )
@@ -532,39 +527,60 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
 
 {@macro_def mul_fixed(a,b)}
 (i64.shr_u 
-  (i64.mul (a) (b))
-  (i32.const 32)
+  (i64.mul a b)
+  (i64.const {$.FIXED_POINT})
 )
 {@end_macro_def}
 
-{@macro_def calc_delta(base_freq,table_offset,table_work_offset)}
+{@macro_def div_fixed(a,b)}
 (i64.div_u
-  (i64.mul
+  (i64.shl
+    a
+    (i64.const {$.FIXED_POINT})
+  )
+  b
+)
+{@end_macro_def}
+
+{@macro_def shift_fixed(a)}
+(i64.shl 
+  a
+  (i64.const {$.FIXED_POINT})
+)
+{@end_macro_def}
+
+
+
+{@macro_def calc_delta(base_freq,table_offset,table_work_offset)}
+{@@div_fixed
+  {@@mul_fixed
     {@@mul_fixed
-      base_freq,
-      (i64.extend_i32_u
-        (i32.load
-          (i32.add
-            (&WaveTable.size;)
-            (local.get table_offset)
+      {@@shift_fixed (base_freq)},
+      {@@shift_fixed 
+        (i64.extend_i32_u
+          (i32.load
+            (i32.add
+              (&WaveTable.size;)
+              (local.get table_offset)
+            )
           )
         )
-      )
-    }
+      }
+    },
     (i64.load
       (i32.add
         (&WaveTableWork.pitch_work;)
         (local.get table_work_offset)
       )
     )
-  )
+  },
   (i64.load
     (i32.add
       (&WaveTableWork.base.sample_rate;)
       (local.get table_work_offset)
     )
   )
-)
+}
 {@end_macro_def}
 
 ;; # wave table workの初期化 #
@@ -605,7 +621,7 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
 
   (i64.store
     {@@offset &WaveTableWork.pitch_work;,$wave_table_work_offset}
-    (i64.const 0x100000000)
+    (i64.const 0x10000)
   )
 
   (i64.store 
@@ -695,7 +711,7 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
             (i32.wrap_i64
               (i64.shr_u
                 (local.get $table_index)
-                (i64.const 32)
+                (i64.const {$.FIXED_POINT})
               )
             )
             (i32.add
