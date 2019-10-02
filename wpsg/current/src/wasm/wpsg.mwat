@@ -10,6 +10,7 @@
   $.FILTER_FUNC_INDEX = 8;
   $.PIx2 = Math.PI * 2;
   $.FIXED_POINT = 16;
+  $.FIXED_POINT_SHIFT = 1 << $.FIXED_POINT;
 }
 
 {@macro_def offset(offset_literal,offset_base)}
@@ -469,6 +470,22 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
 ;;  Wave Table
 ;; -----------------------------------
 
+;; size update method 
+{@macro_def setWaveTableSize_(wave_table,size)}
+
+{@@sto i32,&WaveTable.size;,wave_table,size}
+
+{@@sto i64,&WaveTable.wave_size_mask;,wave_table,
+  (i64.sub
+    (i64.shl
+      (i64.extend_i32_u size)
+      (i64.const {$.FIXED_POINT})
+    )
+    (i64.const 1)
+  )
+}
+{@end_macro_def}
+
 ;; # wave tableの初期化 #
 (func $initWaveTable
   ;; メモリオフセット
@@ -477,15 +494,12 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
   (param $size i32)
 
   (i32.store 
-    {@@offset &WaveTable.base.oscillator_type;,$wave_table_offset } 
+    {@@offset &WaveTable.base.oscillator_type;,$wave_table_offset} 
     (i32.const 0)
   )
 
-  (call $setWaveTableSize
-    (local.get $wave_table_offset)
-    (local.get $size)
-  )
-  
+  {@@setWaveTableSize_ $wave_table_offset,(local.get $size)}
+
   ;; 初期化メソッド・音声処理メソッドへのインデックス
   (i32.store
     {@@offset &Oscillator.call_index;,$wave_table_offset}
@@ -493,27 +507,12 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
   )
 )
 
-;; size update method 
+
+
 (func $setWaveTableSize
   (param $wave_table_offset i32)
   (param $size i32)
-  (i32.store
-    {@@offset &WaveTable.size;,$wave_table_offset}
-    (local.get $size)
-  )
-
-  (i64.store
-    {@@offset &WaveTable.wave_size_mask;,$wave_table_offset}
-    (i64.shl
-      (i64.sub
-        (i64.extend_i32_u
-          (local.get $size)
-        )
-        (i64.const 1)
-      )
-      (i64.const {$.FIXED_POINT})
-    )
-  )
+  {@@setWaveTableSize_ $wave_table_offset,(local.get $size)}
 )
 
 ;; # wave table用メモリのアロケートと初期化 #
@@ -599,50 +598,36 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
     (f32.load (&sample_rate;))
   }
 
-  (i64.store
-    {@@offset &WaveTableWork.base_frequency;,$wave_table_work_offset} 
+  {@@sto i64,&WaveTableWork.base_frequency;,$wave_table_work_offset, 
     (local.get $base_frequency_i64)
-  )
+  }
 
-  (f32.store
-    {@@offset &OscillatorWork.level;,$wave_table_work_offset} 
+  {@@sto f32,&OscillatorWork.level;,$wave_table_work_offset, 
     (f32.const 1)
-  )
-
+  }
 
   ;;pitch
-  (f32.store
-    {@@offset &WaveTableWork.base.pitch;,$wave_table_work_offset} 
+  {@@sto f32,&WaveTableWork.base.pitch;,$wave_table_work_offset, 
     (f32.const 1)
-  )
+  }
 
-  (i64.store
-    {@@offset &WaveTableWork.pitch_work;,$wave_table_work_offset}
-    (i64.const {1 << $.FIXED_POINT})
-  )
+  {@@sto i64,&WaveTableWork.pitch_work;,$wave_table_work_offset,
+    (i64.const {$.FIXED_POINT_SHIFT})
+  }
 
-  (i64.store 
-    {@@offset &WaveTableWork.delta;,$wave_table_work_offset}
+  {@@sto i64,&WaveTableWork.delta;,$wave_table_work_offset,
     {@@calc_delta (local.get $base_frequency_i64),$wave_table_offset,$wave_table_work_offset}
-  )
+  }
 
-  (i64.store
-    (i32.add
-      (&WaveTableWork.table_index;)
-      (local.get $wave_table_work_offset)
-    )
+  {@@sto i64,&WaveTableWork.table_index;,$wave_table_work_offset,
     (i64.const 0)
-  )
+  }
 
   ;; value
-  (f32.store
-    (i32.add
-      (&WaveTableWork.base.value;)
-      (local.get $wave_table_work_offset)
-    )
+  {@@sto f32,&WaveTableWork.base.value;,$wave_table_work_offset,
     (f32.const 0)
-  )
-
+  }
+ 
   ;; wave tableへのオフセット
   {@@sto i32,
     &WaveTableWork.base.param_offset;,$wave_table_work_offset,
@@ -664,31 +649,24 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
   )
 
   (local.set $table_index
-    (i64.load
-      {@@offset &WaveTableWork.table_index;,$wave_table_work_offset}    
-    )
+    {@@ldo i64,&WaveTableWork.table_index;,$wave_table_work_offset}    
   )
 
   (local.set $delta
-    (i64.load
-      {@@offset &WaveTableWork.delta;,$wave_table_work_offset} 
-    )
+    {@@ldo i64,&WaveTableWork.delta;,$wave_table_work_offset} 
   )
 
-  (i64.store
-    {@@offset &WaveTableWork.table_index;,$wave_table_work_offset}
+  {@@sto i64,&WaveTableWork.table_index;,$wave_table_work_offset,
     (local.tee $table_index
       (i64.and
         (i64.add
           (local.get $table_index)
           (local.get $delta)
         )
-        (i64.load 
-          {@@offset &WaveTable.wave_size_mask;,$wave_table_offset}
-        )
+        {@@ldo i64,&WaveTable.wave_size_mask;,$wave_table_offset}
       )
     )
-  )
+  }
 
   (f32.store 
     {@@offset &WaveTableWork.base.value;,$wave_table_work_offset}
@@ -699,11 +677,14 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
         )
         (f32.load
           (i32.add
-            (i32.wrap_i64
-              (i64.shr_u
-                (local.get $table_index)
-                (i64.const {$.FIXED_POINT})
+            (i32.shl
+              (i32.wrap_i64
+                (i64.shr_u
+                  (local.get $table_index)
+                  (i64.const {$.FIXED_POINT})
+                )
               )
+              (i32.const 2)
             )
             (i32.add
               (&WaveTable.wave_data_start;)
@@ -1606,15 +1587,15 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
   )
 
   ;; sizeを32サンプルにセット
-  (call $setWaveTableSize
-    (local.get $oscillator_offset)
+  {@@setWaveTableSize_ 
+    $oscillator_offset,
     (i32.const 32)
-  )
-
-  (call $setWaveTableSize
-    (local.get $oscillator1_offset)
+  }
+  
+  {@@setWaveTableSize_
+    $oscillator1_offset,
     (i32.const 32)
-  )
+  }
 
   ;; sinデータのコピー
   (block $sin_data_copy
