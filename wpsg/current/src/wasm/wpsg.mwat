@@ -19,6 +19,18 @@
 )
 {@end_macro_def}
 
+{@macro_def ldo(t,offset_literal,offset_base)}
+(t.load
+  {@@offset offset_literal,offset_base}
+)
+{@end_macro_def}
+
+{@macro_def sto(t,offset_literal,offset_base,value)}
+(t.store
+  {@@offset offset_literal,offset_base}
+  value
+)
+{@end_macro_def}
 
 
 (module
@@ -555,31 +567,16 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
 {@@div_fixed
   {@@mul_fixed
     {@@mul_fixed
-      {@@shift_fixed (base_freq)},
+      {@@shift_fixed base_freq},
       {@@shift_fixed 
         (i64.extend_i32_u
-          (i32.load
-            (i32.add
-              (&WaveTable.size;)
-              (local.get table_offset)
-            )
-          )
+          {@@ldo i32,&WaveTable.size;,table_offset}
         )
       }
     },
-    (i64.load
-      (i32.add
-        (&WaveTableWork.pitch_work;)
-        (local.get table_work_offset)
-      )
-    )
+    {@@ldo i64,&WaveTableWork.pitch_work;,table_work_offset}
   },
-  (i64.load
-    (i32.add
-      (&WaveTableWork.base.sample_rate;)
-      (local.get table_work_offset)
-    )
-  )
+  {@@ldo i64,&WaveTableWork.base.sample_rate;,table_work_offset}
 }
 {@end_macro_def}
 
@@ -597,10 +594,10 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
     )
   )
 
-  (f32.store
-    {@@offset &WaveTableWork.base.sample_rate;,$wave_table_work_offset} 
+  {@@sto f32,
+    &WaveTableWork.base.sample_rate;,$wave_table_work_offset, 
     (f32.load (&sample_rate;))
-  )
+  }
 
   (i64.store
     {@@offset &WaveTableWork.base_frequency;,$wave_table_work_offset} 
@@ -621,12 +618,12 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
 
   (i64.store
     {@@offset &WaveTableWork.pitch_work;,$wave_table_work_offset}
-    (i64.const 0x10000)
+    (i64.const {1 << $.FIXED_POINT})
   )
 
   (i64.store 
     {@@offset &WaveTableWork.delta;,$wave_table_work_offset}
-    {@@calc_delta local.get $base_frequency_i64,$wave_table_offset,$wave_table_work_offset}
+    {@@calc_delta (local.get $base_frequency_i64),$wave_table_offset,$wave_table_work_offset}
   )
 
   (i64.store
@@ -647,14 +644,10 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
   )
 
   ;; wave tableへのオフセット
-  (i32.store
-    (i32.add
-      (&WaveTableWork.base.param_offset;)
-      (local.get $wave_table_work_offset)
-    )
+  {@@sto i32,
+    &WaveTableWork.base.param_offset;,$wave_table_work_offset,
     (local.get $wave_table_offset)
-  )
-
+  }
 )
 
 ;; # wave data の読み出し #
@@ -667,9 +660,7 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
   (local $value f32)
 
   (local.set $wave_table_offset
-    (i32.load 
-      {@@offset  &WaveTableWork.base.param_offset;,$wave_table_work_offset} 
-    )
+    {@@ldo i32,&WaveTableWork.base.param_offset;,$wave_table_work_offset} 
   )
 
   (local.set $table_index
