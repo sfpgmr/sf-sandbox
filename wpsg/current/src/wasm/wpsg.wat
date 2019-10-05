@@ -137,6 +137,11 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
 
 
 
+;; -----------------------
+;; LFO 
+;; -----------------------
+
+
 
 ;; -----------------------
 ;; 音色
@@ -1301,31 +1306,34 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
             (i32.const 0x2)
           )
           (then
-            (f32.mul
-              (f32.add 
-                (call_indirect (type $oscillatorFunc) 
-                  (local.tee $pitch_lfo_work_offset
-                    (i32.add
-                      (i32.const 160 (; TimbreWork.pitch_lfo_work_offset ;))
-                      (local.get $timbre_work)
-                    )
+            
+(f32.mul
+  (f32.add
+    (call_indirect (type $oscillatorFunc) 
+                (local.tee $pitch_lfo_work_offset
+                  (i32.add
+                    (i32.const 160 (; TimbreWork.pitch_lfo_work_offset ;))
+                    (local.get $timbre_work)
                   )
-                  (i32.load
-                    (i32.add
-                      (i32.const 4 (; Oscillator.call_index ;))
-                      (i32.load
-                        (i32.add
-                          (i32.const 0 (; OscillatorWork.param_offset ;))
-                          (local.get $pitch_lfo_work_offset)
-                        )            
-                      )
+                )
+                (i32.load
+                  (i32.add
+                    (i32.const 4 (; Oscillator.call_index ;))
+                    (i32.load
+                      (i32.add
+                        (i32.const 0 (; OscillatorWork.param_offset ;))
+                        (local.get $pitch_lfo_work_offset)
+                      )            
                     )
                   )
                 )
-                (f32.const 1)
               )
-              (f32.const 0.5)
-            )
+            
+    (f32.const +1)
+  )
+  (f32.const +0.+5)
+)
+
           )
           (else
             (f32.const 1) 
@@ -1382,19 +1390,22 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
           (if (result f32)
             (i32.and (local.get $timbre_flag) (i32.const 64))
             (then
-              (call_indirect (type $oscillatorFunc) 
-                (local.tee $filter_lfo_work_offset
-                  
+              
+(f32.mul
+  (f32.add
+    (call_indirect (type $oscillatorFunc) 
+                  (local.tee $filter_lfo_work_offset
+                    
 (i32.add
   (i32.const 512 (; TimbreWork.filter_lfo_work_offset ;))
   (local.get $timbre_work)
 )
 
-                )
-                (i32.load
-                  (i32.add
-                    (i32.const 4 (; Oscillator.call_index ;))
-                    
+                  )
+                  (i32.load
+                    (i32.add
+                      (i32.const 4 (; Oscillator.call_index ;))
+                      
 (i32.load
   
 (i32.add
@@ -1404,9 +1415,15 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
 
 )
 
+                    )
                   )
                 )
-              )
+              
+    (f32.const +1)
+  )
+  (f32.const +0.+5)
+)
+
             )
             (else 
               (f32.const 1)
