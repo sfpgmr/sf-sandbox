@@ -33,6 +33,34 @@
 )
 {@end_macro_def}
 
+{@macro_def clamp(s,work,min,max)}
+(if (result f32)
+  (f32.lt
+    (if (result f32)
+      (f32.gt 
+        (local.tee work
+          s
+        )
+        (f32.const max)
+      )
+      (then
+        (f32.const max)
+      )
+      (else 
+        (local.get work)
+      )
+    )
+    (f32.const min)
+  )
+  (then
+    (f32.const min)
+  )
+  (else
+    (local.get work)
+  )
+)
+{@end_macro_def}
+
 
 (module
   (type $oscillatorFunc (func (param i32) (result f32)))
@@ -862,6 +890,7 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
   (param $env_param_offset i32)
   
   ;; envelope parameter offset
+  
   (i32.store
     (i32.add (&EnvelopeWork.env_param_offset;) (local.get $env_work_offset))
     (local.get $env_param_offset)
@@ -1243,6 +1272,7 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
   (local $timbre_flag i32)
   (local $filter_value f32)
   (local $filter i32)
+  (local $temp f32)
 
   (local.set $timbre_flag
     (i32.load
@@ -1275,24 +1305,24 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
       )
     )
     (f32.mul
-      (f32.mul
-        ;; pitch
-        (local.tee $pitch
-          (f32.load
-            (i32.add
-              (&TimbreWork.pitch;)
-              (local.get $timbre_work)
+      {@@clamp 
+        (f32.add
+          ;; pitch
+          (local.tee $pitch
+            (f32.load
+              (i32.add
+                (&TimbreWork.pitch;)
+                (local.get $timbre_work)
+              )
             )
           )
-        )
-        ;; lfo処理
-        (if (result f32)
-          (i32.and
-            (local.get $timbre_flag)
-            (i32.const 0x2)
-          )
-          (then
-            {@@adjust_positive
+          ;; lfo処理
+          (if (result f32)
+            (i32.and
+              (local.get $timbre_flag)
+              (i32.const 0x2)
+            )
+            (then
               (call_indirect (type $oscillatorFunc) 
                 (local.tee $pitch_lfo_work_offset
                   (i32.add
@@ -1312,13 +1342,13 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
                   )
                 )
               )
-            }
+            )
+            (else
+              (f32.const 0.0) 
+            )
           )
-          (else
-            (f32.const 1) 
-          )
-        )
-      )
+        ),$temp,0.0,1.0
+      }
       ;; envelope
       (if (result f32)
         (i32.and
@@ -1492,54 +1522,42 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
         )
       )
       ;; output level
-      (f32.add 
-        ;; amplitude lfo
-        (if (result f32)
-          (i32.and
-            (local.get $timbre_flag)
-            (i32.const 0x8)
-          )
-          (then
-            (call_indirect (type $oscillatorFunc) 
-              (local.tee $amplitude_lfo_work_offset
-                (i32.add
-                  (&TimbreWork.amplitude_lfo_work_offset;)
-                  (local.get $timbre_work)
+      {@@clamp 
+        (f32.add 
+          ;; amplitude lfo
+          (if (result f32)
+            (i32.and
+              (local.get $timbre_flag)
+              (i32.const 0x8)
+            )
+            (then
+              (call_indirect (type $oscillatorFunc) 
+                (local.tee $amplitude_lfo_work_offset
+                  (i32.add
+                    (&TimbreWork.amplitude_lfo_work_offset;)
+                    (local.get $timbre_work)
+                  )
                 )
-              )
-              (i32.load
-                (i32.add
-                  (&Oscillator.call_index;)
-                  (i32.load
-                    (i32.add
-                      (&OscillatorWork.param_offset;)
-                      (local.get $amplitude_lfo_work_offset)
-                    )
+                (i32.load
+                  (i32.add
+                    (&Oscillator.call_index;)
+                    {@@ldo i32,&OscillatorWork.param_offset;,$amplitude_lfo_work_offset}
                   )
                 )
               )
             )
+            (else 
+              (f32.const 0.0)
+            )
           )
-          (else 
-            (f32.const 0)
-          )
-        )        
-        (f32.load
-          (i32.add
-            (&TimbreWork.output_level;)
-            (local.get $timbre_work)
-          )
-        )
-      )
+          {@@ldo f32,&TimbreWork.output_level;,$timbre_work}
+        ),
+        $temp,0.0,1.0
+      }
     )
   )
   ;; output 
-  (f32.load 
-    (i32.add
-      (&TimbreWork.value;)
-      (local.get $timbre_work)
-    )
-  )
+  {@@ldo f32,&TimbreWork.value;,$timbre_work}
 )
 
 ;; --------------------------------
