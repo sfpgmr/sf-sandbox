@@ -11,6 +11,7 @@
   $.PIx2 = Math.PI * 2;
   $.FIXED_POINT = 16;
   $.FIXED_POINT_SHIFT = 1 << $.FIXED_POINT;
+  $.MAX_VOICES = 8;
 }
 
 {@macro_def offset(offset_literal,offset_base)}
@@ -332,13 +333,14 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
 {@struct TimbreWork
   ;; フラグ
   ;; bit 31
-  ;;  0 ... enable
-  ;;  1 ... disable
+  ;;  1 ... active
+  ;;  0 ... deactive
   ;; bit 0
   ;;  0 ... keyoff
   ;;  1 ... keyon
   i32 flag;
   i32 timbre_offset;
+  i64 time;
   f32 pitch;
   ;; オシレータ・ワークエリア（128バイト分）
   i32 oscillator_work_offset[32];
@@ -548,8 +550,6 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
   )
 )
 
-
-
 (func $setWaveTableSize
   (param $wave_table_offset i32)
   (param $size i32)
@@ -600,8 +600,6 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
   (i64.const {$.FIXED_POINT})
 )
 {@end_macro_def}
-
-
 
 {@macro_def calc_delta(base_freq,table_offset,table_work_offset)}
 {@@div_fixed
@@ -1167,693 +1165,6 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
   )
 )
 
-;; --------------------------
-;; 音色
-;; --------------------------
-
-
-(func $keyOnTimbre
-  (param $timbre_work i32)
-  ;; key on フラグのセット
-  (i32.store
-    (i32.add
-      (&TimbreWork.flag;)
-      (local.get $timbre_work)
-    )
-    (i32.or
-      (i32.load
-        (i32.add
-          (&TimbreWork.flag;)
-          (local.get $timbre_work)
-        )
-      )
-      (i32.const 0x1)
-    )
-  )
-
-  ;; envelopeのキーオン処理
-  ;; pitch
-  (call $keyOnEnvelope
-    (i32.add
-      (&TimbreWork.pitch_envelope;)
-      (local.get $timbre_work)
-    )
-  )
-  ;; amplitude
-  (call $keyOnEnvelope
-    (i32.add
-      (&TimbreWork.amplitude_envelope;)
-      (local.get $timbre_work)
-    )
-  )
-  ;; filter
-  (call $keyOnEnvelope
-    (i32.add
-      (&TimbreWork.filter_envelope;)
-      (local.get $timbre_work)
-    )
-  )
-)
-
-(func $keyOffTimbre
-  (param $timbre_work i32)
-  ;; key off  フラグのリセット
-  (i32.store
-    (i32.add
-      (&TimbreWork.flag;)
-      (local.get $timbre_work)
-    )
-    (i32.and
-      (i32.load
-        (i32.add
-          (&TimbreWork.flag;)
-          (local.get $timbre_work)
-        )
-      )
-      (i32.const 0xffff_fffe)
-    )
-  )
-
-  ;; envelopeのキーoff処理
-  ;; pitch
-  (call $keyOffEnvelope
-    (i32.add
-      (&TimbreWork.pitch_envelope;)
-      (local.get $timbre_work)
-    )
-  )
-  ;; amplitude
-  (call $keyOffEnvelope
-    (i32.add
-      (&TimbreWork.amplitude_envelope;)
-      (local.get $timbre_work)
-    )
-  )
-
-  ;; filter
-  (call $keyOffEnvelope
-    (i32.add
-      (&TimbreWork.filter_envelope;)
-      (local.get $timbre_work)
-    )
-  )
-
-)
-
-(func $processTimbre
-  (param $timbre_work i32)
-  (result f32)
-  (local $oscillator_work_offset i32)
-  (local $pitch_lfo_work_offset i32)
-  (local $amplitude_lfo_work_offset i32)
-  (local $filter_lfo_work_offset i32)
-  (local $pitch f32)
-  (local $oscillator_offset i32)
-  (local $timbre_flag i32)
-  (local $filter_value f32)
-  (local $filter i32)
-  (local $temp f32)
-
-  (local.set $timbre_flag
-    (i32.load
-      (i32.add
-        (&Timbre.flag;)
-        {@@ldo i32,&TimbreWork.timbre_offset;,$timbre_work}
-      )
-    )
-  )
-
-  (local.set $oscillator_offset
-    (i32.load
-      (i32.add
-        (&OscillatorWork.param_offset;)
-        (i32.add
-          (&TimbreWork.oscillator_work_offset;)
-          (local.get $timbre_work)
-        )
-      )
-    )
-  )
-  
-  ;; Pitchの処理
-  ;; pitch = pitch * lfo * envelope
-  (f32.store
-    (i32.add
-      (&OscillatorWork.pitch;)
-      (local.tee $oscillator_work_offset
-        {@@offset &TimbreWork.oscillator_work_offset;,$timbre_work}
-      )
-    )
-    (f32.mul
-      {@@clamp 
-        (f32.add
-          ;; pitch
-          (local.tee $pitch
-            (f32.load
-              (i32.add
-                (&TimbreWork.pitch;)
-                (local.get $timbre_work)
-              )
-            )
-          )
-          ;; lfo処理
-          (if (result f32)
-            (i32.and
-              (local.get $timbre_flag)
-              (i32.const 0x2)
-            )
-            (then
-              (call_indirect (type $oscillatorFunc) 
-                (local.tee $pitch_lfo_work_offset
-                  (i32.add
-                    (&TimbreWork.pitch_lfo_work_offset;)
-                    (local.get $timbre_work)
-                  )
-                )
-                (i32.load
-                  (i32.add
-                    (&Oscillator.call_index;)
-                    (i32.load
-                      (i32.add
-                        (&OscillatorWork.param_offset;)
-                        (local.get $pitch_lfo_work_offset)
-                      )            
-                    )
-                  )
-                )
-              )
-            )
-            (else
-              (f32.const 0.0) 
-            )
-          )
-        ),$temp,0.0,1.0
-      }
-      ;; envelope
-      (if (result f32)
-        (i32.and
-          (local.get $timbre_flag)
-          (i32.const 0x1)
-        )
-        (then
-          (call $doEnvelope
-            (i32.add
-              (&TimbreWork.pitch_envelope;)
-              (local.get $timbre_work)
-            )
-          )
-        )
-        (else
-          (f32.const 1)
-        )
-      )
-    )
-  )
-
-  ;; フィルタ処理
-  (if 
-    (i32.and
-      (local.get $timbre_flag)
-      (i32.const 16)
-    )
-    
-    (then
-      (local.set $filter_value
-        (f32.mul
-          ;; filter envelope
-          (if (result f32) 
-            (i32.and (local.get $timbre_flag) (i32.const 32))
-            (then
-              (call $doEnvelope
-                (i32.add
-                  (&TimbreWork.filter_envelope;)
-                  (local.get $timbre_work)
-                )
-              )
-            )
-            (else 
-              (f32.const 1)
-            )
-          )
-          ;; filter lfo
-          (if (result f32)
-            (i32.and (local.get $timbre_flag) (i32.const 64))
-            (then
-              {@@adjust_positive
-                (call_indirect (type $oscillatorFunc) 
-                  (local.tee $filter_lfo_work_offset
-                    {@@offset &TimbreWork.filter_lfo_work_offset;,$timbre_work}
-                  )
-                  (i32.load
-                    (i32.add
-                      (&Oscillator.call_index;)
-                      {@@ldo i32,&OscillatorWork.param_offset;,$filter_lfo_work_offset}
-                    )
-                  )
-                )
-              }
-            )
-            (else 
-              (f32.const 1)
-            )
-          )
-        )
-      )
-      ;; フィルタの更新
-      (local.set $filter
-        {@@ldo i32,&TimbreWork.filter;,$timbre_work}
-      )
-
-      ;; フィルタ値を更新
-      {@@sto f32,&TimbreWork.filter.freq_rate;,$timbre_work,
-        (local.get $filter_value)
-      }
-
-      {@@sto f32,&TimbreWork.filter.current_frequency;,$timbre_work,
-        (f32.mul
-          {@@ldo f32,&Filter.base_frequency;,$filter}
-          (local.get $filter_value)
-        )
-      }
-
-      (call_indirect (type $filterFunc)
-        {@@offset &TimbreWork.filter;,$timbre_work}
-        (i32.add
-          (i32.load
-            (i32.add
-              (&Filter.filter_type;)
-              (i32.load
-                (i32.add
-                  (&TimbreWork.filter;)
-                  (local.get $timbre_work)
-                )
-              )
-            )
-          )
-          (i32.const {$.FILTER_FUNC_INDEX})
-        )
-      )
-    )
-  )
-
-  ;; オシレータ&音量処理
-  ;; out = oscillator_output * lfo * envelope * output_level
-  (f32.store 
-    (i32.add
-      (&TimbreWork.value;)
-      (local.get $timbre_work)
-    )
-    (f32.mul 
-      (f32.mul
-        ;; フィルタ
-        (if (result f32)
-          (i32.and
-            (local.get $timbre_flag)
-            (i32.const 16)
-          )
-          (then
-            (call $processFilter
-              (i32.add 
-                (&TimbreWork.filter;)
-                (local.get $timbre_work)
-              )
-              ;; オシレータ
-              (call_indirect (type $oscillatorFunc)
-                (local.get $oscillator_work_offset)
-                (i32.load
-                  (i32.add
-                    (&Oscillator.call_index;)
-                    (local.get $oscillator_offset)
-                  )
-                )
-              )
-            )
-          )
-          (else 
-            ;; オシレータ
-            (call_indirect (type $oscillatorFunc)
-              (local.get $oscillator_work_offset)
-              (i32.load
-                (i32.add
-                  (&Oscillator.call_index;)
-                  (local.get $oscillator_offset)
-                )
-              )
-            )
-          )
-        )
-        ;; amplitude envelope
-        (if (result f32)
-          (i32.and
-            (local.get $timbre_flag)
-            (i32.const 0x4)
-          )
-          (then
-            (call $doEnvelope
-              (i32.add
-                (&TimbreWork.amplitude_envelope;)
-                (local.get $timbre_work)
-              )
-            )
-          )
-          (else
-            (f32.const 1)
-          )
-        )
-      )
-      ;; output level
-      {@@clamp 
-        (f32.add 
-          ;; amplitude lfo
-          (if (result f32)
-            (i32.and
-              (local.get $timbre_flag)
-              (i32.const 0x8)
-            )
-            (then
-              (call_indirect (type $oscillatorFunc) 
-                (local.tee $amplitude_lfo_work_offset
-                  (i32.add
-                    (&TimbreWork.amplitude_lfo_work_offset;)
-                    (local.get $timbre_work)
-                  )
-                )
-                (i32.load
-                  (i32.add
-                    (&Oscillator.call_index;)
-                    {@@ldo i32,&OscillatorWork.param_offset;,$amplitude_lfo_work_offset}
-                  )
-                )
-              )
-            )
-            (else 
-              (f32.const 0.0)
-            )
-          )
-          {@@ldo f32,&TimbreWork.output_level;,$timbre_work}
-        ),
-        $temp,0.0,1.0
-      }
-    )
-  )
-  ;; output 
-  {@@ldo f32,&TimbreWork.value;,$timbre_work}
-)
-
-;; --------------------------------
-;; test用 Timbreのセットアップ
-;; --------------------------------
-
-(func $initTestTimbre
-  (result i32)
-  (local $loop_counter i32)
-  (local $offset_src i32)
-  (local $offset_dest i32)
-  (local $offset_dest1 i32)
-  (local $oscillator_offset i32)
-  (local $oscillator1_offset i32)
-  (local $timbre_offset i32)
-  
-  ;; オシレータ0のセットアップ
-  ;; 512サンプル分取る
-  (i32.store
-    (&oscillator[0];)
-    (local.tee $oscillator_offset
-      (call $allocateWaveTable
-        (i32.const 512)
-      )
-    )
-  )
-  ;; オシレータ1のセットアップ
-  ;; 32サンプル分取る
-  (i32.store
-    (&oscillator[1];)
-    (local.tee $oscillator1_offset
-      (call $allocateWaveTable
-        (i32.const 32)
-      )
-    )
-  )
-
-  ;; sizeを32サンプルにセット
-  {@@setWaveTableSize_ 
-    $oscillator_offset,
-    (i32.const 32)
-  }
-  
-  {@@setWaveTableSize_
-    $oscillator1_offset,
-    (i32.const 32)
-  }
-
-  ;; sinデータのコピー
-  (block $sin_data_copy
-    (local.set $loop_counter (i32.const 32))
-    (local.set $offset_src (&sin_table;)) 
-    (local.set $offset_dest 
-      (i32.add
-        (&WaveTable.wave_data_start;)
-        (i32.load (&oscillator[0];) )
-      )
-    )
-    (local.set $offset_dest1 
-      (i32.add
-        (&WaveTable.wave_data_start;)
-        (i32.load (&oscillator[1];) )
-      )
-    )
-
-    (loop $sin_loop
-      (br_if $sin_data_copy
-        (i32.eqz
-          (local.tee $loop_counter
-            (i32.sub
-              (local.get $loop_counter)
-              (i32.const 1)
-            )
-          )
-        )
-      )
-
-      (f32.store
-        (local.get $offset_dest)
-        (f32.load (local.get $offset_src))
-      )
-
-      (f32.store
-        (local.get $offset_dest1)
-        (f32.load (local.get $offset_src))
-      )
-
-      (local.set $offset_dest
-        (i32.add
-          (local.get $offset_dest)
-          (i32.const 4)
-        )
-      )
-
-      (local.set $offset_dest1
-        (i32.add
-          (local.get $offset_dest1)
-          (i32.const 4)
-        )
-      )
-
-      (local.set $offset_src
-        (i32.add
-          (local.get $offset_src)
-          (i32.const 4)
-        )
-      )
-      (br $sin_loop)
-    )
-  )
-
-  ;; timbre 0 のセットアップ
-
-  ;; フラグ
-  (i32.store
-    (&timbre[0].flag;)
-    (i32.const 0x0)
-  )
-
-  ;; オシレータ
-  (i32.store 
-    (&timbre[0].oscillator_offset;)
-    (local.get $oscillator_offset)
-  )
-
-  (f32.store
-    (&timbre[0].oscillator_base_frequency;)
-    (f32.const 440) ;; 440Hz
-  )
-
-
-  ;; ピッチ・エンベロープ
-  (call $initEnvelope
-    (&timbre[0].pitch_envelope;)
-    (f32.load (&sample_rate;))
-    (f32.const 0.00015) ;; a
-    (f32.const 0.15) ;; d
-    (f32.const 0.2) ;; s
-    (f32.const 0.2) ;; r
-    (f32.const 1.0) ;; level
-  )
-
-  ;; Pitch LFO
-  (i32.store
-    (&timbre[0].pitch_lfo_offset;)
-    (local.get $oscillator1_offset)
-  )
-
-  (f32.store
-    (&timbre[0].pitch_lfo_base_frequency;)
-    (f32.const 20) ;; 20Hz
-  )
-
-  ;; 音量・エンベロープ
-  
-  (call $initEnvelope
-    (&timbre[0].amplitude_envelope;)
-    (f32.load (&sample_rate;))
-    (f32.const 0.001)
-    (f32.const 0.5)
-    (f32.const 0.5)
-    (f32.const 0.25)
-    (f32.const 1.0)
-  )
-  
-  ;; 音量LFO・オフセット
-  (i32.store
-    (&timbre[0].amplitude_lfo_offset;)
-    (local.get $oscillator1_offset)
-  )
-
-  (f32.store
-    (&timbre[0].amplitude_lfo_base_frequency;)
-    (f32.const 20) ;; 20Hz
-  )
-
-  ;; フィルタ
-      
-  (call $initFilter
-    (&timbre[0].filter;)
-    (i32.const 0)
-    (f32.const 4000)
-    (f32.const 1.0)
-    (f32.const 0.5)
-    (f32.const 1.0)
-  )
-
-  (call $initFilterWork
-    (&timbre[0].filter;)
-    (&timbre_work[0].filter;)
-  )
-
-  (call $initEnvelope
-    (&timbre[0].filter_envelope;)
-    (f32.load (&sample_rate;))
-    (f32.const 0.0)
-    (f32.const 2.0)
-    (f32.const 0.5)
-    (f32.const 2.0)
-    (f32.const 1.0)
-  )
-
-  ;; フィルタLFO・オフセット
-  (i32.store
-    (&timbre[0].filter_lfo_offset;)
-    (local.get $oscillator_offset)
-  )
-  
-  (f32.store
-    (&timbre[0].filter_lfo_base_frequency;)
-    (f32.const 20) ;; 20Hz
-  )
-
-  ;; Timbre ワークのセットアップ 
-  
-  ;; フラグ
-  (i32.store
-    (&timbre_work[0].flag;)
-    (i32.const 0x80000000)
-  )
-
-  ;; Timbreオフセット
-  (i32.store
-    (&timbre_work[0].timbre_offset;)
-    (&timbre[0];)
-  )
-
-  ;; pitch
-  (f32.store
-    (&timbre_work[0].pitch;)
-    (f32.const 1)
-  )
-
-  ;; oscillator ワーク の初期化
-  (call $initWaveTableWork
-    (&timbre_work[0].oscillator_work_offset;)
-    (local.get $oscillator_offset)
-    (f32.load 
-      (&timbre[0].oscillator_base_frequency;)
-    )
-  )
-
-  ;; pitch lfo ワーク の初期化
-  (call $initWaveTableWork
-    (&timbre_work[0].pitch_lfo_work_offset;)
-    (local.get $oscillator_offset)
-    (f32.load 
-      (&timbre[0].pitch_lfo_base_frequency;)
-    )
-  )
-
-  ;; amplitude lfo ワークの初期化
-  (call $initWaveTableWork
-    (&timbre_work[0].amplitude_lfo_work_offset;)
-    (local.get $oscillator_offset)
-    (f32.load 
-      (&timbre[0].amplitude_lfo_base_frequency;)
-    )
-  )
-
-  ;; filter lfo ワークの初期化
-  (call $initWaveTableWork
-    (&timbre_work[0].filter_lfo_work_offset;)
-    (local.get $oscillator_offset)
-    (f32.load 
-      (&timbre[0].filter_lfo_base_frequency;)
-    )
-  )
-
-  ;; pitch envelope ワークの初期化
-  (call $initEnvelopeWork
-    (&timbre_work[0].pitch_envelope;)
-    (&timbre[0].pitch_envelope;)
-  )
-
-  ;; amplitude envelope ワークの初期化
-  (call $initEnvelopeWork
-    (&timbre_work[0].amplitude_envelope;)
-    (&timbre[0].amplitude_envelope;)
-  )
-  
-  ;; filter envelope ワークの初期化
-  (call $initEnvelopeWork
-    (&timbre_work[0].filter_envelope;)
-    (&timbre[0].filter_envelope;)
-  )
-
-  ;; output level
-  (f32.store
-    (&timbre_work[0].output_level;)
-    (f32.const 1)
-  )
-
-  (&timbre_work[0];)
-
-)
 
 ;; ==================================
 ;; Filter 
@@ -2161,12 +1472,7 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
               (f64.mul
                 (f64.const {$ Math.log(2.0) / 2.0 ;})
                 (f64.promote_f32
-                  (f32.load
-                    (i32.add
-                      (&Filter.band_width;)
-                      (local.get $filter_work)
-                    )
-                  )
+                  {@@ldo f32,&Filter.band_width;,$filter_work}
                 )
               )
               (local.get $omega)
@@ -2180,68 +1486,47 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
 
   ;; フィルタ係数を求める。
   ;; a0 = 1.0f + alpha;    
-  (f32.store 
-    (i32.add
-      (&FilterWork.a0;)
-      (local.get $filter_work)
-    )
+  {@@sto f32,&FilterWork.a0;,$filter_work,
     (f32.add
       (f32.const 1.0)
       (local.get $alpha)
     )
-  )
+  }
+
   ;;a1 = -2.0f * cos(omega);
-  (f32.store 
-    (i32.add
-      (&FilterWork.a1;)
-      (local.get $filter_work)
-    )
+  {@@sto f32,&FilterWork.a1;,$filter_work,
     (f32.mul
       (f32.const -2.0)
       (local.get $cos_omega)
     )
-  )
+  }
+
   ;; a2 = 1.0 - alpha;
-  (f32.store 
-    (i32.add
-      (&FilterWork.a2;)
-      (local.get $filter_work)
-    )
+  {@@sto f32,&FilterWork.a2;,$filter_work,
     (f32.sub
       (f32.const 1.0)
       (local.get $alpha)
     )
-  )
+  }
 
   ;; b0 = 1.0f;
-  (f32.store 
-    (i32.add
-      (&FilterWork.b0;)
-      (local.get $filter_work)
-    )
+  {@@sto f32,&FilterWork.b0;,$filter_work,
     (f32.const 1)
-  )
+  }
   
   ;; b1 = -2.0f * cos(omega);
-  (f32.store 
-      (i32.add
-        (&FilterWork.b1;)
-        (local.get $filter_work)
-      )
-      (f32.mul
-        (f32.const -2.0)
-        (local.get $cos_omega)
-      )
-  )
+  {@@sto f32,&FilterWork.b1;,$filter_work,
+    (f32.mul
+      (f32.const -2.0)
+      (local.get $cos_omega)
+    )
+  }
 
   ;; b2 = 1.0f;
-  (f32.store 
-    (i32.add
-      (&FilterWork.b2;)
-      (local.get $filter_work)
-    )
+  {@@sto f32,&FilterWork.b2;,$filter_work,
     (f32.const 1)
-  )
+  }
+
 )
 
 ;; -----------------------
@@ -3605,6 +2890,760 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
     (f32.const 0)
   )
 )
+
+;; --------------------------
+;; 音色
+;; --------------------------
+
+
+(func $keyOnTimbre
+  (param $timbre_work i32)
+  ;; key on フラグのセット
+  (i32.store
+    (i32.add
+      (&TimbreWork.flag;)
+      (local.get $timbre_work)
+    )
+    (i32.or
+      (i32.load
+        (i32.add
+          (&TimbreWork.flag;)
+          (local.get $timbre_work)
+        )
+      )
+      (i32.const 0x1)
+    )
+  )
+
+  ;; envelopeのキーオン処理
+  ;; pitch
+  (call $keyOnEnvelope
+    (i32.add
+      (&TimbreWork.pitch_envelope;)
+      (local.get $timbre_work)
+    )
+  )
+  ;; amplitude
+  (call $keyOnEnvelope
+    (i32.add
+      (&TimbreWork.amplitude_envelope;)
+      (local.get $timbre_work)
+    )
+  )
+  ;; filter
+  (call $keyOnEnvelope
+    (i32.add
+      (&TimbreWork.filter_envelope;)
+      (local.get $timbre_work)
+    )
+  )
+)
+
+(func $keyOffTimbre
+  (param $timbre_work i32)
+  ;; key off  フラグのリセット
+  (i32.store
+    (i32.add
+      (&TimbreWork.flag;)
+      (local.get $timbre_work)
+    )
+    (i32.and
+      (i32.load
+        (i32.add
+          (&TimbreWork.flag;)
+          (local.get $timbre_work)
+        )
+      )
+      (i32.const 0xffff_fffe)
+    )
+  )
+
+  ;; envelopeのキーoff処理
+  ;; pitch
+  (call $keyOffEnvelope
+    (i32.add
+      (&TimbreWork.pitch_envelope;)
+      (local.get $timbre_work)
+    )
+  )
+  ;; amplitude
+  (call $keyOffEnvelope
+    (i32.add
+      (&TimbreWork.amplitude_envelope;)
+      (local.get $timbre_work)
+    )
+  )
+
+  ;; filter
+  (call $keyOffEnvelope
+    (i32.add
+      (&TimbreWork.filter_envelope;)
+      (local.get $timbre_work)
+    )
+  )
+
+)
+
+(func $processTimbre
+  (param $timbre_work i32)
+  (result f32)
+  (local $oscillator_work_offset i32)
+  (local $pitch_lfo_work_offset i32)
+  (local $amplitude_lfo_work_offset i32)
+  (local $filter_lfo_work_offset i32)
+  (local $pitch f32)
+  (local $oscillator_offset i32)
+  (local $timbre_flag i32)
+  (local $filter_value f32)
+  (local $filter i32)
+  (local $temp f32)
+
+  (local.set $timbre_flag
+    (i32.load
+      (i32.add
+        (&Timbre.flag;)
+        {@@ldo i32,&TimbreWork.timbre_offset;,$timbre_work}
+      )
+    )
+  )
+
+  (local.set $oscillator_offset
+    (i32.load
+      (i32.add
+        (&OscillatorWork.param_offset;)
+        (i32.add
+          (&TimbreWork.oscillator_work_offset;)
+          (local.get $timbre_work)
+        )
+      )
+    )
+  )
+  
+  ;; Pitchの処理
+  ;; pitch = pitch * lfo * envelope
+  (f32.store
+    (i32.add
+      (&OscillatorWork.pitch;)
+      (local.tee $oscillator_work_offset
+        {@@offset &TimbreWork.oscillator_work_offset;,$timbre_work}
+      )
+    )
+    (f32.mul
+      {@@clamp 
+        (f32.add
+          ;; pitch
+          (local.tee $pitch
+            (f32.load
+              (i32.add
+                (&TimbreWork.pitch;)
+                (local.get $timbre_work)
+              )
+            )
+          )
+          ;; lfo処理
+          (if (result f32)
+            (i32.and
+              (local.get $timbre_flag)
+              (i32.const 0x2)
+            )
+            (then
+              (call_indirect (type $oscillatorFunc) 
+                (local.tee $pitch_lfo_work_offset
+                  (i32.add
+                    (&TimbreWork.pitch_lfo_work_offset;)
+                    (local.get $timbre_work)
+                  )
+                )
+                (i32.load
+                  (i32.add
+                    (&Oscillator.call_index;)
+                    (i32.load
+                      (i32.add
+                        (&OscillatorWork.param_offset;)
+                        (local.get $pitch_lfo_work_offset)
+                      )            
+                    )
+                  )
+                )
+              )
+            )
+            (else
+              (f32.const 0.0) 
+            )
+          )
+        ),$temp,0.0,1.0
+      }
+      ;; envelope
+      (if (result f32)
+        (i32.and
+          (local.get $timbre_flag)
+          (i32.const 0x1)
+        )
+        (then
+          (call $doEnvelope
+            (i32.add
+              (&TimbreWork.pitch_envelope;)
+              (local.get $timbre_work)
+            )
+          )
+        )
+        (else
+          (f32.const 1)
+        )
+      )
+    )
+  )
+
+  ;; フィルタ処理
+  (if 
+    (i32.and
+      (local.get $timbre_flag)
+      (i32.const 16)
+    )
+    
+    (then
+      (local.set $filter_value
+        (f32.mul
+          ;; filter envelope
+          (if (result f32) 
+            (i32.and (local.get $timbre_flag) (i32.const 32))
+            (then
+              (call $doEnvelope
+                (i32.add
+                  (&TimbreWork.filter_envelope;)
+                  (local.get $timbre_work)
+                )
+              )
+            )
+            (else 
+              (f32.const 1)
+            )
+          )
+          ;; filter lfo
+          (if (result f32)
+            (i32.and (local.get $timbre_flag) (i32.const 64))
+            (then
+              {@@adjust_positive
+                (call_indirect (type $oscillatorFunc) 
+                  (local.tee $filter_lfo_work_offset
+                    {@@offset &TimbreWork.filter_lfo_work_offset;,$timbre_work}
+                  )
+                  (i32.load
+                    (i32.add
+                      (&Oscillator.call_index;)
+                      {@@ldo i32,&OscillatorWork.param_offset;,$filter_lfo_work_offset}
+                    )
+                  )
+                )
+              }
+            )
+            (else 
+              (f32.const 1)
+            )
+          )
+        )
+      )
+      ;; フィルタの更新
+      (local.set $filter
+        {@@ldo i32,&TimbreWork.filter;,$timbre_work}
+      )
+
+      ;; フィルタ値を更新
+      {@@sto f32,&TimbreWork.filter.freq_rate;,$timbre_work,
+        (local.get $filter_value)
+      }
+
+      {@@sto f32,&TimbreWork.filter.current_frequency;,$timbre_work,
+        (f32.mul
+          {@@ldo f32,&Filter.base_frequency;,$filter}
+          (local.get $filter_value)
+        )
+      }
+
+      (call_indirect (type $filterFunc)
+        {@@offset &TimbreWork.filter;,$timbre_work}
+        (i32.add
+          (i32.load
+            (i32.add
+              (&Filter.filter_type;)
+              (i32.load
+                (i32.add
+                  (&TimbreWork.filter;)
+                  (local.get $timbre_work)
+                )
+              )
+            )
+          )
+          (i32.const {$.FILTER_FUNC_INDEX})
+        )
+      )
+    )
+  )
+
+  ;; オシレータ&音量処理
+  ;; out = oscillator_output * lfo * envelope * output_level
+  (f32.store 
+    (i32.add
+      (&TimbreWork.value;)
+      (local.get $timbre_work)
+    )
+    (f32.mul 
+      (f32.mul
+        ;; フィルタ
+        (if (result f32)
+          (i32.and
+            (local.get $timbre_flag)
+            (i32.const 16)
+          )
+          (then
+            (call $processFilter
+              (i32.add 
+                (&TimbreWork.filter;)
+                (local.get $timbre_work)
+              )
+              ;; オシレータ
+              (call_indirect (type $oscillatorFunc)
+                (local.get $oscillator_work_offset)
+                (i32.load
+                  (i32.add
+                    (&Oscillator.call_index;)
+                    (local.get $oscillator_offset)
+                  )
+                )
+              )
+            )
+          )
+          (else 
+            ;; オシレータ
+            (call_indirect (type $oscillatorFunc)
+              (local.get $oscillator_work_offset)
+              (i32.load
+                (i32.add
+                  (&Oscillator.call_index;)
+                  (local.get $oscillator_offset)
+                )
+              )
+            )
+          )
+        )
+        ;; amplitude envelope
+        (if (result f32)
+          (i32.and
+            (local.get $timbre_flag)
+            (i32.const 0x4)
+          )
+          (then
+            (call $doEnvelope
+              (i32.add
+                (&TimbreWork.amplitude_envelope;)
+                (local.get $timbre_work)
+              )
+            )
+          )
+          (else
+            (f32.const 1)
+          )
+        )
+      )
+      ;; output level
+      {@@clamp 
+        (f32.add 
+          ;; amplitude lfo
+          (if (result f32)
+            (i32.and
+              (local.get $timbre_flag)
+              (i32.const 0x8)
+            )
+            (then
+              (call_indirect (type $oscillatorFunc) 
+                (local.tee $amplitude_lfo_work_offset
+                  (i32.add
+                    (&TimbreWork.amplitude_lfo_work_offset;)
+                    (local.get $timbre_work)
+                  )
+                )
+                (i32.load
+                  (i32.add
+                    (&Oscillator.call_index;)
+                    {@@ldo i32,&OscillatorWork.param_offset;,$amplitude_lfo_work_offset}
+                  )
+                )
+              )
+            )
+            (else 
+              (f32.const 0.0)
+            )
+          )
+          {@@ldo f32,&TimbreWork.output_level;,$timbre_work}
+        ),
+        $temp,0.0,1.0
+      }
+    )
+  )
+  ;; output 
+  {@@ldo f32,&TimbreWork.value;,$timbre_work}
+)
+
+
+;; --------------------------------
+;; test用 Timbreのセットアップ
+;; --------------------------------
+
+(func $initTestTimbre
+  (result i32)
+  (local $loop_counter i32)
+  (local $offset_src i32)
+  (local $offset_dest i32)
+  (local $offset_dest1 i32)
+  (local $oscillator_offset i32)
+  (local $oscillator1_offset i32)
+  (local $timbre_offset i32)
+  
+  ;; オシレータ0のセットアップ
+  ;; 512サンプル分取る
+  (i32.store
+    (&oscillator[0];)
+    (local.tee $oscillator_offset
+      (call $allocateWaveTable
+        (i32.const 512)
+      )
+    )
+  )
+  ;; オシレータ1のセットアップ
+  ;; 32サンプル分取る
+  (i32.store
+    (&oscillator[1];)
+    (local.tee $oscillator1_offset
+      (call $allocateWaveTable
+        (i32.const 32)
+      )
+    )
+  )
+
+  ;; sizeを32サンプルにセット
+  {@@setWaveTableSize_ 
+    $oscillator_offset,
+    (i32.const 32)
+  }
+  
+  {@@setWaveTableSize_
+    $oscillator1_offset,
+    (i32.const 32)
+  }
+
+  ;; sinデータのコピー
+  (block $sin_data_copy
+    (local.set $loop_counter (i32.const 32))
+    (local.set $offset_src (&sin_table;)) 
+    (local.set $offset_dest 
+      (i32.add
+        (&WaveTable.wave_data_start;)
+        (i32.load (&oscillator[0];) )
+      )
+    )
+    (local.set $offset_dest1 
+      (i32.add
+        (&WaveTable.wave_data_start;)
+        (i32.load (&oscillator[1];) )
+      )
+    )
+
+    (loop $sin_loop
+      (br_if $sin_data_copy
+        (i32.eqz
+          (local.tee $loop_counter
+            (i32.sub
+              (local.get $loop_counter)
+              (i32.const 1)
+            )
+          )
+        )
+      )
+
+      (f32.store
+        (local.get $offset_dest)
+        (f32.load (local.get $offset_src))
+      )
+
+      (f32.store
+        (local.get $offset_dest1)
+        (f32.load (local.get $offset_src))
+      )
+
+      (local.set $offset_dest
+        (i32.add
+          (local.get $offset_dest)
+          (i32.const 4)
+        )
+      )
+
+      (local.set $offset_dest1
+        (i32.add
+          (local.get $offset_dest1)
+          (i32.const 4)
+        )
+      )
+
+      (local.set $offset_src
+        (i32.add
+          (local.get $offset_src)
+          (i32.const 4)
+        )
+      )
+      (br $sin_loop)
+    )
+  )
+
+  ;; timbre 0 のセットアップ
+
+  ;; フラグ
+  (i32.store
+    (&timbre[0].flag;)
+    (i32.const 0x0)
+  )
+
+  ;; オシレータ
+  (i32.store 
+    (&timbre[0].oscillator_offset;)
+    (local.get $oscillator_offset)
+  )
+
+  (f32.store
+    (&timbre[0].oscillator_base_frequency;)
+    (f32.const 440) ;; 440Hz
+  )
+
+
+  ;; ピッチ・エンベロープ
+  (call $initEnvelope
+    (&timbre[0].pitch_envelope;)
+    (f32.load (&sample_rate;))
+    (f32.const 0.00015) ;; a
+    (f32.const 0.15) ;; d
+    (f32.const 0.2) ;; s
+    (f32.const 0.2) ;; r
+    (f32.const 1.0) ;; level
+  )
+
+  ;; Pitch LFO
+  (i32.store
+    (&timbre[0].pitch_lfo_offset;)
+    (local.get $oscillator1_offset)
+  )
+
+  (f32.store
+    (&timbre[0].pitch_lfo_base_frequency;)
+    (f32.const 20) ;; 20Hz
+  )
+
+  ;; 音量・エンベロープ
+  
+  (call $initEnvelope
+    (&timbre[0].amplitude_envelope;)
+    (f32.load (&sample_rate;))
+    (f32.const 0.001)
+    (f32.const 0.5)
+    (f32.const 0.5)
+    (f32.const 0.25)
+    (f32.const 1.0)
+  )
+  
+  ;; 音量LFO・オフセット
+  (i32.store
+    (&timbre[0].amplitude_lfo_offset;)
+    (local.get $oscillator1_offset)
+  )
+
+  (f32.store
+    (&timbre[0].amplitude_lfo_base_frequency;)
+    (f32.const 20) ;; 20Hz
+  )
+
+  ;; フィルタ
+      
+  (call $initFilter
+    (&timbre[0].filter;)
+    (i32.const 0)
+    (f32.const 4000)
+    (f32.const 1.0)
+    (f32.const 0.5)
+    (f32.const 1.0)
+  )
+
+  (call $initFilterWork
+    (&timbre[0].filter;)
+    (&timbre_work[0].filter;)
+  )
+
+  (call $initEnvelope
+    (&timbre[0].filter_envelope;)
+    (f32.load (&sample_rate;))
+    (f32.const 0.0)
+    (f32.const 2.0)
+    (f32.const 0.5)
+    (f32.const 2.0)
+    (f32.const 1.0)
+  )
+
+  ;; フィルタLFO・オフセット
+  (i32.store
+    (&timbre[0].filter_lfo_offset;)
+    (local.get $oscillator_offset)
+  )
+  
+  (f32.store
+    (&timbre[0].filter_lfo_base_frequency;)
+    (f32.const 20) ;; 20Hz
+  )
+
+  ;; Timbre ワークのセットアップ 
+  
+  ;; フラグ
+  (i32.store
+    (&timbre_work[0].flag;)
+    (i32.const 0x80000000)
+  )
+
+  ;; Timbreオフセット
+  (i32.store
+    (&timbre_work[0].timbre_offset;)
+    (&timbre[0];)
+  )
+
+  ;; pitch
+  (f32.store
+    (&timbre_work[0].pitch;)
+    (f32.const 1)
+  )
+
+  ;; oscillator ワーク の初期化
+  (call $initWaveTableWork
+    (&timbre_work[0].oscillator_work_offset;)
+    (local.get $oscillator_offset)
+    (f32.load 
+      (&timbre[0].oscillator_base_frequency;)
+    )
+  )
+
+  ;; pitch lfo ワーク の初期化
+  (call $initWaveTableWork
+    (&timbre_work[0].pitch_lfo_work_offset;)
+    (local.get $oscillator_offset)
+    (f32.load 
+      (&timbre[0].pitch_lfo_base_frequency;)
+    )
+  )
+
+  ;; amplitude lfo ワークの初期化
+  (call $initWaveTableWork
+    (&timbre_work[0].amplitude_lfo_work_offset;)
+    (local.get $oscillator_offset)
+    (f32.load 
+      (&timbre[0].amplitude_lfo_base_frequency;)
+    )
+  )
+
+  ;; filter lfo ワークの初期化
+  (call $initWaveTableWork
+    (&timbre_work[0].filter_lfo_work_offset;)
+    (local.get $oscillator_offset)
+    (f32.load 
+      (&timbre[0].filter_lfo_base_frequency;)
+    )
+  )
+
+  ;; pitch envelope ワークの初期化
+  (call $initEnvelopeWork
+    (&timbre_work[0].pitch_envelope;)
+    (&timbre[0].pitch_envelope;)
+  )
+
+  ;; amplitude envelope ワークの初期化
+  (call $initEnvelopeWork
+    (&timbre_work[0].amplitude_envelope;)
+    (&timbre[0].amplitude_envelope;)
+  )
+  
+  ;; filter envelope ワークの初期化
+  (call $initEnvelopeWork
+    (&timbre_work[0].filter_envelope;)
+    (&timbre[0].filter_envelope;)
+  )
+
+  ;; output level
+  (f32.store
+    (&timbre_work[0].output_level;)
+    (f32.const 1)
+  )
+
+  (&timbre_work[0];)
+
+)
+
+;; --------------------------------
+;; ボイスアサイン・制御
+;; --------------------------------
+
+(func $assignVoice
+  (result i32)
+  (local $ch i32)
+  (local $timbre_work i32)
+  (local $min_time i64)
+  (local $timbre_work_min i32)
+
+  (local.set $timbre_work_min
+    (local.tee $timbre_work
+      (&timbre_work[0];)
+    )
+  )
+
+  (block $loop_end 
+    (loop $loop
+      (br_if $loop_end
+        (i32.gt_u 
+          (local.get $timbre_work)
+          (&timbre_work[0];)
+        )
+      )
+      ;; 
+      (if
+        (i32.and
+          (i32.const 0x80000000)
+          {@@ldo i32,&TimbreWork.flag;,$timbre_work}
+        )
+        (then
+          (return (local.get $timbre_work))
+        )
+        (else
+          (if 
+            (i64.lt_u
+              {@@ldo i64,&TimbreWork.time;,$timbre_work}
+              (local.get $min_time)
+            )
+            (then
+              (local.set $min_time
+                {@@ldo i64,&TimbreWork.time;,$timbre_work}
+              )
+              (local.set $timbre_work_min 
+                (local.get $timbre_work)
+              )
+            )
+          )
+          (local.set $timbre_work
+            (i32.add
+              (local.get $timbre_work)
+              (#TimbreWork;)
+            )
+          )
+          (br $loop)
+        )
+      )
+    )
+  )
+  ;; すべてアクティブの場合、アサインした中で最小時間のボイスをアサインする
+  (local.get $timbre_work_min)
+)
+
 
 ;; --------------------------- 
 ;; output buffer
