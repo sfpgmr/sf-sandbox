@@ -2201,7 +2201,6 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
     )
   )
   ;; omega = 2.0f * 3.14159265f *  freq / samplerate;
-
   (local.set $cos_omega
     (f32.demote_f64 
       (call $cos 
@@ -2210,12 +2209,16 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
             (f32.mul
               (f32.mul
                 (f32.const (; Math.PI * 2;  ;)6.283185307179586)
-                (f32.load
-                  (i32.add
-                    (i32.const 32 (; FilterWork.current_frequency ;))
-                    (local.get $filter_work)
-                  )
-                )
+                
+(f32.load
+  
+(i32.add
+  (i32.const 32 (; FilterWork.current_frequency ;))
+  (local.get $filter_work)
+)
+
+)
+
               )
               (f32.load (i32.const 8 (; delta ;)))
             )
@@ -2232,39 +2235,55 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
       )
       (f32.mul
         (f32.const 2.0)
-        (f32.load
-          (i32.add
-            (i32.const 8 (; Filter.q ;))
-            (local.get $filter)
-          )
-        )
+        
+(f32.load
+  
+(i32.add
+  (i32.const 8 (; Filter.q ;))
+  (local.get $filter)
+)
+
+)
+
       )
     ) 
   )
 
   ;; フィルタ係数を求める。
   ;; a0 = 1.0f + alpha;
-  (f32.store 
-    (i32.add
-      (i32.const 4 (; FilterWork.a0 ;))
-      (local.get $filter_work)
-    )
-    (f32.add
-      (f32.const 1.0)
+  
+(f32.store
+  
+(i32.add
+  (i32.const 4 (; FilterWork.a0 ;))
+  (local.get $filter_work)
+)
+
+  (f32.add
+      (f32.const +1.0)
       (local.get $alpha)
     )
-  )
+  
+)
+
+
   ;; a1 = -2.0f * cos(omega);
-  (f32.store 
-    (i32.add
-      (i32.const 8 (; FilterWork.a1 ;))
-      (local.get $filter_work)
-    )
-    (f32.mul
+  
+(f32.store
+  
+(i32.add
+  (i32.const 8 (; FilterWork.a1 ;))
+  (local.get $filter_work)
+)
+
+  (f32.mul
       (f32.const -2.0)
       (local.get $cos_omega)
     )
-  )
+  
+)
+
+
   ;; a2 = 1.0f - alpha;
   (f32.store 
     (i32.add
@@ -2276,14 +2295,15 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
       (local.get $alpha)
     )
   )
-  ;; b0 = (1.0f - cos(omega)) / 2.0f;
+
+  ;; b0 = (1.0f + cos(omega)) / 2.0f;
   (f32.store 
     (i32.add
       (i32.const 16 (; FilterWork.b0 ;))
       (local.get $filter_work)
     )
     (f32.mul
-      (f32.sub
+      (f32.add
         (f32.const 1.0)
         (local.get $cos_omega)
       )
@@ -2291,30 +2311,42 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
     )
   )
   
-  ;; b1 = -1.0f + cos(omega);
+  ;; b1 = -(1.0f + cos(omega));
   (f32.store 
     (i32.add
       (i32.const 20 (; FilterWork.b1 ;))
       (local.get $filter_work)
-  )
-  (f32.add
-      (f32.const -1.0)
-      (local.get $cos_omega)
     )
-  )
-  ;; b2 = (1.0f - cos(omega)) / 2.0f;  )
-  (f32.store 
-    (i32.add
-      (i32.const 24 (; FilterWork.b2 ;))
-      (local.get $filter_work)
-    )
-    (f32.load
-      (i32.add
-        (i32.const 16 (; FilterWork.b0 ;))
-        (local.get $filter_work)
+    (f32.neg
+      (f32.add
+          (f32.const 1.0)
+          (local.get $cos_omega)
       )
     )
   )
+  
+  ;; b2 = (1.0f - cos(omega)) / 2.0f;  )
+  
+(f32.store
+  
+(i32.add
+  (i32.const 24 (; FilterWork.b2 ;))
+  (local.get $filter_work)
+)
+
+  
+(f32.load
+  
+(i32.add
+  (i32.const 16 (; FilterWork.b0 ;))
+  (local.get $filter_work)
+)
+
+)
+
+  
+)
+
 )
 
 ;; -----------------------
