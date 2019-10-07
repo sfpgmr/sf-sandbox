@@ -340,7 +340,7 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
   ;;  1 ... keyon
   i32 flag;
   i32 timbre_offset;
-  i64 time;
+  f64 time;
   f32 pitch;
   ;; オシレータ・ワークエリア（128バイト分）
   i32 oscillator_work_offset[32];
@@ -364,6 +364,40 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
   ;; 出力レベル
   f32 output_level;
   f32 value;
+}
+;; --------------------------------
+;; シーケンサ
+;; --------------------------------
+
+{@struct SeqData
+  ;; bit 16-31 ... コマンド番号
+  ;; bit  0- 7 ... ノートナンバー 0-127 (コマンド番号0の時)
+  i32 seq_type;
+  i32 step_gate;
+  f32 pitch;
+  f32 velocity;
+}
+
+{@struct Track
+  i32 timber_work;
+  f32 pitch;
+  f32 level;
+  i32 track_data;
+}
+
+{@struct TrackWork
+  i32 track;
+  i32 current_timbre_work;
+  f32 current_pitch;
+  f32 current_level;
+  i32 current_pos;
+}
+
+{@struct Sequence
+  i32 tempo;
+  i32 track_work[8];
+  i32 current_track;
+  i32 current_tempo;
 }
 
 ;; --------------------------------
@@ -3607,9 +3641,11 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
       )
       ;; 
       (if
-        (i32.and
-          (i32.const 0x80000000)
-          {@@ldo i32,&TimbreWork.flag;,$timbre_work}
+        (i32.eqz
+          (i32.and
+            (i32.const 0x8000_0001)
+            {@@ldo i32,&TimbreWork.flag;,$timbre_work}
+          )
         )
         (then
           (return (local.get $timbre_work))
