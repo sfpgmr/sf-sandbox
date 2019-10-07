@@ -370,12 +370,11 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
 ;; --------------------------------
 
 {@struct SeqData
-  ;; bit 16-31 ... コマンド番号
-  ;; bit  0- 7 ... ノートナンバー 0-127 (コマンド番号0の時)
-  i32 seq_type;
-  i32 step_gate;
-  f32 pitch;
-  f32 velocity;
+  ;; bit 16-31 ... ステップ (0-65535)
+  ;; bit  0- 7 ... ノート番号(0-127)
+  ;; bit  8-15 ... コマンド (0-511)
+  i32 step_command;
+  ;; コマンドによって可変
 }
 
 {@struct Track
@@ -395,7 +394,7 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
 
 {@struct Sequence
   i32 tempo;
-  i32 track_work[8];
+  TrackWork track_work[8];
   i32 current_track;
   i32 current_tempo;
 }
