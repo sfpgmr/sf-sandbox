@@ -369,18 +369,32 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
 ;; シーケンサ
 ;; --------------------------------
 
-{@struct SeqData
+(;
+  ;; テンポ
+  ;; 
+  ;; Track データの中身
   ;; bit 16-31 ... ステップ (0-65535)
-  ;; bit  0- 7 ... ノート番号(0-127)
-  ;; bit  8-15 ... コマンド (0-511)
-  i32 step_command;
+  ;; bit  0-15 ... コマンド (0-65535)
   ;; コマンドによって可変
-}
+  ;; 0x00 ... ノートオン
+  ;; 0x01 ... ノートオフ
+  ;; 0x02 ... ピッチ設定
+  ;; f32 ピッチ
+  ;; 0x03 ... トラック・ピッチ
+  ;; f32 ピッチ
+  ;; 0x06 ... ベロシティ
+  ;; 0x07 ... トラック・ボリューム
+  ;; 0x08 ... マスタ・ボリューム
+  ;; 0x09 ... テンポ
+  ;; 0x0a ... 
+  ;; f32 テンポ
+;)
 
 {@struct Track
-  i32 timber_work;
   f32 pitch;
   f32 level;
+  f32 pan;
+  i32 track_size;
   i32 track_data;
 }
 
@@ -389,14 +403,23 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
   i32 current_timbre_work;
   f32 current_pitch;
   f32 current_level;
-  i32 current_pos;
+  f32 current_pan;
+  i32 current_offset;
+  i32 current_step;
 }
 
 {@struct Sequence
   i32 tempo;
-  TrackWork track_work[8];
-  i32 current_track;
+  i32 level;
+  Track track[8];
+}
+
+{@struct SequenceWork
+  i32 sequence;
   i32 current_tempo;
+  i32 current_pitch;
+  i32 current_level;
+  TrackWork track[8];
 }
 
 ;; --------------------------------
@@ -439,6 +462,8 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
     // dataとして出力
     return `(data (i32.const ${offset}) "${data}")`;
   }  ;; メモリの先頭位置
+
+  ;; シーケンサ
   i32 mem_start;
 }
 
@@ -3679,7 +3704,6 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
   (local.get $timbre_work_min)
 )
 
-
 ;; --------------------------- 
 ;; output buffer
 ;; --------------------------- 
@@ -3805,5 +3829,44 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
       )
     )
   )
+
+
+
+
+
+;; --------------------------- 
+;; シーケンサ
+;; ---------------------------
+
+(func $allocateTrack
+  (param $track_size i32)
+)
+
+(func $initTrack
+  (param $track i32)
+)
+
+(func $initTrackWork
+  (param $track i32)
+  (param $track_work i32)
+)
+
+(func $processTrack
+  (param $track_work i32)
+)
+
+(func $initSequence
+  (param $sequence)
+)
+
+(func $initSequenceWork
+  (param $sequence)
+  (param $sequence_work)
+)
+
+(func $processSequence
+  (param $sequence_work)
+)
+
 )
 
