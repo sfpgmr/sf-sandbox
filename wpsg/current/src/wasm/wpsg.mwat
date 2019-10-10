@@ -370,33 +370,48 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
 ;; --------------------------------
 
 (;
-  ;; テンポ
-  ;; 
-  ;; 四分音符 = 960 step
-  ;; Track データの中身
-  ;; bit 21-31 ... コマンド (0-2047)
-  ;; bit  0-20 ... ステップ (0-2097152)
-  ;; ステップは絶対位置
-  ;; 0x000-0x07F ... キーオン
-  ;; コマンドそのものが、キーオンするオシレータのインデックスを表す
-  ;; 0x080-0x0FF ... キーオフ
-  ;; コマンドそのものが、キーオフするオシレータのインデックスを表す
-  ;; 0x100 ... ピッチ設定
-  ;;   param ... f32 値 
-  ;; 0x101 ... ベロシティ
-  ;;   param ... f32 値 (0-1.0)
-  ;; 0x102 ... トラック・ボリューム
-  ;;   param ... f32 値 (0-1.0)
-  ;; 0x103 ... マスタ・ボリューム
-  ;;   param ... f32 値 (0-1.0)
-  ;; 0x104 ... テンポ
-  ;;   param ... i32 テンポ (0-255)
-  ;; 0x104 ... 0x2ff 空き
-  ;; 0x200 ... 0x3ff ステップなしでDWORD中にコマンド２個が埋め込まれている
-  ;; bit 21-31 コマンド 1
-  ;; bit  0-10 コマンド 2
+  仕様＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝
+  
+  # Track データの中身 #
 
+  四分音符 = 120 ステップ
+  i32のステップ・コマンドがまずあり、そのあと必要なパラメータが続く。
 
+  # ビット構成 #
+  
+  bit  0-16 ... ステップ (0-131071)
+  bit 17-21 ... コマンド オプション(0-31)
+  bit 22-31 ... コマンド (0-511)
+    ・ステップは絶対位置
+
+  # コマンド #
+
+  0x000-0x07F ... キーオン・オフ
+    bit 17 ... On/Off
+    bit 18 ... ボイスアサインあり・なし
+      bit 18 がオフの場合、コマンドそのものがキーオンする
+      オシレータのインデックスを表す
+    bit 19 ... ピッチ データあり
+    bit 20 ... ベロシティ データあり
+    ・それぞれONでf32のパラメータが続く（可変）
+  0x080 ... トラック・ボリューム
+    param ... f32 値 (0-1.0)
+  0x081 ... マスタ・ボリューム
+    param ... f32 値 (0-1.0)
+  0x082 ... テンポ
+    param ... i32 テンポ (0-255)
+  0x083 ... スライド
+    bit 17 ... オン・オフ
+    bit 18-21 ... スライドの対象 (0-15)
+      0 ... ボリューム
+      1 ... ピッチ
+      2 ... フィルタ・カットオフ
+    param ... f32 スピード
+  0x084 ... 音色切り替え
+    param  .... i32 音色番号
+  0x085 ... トラックの有効・無効
+    bit 17 ... On/Off
+  0x1ff ... トラックの終了
 ;)
 
 {@struct Track
@@ -414,12 +429,12 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
   f32 current_level;
   f32 current_pan;
   i32 current_offset;
-  i32 current_step;
 }
 
 {@struct Sequence
   i32 tempo;
   i32 level;
+  i32 step;
   Track track[8];
 }
 
@@ -428,6 +443,13 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
   i32 current_tempo;
   i32 current_pitch;
   i32 current_level;
+  ;; delta = tempo * step / 60
+  i32 delta; 
+  ;; 初期値としてサンプルレートを入れる
+  i32 step_counter;
+  i32 current_step;
+  i32 padding;
+  ;; TrackWork
   TrackWork track[8];
 }
 
@@ -2606,7 +2628,7 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
 ;; filterの実行
 ;; -----------------------
 
-  (func $processFilter 
+(func $processFilter 
   (param $filter_work i32)
   (param $in f32)
   (result f32)
@@ -3875,6 +3897,75 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
 
 (func $processSequence
   (param $sequence_work)
+  (local $current_step i32)
+  (local $step_counter i32)
+  (local $track_work i32)
+  (local $track_loop_end i32)
+  (local $track_data_offset i32)
+  (if 
+    (i32.le_s
+      (local.tee $step_counter
+        {@@ldo i32,&SequenceWork.step_counter;,$sequence_work}  
+      )
+    )
+    (then
+      ;; カウンタをリセットする
+      {@@sto i32,&SequenceWork.step_counter;,$sequence_work,
+        (i32.add 
+          (local.get $step_counter)
+          (i32.trunc_f32_s
+            (f32.load (&sample_rate;))
+          )
+        )
+      }
+      ;; ステップを進める
+      {@@sto i32,&SequenceWork.current_step;,$sequence_work,
+        (i32.add
+          (local.tee $current_step
+            {@@ldo i32,&SequenceWork.current_step;,&sequence_work}
+          )
+          (i32.const 1)
+        )
+      }
+      ;; トラックごとの処理
+      (local.set $track_work
+        {@@offset &SequenceWork.track.track[0];,$sequence_work}
+      )
+
+      (local.set $track_loop_end
+        {@@offset &SequenceWork.track.track[8];,$sequence_work}
+      )
+      (block $track_loop_exit
+        (loop $track_loop
+          (br_if $track_loop_exit
+            (i32.gt 
+              (local.get $track_work)
+              (local.get $track_loop_end)
+            )
+          )
+          ;; シーケンス処理
+          (if )
+
+          (local.set $track_work
+            (i32.add
+              (local.get $track_work)
+              (#TrackWork;)
+            )
+          )
+          (br $track_loop)
+        )
+      )
+    )
+    (else
+      ;; 
+      {@@sto i32,&SequenceWork.step_counter;,$sequence_work,
+        (i32.sub 
+          (local.get $step_counter)
+          {@@ldo i32,&SequenceWork.delta;,$sequence_work}
+        )
+      }
+    )
+  )
 )
 
 )
