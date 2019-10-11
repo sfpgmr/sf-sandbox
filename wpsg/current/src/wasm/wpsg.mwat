@@ -3944,7 +3944,29 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
             )
           )
           ;; シーケンス処理
-          (if )
+          (if 
+            (i32.le_u
+              (i32.and
+                (local.tee $step_command
+                  (i32.load
+                    (local.tee $track_data_offset
+                      {@@ldo i32,&TrackWork.current_offset;,$track_work}
+                    )
+                  )
+                )
+                (i32.const 0x1ffff)
+              )
+              (local.get $current_step)
+            )
+            (then
+              (local.set $command
+                (i32.and
+                  (local.get $step_command)
+                  (i32.const 
+                )
+              )
+            )
+          )
 
           (local.set $track_work
             (i32.add
