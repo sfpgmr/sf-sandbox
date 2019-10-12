@@ -62,6 +62,16 @@
 )
 {@end_macro_def}
 
+{@macro_def local_add (t,l,v)}
+(local.set l
+  (t.add
+    (local.get l)
+    (t.const v)
+  )
+)
+{@end_macro_def}
+
+
 
 (module
   (type $oscillatorFunc (func (param i32) (result f32)))
@@ -99,11 +109,13 @@
   (export "initFilterWork" (func $initFilterWork))
 
 
-  (export "initTestTimbre" (func $initTestTimbre))
+  (export "initTimbre" (func $initTimbre))
   (export "processTimbre" (func $processTimbre))
   (export "keyOnTimbre" (func $keyOnTimbre))
   (export "keyOffTimbre" (func $keyOffTimbre))
-
+  (export "processTimbres" (func $processTimbres))
+  
+  
   (export "initOutputBuffer" (func $initOutputBuffer))
   (export "process" (func $process))
   (export "fill" (func $fill))
@@ -465,11 +477,11 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
   ;; サンプルレートの逆数 1 / sample_rate
   f32 delta;
   ;; オシレータのオフセットアドレスを格納（合計32個）
-  i32 oscillator[32];
+  i32 oscillator[64];
   ;; 音色 (64個分)
   Timbre timbre[64];
   ;; 音色ワークへのオフセットアドレス
-  TimbreWork timbre_work[8];
+  TimbreWork timbre_work[16];
   ;; outputバッファへのオフセット・アドレス
   i32 output_buffer_offset;
   i32 output_buffer_size;
@@ -3373,12 +3385,7 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
   {@@ldo f32,&TimbreWork.value;,$timbre_work}
 )
 
-
-;; --------------------------------
-;; test用 Timbreのセットアップ
-;; --------------------------------
-
-(func $initTestTimbre
+(func $initTimbre
   (result i32)
   (local $loop_counter i32)
   (local $offset_src i32)
@@ -3669,11 +3676,7 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
 
 )
 
-;; --------------------------------
-;; ボイスアサイン・制御
-;; --------------------------------
-
-(func $assignVoice
+(func $assignTimbre
   (result i32)
   (local $ch i32)
   (local $timbre_work i32)
@@ -3733,6 +3736,11 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
   )
   ;; すべてアクティブの場合、アサインした中で最小時間のボイスをアサインする
   (local.get $timbre_work_min)
+)
+
+(func $processTimbres
+
+
 )
 
 ;; --------------------------- 
@@ -3959,10 +3967,76 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
               (local.get $current_step)
             )
             (then
-              (local.set $command
+              {@@local_add i32,$track_data_offset,4}
+              ;; option と commandの取り出し
+              (local.set $option
                 (i32.and
-                  (local.get $step_command)
-                  (i32.const 
+                  (local.tee $command
+                    (i32.shr_u
+                      (i32.and
+                        (local.get $step_command)
+                        (i32.const 0xfffe0000)
+                      )
+                      (i32.const 16)
+                    )
+                  )
+                  (i32.const 0x1f)
+                )
+              )
+              (local.set $command
+                (i32.shr_u
+                  (local.get $command)
+                  (i32.const 5)
+                )
+              )
+              
+              ;; コマンドごとの処理
+              (if 
+                (i32.lt_u
+                  (local.get $commnad)
+                  (i32.const 0x80)  
+                )
+                (then
+                  ;; キーオン・オフの処理
+                  (if 
+                    (i32.and 
+                      (local.get $option)
+                      (i32.const 1)
+                    )
+                    ;; キーオン
+                    (then
+                      (if
+                        (i32.and
+                          (local.get $option)
+                          (i32.const 2)
+                        )
+                        ;; ボイスアサインあり
+                        (then
+                        
+                        )
+                        ;; ボイスアサインなし
+                        (then
+                        
+                        )
+                      )
+
+                    )
+                    ;; キーオフ
+                    (else
+                    
+                    )
+                  )
+                )
+                (else
+                  (block $command_exit
+                    (block $com_key
+                      (block $com_track_volume 
+                        (block $com_track_volume 
+                        
+                        )
+                      )
+                    )
+                  )
                 )
               )
             )
