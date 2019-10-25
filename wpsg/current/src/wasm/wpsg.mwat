@@ -23,6 +23,11 @@
     }
   };
   $.SEQUENCE = {
+    STATUS: {
+      PLAY:1,
+      STOP:0,
+      PAUSE:2
+    },
     TRACK:{
       KEY: {
         ON:0x1,
