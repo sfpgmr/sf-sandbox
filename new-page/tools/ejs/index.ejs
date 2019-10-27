@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+  <style>
+    :root {
+      --box-min: 280px;
+      --small-width: 320px;
+    }
+
+    * {
+      /* border:1px solid rgba(1,1,1,0.05) */
+      margin: 0;
+      padding: 0;
+    }
+
+    @media screen and (max-width:var(--small-width)) {}
+
+    @media screen and (min-width:calc(var(--small-width) + 1px)) {}
+
+    @media screen {
+
+      .top-nav {
+        overflow: hidden;
+        position: fixed;
+        background: black;
+        color: white;
+        top: 0px;
+        width: 100%;
+        height:32px;
+        z-index: 32768;
+        padding:8px 8px 8px 8px;
+        vertical-align: middle;
+      }
+
+      .contents {
+        padding-top:48px;
+        display: grid;
+        column-gap: 4px 4px;
+        /*grid-auto-rows: repeat(auto-fit,minmax(320px,200px));*/
+        grid-template-columns: repeat(auto-fit, minmax(var(--box-min), 1fr));
+        justify-content: center;
+      }
+
+
+      header>div {
+        display: inline-block;
+        color: black;
+        /* -webkit-text-shadow:1px rgba(1,1,1,0.5); */
+        color: white;
+      }
+
+      header > h1 {
+        font-size: 24px;
+        display: inline;
+      }
+ 
+      article {
+        background: white;
+        //max-height: 320px;
+        word-wrap: break-word;
+        overflow-y: auto;
+      }
+
+      footer {
+        color:white;
+        background: gray;
+        text-align: center;
+        margin: auto;
+        padding: 10px;
+      }
+
+    }
+
+  </style>
+</head>
+
+<body>
+  <header class="top-nav">
+    <h1>S.F. Info.</h1>
+  </header>
+  <div class="contents">
+    <% tweets.forEach(tweet=>{%>
+      <article>
+        <%-tweet.embed.html.replace(/\<script.*?\<\/script\>/ig,''); %>
+      </article>
+    <% }); %>
+  </div>
+  <footer>
+    CopyLight 2019 Satoshi Fujiwara 
+  </footer>
+  <script src="./index.js"></script>
+  <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+</body>
+
+</html>
