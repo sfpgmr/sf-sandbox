@@ -24,6 +24,8 @@
 
 "use strict";
 
+import MiniMasonry from './minimasonry.js';
+
 // メイン
 var masonry = new MiniMasonry({
   container: '.contents'
