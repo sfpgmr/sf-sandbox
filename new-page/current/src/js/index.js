@@ -28,10 +28,15 @@ import MiniMasonry from './minimasonry.js';
 
 // メイン
 var masonry = new MiniMasonry({
-  container: '.contents'
-});  
+  container: '.contents',
+  minimize:true
+}); 
+
 window.addEventListener('load', ()=>{
   masonry.layout();
-
+  document.getElementById('contents')
+    .addEventListener('resize',masonry.layout.bind(masonry)); 
 });
+
+
 

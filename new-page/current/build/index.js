@@ -75,6 +75,7 @@
       //Saving children real heights
       var children = this._container.querySelectorAll(this.conf.container + ' > *');
       for (var k = 0; k < children.length; k++) {
+        children[k].style.width = Math.round(width) + 'px';
         this._sizes[k] = children[k].clientHeight;
       }
 
@@ -88,7 +89,6 @@
       for (var index = 0; index < children.length; index++) {
         var shortest = this.conf.minify ? this.getShortest() : this.getNextColumn(index);
 
-        children[index].style.width = Math.round(width) + 'px';
         var x = initialLeft + ((width + this._gutter) * (shortest));
         var y = this._columns[shortest];
 
@@ -147,11 +147,14 @@
 
   // メイン
   var masonry = new MiniMasonry({
-    container: '.contents'
-  });  
+    container: '.contents',
+    minimize:true
+  }); 
+
   window.addEventListener('load', ()=>{
     masonry.layout();
-
+    document.getElementById('contents')
+      .addEventListener('resize',masonry.layout.bind(masonry)); 
   });
 
 }());

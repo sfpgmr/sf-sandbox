@@ -18,7 +18,6 @@
   .contents > article {
     background:white;
     position: absolute;
-    display:block;
   }
   
   </style>
@@ -28,7 +27,7 @@
   <header class="top-nav">
     <h1>S.F. Info.</h1>
   </header>
-  <div class="contents">
+  <div class="contents" id="contents">
     <% tweets.forEach(tweet=>{%>
       <article>
           <%-tweet.text; %>
@@ -38,7 +37,6 @@
   <footer>
     CopyLight 2019 Satoshi Fujiwara 
   </footer>
-  <script src="./minimasonry.min.js"></script>
   <script src="./index.js"></script>
 </body>
 
