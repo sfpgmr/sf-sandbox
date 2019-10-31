@@ -148,7 +148,9 @@
   // メイン
   var masonry = new MiniMasonry({
     container: '.contents',
-    minimize:true
+    minimize:false,
+    gutter:4,
+    baseWidth:320
   }); 
 
   window.addEventListener('load', ()=>{
