@@ -7,8 +7,9 @@ import fs from 'fs';
     const data = await request.get({url:`https://publish.twitter.com/oembed`,
       qs:{
         url:`https://twitter.com/sfpgmr/status/${tweet.id_str}`,
-        maxwidth:280,
-        hide_thread:true,
+        maxwidth:400,
+        align:'center',
+        hide_thread:false,
         omit_script:true,
         lang:"ja",
         dnt:true

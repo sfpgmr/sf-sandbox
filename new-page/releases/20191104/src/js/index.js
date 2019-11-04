@@ -31,7 +31,7 @@ var masonry = new MiniMasonry({
   container: '.contents',
   minimize:false,
   gutter:4,
-  baseWidth:400
+  baseWidth:300
 }); 
 
 window.twttr = (()=>{

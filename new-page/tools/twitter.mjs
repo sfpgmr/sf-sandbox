@@ -18,7 +18,8 @@ try {
   // });
 
   
-  const params = { screen_name: 'sfpgmr',trim_user:false,include_rts:true,count:200 };
+  const params = { screen_name: 'sfpgmr',trim_user:false,include_rts:true,count:200,        tweet_mode:'extended'
+};
   const getTweets = util.promisify(client.get.bind(client));
   
   (async ()=>{
