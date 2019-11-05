@@ -27,7 +27,11 @@
 import MiniMasonry from './minimasonry.js';
 
 // メイン
-var masonry = new MiniMasonry({
+  const contents = document.getElementById('contents');
+var masonry;
+(async ()=> {
+await contents.displayLock.acquire({ timeout: Infinity });
+masonry = new MiniMasonry({
   container: '.contents',
   minimize:false,
   gutter:4,
@@ -50,15 +54,15 @@ window.twttr = (()=>{
   };
   return t;
 })();
-
 window.addEventListener('load', async ()=>{
   twttr.ready(()=>{
-    twttr.events.bind('rendered',()=>{
+    twttr.events.bind('rendered',async ()=>{
       const tweets = document.querySelectorAll('twitter-widget');
       tweets.forEach(t=>{
         t.style.position = 'absolute';
       })
       masonry.layout();
+      await contents.displayLock.updateAndCommit();
     });
   });
 
@@ -67,5 +71,8 @@ window.addEventListener('load', async ()=>{
   window.addEventListener('resize',masonry.layout.bind(masonry)); 
 });
 
+
+
+})();
 
 
