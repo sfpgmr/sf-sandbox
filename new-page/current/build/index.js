@@ -170,7 +170,7 @@
       container: '.contents',
       minimize: false,
       gutter: 4,
-      baseWidth: 400
+      baseWidth: 255
     });
 
     window.addEventListener('load', async () => {
