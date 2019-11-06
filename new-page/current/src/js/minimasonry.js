@@ -34,7 +34,7 @@ export default class MiniMasonry {
     }
     window.addEventListener("resize", this.resizeThrottler.bind(this));
 
-    this.layout();
+    //this.layout();
   };
 
   reset() {

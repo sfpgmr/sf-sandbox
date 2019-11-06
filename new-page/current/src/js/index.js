@@ -27,52 +27,53 @@
 import MiniMasonry from './minimasonry.js';
 
 // メイン
-  const contents = document.getElementById('contents');
 var masonry;
-(async ()=> {
-await contents.displayLock.acquire({ timeout: Infinity });
-masonry = new MiniMasonry({
-  container: '.contents',
-  minimize:false,
-  gutter:4,
-  baseWidth:400
-}); 
 
-window.twttr = (()=>{
-  const s = 'script',d = document,id = 'twitter-wjs';
-  var js, fjs = d.getElementsByTagName(s)[0],
-  t = window.twttr || {};
-  if (d.getElementById(id)) return t;
-  js = d.createElement(s);
-  js.id = id;
-  js.src = "https://platform.twitter.com/widgets.js";
-  fjs.parentNode.insertBefore(js, fjs);
 
-  t._e = [];
-  t.ready = function(f) {
-    t._e.push(f);
-  };
-  return t;
-})();
-window.addEventListener('load', async ()=>{
-  twttr.ready(()=>{
-    twttr.events.bind('rendered',async ()=>{
-      const tweets = document.querySelectorAll('twitter-widget');
-      tweets.forEach(t=>{
-        t.style.position = 'absolute';
-      })
-      masonry.layout();
-      await contents.displayLock.updateAndCommit();
-    });
+  window.twttr = (() => {
+    const s = 'script', d = document, id = 'twitter-wjs';
+    var js, fjs = d.getElementsByTagName(s)[0],
+      t = window.twttr || {};
+    if (d.getElementById(id)) return t;
+    js = d.createElement(s);
+    js.id = id;
+    js.src = "https://platform.twitter.com/widgets.js";
+    fjs.parentNode.insertBefore(js, fjs);
+  
+    t._e = [];
+    t.ready = function (f) {
+      t._e.push(f);
+    };
+    return t;
+  })();
+
+  masonry = new MiniMasonry({
+    container: '.contents',
+    minimize: false,
+    gutter: 4,
+    baseWidth: 400
   });
 
-  //twttr.events.bind('rendered',masonry.layout.bind(masonry));
+  window.addEventListener('load', async () => {
 
-  window.addEventListener('resize',masonry.layout.bind(masonry)); 
-});
+    const contents = document.querySelector('#contents');
+   
+    twttr.ready(() => {
+      twttr.events.bind('rendered', () => {
+        const tweets = document.querySelectorAll('twitter-widget');
+        tweets.forEach(t => {
+          t.style.position = 'absolute';
+        })
+        masonry.layout();
+        contents.setAttribute('rendersubtree', '');
+        //masonry.layout();
+      });
+    });
 
 
+    //twttr.events.bind('rendered',masonry.layout.bind(masonry));
 
-})();
+  });
+
 
 

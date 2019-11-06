@@ -34,6 +34,7 @@
     background:#f0f0f0;
     color:#202020;
     position: absolute;
+    max-height:320px;
     border-radius: 2px;
   }
 
@@ -43,6 +44,8 @@
   }
 
   .contents > twitter-widget {
+    overflow: auto;
+    max-height:960px;
     position:absolute;
   }
 
@@ -64,7 +67,7 @@
   <header class="top-nav">
     <h1>S.F. Info.</h1>
   </header>
-  <div class="contents" id="contents">
+  <div class="contents" id="contents" rendersubtree="invisible skip-activation" >
     <% tweets.forEach(tweet=>{%>
       <% //<article> %>
         <%-tweet.embed.html%>
