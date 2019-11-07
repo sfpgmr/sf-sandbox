@@ -9,7 +9,7 @@ import fs from 'fs';
         url:`https://twitter.com/sfpgmr/status/${tweet.id_str}`,
         maxwidth:400,
         align:'center',
-        hide_thread:false,
+        hide_thread:true,
         omit_script:true,
         lang:"ja",
         dnt:true

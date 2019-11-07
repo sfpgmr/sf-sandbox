@@ -149,45 +149,56 @@
   var masonry;
 
 
-    window.twttr = (() => {
-      const s = 'script', d = document, id = 'twitter-wjs';
-      var js, fjs = d.getElementsByTagName(s)[0],
-        t = window.twttr || {};
-      if (d.getElementById(id)) return t;
-      js = d.createElement(s);
-      js.id = id;
-      js.src = "https://platform.twitter.com/widgets.js";
-      fjs.parentNode.insertBefore(js, fjs);
-    
-      t._e = [];
-      t.ready = function (f) {
-        t._e.push(f);
-      };
-      return t;
-    })();
+  window.twttr = (() => {
+    const s = 'script', d = document, id = 'twitter-wjs';
+    var js, fjs = d.getElementsByTagName(s)[0];
+    var t = window.twttr || {};
+    if (d.getElementById(id)) return t;
+    js = d.createElement(s);
+    js.id = id;
+    js.src = "https://platform.twitter.com/widgets.js";
+    fjs.parentNode.insertBefore(js, fjs);
+    t._e = [];
+    t.ready = function (f) {
+      t._e.push(f);
+    };
 
-    masonry = new MiniMasonry({
-      container: '.contents',
-      minimize: false,
-      gutter: 4,
-      baseWidth: 255
+    return t;
+  })();
+
+  let ct = 0;
+
+  masonry = new MiniMasonry({
+    container: '.contents',
+    minimize: false,
+    gutter: 4,
+    baseWidth: 255
+  });
+
+  twttr.ready(() => {
+    twttr.events.bind('rendered', () => {
+      ++ct;
+      console.log(ct);
+      if(ct >= 50){
+        const tweets = document.querySelectorAll('twitter-widget');
+        tweets.forEach(t => {
+          t.style.position = 'absolute';
+        });
+      
+      
+        masonry.layout();
+        //contents.setAttribute('rendersubtree', '');
+      }
+      //masonry.layout();
     });
+  });
+
 
     window.addEventListener('load', async () => {
 
       const contents = document.querySelector('#contents');
      
-      twttr.ready(() => {
-        twttr.events.bind('rendered', () => {
-          const tweets = document.querySelectorAll('twitter-widget');
-          tweets.forEach(t => {
-            t.style.position = 'absolute';
-          });
-          masonry.layout();
-          contents.setAttribute('rendersubtree', '');
-          //masonry.layout();
-        });
-      });
+
 
 
       //twttr.events.bind('rendered',masonry.layout.bind(masonry));
