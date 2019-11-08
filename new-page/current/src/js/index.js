@@ -26,10 +26,6 @@
 
 import MiniMasonry from './minimasonry.js';
 
-// メイン
-var masonry;
-
-
 window.twttr = (() => {
   const s = 'script', d = document, id = 'twitter-wjs';
   var js, fjs = d.getElementsByTagName(s)[0];
@@ -49,7 +45,7 @@ window.twttr = (() => {
 
 let ct = 0;
 
-masonry = new MiniMasonry({
+const masonry = new MiniMasonry({
   container: '.contents',
   minimize: false,
   gutter: 4,
@@ -57,31 +53,25 @@ masonry = new MiniMasonry({
 });
 
 twttr.ready(() => {
-  twttr.events.bind('rendered', () => {
+  twttr.events.bind('rendered', (e) => {
     ++ct;
-    console.log(ct);
-    if(ct >= 50){
+    if(ct >= 200){
+      const contents = document.querySelector('#contents');
       const tweets = document.querySelectorAll('twitter-widget');
       tweets.forEach(t => {
         t.style.position = 'absolute';
-      })
-    
-    
+      });
       masonry.layout();
-      //contents.setAttribute('rendersubtree', '');
+      contents.setAttribute('rendersubtree', '')
     }
     //masonry.layout();
   });
 });
 
 
-  window.addEventListener('load', async () => {
+  window.addEventListener('load', () => {
 
-    const contents = document.querySelector('#contents');
-   
-
-
-
+    //masonry.layout();
     //twttr.events.bind('rendered',masonry.layout.bind(masonry));
 
   });
