@@ -68,12 +68,11 @@
     <h1>S.F. Info.</h1>
     <p>Display Locking を使って表示の最適化を試みる。</p>
   </header>
-  <div class="contents" id="contents" rendersubtree="invisible skip-activation" >
-  <% //<div class="contents" id="contents"> %>
+  <% //<div class="contents" id="contents" rendersubtree="invisible skip-activation" > %>
+  <div class="contents" id="contents">
       <% tweets.forEach(tweet=>{%>
-      <% //<article> %>
-        <%-tweet.embed.html%>
-        <% /* %>
+      <% <article> %>
+        <% // -tweet.embed.html%>
           <h3><%-(new Date(tweet.created_at)).toLocaleString('ja-JP')%></h3>
           <section class="tweet-text"><%-tweet.full_text?tweet.full_text:tweet.text; %></section>
           <% if(tweet.entities){ 
@@ -85,8 +84,8 @@
           <% });
             } else {
             }
-          } */%> 
-    <%// </article> %>
+          } %> 
+    <% </article> %>
     <% }); %>
   </div>
   <footer>
