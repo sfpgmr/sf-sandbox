@@ -26,52 +26,56 @@
 
 import MiniMasonry from './minimasonry.js';
 
-// window.twttr = (() => {
-//   const s = 'script', d = document, id = 'twitter-wjs';
-//   var js, fjs = d.getElementsByTagName(s)[0];
-//   var t = window.twttr || {};
-//   if (d.getElementById(id)) return t;
-//   js = d.createElement(s);
-//   js.id = id;
-//   js.src = "https://platform.twitter.com/widgets.js";
-//   fjs.parentNode.insertBefore(js, fjs);
-//   t._e = [];
-//   t.ready = function (f) {
-//     t._e.push(f);
-//   };
+// メイン
+var masonry;
 
-//   return t;
-// })();
+
+window.twttr = (() => {
+  const s = 'script', d = document, id = 'twitter-wjs';
+  var js, fjs = d.getElementsByTagName(s)[0];
+  var t = window.twttr || {};
+  if (d.getElementById(id)) return t;
+  js = d.createElement(s);
+  js.id = id;
+  js.src = "https://platform.twitter.com/widgets.js";
+  fjs.parentNode.insertBefore(js, fjs);
+  t._e = [];
+  t.ready = function (f) {
+    t._e.push(f);
+  };
+
+  return t;
+})();
 
 let ct = 0;
 
-const masonry = new MiniMasonry({
+masonry = new MiniMasonry({
   container: '.contents',
   minimize: false,
   gutter: 4,
-  baseWidth: 460
+  baseWidth: 255
 });
 
-// twttr.ready(() => {
-//   // twttr.events.bind('rendered', (e) => {
-//   //   ++ct;
-//   //   if(ct >= 200){
-//   //     const contents = document.querySelector('#contents');
-//   //     const tweets = document.querySelectorAll('twitter-widget');
-//   //     tweets.forEach(t => {
-//   //       t.style.position = 'absolute';
-//   //     });
-//   //     contents.setAttribute('rendersubtree', '')
-//   //   }
-//   //   //masonry.layout();
-//   // });
-// });
+twttr.ready(() => {
+  twttr.events.bind('rendered', (e) => {
+    ++ct;
+    //console.log(ct);
+    if(ct >= 200){
+      const contents = document.querySelector('#contents');
+      const tweets = document.querySelectorAll('twitter-widget');
+      tweets.forEach(t => {
+        t.style.position = 'absolute';
+      });
+      masonry.layout();
+      contents.setAttribute('rendersubtree', '');
+    }
+    //masonry.layout();
+  });
+});
 
 
   window.addEventListener('load', () => {
-    document.getElementById('loading').remove();
-    masonry.layout();
-    contents.setAttribute('rendersubtree', '');
+
     //masonry.layout();
     //twttr.events.bind('rendered',masonry.layout.bind(masonry));
 

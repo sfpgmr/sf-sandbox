@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Twitter APIを試す(Display Locking)</title>
+  <style>
+
+    * {
+      margin:0;
+      padding:0;
+    }
+
+    html {
+      margin:0;
+      padding:0;
+    }
+
+    body {
+      margin:0;
+      padding:0;
+      background:black;
+      color:white;
+    }
+  
+  .contents {
+    width: 100%;
+    margin:auto;
+    position:relative;
+  }
+
+  .contents > article {
+    background:#f0f0f0;
+    color:#202020;
+    position: absolute;
+    max-height:320px;
+    border-radius: 2px;
+  }
+
+  .contents > article img {
+    width:100%;
+    object-fit: cover;
+  }
+
+  .contents > twitter-widget {
+    overflow: auto;
+    max-height:960px;
+    position:absolute;
+  }
+
+  .contents > article > .tweet-text {
+    display: block;
+    padding:4px;
+    word-break: break-all;
+    font-size: 12px;
+  }
+
+  .contents > article > h3 {
+    font-size:12px;
+  }
+  
+  </style>
+</head>
+
+<body>
+  <header class="top-nav">
+    <h1>S.F. Info.</h1>
+    <p>Display Locking を使って表示の最適化を試みる。</p>
+  </header>
+  <div class="contents" id="contents" rendersubtree="invisible skip-activation" >
+  <% //<div class="contents" id="contents"> %>
+      <% tweets.forEach(tweet=>{%>
+      <% //<article> %>
+        <%-tweet.embed.html%>
+        <% /* %>
+          <h3><%-(new Date(tweet.created_at)).toLocaleString('ja-JP')%></h3>
+          <section class="tweet-text"><%-tweet.full_text?tweet.full_text:tweet.text; %></section>
+          <% if(tweet.entities){ 
+            const medias = tweet.entities.media;
+            if(medias instanceof Array) {
+              medias.forEach(m=>{
+          %>
+            <img src="<%-m.media_url_https%>" />
+          <% });
+            } else {
+            }
+          } */%> 
+    <%// </article> %>
+    <% }); %>
+  </div>
+  <footer>
+    CopyLight 2019 Satoshi Fujiwara 
+  </footer>
+  <script src="./index.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,1281 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Twitter APIを試す(Display Locking)</title>
+  <style>
+
+    * {
+      margin:0;
+      padding:0;
+    }
+
+    html {
+      margin:0;
+      padding:0;
+    }
+
+    body {
+      margin:0;
+      padding:0;
+      background:black;
+      color:white;
+    }
+  
+  .contents {
+    width: 100%;
+    margin:auto;
+    position:relative;
+  }
+
+  .contents > article {
+    background:#f0f0f0;
+    color:#202020;
+    position: absolute;
+    max-height:320px;
+    border-radius: 2px;
+  }
+
+  .contents > article img {
+    width:100%;
+    object-fit: cover;
+  }
+
+  .contents > twitter-widget {
+    overflow: auto;
+    max-height:960px;
+    position:absolute;
+  }
+
+  .contents > article > .tweet-text {
+    display: block;
+    padding:4px;
+    word-break: break-all;
+    font-size: 12px;
+  }
+
+  .contents > article > h3 {
+    font-size:12px;
+  }
+  
+  </style>
+</head>
+
+<body>
+  <header class="top-nav">
+    <h1>S.F. Info.</h1>
+    <p>Display Locking を使って表示の最適化を試みる。</p>
+  </header>
+  <div class="contents" id="contents" rendersubtree="invisible skip-activation" >
+  
+      
+      
+        <blockquote class="twitter-tweet" data-conversation="none" align="center" data-width="400" data-lang="ja" data-dnt="true"><p lang="ja" dir="ltr">スレッドになってるのを１つのコンテンツとしてまとめたい欲求もあるしなあ。。</p>&mdash; S.F. (@SFPGMR) <a href="https://twitter.com/SFPGMR/status/1192411623454982144?ref_src=twsrc%5Etfw">2019年11月7日</a></blockquote>
+
+         
+    
+    
+      
+        <blockquote class="twitter-tweet" data-conversation="none" align="center" data-width="400" data-lang="ja" data-dnt="true"><p lang="ja" dir="ltr">twitterのwidgets.jsを使うのではなく、いちから描画することにするかなあ。やっぱり。</p>&mdash; S.F. (@SFPGMR) <a href="https://twitter.com/SFPGMR/status/1192411392332009473?ref_src=twsrc%5Etfw">2019年11月7日</a></blockquote>
+
+         
+    
+    
+      
+        <blockquote class="twitter-tweet" align="center" data-width="400" data-lang="ja" data-dnt="true"><p lang="ja" dir="ltr">のどの痛みがようやく引いてきた感じ。。</p>&mdash; S.F. (@SFPGMR) <a href="https://twitter.com/SFPGMR/status/1192411182251954181?ref_src=twsrc%5Etfw">2019年11月7日</a></blockquote>
+
+         
+    
+    
+      
+        <blockquote class="twitter-tweet" align="center" data-width="400" data-lang="ja" data-dnt="true"><p lang="und" dir="ltr"><a href="https://t.co/z1P9dsqBbD">https://t.co/z1P9dsqBbD</a></p>&mdash; S.F. (@SFPGMR) <a href="https://twitter.com/SFPGMR/status/1192207233607557120?ref_src=twsrc%5Etfw">2019年11月6日</a></blockquote>
+
+         
+    
+    
+      
+        <blockquote class="twitter-tweet" data-conversation="none" align="center" data-width="400" data-lang="ja" data-dnt="true"><p lang="ja" dir="ltr">ちなみにドラフトの仕様を私が試すと、chrome 78では死亡、Chrome Canaryでは動いた。が意図した動きにはならなかった。これは私の実装が悪いのかもしれないが。。今の仕様はHTML Attributeで表示・非表示をコントロールするようになったようですな。</p>&mdash; S.F. (@SFPGMR) <a href="https://twitter.com/SFPGMR/status/1192187876995239936?ref_src=twsrc%5Etfw">2019年11月6日</a></blockquote>
+
+         
+    
+    
+      
+        <blockquote class="twitter-tweet" data-conversation="none" align="center" data-width="400" data-lang="ja" data-dnt="true"><p lang="ja" dir="ltr">仕様的には今こうなっているようだ。試してみたところ、jxckさんの方法ではできなくなってるようだ。<a href="https://t.co/zAngQFxd8W">https://t.co/zAngQFxd8W</a></p>&mdash; S.F. (@SFPGMR) <a href="https://twitter.com/SFPGMR/status/1192185738999107584?ref_src=twsrc%5Etfw">2019年11月6日</a></blockquote>
+
+         
+    
+    
+      
+        <blockquote class="twitter-tweet" data-conversation="none" align="center" data-width="400" data-lang="ja" data-dnt="true"><p lang="ja" dir="ltr">「Display Locking」なるものもあるしな。。<a href="https://t.co/7Bzb8gnwKy">https://t.co/7Bzb8gnwKy</a></p>&mdash; S.F. (@SFPGMR) <a href="https://twitter.com/SFPGMR/status/1192039004260028416?ref_src=twsrc%5Etfw">2019年11月6日</a></blockquote>
+
+         
+    
+    
+      
+        <blockquote class="twitter-tweet" align="center" data-width="400" data-lang="ja" data-dnt="true"><p lang="ja" dir="ltr">いやーしかし喉が痛いなあ。。</p>&mdash; S.F. (@SFPGMR) <a href="https://twitter.com/SFPGMR/status/1192038516961632257?ref_src=twsrc%5Etfw">2019年11月6日</a></blockquote>
+
+         
+    
+    
+      
+        <blockquote class="twitter-tweet" align="center" data-width="400" data-lang="ja" data-dnt="true"><p lang="und" dir="ltr"><a href="https://t.co/ZlokW7MCkJ">https://t.co/ZlokW7MCkJ</a></p>&mdash; S.F. (@SFPGMR) <a href="https://twitter.com/SFPGMR/status/1191480886086160385?ref_src=twsrc%5Etfw">2019年11月4日</a></blockquote>
+
+         
+    
+    
+      
+        <blockquote class="twitter-tweet" align="center" data-width="400" data-lang="ja" data-dnt="true"><p lang="ja" dir="ltr">IPv6がなかなか普及しない理由について考察してみました。 <a href="https://t.co/FCYtSIWitR">https://t.co/FCYtSIWitR</a></p>&mdash; Rui Ueyama (@rui314) <a href="https://twitter.com/rui314/status/1191330668258582530?ref_src=twsrc%5Etfw">2019年11月4日</a></blockquote>
+
+         
+    
+    
+      
+        <blockquote class="twitter-tweet" data-conversation="none" align="center" data-width="400" data-lang="ja" data-dnt="true"><p lang="ja" dir="ltr">twitter apiのwidget.jsの動きをchrome developper toolで見ていて、「<a href="https://twitter.com/hashtag/shadow?src=hash&amp;ref_src=twsrc%5Etfw">#shadow</a>-root」なるものを見つけたので「これ何？」と思ったんだよね。まあしかし、ちょっと見ぬ間にいろいろ変わっとるなあ、Webの技術は。。 <a href="https://t.co/McrHnAjmio">pic.twitter.com/McrHnAjmio</a></p>&mdash; S.F. (@SFPGMR) <a href="https://twitter.com/SFPGMR/status/1191461113092722690?ref_src=twsrc%5Etfw">2019年11月4日</a></blockquote>
+
+         
+    
+    
+      
+        <blockquote class="twitter-tweet" align="center" data-width="400" data-lang="ja" data-dnt="true"><p lang="ja" dir="ltr">Shadow DOMというのもすでにブラウザでは実装されているのか。。<a href="https://t.co/rFuU82ie1C">https://t.co/rFuU82ie1C</a></p>&mdash; S.F. (@SFPGMR) <a href="https://twitter.com/SFPGMR/status/1191460382616903681?ref_src=twsrc%5Etfw">2019年11月4日</a></blockquote>
+
+         
+    
+    
+      
+        <blockquote class="twitter-tweet" align="center" data-width="400" data-lang="ja" data-dnt="true"><p lang="ja" dir="ltr">宇宙から見た今朝の朝焼けがきれい． <a href="https://t.co/3OqeXuyWfa">pic.twitter.com/3OqeXuyWfa</a></p>&mdash; 荒木健太郎 (@arakencloud) <a href="https://twitter.com/arakencloud/status/1191062921381470208?ref_src=twsrc%5Etfw">2019年11月3日</a></blockquote>
+
+         
+    
+    
+      
+        <blockquote class="twitter-tweet" data-conversation="none" align="center" data-width="400" data-lang="ja" data-dnt="true"><p lang="ja" dir="ltr">堺筋線というのが渋いね。。</p>&mdash; S.F. (@SFPGMR) <a href="https://twitter.com/SFPGMR/status/1191227535465439232?ref_src=twsrc%5Etfw">2019年11月4日</a></blockquote>
+
+         
+    
+    
+      
+        <blockquote class="twitter-tweet" align="center" data-width="400" data-lang="ja" data-dnt="true"><p lang="ja" dir="ltr">ニューラルネットでゴジラ1954をカラーにしてみた。(その3)<a href="https://twitter.com/hashtag/%E3%82%B4%E3%82%B8%E3%83%A9%E3%81%AE%E6%97%A5?src=hash&amp;ref_src=twsrc%5Etfw">#ゴジラの日</a> <a href="https://t.co/dsaLgJrf2v">pic.twitter.com/dsaLgJrf2v</a></p>&mdash; ワンダバン (@wandaban) <a href="https://twitter.com/wandaban/status/1190962947440267265?ref_src=twsrc%5Etfw">2019年11月3日</a></blockquote>
+
+         
+    
+    
+      
+        <blockquote class="twitter-tweet" align="center" data-width="400" data-lang="ja" data-dnt="true"><p lang="ja" dir="ltr">昔、エミュに頼りまくって作ったGameBoyソフトが実機でまったく動かず、アルファ版提出したらクライアントに超怒られたのを思い出した。エミュは完璧じゃない前提でいないとダメね。（学生時代の思い出 <a href="https://t.co/gnpOphI8Ug">https://t.co/gnpOphI8Ug</a></p>&mdash; まかべひろし (@sinpen) <a href="https://twitter.com/sinpen/status/1191147902686511104?ref_src=twsrc%5Etfw">2019年11月4日</a></blockquote>
+
+         
+    
+    
+      
+        <blockquote class="twitter-tweet" data-conversation="none" align="center" data-width="400" data-lang="ja" data-dnt="true"><p lang="ja" dir="ltr">これが今今の成果物ですがね。。まあ描画が遅いわ。。<a href="https://t.co/Sh7wlM0GRr">https://t.co/Sh7wlM0GRr</a></p>&mdash; S.F. (@SFPGMR) <a href="https://twitter.com/SFPGMR/status/1191153590972272640?ref_src=twsrc%5Etfw">2019年11月4日</a></blockquote>
+
+         
+    
+    
+      
+        <blockquote class="twitter-tweet" align="center" data-width="400" data-lang="ja" data-dnt="true"><p lang="ja" dir="ltr">SINテーブル、指数テーブル、エンベロープ生成器を全交換した emu2413 の演奏です。動画はステレオで右チャンネルが emu2413、左チャンネルが ym2413 実チップの演奏。だいぶ実機に近くなったと思います。 <a href="https://t.co/XoL6mPzItZ">pic.twitter.com/XoL6mPzItZ</a></p>&mdash; D.S.A. (@ym2413) <a href="https://twitter.com/ym2413/status/1191151908242591745?ref_src=twsrc%5Etfw">2019年11月4日</a></blockquote>
+
+         
+    
+    
+      
+        <blockquote class="twitter-tweet" align="center" data-width="400" data-lang="ja" data-dnt="true"><p lang="und" dir="ltr"><a href="https://t.co/O2eVN5bxWR">https://t.co/O2eVN5bxWR</a></p>&mdash; S.F. (@SFPGMR) <a href="https://twitter.com/SFPGMR/status/1191147653045702657?ref_src=twsrc%5Etfw">2019年11月4日</a></blockquote>
+
+         
+    
+    
+      
+        <blockquote class="twitter-tweet" data-conversation="none" align="center" data-width="400" data-lang="ja" data-dnt="true"><p lang="ja" dir="ltr">トップページはTwitterだけではなくて、Youtubeのアップデートとか、ブログの記事とか、Qiitaの記事とかをまとめて表示するつもりなんだけどね。10～30アイテム位でページングしようと思っているんだよね。</p>&mdash; S.F. (@SFPGMR) <a href="https://twitter.com/SFPGMR/status/1191137520685219840?ref_src=twsrc%5Etfw">2019年11月3日</a></blockquote>
+
+         
+    
+    
+      
+        <blockquote class="twitter-tweet" data-conversation="none" align="center" data-width="400" data-lang="ja" data-dnt="true"><p lang="ja" dir="ltr">あと各ツィートの横幅もある程度可変できるようにしたいんだよな。</p>&mdash; S.F. (@SFPGMR) <a href="https://twitter.com/SFPGMR/status/1191137018589265922?ref_src=twsrc%5Etfw">2019年11月3日</a></blockquote>
+
+         
+    
+    
+      
+        <blockquote class="twitter-tweet" data-conversation="none" align="center" data-width="400" data-lang="ja" data-dnt="true"><p lang="ja" dir="ltr">あと一応レスポンシブに作ってるんだけどブラウザのサイズを変更すると妙な隙間が空いてしまう点も何とかせんといかんな。。</p>&mdash; S.F. (@SFPGMR) <a href="https://twitter.com/SFPGMR/status/1191135078903996416?ref_src=twsrc%5Etfw">2019年11月3日</a></blockquote>
+
+         
+    
+    
+      
+        <blockquote class="twitter-tweet" data-conversation="none" align="center" data-width="400" data-lang="ja" data-dnt="true"><p lang="ja" dir="ltr">工夫した点としては、widgets.jsはレンダリング終了時にイベントを発火してくれるので、それを捕まえてminimasonry.jsのlayout()を呼んでいるところだろうか。各tweetの高さはJSによるレンダリングが完了しないと判明しないので、layout()は最後に処理する必要がある。</p>&mdash; S.F. (@SFPGMR) <a href="https://twitter.com/SFPGMR/status/1191134463117234177?ref_src=twsrc%5Etfw">2019年11月3日</a></blockquote>
+
+         
+    
+    
+      
+        <blockquote class="twitter-tweet" data-conversation="none" align="center" data-width="400" data-lang="ja" data-dnt="true"><p lang="ja" dir="ltr">事前に静的にページをレンダリングするときにwidgets.jsを実行すればこれは解消しそうだけど、Twitterのステータスはリアルに変動するから静的な領域にそれを移行するのは全部は難しいと思う。</p>&mdash; S.F. (@SFPGMR) <a href="https://twitter.com/SFPGMR/status/1191134461741527040?ref_src=twsrc%5Etfw">2019年11月3日</a></blockquote>
+
+         
+    
+    
+      
+        <blockquote class="twitter-tweet" data-conversation="none" align="center" data-width="400" data-lang="ja" data-dnt="true"><p lang="ja" dir="ltr">これがレンダリング時の動画。。猛烈に遅いことがわかっていただけると思う。oembedで取得したHTMLはwidgets.jsにレンダリングを任せてるんだけど、そこがまず遅い。これが２００個ともなるとまあこうなるわな。。<a href="https://t.co/5GH994hkfe">https://t.co/5GH994hkfe</a></p>&mdash; S.F. (@SFPGMR) <a href="https://twitter.com/SFPGMR/status/1191132811257733122?ref_src=twsrc%5Etfw">2019年11月3日</a></blockquote>
+
+         
+    
+    
+      
+        <blockquote class="twitter-tweet" data-conversation="none" align="center" data-width="400" data-lang="ja" data-dnt="true"><p lang="ja" dir="ltr">twitter APIで得たデータをmasonryレイアウトで表示してみてる。現在の成果。oembedで取得したHTMLをレンダリングして並べることができるようになった。が、猛烈に遅いな。。 <a href="https://t.co/cHvvLoMPO7">pic.twitter.com/cHvvLoMPO7</a></p>&mdash; S.F. (@SFPGMR) <a href="https://twitter.com/SFPGMR/status/1191132808766345216?ref_src=twsrc%5Etfw">2019年11月3日</a></blockquote>
+
+         
+    
+    
+      
+        <blockquote class="twitter-tweet" align="center" data-width="400" data-lang="ja" data-dnt="true"><p lang="ja" dir="ltr">やったー、できた！ボタンの代わりに基板を傾けて動かすパックマン。本体を軽くノックするとゲームスタート。PIC32マイコンと加速度センサー、液晶、圧電ブザーのシンプルな構成で、作るのも簡単。モバイルバッテリーをつなげればどこでも遊べちゃう。 <a href="https://t.co/P9jao5y2Vb">pic.twitter.com/P9jao5y2Vb</a></p>&mdash; KenKenMkIISR (@KenKenMkIISR) <a href="https://twitter.com/KenKenMkIISR/status/1190979787579224067?ref_src=twsrc%5Etfw">2019年11月3日</a></blockquote>
+
+         
+    
+    
+      
+        <blockquote class="twitter-tweet" align="center" data-width="400" data-lang="ja" data-dnt="true"><p lang="ja" dir="ltr">この絵が出来たの2年前<br>丸々1年半この絵だけ描いてた<br>もうすごい昔に感じるな <a href="https://t.co/nYVa0Z7KGK">pic.twitter.com/nYVa0Z7KGK</a></p>&mdash; 三重野 慶art (@mienokei) <a href="https://twitter.com/mienokei/status/1191015349270921217?ref_src=twsrc%5Etfw">2019年11月3日</a></blockquote>
+
+         
+    
+    
+      
+        <blockquote class="twitter-tweet" align="center" data-width="400" data-lang="ja" data-dnt="true"><p lang="ja" dir="ltr">YM2413のアタック変化は実チップからの録音で見ると、EG出力値 96 or 95, 73 or 72, 54, 40, 28, 20, 13, 9, 5, 1 で間違いないと思うのだけど、やっぱ計算式は謎...。OPL系なら val -= val /8 + 1 ぽいんですが、以前書いたとおり形状違うんですよね。 <a href="https://t.co/EBpD94HVls">pic.twitter.com/EBpD94HVls</a></p>&mdash; D.S.A. (@ym2413) <a href="https://twitter.com/ym2413/status/1190769156414566400?ref_src=twsrc%5Etfw">2019年11月2日</a></blockquote>
+
+         
+    
+    
+      
+        <blockquote class="twitter-tweet" data-conversation="none" align="center" data-width="400" data-lang="ja" data-dnt="true"><p lang="ja" dir="ltr">masonryレイアウトの勉強ついでに関連する技術について勉強中。。<a href="https://t.co/FKO5bbybxK">https://t.co/FKO5bbybxK</a></p>&mdash; S.F. (@SFPGMR) <a href="https://twitter.com/SFPGMR/status/1190771214127525889?ref_src=twsrc%5Etfw">2019年11月2日</a></blockquote>
+
+         
+    
+    
+      
+        <blockquote class="twitter-tweet" data-conversation="none" align="center" data-width="400" data-lang="ja" data-dnt="true"><p lang="ja" dir="ltr">その後。。npmパッケージのインストールやrollupにおけるバンドル処理が異常に速くなって驚いている。</p>&mdash; S.F. (@SFPGMR) <a href="https://twitter.com/SFPGMR/status/1190770762728099840?ref_src=twsrc%5Etfw">2019年11月2日</a></blockquote>
+
+         
+    
+    
+      
+        <blockquote class="twitter-tweet" data-conversation="none" align="center" data-width="400" data-lang="ja" data-dnt="true"><p lang="ja" dir="ltr">私のような一般人は発熱を抑えるのは治療の一環のように思うけど、発熱自体は体の免疫機能が正常に働いているということなので、風邪が起因するものでない＆異常な発熱が長期間続かない限りは解熱剤の類は飲まないほうがいいんだろうな。。</p>&mdash; S.F. (@SFPGMR) <a href="https://twitter.com/SFPGMR/status/1190769558346330114?ref_src=twsrc%5Etfw">2019年11月2日</a></blockquote>
+
+         
+    
+    
+      
+        <blockquote class="twitter-tweet" data-conversation="none" align="center" data-width="400" data-lang="ja" data-dnt="true"><p lang="ja" dir="ltr">そして土曜日に定期的に通院している耳鼻咽喉科でいつもの治療を行って昏々と眠り、ちょっと起きてはネットをチェックしてまた寝る。。といった感じで今日にいたる。。</p>&mdash; S.F. (@SFPGMR) <a href="https://twitter.com/SFPGMR/status/1190767836852969472?ref_src=twsrc%5Etfw">2019年11月2日</a></blockquote>
+
+         
+    
+    
+      
+        <blockquote class="twitter-tweet" data-conversation="none" align="center" data-width="400" data-lang="ja" data-dnt="true"><p lang="ja" dir="ltr">そして金曜日は午後から服用を停止して、３連休なので発熱させて菌やウィルスを殺すことにした。発熱が抑えられるといつまでも菌やウィルスが残るような感じがするので。案の定３８度台まで一気に発熱して夜は思いっきりうなされる状態。。朝起きるとかなりのどの痛みが軽減してる状況。</p>&mdash; S.F. (@SFPGMR) <a href="https://twitter.com/SFPGMR/status/1190767446203854848?ref_src=twsrc%5Etfw">2019年11月2日</a></blockquote>
+
+         
+    
+    
+      
+        <blockquote class="twitter-tweet" data-conversation="none" align="center" data-width="400" data-lang="ja" data-dnt="true"><p lang="ja" dir="ltr">しかしこのロキソニンという薬、私にはなかなか強力である。のどの痛みや頭痛であれば飲めばほぼ治まってしまう。切れると痛み出すが。</p>&mdash; S.F. (@SFPGMR) <a href="https://twitter.com/SFPGMR/status/1190767445243387905?ref_src=twsrc%5Etfw">2019年11月2日</a></blockquote>
+
+         
+    
+    
+      
+        <blockquote class="twitter-tweet" align="center" data-width="400" data-lang="ja" data-dnt="true"><p lang="ja" dir="ltr">風邪はだいぶ良くなったがまだ頭痛と喉の痛みがのこっている。先週は休めない状況だったのでロキソニンを飲んで凌いでいた。</p>&mdash; S.F. (@SFPGMR) <a href="https://twitter.com/SFPGMR/status/1190766130576519168?ref_src=twsrc%5Etfw">2019年11月2日</a></blockquote>
+
+         
+    
+    
+      
+        <blockquote class="twitter-tweet" data-conversation="none" align="center" data-width="400" data-lang="ja" data-dnt="true"><p lang="ja" dir="ltr">新しいパラメータ「tweet_mode:&#39;extended&#39;」が必要なのね。ドキュメントには書いてなかったんだよなあ。。</p>&mdash; S.F. (@SFPGMR) <a href="https://twitter.com/SFPGMR/status/1190765784630325248?ref_src=twsrc%5Etfw">2019年11月2日</a></blockquote>
+
+         
+    
+    
+      
+        <blockquote class="twitter-tweet" data-conversation="none" align="center" data-width="400" data-lang="ja" data-dnt="true"><p lang="ja" dir="ltr">twitter APIのstatuses/user_timelineで取得できるtextが途中でtruncateされてしまうので調べたところ、ここに行き着いた。。<a href="https://t.co/rfaLfgH12O">https://t.co/rfaLfgH12O</a></p>&mdash; S.F. (@SFPGMR) <a href="https://twitter.com/SFPGMR/status/1190765544015712257?ref_src=twsrc%5Etfw">2019年11月2日</a></blockquote>
+
+         
+    
+    
+      
+        <blockquote class="twitter-tweet" align="center" data-width="400" data-lang="ja" data-dnt="true"><p lang="ja" dir="ltr">Xbyakによるアセンブリ言語レベルでの最適化、比較的な高度な数学的知識、ドメインに応じた数学的トリックを組み合わせて高速化するの、めちゃ楽しい。そしてそれがいろんな人に使われるととてもうれしい。<a href="https://t.co/NYHuhPKE0O">https://t.co/NYHuhPKE0O</a><br>Integrating Slick New BLS Library by Herumi into Prysm</p>&mdash; herumi (@herumi) <a href="https://twitter.com/herumi/status/1190406961952485376?ref_src=twsrc%5Etfw">2019年11月1日</a></blockquote>
+
+         
+    
+    
+      
+        <blockquote class="twitter-tweet" align="center" data-width="400" data-lang="ja" data-dnt="true"><p lang="ja" dir="ltr">昔は職場のコミュニケーションツールは　IP Messenger だった。</p>&mdash; ぷり (@pu_ri) <a href="https://twitter.com/pu_ri/status/1189923631037444096?ref_src=twsrc%5Etfw">2019年10月31日</a></blockquote>
+
+         
+    
+    
+      
+        <blockquote class="twitter-tweet" data-conversation="none" align="center" data-width="400" data-lang="ja" data-dnt="true"><p lang="ja" dir="ltr">現在の状況。ぼちぼち進めてる。。 <a href="https://t.co/05kMAngTTa">pic.twitter.com/05kMAngTTa</a></p>&mdash; S.F. (@SFPGMR) <a href="https://twitter.com/SFPGMR/status/1190012646277271552?ref_src=twsrc%5Etfw">2019年10月31日</a></blockquote>
+
+         
+    
+    
+      
+        <blockquote class="twitter-tweet" data-conversation="none" align="center" data-width="400" data-lang="ja" data-dnt="true"><p lang="ja" dir="ltr">ちなみに修正したソースはこれである。<a href="https://t.co/7muA6kQWtS">https://t.co/7muA6kQWtS</a></p>&mdash; S.F. (@SFPGMR) <a href="https://twitter.com/SFPGMR/status/1189865539675377665?ref_src=twsrc%5Etfw">2019年10月31日</a></blockquote>
+
+         
+    
+    
+      
+        <blockquote class="twitter-tweet" data-conversation="none" align="center" data-width="400" data-lang="ja" data-dnt="true"><p lang="ja" dir="ltr">このライブラリはcss gridを使っているわけではなくて、親をposition:relative、子をposition:absoluteにして、JSで指定した幅で子を並べるという単純なものである。こういうJSはむかし見かけたことがあるが、違うのはtranslate3dを使って位置決めをしているところである。</p>&mdash; S.F. (@SFPGMR) <a href="https://twitter.com/SFPGMR/status/1189864913134469121?ref_src=twsrc%5Etfw">2019年10月31日</a></blockquote>
+
+         
+    
+    
+      
+        <blockquote class="twitter-tweet" data-conversation="none" align="center" data-width="400" data-lang="ja" data-dnt="true"><p lang="ja" dir="ltr">このライブラリ、リサイズするとちょっと間隔がおかしくなるバグがある。ソース短いのでclassモジュール化するのと合わせてバグ修正を行った。</p>&mdash; S.F. (@SFPGMR) <a href="https://twitter.com/SFPGMR/status/1189863983978704896?ref_src=twsrc%5Etfw">2019年10月31日</a></blockquote>
+
+         
+    
+    
+      
+        <blockquote class="twitter-tweet" align="center" data-width="400" data-lang="ja" data-dnt="true"><p lang="und" dir="ltr"><a href="https://t.co/uNISGVIuqU">https://t.co/uNISGVIuqU</a></p>&mdash; S.F. (@SFPGMR) <a href="https://twitter.com/SFPGMR/status/1189288333744201728?ref_src=twsrc%5Etfw">2019年10月29日</a></blockquote>
+
+         
+    
+    
+      
+        <blockquote class="twitter-tweet" align="center" data-width="400" data-lang="ja" data-dnt="true"><p lang="ja" dir="ltr">ここ2－3日風邪で苦しんでるところ。。</p>&mdash; S.F. (@SFPGMR) <a href="https://twitter.com/SFPGMR/status/1189287749028909056?ref_src=twsrc%5Etfw">2019年10月29日</a></blockquote>
+
+         
+    
+    
+      
+        <blockquote class="twitter-tweet" data-conversation="none" align="center" data-width="400" data-lang="ja" data-dnt="true"><p lang="ja" dir="ltr">コードも138行しかないわ。。</p>&mdash; S.F. (@SFPGMR) <a href="https://twitter.com/SFPGMR/status/1189027073664241664?ref_src=twsrc%5Etfw">2019年10月29日</a></blockquote>
+
+         
+    
+    
+      
+        <blockquote class="twitter-tweet" data-conversation="none" align="center" data-width="400" data-lang="ja" data-dnt="true"><p lang="ja" dir="ltr">このソースコードを読んだが、なかなか面白いなあ。translate3d使って高速に配置するというね。。gpuのアクセラレーションが期待されるんだな。。と思ったらホームページに書いてあるわ。。</p>&mdash; S.F. (@SFPGMR) <a href="https://twitter.com/SFPGMR/status/1189026765764583425?ref_src=twsrc%5Etfw">2019年10月29日</a></blockquote>
+
+         
+    
+    
+      
+        <blockquote class="twitter-tweet" data-conversation="none" align="center" data-width="400" data-lang="ja" data-dnt="true"><p lang="ja" dir="ltr">いろいろあって今minimasonry.jsを試してる。。<a href="https://t.co/YLKHG1DX7y">https://t.co/YLKHG1DX7y</a> <a href="https://t.co/xaLbI2rK48">pic.twitter.com/xaLbI2rK48</a></p>&mdash; S.F. (@SFPGMR) <a href="https://twitter.com/SFPGMR/status/1188924268593041408?ref_src=twsrc%5Etfw">2019年10月28日</a></blockquote>
+
+         
+    
+    
+      
+        <blockquote class="twitter-tweet" align="center" data-width="400" data-lang="ja" data-dnt="true"><p lang="ja" dir="ltr">ロゴ変わりました。地味にcomドメインです。<a href="https://twitter.com/hashtag/MSXplay?src=hash&amp;ref_src=twsrc%5Etfw">#MSXplay</a><a href="https://t.co/OjjuTVo2tu">https://t.co/OjjuTVo2tu</a></p>&mdash; D.S.A. (@ym2413) <a href="https://twitter.com/ym2413/status/1188685670711058432?ref_src=twsrc%5Etfw">2019年10月28日</a></blockquote>
+
+         
+    
+    
+      
+        <blockquote class="twitter-tweet" data-conversation="none" align="center" data-width="400" data-lang="ja" data-dnt="true"><p lang="ja" dir="ltr">家に帰ったら試してみよう。。</p>&mdash; S.F. (@SFPGMR) <a href="https://twitter.com/SFPGMR/status/1188591628551720960?ref_src=twsrc%5Etfw">2019年10月27日</a></blockquote>
+
+         
+    
+    
+      
+        <blockquote class="twitter-tweet" data-conversation="none" align="center" data-width="400" data-lang="ja" data-dnt="true"><p lang="ja" dir="ltr">これはcss gridを使うmasonryレイアウトの実装方法。これが良さそうですな。。<a href="https://t.co/5rkZIlrQK2">https://t.co/5rkZIlrQK2</a></p>&mdash; S.F. (@SFPGMR) <a href="https://twitter.com/SFPGMR/status/1188591522263908353?ref_src=twsrc%5Etfw">2019年10月27日</a></blockquote>
+
+         
+    
+    
+      
+        <blockquote class="twitter-tweet" data-conversation="none" align="center" data-width="400" data-lang="ja" data-dnt="true"><p lang="ja" dir="ltr">flexboxを使う方法もあるのか。。<a href="https://t.co/IxjEzLTOcl">https://t.co/IxjEzLTOcl</a></p>&mdash; S.F. (@SFPGMR) <a href="https://twitter.com/SFPGMR/status/1188590989180432384?ref_src=twsrc%5Etfw">2019年10月27日</a></blockquote>
+
+         
+    
+    
+      
+        <blockquote class="twitter-tweet" data-conversation="none" align="center" data-width="400" data-lang="ja" data-dnt="true"><p lang="ja" dir="ltr">cssだけでできることが増えてるんだなあ。トランジション系のやつもチェックしとかんといかんな。。</p>&mdash; S.F. (@SFPGMR) <a href="https://twitter.com/SFPGMR/status/1188588206238777344?ref_src=twsrc%5Etfw">2019年10月27日</a></blockquote>
+
+         
+    
+    
+      
+        <blockquote class="twitter-tweet" data-conversation="none" align="center" data-width="400" data-lang="ja" data-dnt="true"><p lang="ja" dir="ltr">masonryっていうのか、このレイアウト。私がやりたいのはまさにこれなのだった。今はそうなってないけど、家に帰ったらトライしよう。。<a href="https://t.co/9Hw3TdbbWp">https://t.co/9Hw3TdbbWp</a></p>&mdash; S.F. (@SFPGMR) <a href="https://twitter.com/SFPGMR/status/1188587904064348160?ref_src=twsrc%5Etfw">2019年10月27日</a></blockquote>
+
+         
+    
+    
+      
+        <blockquote class="twitter-tweet" data-conversation="none" align="center" data-width="400" data-lang="ja" data-dnt="true"><p lang="ja" dir="ltr">表示のカスタマイズをしたいと思うけど、ルールを守らんといかんので、よく読んどかんといかんわな。。<a href="https://t.co/oySg3fIj7Z">https://t.co/oySg3fIj7Z</a></p>&mdash; S.F. (@SFPGMR) <a href="https://twitter.com/SFPGMR/status/1188563221805858816?ref_src=twsrc%5Etfw">2019年10月27日</a></blockquote>
+
+         
+    
+    
+      
+        <blockquote class="twitter-tweet" data-conversation="none" align="center" data-width="400" data-lang="ja" data-dnt="true"><p lang="ja" dir="ltr">Tweetのレンダリングはoembedに任せてみてるが、このままじゃいかんよなあ。。<a href="https://t.co/oPMcJpHNpB">https://t.co/oPMcJpHNpB</a></p>&mdash; S.F. (@SFPGMR) <a href="https://twitter.com/SFPGMR/status/1188562098340581377?ref_src=twsrc%5Etfw">2019年10月27日</a></blockquote>
+
+         
+    
+    
+      
+        <blockquote class="twitter-tweet" data-conversation="none" align="center" data-width="400" data-lang="ja" data-dnt="true"><p lang="ja" dir="ltr">とりあえず、Twitter APIをいじってみた結果。。200個のTweet&amp;RetweetをCSS Gridでただ並べただけ。。<a href="https://t.co/ePuq6i2wIN">https://t.co/ePuq6i2wIN</a> <a href="https://t.co/I2RN8E5UsY">pic.twitter.com/I2RN8E5UsY</a></p>&mdash; S.F. (@SFPGMR) <a href="https://twitter.com/SFPGMR/status/1188561473083019264?ref_src=twsrc%5Etfw">2019年10月27日</a></blockquote>
+
+         
+    
+    
+      
+        <blockquote class="twitter-tweet" align="center" data-width="400" data-lang="ja" data-dnt="true"><p lang="ja" dir="ltr">とりあえず MSXplay.js の URLシェア機能はこんな感じです。スマホ対応とかはまた後日...。 <a href="https://t.co/QCrXNhATYq">pic.twitter.com/QCrXNhATYq</a></p>&mdash; D.S.A. (@ym2413) <a href="https://twitter.com/ym2413/status/1188494914226507776?ref_src=twsrc%5Etfw">2019年10月27日</a></blockquote>
+
+         
+    
+    
+      
+        <blockquote class="twitter-tweet" align="center" data-width="400" data-lang="ja" data-dnt="true"><p lang="ja" dir="ltr">やっとPC-8001ミニを接続。この画面たまらない魅力がある。 <a href="https://t.co/FlQtIJNrTW">pic.twitter.com/FlQtIJNrTW</a></p>&mdash; なるお (@syntaxerrors72) <a href="https://twitter.com/syntaxerrors72/status/1188437053228240896?ref_src=twsrc%5Etfw">2019年10月27日</a></blockquote>
+
+         
+    
+    
+      
+        <blockquote class="twitter-tweet" data-conversation="none" align="center" data-width="400" data-lang="ja" data-dnt="true"><p lang="ja" dir="ltr">私が遊んだのはX1版だったと思うけどな。。</p>&mdash; S.F. (@SFPGMR) <a href="https://twitter.com/SFPGMR/status/1188256260103127041?ref_src=twsrc%5Etfw">2019年10月27日</a></blockquote>
+
+         
+    
+    
+      
+        <blockquote class="twitter-tweet" align="center" data-width="400" data-lang="ja" data-dnt="true"><p lang="ja" dir="ltr">このゲームも遊んだのは確か。しかしフルカラースクロールに驚嘆したのは覚えているのだが、ゲーム内容についてはほとんど記憶がない。。<a href="https://t.co/YsE7hIRWnD">https://t.co/YsE7hIRWnD</a></p>&mdash; S.F. (@SFPGMR) <a href="https://twitter.com/SFPGMR/status/1188255980858925056?ref_src=twsrc%5Etfw">2019年10月27日</a></blockquote>
+
+         
+    
+    
+      
+        <blockquote class="twitter-tweet" align="center" data-width="400" data-lang="ja" data-dnt="true"><p lang="ja" dir="ltr">KushView っていうところが開発していた Element っていうオーディオプラグインホストアプリケーションがオープンソースになった<a href="https://t.co/2bUdWav7kU">https://t.co/2bUdWav7kU</a></p>&mdash; ほっと (@hotwatermorning) <a href="https://twitter.com/hotwatermorning/status/1188061052547649536?ref_src=twsrc%5Etfw">2019年10月26日</a></blockquote>
+
+         
+    
+    
+      
+        <blockquote class="twitter-tweet" data-conversation="none" align="center" data-width="400" data-lang="ja" data-dnt="true"><p lang="ja" dir="ltr">これすごく便利だと思うんだよね。。<a href="https://t.co/6DmGhO6z7q">https://t.co/6DmGhO6z7q</a></p>&mdash; S.F. (@SFPGMR) <a href="https://twitter.com/SFPGMR/status/1187980549391937538?ref_src=twsrc%5Etfw">2019年10月26日</a></blockquote>
+
+         
+    
+    
+      
+        <blockquote class="twitter-tweet" data-conversation="none" align="center" data-width="400" data-lang="ja" data-dnt="true"><p lang="ja" dir="ltr">トップページはTwitter、YouTube、自作ブログシステムのポストを時系列で表示するものにしようかなと思ってる。まずはtwitterのツィートをAPI経由で取り出してテンプレート・エンジンでHTMLしてみようかなと思っている。データのマネジメントはsqlite3で行おうかなと思ってる。</p>&mdash; S.F. (@SFPGMR) <a href="https://twitter.com/SFPGMR/status/1187974430611271680?ref_src=twsrc%5Etfw">2019年10月26日</a></blockquote>
+
+         
+    
+    
+      
+        <blockquote class="twitter-tweet" align="center" data-width="400" data-lang="ja" data-dnt="true"><p lang="ja" dir="ltr">CSS Gridを使って新しいトップページのデザインを検討中。確かにこりゃレイアウトが楽だわ。。 <a href="https://t.co/5Kz9ZBB08t">pic.twitter.com/5Kz9ZBB08t</a></p>&mdash; S.F. (@SFPGMR) <a href="https://twitter.com/SFPGMR/status/1187477103542857730?ref_src=twsrc%5Etfw">2019年10月24日</a></blockquote>
+
+         
+    
+    
+      
+        <blockquote class="twitter-tweet" data-conversation="none" align="center" data-width="400" data-lang="ja" data-dnt="true"><p lang="ja" dir="ltr">やっぱりexport -&gt; importしたときにダウングレードしてしまってたんだろうな。。 <a href="https://t.co/koHxzRzbqn">pic.twitter.com/koHxzRzbqn</a></p>&mdash; S.F. (@SFPGMR) <a href="https://twitter.com/SFPGMR/status/1187315379229446145?ref_src=twsrc%5Etfw">2019年10月24日</a></blockquote>
+
+         
+    
+    
+      
+        <blockquote class="twitter-tweet" data-conversation="none" align="center" data-width="400" data-lang="ja" data-dnt="true"><p lang="ja" dir="ltr">家に帰ると変換が終わっていた。 <a href="https://t.co/sanTADR6v5">pic.twitter.com/sanTADR6v5</a></p>&mdash; S.F. (@SFPGMR) <a href="https://twitter.com/SFPGMR/status/1187315053436911616?ref_src=twsrc%5Etfw">2019年10月24日</a></blockquote>
+
+         
+    
+    
+      
+        <blockquote class="twitter-tweet" data-conversation="none" align="center" data-width="400" data-lang="ja" data-dnt="true"><p lang="ja" dir="ltr">でももうちょっと待ったら、ChoromiumベースのEdgeみたく、Windows 10のOSカーネルもlinuxベースになったりして。。</p>&mdash; S.F. (@SFPGMR) <a href="https://twitter.com/SFPGMR/status/1187103758561337344?ref_src=twsrc%5Etfw">2019年10月23日</a></blockquote>
+
+         
+    
+    
+      
+        <blockquote class="twitter-tweet" data-conversation="none" align="center" data-width="400" data-lang="ja" data-dnt="true"><p lang="ja" dir="ltr">まあでも面白いからいいか。。</p>&mdash; S.F. (@SFPGMR) <a href="https://twitter.com/SFPGMR/status/1187102714422939649?ref_src=twsrc%5Etfw">2019年10月23日</a></blockquote>
+
+         
+    
+    
+      
+        <blockquote class="twitter-tweet" data-conversation="none" align="center" data-width="400" data-lang="ja" data-dnt="true"><p lang="ja" dir="ltr">まじにnpmのオペレーションやると頻繁にこのエラーが発生してたまらん状態である。wsl2はまだ完成してるわけではないから、安定を望むなら使わないほうがいいのだが。<br>もうubuntuとのデュアルブートにしたほうがいいかもしれんなあ。。</p>&mdash; S.F. (@SFPGMR) <a href="https://twitter.com/SFPGMR/status/1187102595132706816?ref_src=twsrc%5Etfw">2019年10月23日</a></blockquote>
+
+         
+    
+    
+      
+        <blockquote class="twitter-tweet" data-conversation="none" align="center" data-width="400" data-lang="ja" data-dnt="true"><p lang="ja" dir="ltr">インポートした後「wsl --list -v」で確認したつもりだったのだが。とすると移した後は「wsl --set-version (ディストリビューション名） 2」やる必要があるのかね。。</p>&mdash; S.F. (@SFPGMR) <a href="https://twitter.com/SFPGMR/status/1187101889223000064?ref_src=twsrc%5Etfw">2019年10月23日</a></blockquote>
+
+         
+    
+    
+      
+        <blockquote class="twitter-tweet" data-conversation="none" align="center" data-width="400" data-lang="ja" data-dnt="true"><p lang="ja" dir="ltr">移したらこれもやっといたほうがいい。。<a href="https://t.co/iX3awdAWbu">https://t.co/iX3awdAWbu</a></p>&mdash; S.F. (@SFPGMR) <a href="https://twitter.com/SFPGMR/status/1187101399441477632?ref_src=twsrc%5Etfw">2019年10月23日</a></blockquote>
+
+         
+    
+    
+      
+        <blockquote class="twitter-tweet" data-conversation="none" align="center" data-width="400" data-lang="ja" data-dnt="true"><p lang="ja" dir="ltr">ちなみに移し方はこれ。。<a href="https://t.co/BJFB4HVWz7">https://t.co/BJFB4HVWz7</a></p>&mdash; S.F. (@SFPGMR) <a href="https://twitter.com/SFPGMR/status/1187101179580313600?ref_src=twsrc%5Etfw">2019年10月23日</a></blockquote>
+
+         
+    
+    
+      
+        <blockquote class="twitter-tweet" data-conversation="none" align="center" data-width="400" data-lang="ja" data-dnt="true"><p lang="ja" dir="ltr">別のドライブにVMをうつしたせいかな？とりあえずwsl2に変換中。。 <a href="https://t.co/y4BKkvNW1l">pic.twitter.com/y4BKkvNW1l</a></p>&mdash; S.F. (@SFPGMR) <a href="https://twitter.com/SFPGMR/status/1187100956011315200?ref_src=twsrc%5Etfw">2019年10月23日</a></blockquote>
+
+         
+    
+    
+      
+        <blockquote class="twitter-tweet" data-conversation="none" align="center" data-width="400" data-lang="ja" data-dnt="true"><p lang="ja" dir="ltr">ありゃ？いつのまにかwsl1になっとる。。 <a href="https://t.co/FrLZRAXHYL">pic.twitter.com/FrLZRAXHYL</a></p>&mdash; S.F. (@SFPGMR) <a href="https://twitter.com/SFPGMR/status/1187100122376597504?ref_src=twsrc%5Etfw">2019年10月23日</a></blockquote>
+
+         
+    
+    
+      
+        <blockquote class="twitter-tweet" data-conversation="none" align="center" data-width="400" data-lang="ja" data-dnt="true"><p lang="ja" dir="ltr">これやっても何もかわらんなあ。。</p>&mdash; S.F. (@SFPGMR) <a href="https://twitter.com/SFPGMR/status/1187099410007638016?ref_src=twsrc%5Etfw">2019年10月23日</a></blockquote>
+
+         
+    
+    
+      
+        <blockquote class="twitter-tweet" data-conversation="none" align="center" data-width="400" data-lang="ja" data-dnt="true"><p lang="ja" dir="ltr">solutionとしてはこれか。。<a href="https://t.co/XetakGiQHs">https://t.co/XetakGiQHs</a></p>&mdash; S.F. (@SFPGMR) <a href="https://twitter.com/SFPGMR/status/1187097727483559936?ref_src=twsrc%5Etfw">2019年10月23日</a></blockquote>
+
+         
+    
+    
+      
+        <blockquote class="twitter-tweet" align="center" data-width="400" data-lang="ja" data-dnt="true"><p lang="ja" dir="ltr">今これが出まくって困ってる。。<a href="https://t.co/QobWSHprYW">https://t.co/QobWSHprYW</a></p>&mdash; S.F. (@SFPGMR) <a href="https://twitter.com/SFPGMR/status/1187097470737600512?ref_src=twsrc%5Etfw">2019年10月23日</a></blockquote>
+
+         
+    
+    
+      
+        <blockquote class="twitter-tweet" align="center" data-width="400" data-lang="ja" data-dnt="true"><p lang="ja" dir="ltr">先ほどwsl2使用中にOSが死亡。。イベントログを見ると、死ぬ直前にこんなワーニングが出てましたな。。 <a href="https://t.co/7ypROkpE45">pic.twitter.com/7ypROkpE45</a></p>&mdash; S.F. (@SFPGMR) <a href="https://twitter.com/SFPGMR/status/1187095220053135360?ref_src=twsrc%5Etfw">2019年10月23日</a></blockquote>
+
+         
+    
+    
+      
+        <blockquote class="twitter-tweet" align="center" data-width="400" data-lang="ja" data-dnt="true"><p lang="und" dir="ltr"><a href="https://t.co/gxTdC2mVK0">https://t.co/gxTdC2mVK0</a></p>&mdash; S.F. (@SFPGMR) <a href="https://twitter.com/SFPGMR/status/1187087849998319616?ref_src=twsrc%5Etfw">2019年10月23日</a></blockquote>
+
+         
+    
+    
+      
+        <blockquote class="twitter-tweet" align="center" data-width="400" data-lang="ja" data-dnt="true"><p lang="en" dir="ltr">Check out What You Don&#39;t Know — a <a href="https://twitter.com/hashtag/VR?src=hash&amp;ref_src=twsrc%5Etfw">#VR</a> Experience on <a href="https://twitter.com/WITHIN?ref_src=twsrc%5Etfw">@WITHIN</a>: <a href="https://t.co/EI9SnGqzXF">https://t.co/EI9SnGqzXF</a></p>&mdash; S.F. (@SFPGMR) <a href="https://twitter.com/SFPGMR/status/1187087174836973570?ref_src=twsrc%5Etfw">2019年10月23日</a></blockquote>
+
+         
+    
+    
+      
+        <blockquote class="twitter-tweet" align="center" data-width="400" data-lang="ja" data-dnt="true"><p lang="ja" dir="ltr">すごいメンツだ。。 <a href="https://t.co/tj3PUgfc7d">https://t.co/tj3PUgfc7d</a></p>&mdash; S.F. (@SFPGMR) <a href="https://twitter.com/SFPGMR/status/1186978023926423553?ref_src=twsrc%5Etfw">2019年10月23日</a></blockquote>
+
+         
+    
+    
+      
+        <blockquote class="twitter-tweet" data-conversation="none" align="center" data-width="400" data-lang="ja" data-dnt="true"><p lang="und" dir="ltr"><a href="https://t.co/PCUucWWG4r">https://t.co/PCUucWWG4r</a></p>&mdash; S.F. (@SFPGMR) <a href="https://twitter.com/SFPGMR/status/1186850944471814144?ref_src=twsrc%5Etfw">2019年10月23日</a></blockquote>
+
+         
+    
+    
+      
+        <blockquote class="twitter-tweet" align="center" data-width="400" data-lang="ja" data-dnt="true"><p lang="ja" dir="ltr">あら、昨日 node 13リリースされたのか。。<a href="https://t.co/4Lg713Kaot">https://t.co/4Lg713Kaot</a></p>&mdash; S.F. (@SFPGMR) <a href="https://twitter.com/SFPGMR/status/1186741238847832064?ref_src=twsrc%5Etfw">2019年10月22日</a></blockquote>
+
+         
+    
+    
+      
+        <blockquote class="twitter-tweet" data-conversation="none" align="center" data-width="400" data-lang="ja" data-dnt="true"><p lang="ja" dir="ltr">まあそれはさておき、ejsを復習しつつ、今のテンプレート・エンジン界隈をチェックするとするか。。</p>&mdash; S.F. (@SFPGMR) <a href="https://twitter.com/SFPGMR/status/1186576799691493376?ref_src=twsrc%5Etfw">2019年10月22日</a></blockquote>
+
+         
+    
+    
+      
+        <blockquote class="twitter-tweet" data-conversation="none" align="center" data-width="400" data-lang="ja" data-dnt="true"><p lang="ja" dir="ltr">いまでこそTCP/IPが標準となってるが、私がNWを知ったころはIPXやらNetBEUIやらとかもありましたなあ。なんか思い出してしまったわ。。</p>&mdash; S.F. (@SFPGMR) <a href="https://twitter.com/SFPGMR/status/1186576133384359939?ref_src=twsrc%5Etfw">2019年10月22日</a></blockquote>
+
+         
+    
+    
+      
+        <blockquote class="twitter-tweet" data-conversation="none" align="center" data-width="400" data-lang="ja" data-dnt="true"><p lang="ja" dir="ltr">udpと聞くとゲームに向いてる気がする。なぜか..。</p>&mdash; S.F. (@SFPGMR) <a href="https://twitter.com/SFPGMR/status/1186575548543164416?ref_src=twsrc%5Etfw">2019年10月22日</a></blockquote>
+
+         
+    
+    
+      
+        <blockquote class="twitter-tweet" data-conversation="none" align="center" data-width="400" data-lang="ja" data-dnt="true"><p lang="ja" dir="ltr">いやぁ。知らんかったなあ。。</p>&mdash; S.F. (@SFPGMR) <a href="https://twitter.com/SFPGMR/status/1186575294359949313?ref_src=twsrc%5Etfw">2019年10月22日</a></blockquote>
+
+         
+    
+    
+      
+        <blockquote class="twitter-tweet" data-conversation="none" align="center" data-width="400" data-lang="ja" data-dnt="true"><p lang="ja" dir="ltr">nodeもquicのサポートをしようとしとるのか。。<a href="https://t.co/0cbNwy8GPR">https://t.co/0cbNwy8GPR</a></p>&mdash; S.F. (@SFPGMR) <a href="https://twitter.com/SFPGMR/status/1186575244154171392?ref_src=twsrc%5Etfw">2019年10月22日</a></blockquote>
+
+         
+    
+    
+      
+        <blockquote class="twitter-tweet" data-conversation="none" align="center" data-width="400" data-lang="ja" data-dnt="true"><p lang="ja" dir="ltr">nginxも1.17でquicをサポートするのですな。。</p>&mdash; S.F. (@SFPGMR) <a href="https://twitter.com/SFPGMR/status/1186574731085901824?ref_src=twsrc%5Etfw">2019年10月22日</a></blockquote>
+
+         
+    
+    
+      
+        <blockquote class="twitter-tweet" data-conversation="none" align="center" data-width="400" data-lang="ja" data-dnt="true"><p lang="ja" dir="ltr">くそう、HTTP/2のサポートは結構はやめにやったんだけど、もう時代遅れになっとるのか。。いうてもまだquicはこれからのようだのぉ。。</p>&mdash; S.F. (@SFPGMR) <a href="https://twitter.com/SFPGMR/status/1186574292223320070?ref_src=twsrc%5Etfw">2019年10月22日</a></blockquote>
+
+         
+    
+    
+      
+        <blockquote class="twitter-tweet" data-conversation="none" align="center" data-width="400" data-lang="ja" data-dnt="true"><p lang="ja" dir="ltr">quic（くぃっく）ちゅうプロトコルなのね。。udpによる多重接続か。。<a href="https://t.co/0TjGv8c11Y">https://t.co/0TjGv8c11Y</a></p>&mdash; S.F. (@SFPGMR) <a href="https://twitter.com/SFPGMR/status/1186574057757478912?ref_src=twsrc%5Etfw">2019年10月22日</a></blockquote>
+
+         
+    
+    
+      
+        <blockquote class="twitter-tweet" data-conversation="none" align="center" data-width="400" data-lang="ja" data-dnt="true"><p lang="ja" dir="ltr">HTTP2で動いてるかチェックしてたらhttp/2+quic/46とかいうプロトコルを発見した。なんじゃこれは。。 <a href="https://t.co/pdfs97LotU">pic.twitter.com/pdfs97LotU</a></p>&mdash; S.F. (@SFPGMR) <a href="https://twitter.com/SFPGMR/status/1186573500972011520?ref_src=twsrc%5Etfw">2019年10月22日</a></blockquote>
+
+         
+    
+    
+      
+        <blockquote class="twitter-tweet" data-conversation="none" align="center" data-width="400" data-lang="ja" data-dnt="true"><p lang="ja" dir="ltr">年内はページ改造で終わってしまいそうだな。。うーむゲーム音源作りはしばらくお預けか。。でもできるだけはやくこれを片付けて次に進もう。。</p>&mdash; S.F. (@SFPGMR) <a href="https://twitter.com/SFPGMR/status/1186572567143780352?ref_src=twsrc%5Etfw">2019年10月22日</a></blockquote>
+
+         
+    
+    
+      
+        <blockquote class="twitter-tweet" data-conversation="none" align="center" data-width="400" data-lang="ja" data-dnt="true"><p lang="ja" dir="ltr">トップページはTwitter,Youtube etc ... のアクティビティ表示をメインにするつもりなのだが、まだ具体的なアイデアは浮かばんな。。</p>&mdash; S.F. (@SFPGMR) <a href="https://twitter.com/SFPGMR/status/1186572174187876352?ref_src=twsrc%5Etfw">2019年10月22日</a></blockquote>
+
+         
+    
+    
+      
+        <blockquote class="twitter-tweet" align="center" data-width="400" data-lang="ja" data-dnt="true"><p lang="en" dir="ltr">raw wasm: making a maze race, part 1 <a href="https://t.co/G0qbTV0Lea">https://t.co/G0qbTV0Lea</a><br>- a fun article from <a href="https://twitter.com/binjimint?ref_src=twsrc%5Etfw">@binjimint</a> about hand-writing a wasm demo</p>&mdash; WebAssemblyWeekly (@WasmWeekly) <a href="https://twitter.com/WasmWeekly/status/1186231785522454528?ref_src=twsrc%5Etfw">2019年10月21日</a></blockquote>
+
+         
+    
+    
+      
+        <blockquote class="twitter-tweet" data-conversation="none" align="center" data-width="400" data-lang="ja" data-dnt="true"><p lang="ja" dir="ltr">堀井くんも点とられたけど、まずまずのピッチングで今後に期待できるなあ。。春県大会まではまだ期間があるしね。。</p>&mdash; S.F. (@SFPGMR) <a href="https://twitter.com/SFPGMR/status/1186452249255350272?ref_src=twsrc%5Etfw">2019年10月22日</a></blockquote>
+
+         
+    
+    
+      
+        <blockquote class="twitter-tweet" align="center" data-width="400" data-lang="ja" data-dnt="true"><p lang="ja" dir="ltr">うーむ。東海大相模の選手の体がデカい。こりゃすごいわ。。<a href="https://t.co/mQo75OiGJ8">https://t.co/mQo75OiGJ8</a></p>&mdash; S.F. (@SFPGMR) <a href="https://twitter.com/SFPGMR/status/1186451979184160770?ref_src=twsrc%5Etfw">2019年10月22日</a></blockquote>
+
+         
+    
+    
+      
+        <blockquote class="twitter-tweet" data-conversation="none" align="center" data-width="400" data-lang="ja" data-dnt="true"><p lang="ja" dir="ltr">返す返すも残念なのが木総が関東大会に行けなかったこと。。</p>&mdash; S.F. (@SFPGMR) <a href="https://twitter.com/SFPGMR/status/1186447706052419584?ref_src=twsrc%5Etfw">2019年10月22日</a></blockquote>
+
+         
+    
+    
+      
+        <blockquote class="twitter-tweet" align="center" data-width="400" data-lang="ja" data-dnt="true"><p lang="ja" dir="ltr">関東大会ベスト４<br><br>・東海大相模<br>・健大高崎<br>・山梨学院<br>・桐生第一<br><br>ということで千葉県全滅。。神奈川１、山梨１、群馬２がセンバツほぼ確定。あとは神宮大会の結果次第ですな。。<a href="https://t.co/umQ60Xx9ej">https://t.co/umQ60Xx9ej</a></p>&mdash; S.F. (@SFPGMR) <a href="https://twitter.com/SFPGMR/status/1186446913194737664?ref_src=twsrc%5Etfw">2019年10月22日</a></blockquote>
+
+         
+    
+    
+      
+        <blockquote class="twitter-tweet" data-conversation="none" align="center" data-width="400" data-lang="ja" data-dnt="true"><p lang="ja" dir="ltr">ああ、ちょっとすっきりしたな。。</p>&mdash; S.F. (@SFPGMR) <a href="https://twitter.com/SFPGMR/status/1186445864966881280?ref_src=twsrc%5Etfw">2019年10月22日</a></blockquote>
+
+         
+    
+    
+      
+        <blockquote class="twitter-tweet" data-conversation="none" align="center" data-width="400" data-lang="ja" data-dnt="true"><p lang="ja" dir="ltr">というわけでkoaに移行して、ようやくnode12かつhttp/2でWebをホストできるようになった。<a href="https://t.co/fLjPsbcCAY">https://t.co/fLjPsbcCAY</a><br><br>あとはコンテンツをちゃんと作り直さんとな。。</p>&mdash; S.F. (@SFPGMR) <a href="https://twitter.com/SFPGMR/status/1186445586737684480?ref_src=twsrc%5Etfw">2019年10月22日</a></blockquote>
+
+         
+    
+    
+      
+        <blockquote class="twitter-tweet" data-conversation="none" align="center" data-width="400" data-lang="ja" data-dnt="true"><p lang="ja" dir="ltr">この２つの方法でもいいような気がするが、私はrollupでバンドルしたjsで実行することにした。。</p>&mdash; S.F. (@SFPGMR) <a href="https://twitter.com/SFPGMR/status/1186445140400828416?ref_src=twsrc%5Etfw">2019年10月22日</a></blockquote>
+
+         
+    
+    
+      
+        <blockquote class="twitter-tweet" data-conversation="none" align="center" data-width="400" data-lang="ja" data-dnt="true"><p lang="ja" dir="ltr">回避するには2つの方法がある。<br><br>１．esmを使ってesmファイルの拡張子を.mjs -&gt; .jsに変えてnode_argsに-r esm をつけて実行<br><br>２．ダイナミック・ローディングを使って.jsから.mjsをインポートする<br><br>ということらしい</p>&mdash; S.F. (@SFPGMR) <a href="https://twitter.com/SFPGMR/status/1186444822216765440?ref_src=twsrc%5Etfw">2019年10月22日</a></blockquote>
+
+         
+    
+    
+      
+        <blockquote class="twitter-tweet" data-conversation="none" align="center" data-width="400" data-lang="ja" data-dnt="true"><p lang="ja" dir="ltr">これによると、<br><br>・pm2は.mjsファイルをrequireによってサイド・ローディングしようとするので、そこで以下エラーが発生する<br><br> [ERR_REQUIRE_ESM]: Must use import to load ES Module</p>&mdash; S.F. (@SFPGMR) <a href="https://twitter.com/SFPGMR/status/1186444278370729984?ref_src=twsrc%5Etfw">2019年10月22日</a></blockquote>
+
+         
+    
+    
+      
+        <blockquote class="twitter-tweet" data-conversation="none" align="center" data-width="400" data-lang="ja" data-dnt="true"><p lang="ja" dir="ltr">理由はこれらしい。<a href="https://t.co/EKNdNo2Sys">https://t.co/EKNdNo2Sys</a></p>&mdash; S.F. (@SFPGMR) <a href="https://twitter.com/SFPGMR/status/1186442519501885440?ref_src=twsrc%5Etfw">2019年10月22日</a></blockquote>
+
+         
+    
+    
+      
+        <blockquote class="twitter-tweet" data-conversation="none" align="center" data-width="400" data-lang="ja" data-dnt="true"><p lang="ja" dir="ltr">と思って試してみたらまだ解消されてなかったな。。<a href="https://t.co/QJhoevA0lc">https://t.co/QJhoevA0lc</a></p>&mdash; S.F. (@SFPGMR) <a href="https://twitter.com/SFPGMR/status/1186429234815758336?ref_src=twsrc%5Etfw">2019年10月21日</a></blockquote>
+
+         
+    
+    
+      
+        <blockquote class="twitter-tweet" align="center" data-width="400" data-lang="ja" data-dnt="true"><p lang="ja" dir="ltr">ちがうちがう。<br>本来その出っ張りはドアと壁があたって指を詰めたりしないようにするストッパー。<br>そのストッパーにものを引っ掛ける人がでてきたから「じゃぁ、フックつけたれ」ってなったのがソレ。 <a href="https://t.co/ldcvP6x2vD">https://t.co/ldcvP6x2vD</a></p>&mdash; 和田みさき (@wada_misaki) <a href="https://twitter.com/wada_misaki/status/1186166777249615872?ref_src=twsrc%5Etfw">2019年10月21日</a></blockquote>
+
+         
+    
+    
+      
+        <blockquote class="twitter-tweet" align="center" data-width="400" data-lang="ja" data-dnt="true"><p lang="und" dir="ltr"><a href="https://t.co/7qLelGObMi">https://t.co/7qLelGObMi</a></p>&mdash; S.F. (@SFPGMR) <a href="https://twitter.com/SFPGMR/status/1186394486877773824?ref_src=twsrc%5Etfw">2019年10月21日</a></blockquote>
+
+         
+    
+    
+      
+        <blockquote class="twitter-tweet" align="center" data-width="400" data-lang="ja" data-dnt="true"><p lang="ja" dir="ltr">スライム方程式をついに発見した <a href="https://t.co/eLijri0j9o">pic.twitter.com/eLijri0j9o</a></p>&mdash; Akiya Mizukoshi (@Akiyah) <a href="https://twitter.com/Akiyah/status/1186064327670763521?ref_src=twsrc%5Etfw">2019年10月20日</a></blockquote>
+
+         
+    
+    
+      
+        <blockquote class="twitter-tweet" align="center" data-width="400" data-lang="ja" data-dnt="true"><p lang="ja" dir="ltr"><a href="https://twitter.com/hashtag/%E4%BF%BA%E3%81%AE%E6%8F%8F%E3%81%8D%E8%BE%BC%E3%81%BF%E3%82%92%E8%A6%8B%E3%81%A6%E3%81%8F%E3%82%8C?src=hash&amp;ref_src=twsrc%5Etfw">#俺の描き込みを見てくれ</a><br>見て見てがんばったーー！！！ <a href="https://t.co/qvrhAFS1ev">pic.twitter.com/qvrhAFS1ev</a></p>&mdash; はるとし＿背景とか屋さん (@MadeinHarutoshi) <a href="https://twitter.com/MadeinHarutoshi/status/1186259682777653248?ref_src=twsrc%5Etfw">2019年10月21日</a></blockquote>
+
+         
+    
+    
+      
+        <blockquote class="twitter-tweet" align="center" data-width="400" data-lang="ja" data-dnt="true"><p lang="en" dir="ltr">Overgrown - <a href="https://t.co/L9cY4ULhLs">https://t.co/L9cY4ULhLs</a><br>for(i=2e3;t&lt;9&amp;&amp;i--;x.fillRect(i,(T+3)*t*35,1,2e3,x.fillStyle=`hsl(95 50%${99-t*t}%`))for(T=0,j=9;j--;T=T*2/3+S((i-960*S(t*k))*k/t/99))k=2**j <a href="https://t.co/MituPl3o9P">pic.twitter.com/MituPl3o9P</a></p>&mdash; yonatan (@zozuar) <a href="https://twitter.com/zozuar/status/1183651453510045696?ref_src=twsrc%5Etfw">2019年10月14日</a></blockquote>
+
+         
+    
+    
+      
+        <blockquote class="twitter-tweet" align="center" data-width="400" data-lang="ja" data-dnt="true"><p lang="en" dir="ltr">mountainclouds <a href="https://t.co/ysKLOkLAnK">https://t.co/ysKLOkLAnK</a><br>for(a=p=i=2e3;t&lt;9&amp;&amp;i--;x.fillRect(i,(a-9)*t*37,1,2e3,q=S(t**.9*.6),x.fillStyle=`hsl(200 ${75-t*t}%${60+q*50+(p-a)**.1*t}%`))for(p=a,a=j=12;j--;a+=S((i-960*S(t*k))*k/t/99)/k)k=2**j <a href="https://t.co/WPuUCMOq1s">pic.twitter.com/WPuUCMOq1s</a></p>&mdash; yonatan (@zozuar) <a href="https://twitter.com/zozuar/status/1185724229586767872?ref_src=twsrc%5Etfw">2019年10月20日</a></blockquote>
+
+         
+    
+    
+      
+        <blockquote class="twitter-tweet" align="center" data-width="400" data-lang="ja" data-dnt="true"><p lang="en" dir="ltr"><a href="https://t.co/gMFmKKyrUW">https://t.co/gMFmKKyrUW</a><br>for(i=2e3;t&lt;14&amp;&amp;i--;f=t&gt;1&amp;&amp;T&lt;-1,z=(T+3)*t*40,r=f*(t*80-z)*2+t,x.fillRect(i,f?z:t*80,1,r,x.fillStyle=R(q=255/(1+t),q*=2.3-f,q*=1.5-f,f+.2)))for(T=0,j=9;j--;T=T/2+S((i-960*S(t*k))*k/t/99))k=2**j <a href="https://t.co/h4fjeL2h5x">pic.twitter.com/h4fjeL2h5x</a></p>&mdash; yonatan (@zozuar) <a href="https://twitter.com/zozuar/status/1183676998205497344?ref_src=twsrc%5Etfw">2019年10月14日</a></blockquote>
+
+         
+    
+    
+      
+        <blockquote class="twitter-tweet" data-conversation="none" align="center" data-width="400" data-lang="ja" data-dnt="true"><p lang="ja" dir="ltr">あとは木総に頑張ってほしい。篠木くんが甲子園で投げる姿を見てみたいというのがあるよな。やっぱり千葉県代表の一角には入ってて欲しかったな。。この秋もね。。</p>&mdash; S.F. (@SFPGMR) <a href="https://twitter.com/SFPGMR/status/1186210510573723649?ref_src=twsrc%5Etfw">2019年10月21日</a></blockquote>
+
+         
+    
+    
+      
+        <blockquote class="twitter-tweet" data-conversation="none" align="center" data-width="400" data-lang="ja" data-dnt="true"><p lang="ja" dir="ltr">堀井くんもまだまだ伸びしろがあるんじゃないかと思うので、春の県大会が楽しみではある。</p>&mdash; S.F. (@SFPGMR) <a href="https://twitter.com/SFPGMR/status/1186209790462021632?ref_src=twsrc%5Etfw">2019年10月21日</a></blockquote>
+
+         
+    
+    
+      
+        <blockquote class="twitter-tweet" data-conversation="none" align="center" data-width="400" data-lang="ja" data-dnt="true"><p lang="ja" dir="ltr">それが今年は春、夏と連続で出場。その間の飯塚くんの成長著しかったよね。。ここまでになるとは正直思ってなかった。。</p>&mdash; S.F. (@SFPGMR) <a href="https://twitter.com/SFPGMR/status/1186209154433605633?ref_src=twsrc%5Etfw">2019年10月21日</a></blockquote>
+
+         
+    
+    
+      
+        <blockquote class="twitter-tweet" data-conversation="none" align="center" data-width="400" data-lang="ja" data-dnt="true"><p lang="ja" dir="ltr">飯塚くんも2年の頭くらいは、結構打ち込まれたりしてたもんな。。2018年の西地区大会では佐藤くんと古谷くんの影に隠れてたよね。しかしあの西地区大会の延長サヨナラはトラウマになるくらいの衝撃だった。ああ、もうこれで習志野はしばらく甲子園行けないなと思ってしまった。。</p>&mdash; S.F. (@SFPGMR) <a href="https://twitter.com/SFPGMR/status/1186208702329548801?ref_src=twsrc%5Etfw">2019年10月21日</a></blockquote>
+
+         
+    
+    
+      
+        <blockquote class="twitter-tweet" data-conversation="none" align="center" data-width="400" data-lang="ja" data-dnt="true"><p lang="ja" dir="ltr">今年は飯塚くんという今となっては大エースがいたので、山内くんが乱れてもじゅうぶんにカバーできたんだな。</p>&mdash; S.F. (@SFPGMR) <a href="https://twitter.com/SFPGMR/status/1186207775468032000?ref_src=twsrc%5Etfw">2019年10月21日</a></blockquote>
+
+         
+    
+    
+      
+        <blockquote class="twitter-tweet" data-conversation="none" align="center" data-width="400" data-lang="ja" data-dnt="true"><p lang="ja" dir="ltr">一度試合でいいピッチングができれば<br>、そのあとはスッといけそうなんだけどね。。とにかく二番手の安定感が習志野の課題ですわな。。</p>&mdash; S.F. (@SFPGMR) <a href="https://twitter.com/SFPGMR/status/1186207773886824448?ref_src=twsrc%5Etfw">2019年10月21日</a></blockquote>
+
+         
+    
+    
+      
+        <blockquote class="twitter-tweet" data-conversation="none" align="center" data-width="400" data-lang="ja" data-dnt="true"><p lang="ja" dir="ltr">あとは堀井くんだよな。力はあると思うんだけど、気負ってるのか単に力んで空回りしてるのかわからんが山内くんと同様、二死から打ち込まれることが多い気がするね。</p>&mdash; S.F. (@SFPGMR) <a href="https://twitter.com/SFPGMR/status/1186206956433788928?ref_src=twsrc%5Etfw">2019年10月21日</a></blockquote>
+
+         
+    
+    
+      
+        <blockquote class="twitter-tweet" data-conversation="none" align="center" data-width="400" data-lang="ja" data-dnt="true"><p lang="ja" dir="ltr">山内くんはランナーを出してしまうとやはり球が甘くなってしまうようだ。二死からの失点をよく見かける。抑えようとして力みが出てるのか、ランナーを気にして、投球に集中できないのか、理由はもちろんわからないが。。</p>&mdash; S.F. (@SFPGMR) <a href="https://twitter.com/SFPGMR/status/1186206207121342464?ref_src=twsrc%5Etfw">2019年10月21日</a></blockquote>
+
+         
+    
+    
+      
+        <blockquote class="twitter-tweet" align="center" data-width="400" data-lang="ja" data-dnt="true"><p lang="ja" dir="ltr">習志野と東海大相模は撃ち合いとなり、習志野が力負けした感じ。やはりこういう展開になると、継投の質が明暗をわけるな。。</p>&mdash; S.F. (@SFPGMR) <a href="https://twitter.com/SFPGMR/status/1186205238996287488?ref_src=twsrc%5Etfw">2019年10月21日</a></blockquote>
+
+         
+    
+    
+      
+        <blockquote class="twitter-tweet" data-conversation="none" align="center" data-width="400" data-lang="ja" data-dnt="true"><p lang="ja" dir="ltr">これシンプルで良さそう。<a href="https://t.co/8g3YYaPt1T">https://t.co/8g3YYaPt1T</a></p>&mdash; S.F. (@SFPGMR) <a href="https://twitter.com/SFPGMR/status/1186045839552049153?ref_src=twsrc%5Etfw">2019年10月20日</a></blockquote>
+
+         
+    
+    
+      
+        <blockquote class="twitter-tweet" data-conversation="none" align="center" data-width="400" data-lang="ja" data-dnt="true"><p lang="ja" dir="ltr">cssも機能アップしてるから、キャッチアップが大変ですわ。。</p>&mdash; S.F. (@SFPGMR) <a href="https://twitter.com/SFPGMR/status/1186044231363846145?ref_src=twsrc%5Etfw">2019年10月20日</a></blockquote>
+
+         
+    
+    
+      
+        <blockquote class="twitter-tweet" data-conversation="none" align="center" data-width="400" data-lang="ja" data-dnt="true"><p lang="ja" dir="ltr">あとはトップページをどうするかですな。。デザインを変えたいんだよな。。</p>&mdash; S.F. (@SFPGMR) <a href="https://twitter.com/SFPGMR/status/1186040938457550848?ref_src=twsrc%5Etfw">2019年10月20日</a></blockquote>
+
+         
+    
+    
+      
+        <blockquote class="twitter-tweet" data-conversation="none" align="center" data-width="400" data-lang="ja" data-dnt="true"><p lang="ja" dir="ltr">webhookのハンドラ、いいのがあったのでこれに差し替えるか。。<a href="https://t.co/NbuMobL6sB">https://t.co/NbuMobL6sB</a></p>&mdash; S.F. (@SFPGMR) <a href="https://twitter.com/SFPGMR/status/1186040556570333184?ref_src=twsrc%5Etfw">2019年10月20日</a></blockquote>
+
+         
+    
+    
+      
+        <blockquote class="twitter-tweet" data-conversation="none" align="center" data-width="400" data-lang="ja" data-dnt="true"><p lang="ja" dir="ltr">開発環境でkoa.jsを使ってhttp2で動かすことができるようになった。あとは自作のミドルウェア？を移植するだけですな。。</p>&mdash; S.F. (@SFPGMR) <a href="https://twitter.com/SFPGMR/status/1185853833018085377?ref_src=twsrc%5Etfw">2019年10月20日</a></blockquote>
+
+         
+    
+    
+      
+        <blockquote class="twitter-tweet" data-conversation="none" align="center" data-width="400" data-lang="ja" data-dnt="true"><p lang="ja" dir="ltr">まあしかし、今年の春・夏の甲子園で培ったものをこの試合で出せればいい試合になると思う。そういう経験は東海大相模もしてきているからね。経験では五分だろう。</p>&mdash; S.F. (@SFPGMR) <a href="https://twitter.com/SFPGMR/status/1185851972580077571?ref_src=twsrc%5Etfw">2019年10月20日</a></blockquote>
+
+         
+    
+    
+      
+        <blockquote class="twitter-tweet" data-conversation="none" align="center" data-width="400" data-lang="ja" data-dnt="true"><p lang="ja" dir="ltr">堀井くん、山根くんの登板は今の感じではないと思うな。。あるとすれば山根くんか。。堀井くんは少しコントロールに難があるもんな。。いい投手の素質はあると思うんだけどね。。山根くんはまだまだこれからだけど、安定してる感じはする。が東海大相模の打線に対してはどうだろうね。。</p>&mdash; S.F. (@SFPGMR) <a href="https://twitter.com/SFPGMR/status/1185851625514000384?ref_src=twsrc%5Etfw">2019年10月20日</a></blockquote>
+
+         
+    
+    
+      
+        <blockquote class="twitter-tweet" data-conversation="none" align="center" data-width="400" data-lang="ja" data-dnt="true"><p lang="ja" dir="ltr">東海大相模と習志野は打ち合いになりそうな気がしないでもない。が、おそらく山内くん中一日での投球になると思うので、ちょっと分が悪い気がする。</p>&mdash; S.F. (@SFPGMR) <a href="https://twitter.com/SFPGMR/status/1185851624415096832?ref_src=twsrc%5Etfw">2019年10月20日</a></blockquote>
+
+         
+    
+    
+      
+        <blockquote class="twitter-tweet" data-conversation="none" align="center" data-width="400" data-lang="ja" data-dnt="true"><p lang="ja" dir="ltr">明日の試合はこうなったか。。<br>センバツ出場がかかるベスト８。。<br><br>東海大相模-習志野<br>西武台-健大高崎<br>山梨学院ｰ花咲徳栄<br>桐光学園ｰ桐生第一</p>&mdash; S.F. (@SFPGMR) <a href="https://twitter.com/SFPGMR/status/1185850388269846528?ref_src=twsrc%5Etfw">2019年10月20日</a></blockquote>
+
+         
+    
+    
+      
+        <blockquote class="twitter-tweet" align="center" data-width="400" data-lang="ja" data-dnt="true"><p lang="ja" dir="ltr">秋季関東大会<br>1回戦の結果<br><br>東海大相模 14-2 駿台甲府<br>習志野 7-3 前橋育英<br>青藍泰斗 6-9 西武台 <br>常総学院 4-5 健大高崎<br>山梨学院 11-6 文星芸大附<br>花咲徳栄 11-2 拓 大 紅 陵<br>霞ヶ浦 2-4 桐光学園 <a href="https://t.co/lwfsOzjQRH">https://t.co/lwfsOzjQRH</a></p>&mdash; S.F. (@SFPGMR) <a href="https://twitter.com/SFPGMR/status/1185849847959580677?ref_src=twsrc%5Etfw">2019年10月20日</a></blockquote>
+
+         
+    
+    
+      
+        <blockquote class="twitter-tweet" align="center" data-width="400" data-lang="ja" data-dnt="true"><p lang="ja" dir="ltr">サンダーバードのこの発進シーンは子供のころ見たときに、強烈なリアル感を感じたのを覚えている。今観るとピアノ線がよく見えるんだけど（笑）、昔のテレビ画像は粗かったから、うまく隠れてたんだろうな。。<a href="https://t.co/y7cxPQWg20">https://t.co/y7cxPQWg20</a></p>&mdash; S.F. (@SFPGMR) <a href="https://twitter.com/SFPGMR/status/1185817229746524160?ref_src=twsrc%5Etfw">2019年10月20日</a></blockquote>
+
+         
+    
+    
+      
+        <blockquote class="twitter-tweet" align="center" data-width="400" data-lang="ja" data-dnt="true"><p lang="ja" dir="ltr">Thunderbirds 1965 - Documentary <a href="https://t.co/bhMxf0KkAX">https://t.co/bhMxf0KkAX</a> <a href="https://twitter.com/YouTube?ref_src=twsrc%5Etfw">@YouTube</a>さんから</p>&mdash; S.F. (@SFPGMR) <a href="https://twitter.com/SFPGMR/status/1185815390049292288?ref_src=twsrc%5Etfw">2019年10月20日</a></blockquote>
+
+         
+    
+    
+      
+        <blockquote class="twitter-tweet" align="center" data-width="400" data-lang="ja" data-dnt="true"><p lang="ja" dir="ltr">ファミコン以前で遊ぼう会はじまりますー<a href="https://twitter.com/hashtag/NOZ80?src=hash&amp;ref_src=twsrc%5Etfw">#NOZ80</a> <a href="https://t.co/9zHaaagKzW">pic.twitter.com/9zHaaagKzW</a></p>&mdash; たなむ(TMS9918) (@tanam1972) <a href="https://twitter.com/tanam1972/status/1185781056839962625?ref_src=twsrc%5Etfw">2019年10月20日</a></blockquote>
+
+         
+    
+    
+      
+        <blockquote class="twitter-tweet" data-conversation="none" align="center" data-width="400" data-lang="ja" data-dnt="true"><p lang="ja" dir="ltr">6回で9-0かあ。。しかも無安打か。。厳しいなコリャ。。</p>&mdash; S.F. (@SFPGMR) <a href="https://twitter.com/SFPGMR/status/1185788977443299329?ref_src=twsrc%5Etfw">2019年10月20日</a></blockquote>
+
+         
+    
+    
+      
+        <blockquote class="twitter-tweet" data-conversation="none" align="center" data-width="400" data-lang="ja" data-dnt="true"><p lang="ja" dir="ltr">あかん。序盤で大差がついてしまった。。</p>&mdash; S.F. (@SFPGMR) <a href="https://twitter.com/SFPGMR/status/1185788280295448576?ref_src=twsrc%5Etfw">2019年10月20日</a></blockquote>
+
+         
+    
+    
+      
+        <blockquote class="twitter-tweet" align="center" data-width="400" data-lang="ja" data-dnt="true"><p lang="ja" dir="ltr">pm2も前はes moduleが読み込まれない「--experimental-modulesが無視される」というのがあったんだけど、今は解消されているようだね。とするとrollupでわざわざ変換しなくてもよくなるなあ。<a href="https://t.co/XpshjVRxuK">https://t.co/XpshjVRxuK</a></p>&mdash; S.F. (@SFPGMR) <a href="https://twitter.com/SFPGMR/status/1185672257542086657?ref_src=twsrc%5Etfw">2019年10月19日</a></blockquote>
+
+         
+    
+    
+      
+        <blockquote class="twitter-tweet" data-conversation="none" align="center" data-width="400" data-lang="ja" data-dnt="true"><p lang="ja" dir="ltr">そういうわけでブランチ作ってexpress→koaに移行することにしてみた。</p>&mdash; S.F. (@SFPGMR) <a href="https://twitter.com/SFPGMR/status/1185671770684051456?ref_src=twsrc%5Etfw">2019年10月19日</a></blockquote>
+
+         
+    
+    
+      
+        <blockquote class="twitter-tweet" align="center" data-width="400" data-lang="ja" data-dnt="true"><p lang="ja" dir="ltr">Blenderで蛇動かした！ <a href="https://t.co/sKmpOOd9l2">pic.twitter.com/sKmpOOd9l2</a></p>&mdash; ケンゼン (@Kenzen_cg) <a href="https://twitter.com/Kenzen_cg/status/1185219485403205632?ref_src=twsrc%5Etfw">2019年10月18日</a></blockquote>
+
+         
+    
+    
+      
+        <blockquote class="twitter-tweet" align="center" data-width="400" data-lang="ja" data-dnt="true"><p lang="ja" dir="ltr">微妙な差ですが emu2413のリズム音と、アタックレートと、サンプリングレート変換時に意図しないローパスが掛かってた問題を修正したので比較です。v0.71が新しいバージョン。音が華やかになりすぎてるのはテーブル周り変えると直かなと期待...。 <a href="https://t.co/edECXwCFJa">pic.twitter.com/edECXwCFJa</a></p>&mdash; D.S.A. (@ym2413) <a href="https://twitter.com/ym2413/status/1185634104273817600?ref_src=twsrc%5Etfw">2019年10月19日</a></blockquote>
+
+         
+    
+    
+      
+        <blockquote class="twitter-tweet" align="center" data-width="400" data-lang="ja" data-dnt="true"><p lang="ja" dir="ltr">スザンヌフィギュア届いた！！！<br><br>組み立ててみたけど再現度高い！！！！ <a href="https://t.co/8Gp0Ljisej">pic.twitter.com/8Gp0Ljisej</a></p>&mdash; と り (@t0rry_) <a href="https://twitter.com/t0rry_/status/1185436925542289408?ref_src=twsrc%5Etfw">2019年10月19日</a></blockquote>
+
+         
+    
+    
+      
+        <blockquote class="twitter-tweet" data-conversation="none" align="center" data-width="400" data-lang="ja" data-dnt="true"><p lang="ja" dir="ltr">koa.jsはexpressの開発メンバーが開発しているらしく、こちらのほうがアクティブなように見えるな。。私は大したことしてないからkoa.jsに移行するのも簡単かもしれん。。</p>&mdash; S.F. (@SFPGMR) <a href="https://twitter.com/SFPGMR/status/1185489655040331776?ref_src=twsrc%5Etfw">2019年10月19日</a></blockquote>
+
+         
+    
+    
+      
+        <blockquote class="twitter-tweet" data-conversation="none" align="center" data-width="400" data-lang="ja" data-dnt="true"><p lang="ja" dir="ltr">次は拓大紅陵かあ。花咲徳栄にもし勝てれば、センバツに近いのはむしろ拓大紅陵のほうかもしれん。。明日の試合は竹内くんのピッチングにかかっている。。</p>&mdash; S.F. (@SFPGMR) <a href="https://twitter.com/SFPGMR/status/1185469692883791872?ref_src=twsrc%5Etfw">2019年10月19日</a></blockquote>
+
+         
+    
+    
+      
+        <blockquote class="twitter-tweet" data-conversation="none" align="center" data-width="400" data-lang="ja" data-dnt="true"><p lang="ja" dir="ltr">ちょっと外出してしまったが、７－３で習志野の勝利か。。次はあの東海大相模かあ。</p>&mdash; S.F. (@SFPGMR) <a href="https://twitter.com/SFPGMR/status/1185465995437043712?ref_src=twsrc%5Etfw">2019年10月19日</a></blockquote>
+
+         
+    
+    
+      
+        <blockquote class="twitter-tweet" data-conversation="none" align="center" data-width="400" data-lang="ja" data-dnt="true"><p lang="ja" dir="ltr">堀井くん、山根くんに期待したいところだけど。。</p>&mdash; S.F. (@SFPGMR) <a href="https://twitter.com/SFPGMR/status/1185437792190382080?ref_src=twsrc%5Etfw">2019年10月19日</a></blockquote>
+
+         
+    
+    
+      
+        <blockquote class="twitter-tweet" data-conversation="none" align="center" data-width="400" data-lang="ja" data-dnt="true"><p lang="und" dir="ltr"><a href="https://t.co/LT9BfZiMr2">https://t.co/LT9BfZiMr2</a></p>&mdash; S.F. (@SFPGMR) <a href="https://twitter.com/SFPGMR/status/1185437587831320576?ref_src=twsrc%5Etfw">2019年10月19日</a></blockquote>
+
+         
+    
+    
+      
+        <blockquote class="twitter-tweet" data-conversation="none" align="center" data-width="400" data-lang="ja" data-dnt="true"><p lang="und" dir="ltr"><a href="https://t.co/LroXeNuoq3">https://t.co/LroXeNuoq3</a></p>&mdash; S.F. (@SFPGMR) <a href="https://twitter.com/SFPGMR/status/1185437394608066561?ref_src=twsrc%5Etfw">2019年10月19日</a></blockquote>
+
+         
+    
+    
+      
+        <blockquote class="twitter-tweet" data-conversation="none" align="center" data-width="400" data-lang="ja" data-dnt="true"><p lang="ja" dir="ltr">このへんで習志野も継投したいところだけど、この点差ではそうもいかんなあ。。</p>&mdash; S.F. (@SFPGMR) <a href="https://twitter.com/SFPGMR/status/1185437151946690560?ref_src=twsrc%5Etfw">2019年10月19日</a></blockquote>
+
+         
+    
+    
+      
+        <blockquote class="twitter-tweet" data-conversation="none" align="center" data-width="400" data-lang="ja" data-dnt="true"><p lang="ja" dir="ltr">８回表終了<br>習志野　６－３　前橋育英<a href="https://twitter.com/hashtag/%E7%A7%8B%E5%AD%A3%E9%96%A2%E6%9D%B1%E5%A4%A7%E4%BC%9A?src=hash&amp;ref_src=twsrc%5Etfw">#秋季関東大会</a> <a href="https://t.co/LhHZKi9LVR">pic.twitter.com/LhHZKi9LVR</a></p>&mdash; S.F. (@SFPGMR) <a href="https://twitter.com/SFPGMR/status/1185436868357156869?ref_src=twsrc%5Etfw">2019年10月19日</a></blockquote>
+
+         
+    
+    
+      
+        <blockquote class="twitter-tweet" data-conversation="none" align="center" data-width="400" data-lang="ja" data-dnt="true"><p lang="ja" dir="ltr">ここで習志野、死球→犠打→ヒットで1点追加６－３。この1点は大きいね。。</p>&mdash; S.F. (@SFPGMR) <a href="https://twitter.com/SFPGMR/status/1185436682457243648?ref_src=twsrc%5Etfw">2019年10月19日</a></blockquote>
+
+         
+    
+    
+      
+        <blockquote class="twitter-tweet" data-conversation="none" align="center" data-width="400" data-lang="ja" data-dnt="true"><p lang="ja" dir="ltr">東海大相模は7回コールドか。。やはりここで勝っても次が厳しいね。。</p>&mdash; S.F. (@SFPGMR) <a href="https://twitter.com/SFPGMR/status/1185436328856412160?ref_src=twsrc%5Etfw">2019年10月19日</a></blockquote>
+
+         
+    
+    
+      
+        <blockquote class="twitter-tweet" data-conversation="none" align="center" data-width="400" data-lang="ja" data-dnt="true"><p lang="und" dir="ltr"><a href="https://t.co/hD7lV5ugTE">https://t.co/hD7lV5ugTE</a></p>&mdash; S.F. (@SFPGMR) <a href="https://twitter.com/SFPGMR/status/1185436080985608192?ref_src=twsrc%5Etfw">2019年10月19日</a></blockquote>
+
+         
+    
+    
+      
+        <blockquote class="twitter-tweet" data-conversation="none" align="center" data-width="400" data-lang="ja" data-dnt="true"><p lang="ja" dir="ltr">やはり継投は左か。。</p>&mdash; S.F. (@SFPGMR) <a href="https://twitter.com/SFPGMR/status/1185435826529787904?ref_src=twsrc%5Etfw">2019年10月19日</a></blockquote>
+
+         
+    
+    
+      
+        <blockquote class="twitter-tweet" data-conversation="none" align="center" data-width="400" data-lang="ja" data-dnt="true"><p lang="und" dir="ltr"><a href="https://t.co/iVdcBljp2Y">https://t.co/iVdcBljp2Y</a></p>&mdash; S.F. (@SFPGMR) <a href="https://twitter.com/SFPGMR/status/1185435594500952064?ref_src=twsrc%5Etfw">2019年10月19日</a></blockquote>
+
+         
+    
+    
+      
+        <blockquote class="twitter-tweet" data-conversation="none" align="center" data-width="400" data-lang="ja" data-dnt="true"><p lang="ja" dir="ltr">７回裏終了<br>習志野　５－３　前橋育英<a href="https://twitter.com/hashtag/%E7%A7%8B%E5%AD%A3%E9%96%A2%E6%9D%B1%E5%A4%A7%E4%BC%9A?src=hash&amp;ref_src=twsrc%5Etfw">#秋季関東大会</a> <a href="https://t.co/hpWBN4rXbT">pic.twitter.com/hpWBN4rXbT</a></p>&mdash; S.F. (@SFPGMR) <a href="https://twitter.com/SFPGMR/status/1185435198592151552?ref_src=twsrc%5Etfw">2019年10月19日</a></blockquote>
+
+         
+    
+    
+      
+        <blockquote class="twitter-tweet" data-conversation="none" align="center" data-width="400" data-lang="ja" data-dnt="true"><p lang="ja" dir="ltr">前橋育英1点返したか。。これで5-3。<a href="https://t.co/0UF6jKIkDE">https://t.co/0UF6jKIkDE</a></p>&mdash; S.F. (@SFPGMR) <a href="https://twitter.com/SFPGMR/status/1185434929032650752?ref_src=twsrc%5Etfw">2019年10月19日</a></blockquote>
+
+         
+    
+    
+      
+        <blockquote class="twitter-tweet" data-conversation="none" align="center" data-width="400" data-lang="ja" data-dnt="true"><p lang="und" dir="ltr"><a href="https://t.co/QwxRweIQan">https://t.co/QwxRweIQan</a></p>&mdash; S.F. (@SFPGMR) <a href="https://twitter.com/SFPGMR/status/1185434011897753600?ref_src=twsrc%5Etfw">2019年10月19日</a></blockquote>
+
+         
+    
+    
+      
+        <blockquote class="twitter-tweet" data-conversation="none" align="center" data-width="400" data-lang="ja" data-dnt="true"><p lang="ja" dir="ltr">ありゃやっぱり５－２だよな。。 <a href="https://t.co/IYVVAqgSiO">pic.twitter.com/IYVVAqgSiO</a></p>&mdash; S.F. (@SFPGMR) <a href="https://twitter.com/SFPGMR/status/1185433578957467648?ref_src=twsrc%5Etfw">2019年10月19日</a></blockquote>
+
+         
+    
+    
+      
+        <blockquote class="twitter-tweet" data-conversation="none" align="center" data-width="400" data-lang="ja" data-dnt="true"><p lang="ja" dir="ltr">苦手な左投手から３点取れたのは大きいね。。</p>&mdash; S.F. (@SFPGMR) <a href="https://twitter.com/SFPGMR/status/1185433179697532928?ref_src=twsrc%5Etfw">2019年10月19日</a></blockquote>
+
+         
+    
+    
+      
+        <blockquote class="twitter-tweet" data-conversation="none" align="center" data-width="400" data-lang="ja" data-dnt="true"><p lang="ja" dir="ltr">７回表終了<br>習志野　４－２　前橋育英<br><br>でした。。<a href="https://twitter.com/hashtag/%E7%A7%8B%E5%AD%A3%E9%96%A2%E6%9D%B1%E5%A4%A7%E4%BC%9A?src=hash&amp;ref_src=twsrc%5Etfw">#秋季関東大会</a> <a href="https://t.co/rVmV1LaKHy">pic.twitter.com/rVmV1LaKHy</a></p>&mdash; S.F. (@SFPGMR) <a href="https://twitter.com/SFPGMR/status/1185432894577135622?ref_src=twsrc%5Etfw">2019年10月19日</a></blockquote>
+
+         
+    
+    
+      
+        <blockquote class="twitter-tweet" data-conversation="none" align="center" data-width="400" data-lang="ja" data-dnt="true"><p lang="ja" dir="ltr">二死三塁で山内くん。。</p>&mdash; S.F. (@SFPGMR) <a href="https://twitter.com/SFPGMR/status/1185432011067932672?ref_src=twsrc%5Etfw">2019年10月19日</a></blockquote>
+
+         
+    
+    
+      
+        <blockquote class="twitter-tweet" data-conversation="none" align="center" data-width="400" data-lang="ja" data-dnt="true"><p lang="ja" dir="ltr">犠飛で習志野1点追加。５－２。</p>&mdash; S.F. (@SFPGMR) <a href="https://twitter.com/SFPGMR/status/1185431799691767809?ref_src=twsrc%5Etfw">2019年10月19日</a></blockquote>
+
+         
+    
+    
+      
+        <blockquote class="twitter-tweet" data-conversation="none" align="center" data-width="400" data-lang="ja" data-dnt="true"><p lang="ja" dir="ltr">前橋育英　菊池くん。ここで習志野に捕まる。。</p>&mdash; S.F. (@SFPGMR) <a href="https://twitter.com/SFPGMR/status/1185431689729695745?ref_src=twsrc%5Etfw">2019年10月19日</a></blockquote>
+
+         
+    
+    
+      
+        <blockquote class="twitter-tweet" data-conversation="none" align="center" data-width="400" data-lang="ja" data-dnt="true"><p lang="ja" dir="ltr">つないだ！！！！<br>４－２。１死２－３塁。</p>&mdash; S.F. (@SFPGMR) <a href="https://twitter.com/SFPGMR/status/1185431493071368192?ref_src=twsrc%5Etfw">2019年10月19日</a></blockquote>
+
+         
+    
+    
+      
+        <blockquote class="twitter-tweet" data-conversation="none" align="center" data-width="400" data-lang="ja" data-dnt="true"><p lang="ja" dir="ltr">櫻井くん、つないでくれ～。。</p>&mdash; S.F. (@SFPGMR) <a href="https://twitter.com/SFPGMR/status/1185431323013304321?ref_src=twsrc%5Etfw">2019年10月19日</a></blockquote>
+
+         
+    
+    
+      
+        <blockquote class="twitter-tweet" data-conversation="none" align="center" data-width="400" data-lang="ja" data-dnt="true"><p lang="ja" dir="ltr">角田くん死球。一死満塁で櫻井君。</p>&mdash; S.F. (@SFPGMR) <a href="https://twitter.com/SFPGMR/status/1185431195049287681?ref_src=twsrc%5Etfw">2019年10月19日</a></blockquote>
+
+         
+    
+    
+      
+        <blockquote class="twitter-tweet" data-conversation="none" align="center" data-width="400" data-lang="ja" data-dnt="true"><p lang="ja" dir="ltr">小澤君ヒット。２－２。</p>&mdash; S.F. (@SFPGMR) <a href="https://twitter.com/SFPGMR/status/1185430968670117889?ref_src=twsrc%5Etfw">2019年10月19日</a></blockquote>
+
+         
+    
+    
+      
+        <blockquote class="twitter-tweet" data-conversation="none" align="center" data-width="400" data-lang="ja" data-dnt="true"><p lang="ja" dir="ltr">和田くん四球で一死１，２塁</p>&mdash; S.F. (@SFPGMR) <a href="https://twitter.com/SFPGMR/status/1185430499562381312?ref_src=twsrc%5Etfw">2019年10月19日</a></blockquote>
+
+         
+    
+    
+      
+        <blockquote class="twitter-tweet" data-conversation="none" align="center" data-width="400" data-lang="ja" data-dnt="true"><p lang="ja" dir="ltr">7回表。小林君ヒット！</p>&mdash; S.F. (@SFPGMR) <a href="https://twitter.com/SFPGMR/status/1185429578342232065?ref_src=twsrc%5Etfw">2019年10月19日</a></blockquote>
+
+         
+    
+    
+      
+        <blockquote class="twitter-tweet" data-conversation="none" align="center" data-width="400" data-lang="ja" data-dnt="true"><p lang="ja" dir="ltr">６回裏終了<br>習志野　１－２　前橋育英<a href="https://twitter.com/hashtag/%E7%A7%8B%E5%AD%A3%E9%96%A2%E6%9D%B1%E5%A4%A7%E4%BC%9A?src=hash&amp;ref_src=twsrc%5Etfw">#秋季関東大会</a> <a href="https://t.co/MkgbwOnUTD">pic.twitter.com/MkgbwOnUTD</a></p>&mdash; S.F. (@SFPGMR) <a href="https://twitter.com/SFPGMR/status/1185428648368586752?ref_src=twsrc%5Etfw">2019年10月19日</a></blockquote>
+
+         
+    
+    
+      
+        <blockquote class="twitter-tweet" data-conversation="none" align="center" data-width="400" data-lang="ja" data-dnt="true"><p lang="ja" dir="ltr">習志野はちょっと打線がいい感じなので、逆に力みというか、粗さが出てしまってる感じがするんだな。。いつものコツコツした緻密な野球をここでやらんといかんような気がするんだけども。</p>&mdash; S.F. (@SFPGMR) <a href="https://twitter.com/SFPGMR/status/1185428202488918019?ref_src=twsrc%5Etfw">2019年10月19日</a></blockquote>
+
+         
+    
+    
+      
+        <blockquote class="twitter-tweet" data-conversation="none" align="center" data-width="400" data-lang="ja" data-dnt="true"><p lang="ja" dir="ltr">前橋育英ヒット。山内くんにタイミング合ってきた感じですな。。</p>&mdash; S.F. (@SFPGMR) <a href="https://twitter.com/SFPGMR/status/1185427773545836545?ref_src=twsrc%5Etfw">2019年10月19日</a></blockquote>
+
+         
+    
+    
+      
+        <blockquote class="twitter-tweet" data-conversation="none" align="center" data-width="400" data-lang="ja" data-dnt="true"><p lang="ja" dir="ltr">６回表終了<br>習志野　１－２　前橋育英<br><br>１塁牽制死。。<a href="https://twitter.com/hashtag/%E7%A7%8B%E5%AD%A3%E9%96%A2%E6%9D%B1%E5%A4%A7%E4%BC%9A?src=hash&amp;ref_src=twsrc%5Etfw">#秋季関東大会</a> <a href="https://t.co/cj9zAYWDMV">pic.twitter.com/cj9zAYWDMV</a></p>&mdash; S.F. (@SFPGMR) <a href="https://twitter.com/SFPGMR/status/1185427563742547968?ref_src=twsrc%5Etfw">2019年10月19日</a></blockquote>
+
+         
+    
+    
+      
+        <blockquote class="twitter-tweet" data-conversation="none" align="center" data-width="400" data-lang="ja" data-dnt="true"><p lang="ja" dir="ltr">飴谷くんヒット。今日2安打か。。</p>&mdash; S.F. (@SFPGMR) <a href="https://twitter.com/SFPGMR/status/1185426875650170880?ref_src=twsrc%5Etfw">2019年10月19日</a></blockquote>
+
+         
+    
+    
+      
+        <blockquote class="twitter-tweet" data-conversation="none" align="center" data-width="400" data-lang="ja" data-dnt="true"><p lang="ja" dir="ltr">このペースだと習志野は負け試合っぽいね。。とにかく左投手に対して良い印象はない。</p>&mdash; S.F. (@SFPGMR) <a href="https://twitter.com/SFPGMR/status/1185426572687241218?ref_src=twsrc%5Etfw">2019年10月19日</a></blockquote>
+
+         
+    
+    
+      
+        <blockquote class="twitter-tweet" data-conversation="none" align="center" data-width="400" data-lang="ja" data-dnt="true"><p lang="ja" dir="ltr">習志野は球場整備の間に気持ちを切り替えて、普段通りの野球をすればいけると思うけどね。。</p>&mdash; S.F. (@SFPGMR) <a href="https://twitter.com/SFPGMR/status/1185425866500624386?ref_src=twsrc%5Etfw">2019年10月19日</a></blockquote>
+
+         
+    
+    
+      
+        <blockquote class="twitter-tweet" data-conversation="none" align="center" data-width="400" data-lang="ja" data-dnt="true"><p lang="ja" dir="ltr">しかし1年生エースの菊池くんは要所で締めるよいピッチングをしているようで、今後に期待が持てますな。</p>&mdash; S.F. (@SFPGMR) <a href="https://twitter.com/SFPGMR/status/1185425421862490113?ref_src=twsrc%5Etfw">2019年10月19日</a></blockquote>
+
+         
+    
+    
+      
+        <blockquote class="twitter-tweet" data-conversation="none" align="center" data-width="400" data-lang="ja" data-dnt="true"><p lang="ja" dir="ltr">やはり山内くん、ランナー背負うと制球が乱れるようですな。まあまだ2点取られただけですが。。打線に期待！</p>&mdash; S.F. (@SFPGMR) <a href="https://twitter.com/SFPGMR/status/1185424924959105027?ref_src=twsrc%5Etfw">2019年10月19日</a></blockquote>
+
+         
+    
+    
+      
+        <blockquote class="twitter-tweet" data-conversation="none" align="center" data-width="400" data-lang="ja" data-dnt="true"><p lang="ja" dir="ltr">５回裏終了<br>習志野　１－２　前橋育英<br><br>2点タイムリーで前橋育英逆転！<a href="https://twitter.com/hashtag/%E7%A7%8B%E5%AD%A3%E9%96%A2%E6%9D%B1%E5%A4%A7%E4%BC%9A?src=hash&amp;ref_src=twsrc%5Etfw">#秋季関東大会</a> <a href="https://t.co/6niLlfe3ar">pic.twitter.com/6niLlfe3ar</a></p>&mdash; S.F. (@SFPGMR) <a href="https://twitter.com/SFPGMR/status/1185424697246142464?ref_src=twsrc%5Etfw">2019年10月19日</a></blockquote>
+
+         
+    
+    
+      
+        <blockquote class="twitter-tweet" data-conversation="none" align="center" data-width="400" data-lang="ja" data-dnt="true"><p lang="ja" dir="ltr">飯塚くんはもういない。。</p>&mdash; S.F. (@SFPGMR) <a href="https://twitter.com/SFPGMR/status/1185423795265273857?ref_src=twsrc%5Etfw">2019年10月19日</a></blockquote>
+
+         
+    
+    
+      
+        <blockquote class="twitter-tweet" data-conversation="none" align="center" data-width="400" data-lang="ja" data-dnt="true"><p lang="ja" dir="ltr">こういうとこでリリーフできないのが今の習志野の課題ですわな。。</p>&mdash; S.F. (@SFPGMR) <a href="https://twitter.com/SFPGMR/status/1185423714671677440?ref_src=twsrc%5Etfw">2019年10月19日</a></blockquote>
+
+         
+    
+    
+      
+        <blockquote class="twitter-tweet" data-conversation="none" align="center" data-width="400" data-lang="ja" data-dnt="true"><p lang="ja" dir="ltr">2死満塁</p>&mdash; S.F. (@SFPGMR) <a href="https://twitter.com/SFPGMR/status/1185423371174965248?ref_src=twsrc%5Etfw">2019年10月19日</a></blockquote>
+
+         
+    
+    
+      
+        <blockquote class="twitter-tweet" data-conversation="none" align="center" data-width="400" data-lang="ja" data-dnt="true"><p lang="ja" dir="ltr">犠打でツーアウト、2－3塁。習志野ピンチ。。</p>&mdash; S.F. (@SFPGMR) <a href="https://twitter.com/SFPGMR/status/1185422696093384704?ref_src=twsrc%5Etfw">2019年10月19日</a></blockquote>
+
+         
+    
+    
+      
+        <blockquote class="twitter-tweet" data-conversation="none" align="center" data-width="400" data-lang="ja" data-dnt="true"><p lang="ja" dir="ltr">前橋育英ワンアウト、1－2塁。</p>&mdash; S.F. (@SFPGMR) <a href="https://twitter.com/SFPGMR/status/1185422294073479168?ref_src=twsrc%5Etfw">2019年10月19日</a></blockquote>
+
+         
+    
+    
+      
+        <blockquote class="twitter-tweet" data-conversation="none" align="center" data-width="400" data-lang="ja" data-dnt="true"><p lang="ja" dir="ltr">ヒット4本。点が欲しいところ。。</p>&mdash; S.F. (@SFPGMR) <a href="https://twitter.com/SFPGMR/status/1185421372463316992?ref_src=twsrc%5Etfw">2019年10月19日</a></blockquote>
+
+         
+    
+    
+      
+        <blockquote class="twitter-tweet" data-conversation="none" align="center" data-width="400" data-lang="ja" data-dnt="true"><p lang="ja" dir="ltr">前橋育英も2巡目以降はいい感じになってきてる。</p>&mdash; S.F. (@SFPGMR) <a href="https://twitter.com/SFPGMR/status/1185421304889040897?ref_src=twsrc%5Etfw">2019年10月19日</a></blockquote>
+
+         
+    
+    
+      
+        <blockquote class="twitter-tweet" data-conversation="none" align="center" data-width="400" data-lang="ja" data-dnt="true"><p lang="ja" dir="ltr">５回表終了<br>習志野　１－０　前橋育英<br><br>櫻井くん繋げず。。<a href="https://twitter.com/hashtag/%E7%A7%8B%E5%AD%A3%E9%96%A2%E6%9D%B1%E5%A4%A7%E4%BC%9A?src=hash&amp;ref_src=twsrc%5Etfw">#秋季関東大会</a> <a href="https://t.co/76lvVfXef6">pic.twitter.com/76lvVfXef6</a></p>&mdash; S.F. (@SFPGMR) <a href="https://twitter.com/SFPGMR/status/1185421009307832320?ref_src=twsrc%5Etfw">2019年10月19日</a></blockquote>
+
+         
+    
+    
+      
+        <blockquote class="twitter-tweet" data-conversation="none" align="center" data-width="400" data-lang="ja" data-dnt="true"><p lang="ja" dir="ltr">ウーム。角田くん当たってるな。。できれば和田君、小澤君が塁に出てほしかったね。。</p>&mdash; S.F. (@SFPGMR) <a href="https://twitter.com/SFPGMR/status/1185420748208275456?ref_src=twsrc%5Etfw">2019年10月19日</a></blockquote>
+
+         
+    
+    
+      
+        <blockquote class="twitter-tweet" data-conversation="none" align="center" data-width="400" data-lang="ja" data-dnt="true"><p lang="ja" dir="ltr">1年生エース菊池君もよく投げている。。<a href="https://twitter.com/hashtag/%E7%A7%8B%E5%AD%A3%E9%96%A2%E6%9D%B1%E5%A4%A7%E4%BC%9A?src=hash&amp;ref_src=twsrc%5Etfw">#秋季関東大会</a></p>&mdash; S.F. (@SFPGMR) <a href="https://twitter.com/SFPGMR/status/1185420454770565121?ref_src=twsrc%5Etfw">2019年10月19日</a></blockquote>
+
+         
+    
+    
+      
+        <blockquote class="twitter-tweet" data-conversation="none" align="center" data-width="400" data-lang="ja" data-dnt="true"><p lang="ja" dir="ltr">和田君このあたりでヒット一本ほしい。。</p>&mdash; S.F. (@SFPGMR) <a href="https://twitter.com/SFPGMR/status/1185420237702778880?ref_src=twsrc%5Etfw">2019年10月19日</a></blockquote>
+
+         
+    
+    
+      
+        <blockquote class="twitter-tweet" data-conversation="none" align="center" data-width="400" data-lang="ja" data-dnt="true"><p lang="ja" dir="ltr">４回裏終了<br>習志野　１－０　前橋育英<br><br>前橋育英ヒット2本打つも0点。併殺が痛い。。<a href="https://twitter.com/hashtag/%E7%A7%8B%E5%AD%A3%E9%96%A2%E6%9D%B1%E5%A4%A7%E4%BC%9A?src=hash&amp;ref_src=twsrc%5Etfw">#秋季関東大会</a> <a href="https://t.co/enDQnnBWsI">pic.twitter.com/enDQnnBWsI</a></p>&mdash; S.F. (@SFPGMR) <a href="https://twitter.com/SFPGMR/status/1185420066940018688?ref_src=twsrc%5Etfw">2019年10月19日</a></blockquote>
+
+         
+    
+    
+      
+        <blockquote class="twitter-tweet" data-conversation="none" align="center" data-width="400" data-lang="ja" data-dnt="true"><p lang="ja" dir="ltr">4回裏<br>前橋育英ノーアウト1塁で併殺。。</p>&mdash; S.F. (@SFPGMR) <a href="https://twitter.com/SFPGMR/status/1185419003755298817?ref_src=twsrc%5Etfw">2019年10月19日</a></blockquote>
+
+         
+    
+    
+      
+        <blockquote class="twitter-tweet" data-conversation="none" align="center" data-width="400" data-lang="ja" data-dnt="true"><p lang="ja" dir="ltr">４回表終了<br>習志野　１－０　前橋育英<a href="https://twitter.com/hashtag/%E7%A7%8B%E5%AD%A3%E9%96%A2%E6%9D%B1%E5%A4%A7%E4%BC%9A?src=hash&amp;ref_src=twsrc%5Etfw">#秋季関東大会</a> <a href="https://t.co/RAvwCZcv7z">pic.twitter.com/RAvwCZcv7z</a></p>&mdash; S.F. (@SFPGMR) <a href="https://twitter.com/SFPGMR/status/1185418510639349760?ref_src=twsrc%5Etfw">2019年10月19日</a></blockquote>
+
+         
+    
+    
+      
+        <blockquote class="twitter-tweet" data-conversation="none" align="center" data-width="400" data-lang="ja" data-dnt="true"><p lang="ja" dir="ltr">宮下君タイムリー！<br>１－０<a href="https://twitter.com/hashtag/%E7%A7%8B%E5%AD%A3%E9%96%A2%E6%9D%B1%E5%A4%A7%E4%BC%9A?src=hash&amp;ref_src=twsrc%5Etfw">#秋季関東大会</a></p>&mdash; S.F. (@SFPGMR) <a href="https://twitter.com/SFPGMR/status/1185418313830031360?ref_src=twsrc%5Etfw">2019年10月19日</a></blockquote>
+
+         
+    
+    
+      
+        <blockquote class="twitter-tweet" data-conversation="none" align="center" data-width="400" data-lang="ja" data-dnt="true"><p lang="ja" dir="ltr">4回表　2死3塁で宮下君。<a href="https://twitter.com/hashtag/%E7%A7%8B%E5%AD%A3%E9%96%A2%E6%9D%B1%E5%A4%A7%E4%BC%9A?src=hash&amp;ref_src=twsrc%5Etfw">#秋季関東大会</a></p>&mdash; S.F. (@SFPGMR) <a href="https://twitter.com/SFPGMR/status/1185417792830357504?ref_src=twsrc%5Etfw">2019年10月19日</a></blockquote>
+
+         
+    
+    
+      
+        <blockquote class="twitter-tweet" data-conversation="none" align="center" data-width="400" data-lang="ja" data-dnt="true"><p lang="ja" dir="ltr">あ、５Kだった。</p>&mdash; S.F. (@SFPGMR) <a href="https://twitter.com/SFPGMR/status/1185417574554591232?ref_src=twsrc%5Etfw">2019年10月19日</a></blockquote>
+
+         
+    
+    
+      
+        <blockquote class="twitter-tweet" data-conversation="none" align="center" data-width="400" data-lang="ja" data-dnt="true"><p lang="ja" dir="ltr">前橋育英も打ちあぐねてる感あり。山内くんここまでで４K。</p>&mdash; S.F. (@SFPGMR) <a href="https://twitter.com/SFPGMR/status/1185417143459831808?ref_src=twsrc%5Etfw">2019年10月19日</a></blockquote>
+
+         
+    
+    
+  </div>
+  <footer>
+    CopyLight 2019 Satoshi Fujiwara 
+  </footer>
+  <script src="./index.js"></script>
+</body>
+
+</html>
