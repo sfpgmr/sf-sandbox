@@ -23,6 +23,22 @@ import ejs from 'ejs';
     }
   });
 
+
+  tweetsOriginal.forEach(tweet => {
+    if (tweet.in_reply_to_status_id) {
+      if (!tweets.some(t => {
+        if (t.some(e => e.id == tweet.in_reply_to_status_id)) {
+          t.push(tweet);
+          return true;
+        }
+        return false;
+      })) {
+        tweets.push([tweet]);
+      };
+    }
+  });
+
+
   tweets.sort((a,b)=>{
     
     const ad = a.map(e=>new Date(e.created_at)).reduce((pv,cv)=>{
@@ -42,22 +58,6 @@ import ejs from 'ejs';
     return 0;
 
   });
-
-  tweetsOriginal.forEach(tweet => {
-    if (tweet.in_reply_to_status_id) {
-      if (!tweets.some(t => {
-        if (t.some(e => e.id == tweet.in_reply_to_status_id)) {
-          t.push(tweet);
-          return true;
-        }
-        return false;
-      })) {
-        tweets.push([tweet]);
-      };
-    }
-  });
-
-
 
   //await fs.promises.writeFile('./data/tweets3.json',JSON.stringify(tweets,null,1),'utf8');
 

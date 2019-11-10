@@ -60,7 +60,10 @@
   }
 
   .tweet-header {
-    margin:auto;
+    display:grid;
+    align-items:end; 
+    grid-template-columns:40px 2fr 1fr;
+    grid-template-rows:1fr;
     font-size:12px;
     font-weight: bold;
   }
@@ -72,12 +75,21 @@
   }
 
   .tweet-profile-img {
+    grid-column: 1/2;
     width:32px;
     height:32px;
     border-radius: 50%;
   }
+  
+  .tweet-user-name {
+    grid-column: 2/3;
+  }
 
-
+  .tweet-date {
+    font-size:8px;
+    text-align: right;
+    grid-column: 3/4; 
+  }
 
   .contents > twitter-widget {
     overflow: auto;
@@ -96,10 +108,6 @@
     font-size:12px;
   }
 
-  .contents .date {
-    font-size:8px;
-    text-align: right;
-  }
   
   </style>
 </head>
@@ -115,15 +123,18 @@
       <% tweets.forEach(tweetGroup=>{%>
       <article>
         <% // -tweet.embed.html%>
-          <% tweetGroup.forEach(tweet_=>{ 
+          <% tweetGroup.forEach((tweet_,index)=>{ 
             const tweet =  tweet_.retweeted ? tweet_.retweeted_status : tweet_;
             let tweetText = tweet.full_text?tweet.full_text:tweet.text;
 
-          %>
+          
+           %>
           <header class="tweet-header">
-              <img class="tweet-profile-img" src="<%-tweet.user.profile_image_url_https%>"/>
-              <%-tweet.user.name%>@<%-tweet.user.screen_name%>
-              <span class="date"><a href="https://twitter.com/<%-tweet.user.screen_name%>/status/<%-tweet.id_str%>" target="_blank"><%-(new Date(tweet.created_at)).toLocaleString('ja-JP')%></a></span>
+            <%   if(index == 0){ 
+                  %>              <img class="tweet-profile-img" src="<%-tweet.user.profile_image_url_https%>"/>
+              <p class="tweet-user-name"><%-tweet.user.name%>@<%-tweet.user.screen_name%></p>
+              <% } %>
+              <p class="tweet-date"><a href="https://twitter.com/<%-tweet.user.screen_name%>/status/<%-tweet.id_str%>" target="_blank"><%-(new Date(tweet.created_at)).toLocaleString('ja-JP')%></a></p>
           </header>
           <section>
           <p class="tweet-text"><%- tweet.full_text?tweet.full_text:tweet.text; %></p>
