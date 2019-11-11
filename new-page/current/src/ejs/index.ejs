@@ -137,7 +137,7 @@
               <p class="tweet-date"><a href="https://twitter.com/<%-tweet.user.screen_name%>/status/<%-tweet.id_str%>" target="_blank"><%-(new Date(tweet.created_at)).toLocaleString('ja-JP')%></a></p>
           </header>
           <section>
-          <p class="tweet-text"><%- tweet.full_text?tweet.full_text:tweet.text; %></p>
+          <p class="tweet-text"><%-(tweet.full_text?tweet.full_text:tweet.text).replace(/\n/ig,'<br/>'); %></p>
           <%
             const medias = (tweet.extended_entities && tweet.extended_entities.media) || (tweet.entities && tweet.entities.media);
             if(medias){ 
