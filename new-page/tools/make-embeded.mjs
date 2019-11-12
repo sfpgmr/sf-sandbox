@@ -3,6 +3,8 @@ import fs from 'fs';
 import YouTube from 'youtube-node';
 import util from 'util';
 
+
+try {
 const yt = new YouTube();
 yt.setKey(process.env.YOUTUBE_API_KEY);
 
@@ -11,8 +13,6 @@ const youtube = {
     getById:util.promisify(yt.getById.bind(yt)),
     related:util.promisify(yt.related.bind(yt))
 };
-
-
 (async()=>{
   const tweets = JSON.parse(await fs.promises.readFile('./data/tweets.json'));
   for(const tweet of tweets){
@@ -43,4 +43,7 @@ const youtube = {
   }
   await fs.promises.writeFile('./data/tweet2.json',JSON.stringify(tweets,null,1),'utf8');
 })();
+} catch (e) {
+  console.log(e);
+}
 
