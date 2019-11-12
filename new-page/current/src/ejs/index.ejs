@@ -126,7 +126,15 @@
           <% tweetGroup.forEach((tweet_,index)=>{ 
             const tweet =  tweet_.retweeted ? tweet_.retweeted_status : tweet_;
             let tweetText = tweet.full_text?tweet.full_text:tweet.text;
+            let embededs = [];
+            if(tweet.entities.urls){
+              const urls = tweet.entities.urls;
+              for(const url of urls){
+                tweetText = tweetText.replace(url.url,`<a href="${url.expanded_url}" target="_blank">${url.display_url}</a>`);
+              }
+            }
 
+            tweetText = tweetText.replace(/\n/ig,'<br/>');
           
            %>
           <header class="tweet-header">
@@ -137,7 +145,7 @@
               <p class="tweet-date"><a href="https://twitter.com/<%-tweet.user.screen_name%>/status/<%-tweet.id_str%>" target="_blank"><%-(new Date(tweet.created_at)).toLocaleString('ja-JP')%></a></p>
           </header>
           <section>
-          <p class="tweet-text"><%-(tweet.full_text?tweet.full_text:tweet.text).replace(/\n/ig,'<br/>'); %></p>
+          <p class="tweet-text"><%-tweetText %></p>
           <%
             const medias = (tweet.extended_entities && tweet.extended_entities.media) || (tweet.entities && tweet.entities.media);
             if(medias){ 
@@ -150,6 +158,17 @@
 
               }
           } %> 
+          <%
+          if(tweet.entities.urls){
+            const urls = tweet.entities.urls;
+            for(const url of urls){
+              if(url.youtube){
+          %>
+          <img class="tweet-img" src="<%-url.youtube.items[0].snippet.thumbnails.high.url%>" />
+          <%   }
+            }
+          }
+          %>
           </section>
           <% }); %>
     </article>

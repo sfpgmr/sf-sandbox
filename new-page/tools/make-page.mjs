@@ -1,22 +1,11 @@
 
 import fs from 'fs';
 import ejs from 'ejs';
-import YouTube from 'youtube-node';
-import util from 'util';
-
-const yt = new YouTube();
-yt.setKey(process.env.YOUTUBE_API_KEY);
-
-const youtube = {
-    search:util.promisify(yt.search.bind(yt)),
-    getById:util.promisify(yt.getById.bind(yt)),
-    related:util.promisify(yt.related.bind(yt))
-};
 
 
 (async () => {
   const tweetsOriginal =
-    JSON.parse(await fs.promises.readFile('./data/tweets.json', 'utf8'))
+    JSON.parse(await fs.promises.readFile('./data/tweet2.json', 'utf8'))
       .sort((a, b) => {
         const ad = a.id, bd = b.id;
 
@@ -73,6 +62,6 @@ const youtube = {
 
   //await fs.promises.writeFile('./data/tweets3.json',JSON.stringify(tweets,null,1),'utf8');
 
-  const html = await ejs.renderFile('./current/src/ejs/index.ejs', { tweets: tweets,youtube:youtube });
+  const html = await ejs.renderFile('./current/src/ejs/index.ejs', { tweets: tweets});
   await fs.promises.writeFile('./current/src/html/index.html', html, 'utf8');
 })();

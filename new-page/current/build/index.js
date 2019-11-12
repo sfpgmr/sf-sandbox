@@ -149,7 +149,7 @@
     container: '.contents',
     minimize: false,
     gutter: 4,
-    baseWidth: 320
+    baseWidth: 400
   });
 
   // twttr.ready(() => {
