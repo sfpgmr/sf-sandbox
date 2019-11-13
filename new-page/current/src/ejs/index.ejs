@@ -28,6 +28,7 @@
   .contents {
     width: 100%;
     position:relative;
+    content:strict;
   }
   
   @keyframes blinking {
@@ -47,6 +48,7 @@
     z-index: 32768;
     background:black;
     animation: blinking 2s infinite;
+    content:strict;
   }
 
 
@@ -70,6 +72,11 @@
 
 
   .tweet-img {
+    width:100%;
+    object-fit: cover;
+  }
+
+  .youtube {
     width:100%;
     object-fit: cover;
   }
@@ -131,8 +138,12 @@
               const urls = tweet.entities.urls;
               for(const url of urls){
                 if(url.youtube){
-                tweetText = tweetText.replace(url.url,`<a href="${url.expanded_url}" target="_blank"><img class="tweet-img" src="${url.youtube.items[0].snippet.thumbnails.high.url}" /></a>`);
-                }                tweetText = tweetText.replace(url.url,`<a href="${url.expanded_url}" target="_blank">${url.display_url}</a>`);
+                tweetText = tweetText.replace(url.url,
+                //`<iframe class="youtube" type="text/html" src="https://www.youtube.com/embed/${url.youtube.items[0].id}?autoplay=0&origin=https://www.sfpgmr.net" frameborder="0"></iframe>`
+                `<a href="${url.expanded_url}" data-sf-type="yt" data-sf-id="${url.youtube.items[0].id}" target="_blank"><img class="youtube" src="${url.youtube.items[0].snippet.thumbnails.high.url}" /></a>`
+                );
+                }
+                tweetText = tweetText.replace(url.url,`<a href="${url.expanded_url}" target="_blank">${url.display_url}</a>`);
               }
             }
 
@@ -140,8 +151,8 @@
           
            %>
           <header class="tweet-header">
-            <%   if(index == 0){ 
-                  %>              <img class="tweet-profile-img" src="<%-tweet.user.profile_image_url_https%>"/>
+            <% if(index == 0){ %>
+              <img class="tweet-profile-img" src="<%-tweet.user.profile_image_url_https%>"/>
               <p class="tweet-user-name"><%-tweet.user.name%>@<%-tweet.user.screen_name%></p>
               <% } %>
               <p class="tweet-date"><a href="https://twitter.com/<%-tweet.user.screen_name%>/status/<%-tweet.id_str%>" target="_blank"><%-(new Date(tweet.created_at)).toLocaleString('ja-JP')%></a></p>
