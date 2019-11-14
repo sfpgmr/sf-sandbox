@@ -167,19 +167,30 @@
   //   // });
   // });
 
-
-    window.addEventListener('load', () => {
-      document.getElementById('loading').remove();
-        const tag = document.createElement('script');
-
-        tag.src = "https://www.youtube.com/iframe_api";
-        const firstScriptTag = document.getElementsByTagName('script')[0];
-        firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
-      masonry.layout();
-      contents.setAttribute('rendersubtree', '');
-      //masonry.layout();
-      //twttr.events.bind('rendered',masonry.layout.bind(masonry));
-
+  window.onYouTubeIframeAPIReady = function() {
+    const yts = document.querySelectorAll("img[data-type='yt']");
+    yts.forEach(yt => {
+      new YT.Player(yt.id, {
+        height: yt.offsetHeight,
+        width: yt.offsetWidth,
+        videoId: yt.id
+      });
     });
+
+  };
+
+
+  window.addEventListener('load', () => {
+    const tag = document.createElement('script');
+    tag.src = "//www.youtube.com/iframe_api";
+    const firstScriptTag = document.getElementsByTagName('script')[0];
+    firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+    document.getElementById('loading').remove();
+    masonry.layout();
+    contents.setAttribute('rendersubtree', '');
+    //masonry.layout();
+    //twttr.events.bind('rendered',masonry.layout.bind(masonry));
+
+  });
 
 }());
