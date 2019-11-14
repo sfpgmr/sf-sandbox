@@ -139,8 +139,8 @@
               for(const url of urls){
                 if(url.youtube){
                 tweetText = tweetText.replace(url.url,
-                //`<iframe class="youtube" type="text/html" src="https://www.youtube.com/embed/${url.youtube.items[0].id}?autoplay=0&origin=https://www.sfpgmr.net" frameborder="0"></iframe>`
-                `<a href="${url.expanded_url}" data-sf-type="yt" data-sf-id="${url.youtube.items[0].id}" target="_blank"><img class="youtube" src="${url.youtube.items[0].snippet.thumbnails.high.url}" /></a>`
+                // `<iframe class="youtube" type="text/html" src="https://www.youtube.com/embed/${url.youtube.items[0].id}?autoplay=0&origin=https://www.sfpgmr.net" frameborder="0"></iframe>`
+                `<img data-href="${url.expanded_url}" data-type="yt" id="${url.youtube.items[0].id}" class="youtube" src="${url.youtube.items[0].snippet.thumbnails.high.url}" />`
                 );
                 }
                 tweetText = tweetText.replace(url.url,`<a href="${url.expanded_url}" target="_blank">${url.display_url}</a>`);

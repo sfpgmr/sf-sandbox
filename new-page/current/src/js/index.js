@@ -67,9 +67,25 @@ const masonry = new MiniMasonry({
 //   // });
 // });
 
+      function onYouTubeIframeAPIReady() {
+        const yts = document.querySelectorAll("img[data-type='yt']");
+        yts.forEach(yt=>{
+          new YT.Player(yt.id, {
+            height: yt.style.height,
+            width: yt.style.width,
+            videoId: yt.id
+            });
+          });
+      }
 
   window.addEventListener('load', () => {
     document.getElementById('loading').remove();
+      const tag = document.createElement('script');
+
+      tag.src = "https://www.youtube.com/iframe_api";
+      const firstScriptTag = document.getElementsByTagName('script')[0];
+      firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
     masonry.layout();
     contents.setAttribute('rendersubtree', '');
     //masonry.layout();
