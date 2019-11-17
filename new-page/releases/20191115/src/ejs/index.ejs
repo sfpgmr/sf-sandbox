@@ -1,13 +1,10 @@
 <!DOCTYPE html>
-<html lang="ja" prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb# article: http://ogp.me/ns/article#">
+<html lang="ja">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <title>トップページをリニューアルする</title>
-
-
-
+  <title>Twitter APIを試す</title>
   <style>
 
     * {
@@ -166,19 +163,9 @@
             if(medias){ 
               if(medias instanceof Array) {
                 medias.forEach(m=>{
-                  let v;
-                  if(m.video_info && m.video_info.variants){
-                    v =  m.video_info.variants.find(v_=>v_.content_type == "video/mp4");
-                  }
-                  if(v){
-
-          %>
-            <video class="tweet-img" controls src="<%-v.url%>" />
-          <%      } else {
-            %> 
+            %>
             <img class="tweet-img" src="<%-m.media_url_https%>" />
-          <%      }
-                });
+          <%  });
               } else {
 
               }

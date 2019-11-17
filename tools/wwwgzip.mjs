@@ -19,6 +19,7 @@ const blogDir = '/home/sfpg/www/blog/contents/';
       } else if(stat.isDirectory()){
         await gzipDir(base + p + '/',await fs.promises.readdir(base + p + '/'));
       }
+      
     }
   }
   await gzipDir(rootDir,paths);

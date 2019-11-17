@@ -62,6 +62,18 @@ import ejs from 'ejs';
 
   //await fs.promises.writeFile('./data/tweets3.json',JSON.stringify(tweets,null,1),'utf8');
 
-  const html = await ejs.renderFile('./current/src/ejs/index.ejs', { tweets: tweets});
+  const html = await ejs.renderFile('./current/src/ejs/index.ejs', 
+  { tweets: tweets,
+    head:{
+      title:'リニューアル用のトップページデザイン',
+      description:'リニューアル用のトップページデザインを考えて実装する',
+      url:'https://www.sfpgmr.net/sandbox/new-page/re',
+      imageUrl:'https://www.sfpgmr.net/img/sfweb.png',
+      siteName:'S.F. Web',
+      keywords:'',
+      twitterSite:'@sfpgmr'
+    }
+
+  });
   await fs.promises.writeFile('./current/src/html/index.html', html, 'utf8');
 })();

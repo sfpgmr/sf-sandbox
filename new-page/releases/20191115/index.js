@@ -169,13 +169,11 @@
 
   window.onYouTubeIframeAPIReady = function() {
     const yts = document.querySelectorAll("img[data-type='yt']");
-    const origin = `${location.protocol}//${location.hostname}:${location.port}`;
     yts.forEach(yt => {
       new YT.Player(yt.id, {
         height: yt.offsetHeight,
         width: yt.offsetWidth,
-        videoId: yt.id,
-        playerVars:{origin:origin}
+        videoId: yt.id
       });
     });
 
