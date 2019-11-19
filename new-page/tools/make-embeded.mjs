@@ -2,7 +2,9 @@ import request from 'request-promise-native';
 import fs from 'fs';
 import YouTube from 'youtube-node';
 import util from 'util';
-import puppeteer from 'puppeteer';
+//import puppeteer from 'puppeteer';
+import jsdom from 'jsdom';
+const {JSDOM} = jsdom;
 
 
 try {
@@ -16,8 +18,8 @@ const youtube = {
 };
 (async()=>{
   const tweets = JSON.parse(await fs.promises.readFile('./data/tweets.json'));
-  const browser = await puppeteer.launch();
-  const page = await browser.newPage();
+  //const browser = await puppeteer.launch();
+  //const page = await browser.newPage();
   for(const tweet of tweets){
     if(tweet.entities.urls){
       const urls = tweet.entities.urls;
@@ -34,14 +36,17 @@ const youtube = {
           console.log(url.url);
           try {
 
-            const p = await page.goto(url.expanded_url);
+/*            const p = await page.goto(url.expanded_url);
             const tag = await page.evaluate(()=>{
               return  {
                 title:document.title,
                 description:document.querySelectorAll('meta[name =  "description"]')[0].content
               }
-            }); 
-            console.log(tag);
+            }); */
+            const {window} = await JSDOM.fromURL(url.url);
+            const {document} = window;
+            const description = document.querySelector('meta[name =  "description"]').content;
+            console.log(document.querySelector('title').textContent,description);
             //url.ogp = ogp;
           } catch (e) {
             console.log(e);
