@@ -162,8 +162,18 @@
                 // `<iframe class="youtube" type="text/html" src="https://www.youtube.com/embed/${url.youtube.items[0].id}?autoplay=0&origin=https://www.sfpgmr.net" frameborder="0"></iframe>`
                 `<img data-href="${url.expanded_url}" data-type="yt" id="${url.youtube.items[0].id}" class="youtube" src="${url.youtube.items[0].snippet.thumbnails.high.url}" />`
                 );
-                }
-                tweetText = tweetText.replace(url.url,`<a href="${url.expanded_url}" target="_blank">${url.display_url}</a>`);
+                } else if (url.meta){
+                  const meta = url.meta;
+                  const title = meta.title || (meta.json_lds && meta.json_lds[0].headline) || (meta.twitter && meta.twitter.title) || '';
+                  // const image = (meta.twitter && meta.twitter.image)  
+                  //   || (meta.json_lds && ((meta.json_lds[0].image instanceof Array) ? meta.json_lds[0].image[0] : meta.json_lds[0].image));
+                  // const desc = meta.description || (meta.twitter && meta.twitter.description) || (meta.json_lds && meta.json_lds[0].description);
+                  const desc = meta.description || '';
+                  
+                  tweetText = tweetText.replace(url.url,`<blockquote></blockquote><a href="${url.expanded_url}" target="_blank">${desc}</a></blockquote>`);
+                } else {
+                  tweetText = tweetText.replace(url.url,`<a href="${url.expanded_url}" target="_blank">${url.display_url}</a>`);
+                 }
               }
             }
 
