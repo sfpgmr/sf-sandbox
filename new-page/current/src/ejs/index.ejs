@@ -170,7 +170,7 @@
                   // const desc = meta.description || (meta.twitter && meta.twitter.description) || (meta.json_lds && meta.json_lds[0].description);
                   const desc = meta.description || '';
                   
-                  tweetText = tweetText.replace(url.url,`<blockquote></blockquote><a href="${url.expanded_url}" target="_blank">${desc}</a></blockquote>`);
+                  tweetText = tweetText.replace(url.url,`<blockquote><a href="${url.expanded_url}" target="_blank">${title.replace(/</ig,'&lt;').replace(/>/ig,'&gt;')}</a><p></p>${desc.replace(/</ig,'&lt;').replace(/>/ig,'&gt;')}</blockquote></p></blockquote>`);
                 } else {
                   tweetText = tweetText.replace(url.url,`<a href="${url.expanded_url}" target="_blank">${url.display_url}</a>`);
                  }
