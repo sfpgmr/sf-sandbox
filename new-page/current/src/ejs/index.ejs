@@ -137,6 +137,36 @@
     .contents>article>h3 {
       font-size: 12px;
     }
+
+    blockquote.card {
+      margin:4px;
+      padding:4px;
+      font-size:12px;
+      background:white;
+      border-radius: 4px;
+    }
+
+    blockquote.card > header {
+      display:grid;
+      grid-template-columns:64px 1fr;
+      grid-gap:4px;
+      gap:4px;
+    }
+
+    blockquote.card > header > img {
+      width:100%;
+    }
+
+    div.no-image {
+      display: block;
+      width:64px;
+      height:64px;
+      background:gray;
+      color:white;
+      text-align: center;
+      line-height: 64px;
+    }
+
   </style>
 </head>
 
@@ -164,13 +194,16 @@
                 );
                 } else if (url.meta){
                   const meta = url.meta;
+                  const type = meta.twitter ? "card" : "page"; 
                   const title = meta.title || (meta.json_lds && meta.json_lds[0].headline) || (meta.twitter && meta.twitter.title) || '';
                   // const image = (meta.twitter && meta.twitter.image)  
                   //   || (meta.json_lds && ((meta.json_lds[0].image instanceof Array) ? meta.json_lds[0].image[0] : meta.json_lds[0].image));
                   // const desc = meta.description || (meta.twitter && meta.twitter.description) || (meta.json_lds && meta.json_lds[0].description);
                   const desc = meta.description || '';
+                  let img = (meta.twitter && meta.twitter.image && (meta.twitter.image.src || meta.twitter.image));
+                  img = img ? `<img src="${img}" />`:'<div class="no-image" >No Image</div>';  
                   
-                  tweetText = tweetText.replace(url.url,`<blockquote><a href="${url.expanded_url}" target="_blank">${title.replace(/</ig,'&lt;').replace(/>/ig,'&gt;')}</a><p></p>${desc.replace(/</ig,'&lt;').replace(/>/ig,'&gt;')}</blockquote></p></blockquote>`);
+                  tweetText = tweetText.replace(url.url,`<blockquote class="${type}"><header>${img}<a href="${url.expanded_url}" target="_blank">${title.replace(/</ig,'&lt;').replace(/>/ig,'&gt;')}</a></header><div>${desc.replace(/</ig,'&lt;').replace(/>/ig,'&gt;')}</div></blockquote>`);
                 } else {
                   tweetText = tweetText.replace(url.url,`<a href="${url.expanded_url}" target="_blank">${url.display_url}</a>`);
                  }
