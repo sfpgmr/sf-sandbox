@@ -61,6 +61,7 @@ import ejs from 'ejs';
   });
 
   //await fs.promises.writeFile('./data/tweets3.json',JSON.stringify(tweets,null,1),'utf8');
+  tweets.length = 10;
 
   const html = await ejs.renderFile('./current/src/ejs/index.ejs', 
   { tweets: tweets,

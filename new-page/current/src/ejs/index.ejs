@@ -188,14 +188,21 @@
               const urls = tweet.entities.urls;
               for(const url of urls){
                 if(url.youtube){
-                tweetText = tweetText.replace(url.url,
-                // `<iframe class="youtube" type="text/html" src="https://www.youtube.com/embed/${url.youtube.items[0].id}?autoplay=0&origin=https://www.sfpgmr.net" frameborder="0"></iframe>`
-                `<img data-href="${url.expanded_url}" data-type="yt" id="${url.youtube.items[0].id}" class="youtube" src="${url.youtube.items[0].snippet.thumbnails.high.url}" />`
-                );
+                  const yt_item = url.youtube.items[0] || url.youtube.items;
+                  const yt_thumb = yt_item.snippet && yt_item.snippet.thumbnails && (yt_item.snippet.thumbnails.high || yt_item.snippet.thumbnails.medium || yt_item.snippet.thumbnails.standard || yt_item.snippet.thumbnails.default);
+                  if(yt_thumb){
+                    tweetText = tweetText.replace(url.url,
+                    // `<iframe class="youtube" type="text/html" src="https://www.youtube.com/embed/${yt_item.id}?autoplay=0&origin=https://www.sfpgmr.net" frameborder="0"></iframe>`
+                    
+                    `<img data-href="${url.expanded_url}" data-type="yt" id="${yt_item.id}" class="youtube" src="${yt_thumb.url}" />`
+                    );
+                  } else {
+                    tweetText = tweetText.replace(url.url,`<a href="${url.expanded_url}" target="_blank">${url.display_url}</a>`);
+                  }
                 } else if (url.meta){
                   const meta = url.meta;
                   const type = meta.twitter ? "card" : "page"; 
-                  const title = meta.title || (meta.json_lds && meta.json_lds[0].headline) || (meta.twitter && meta.twitter.title) || '';
+                  const title = meta.title || (meta.json_lds && meta.json_lds && meta.json_lds[0] && meta.json_lds[0].headline) || (meta.twitter && meta.twitter.title) || '';
                   // const image = (meta.twitter && meta.twitter.image)  
                   //   || (meta.json_lds && ((meta.json_lds[0].image instanceof Array) ? meta.json_lds[0].image[0] : meta.json_lds[0].image));
                   // const desc = meta.description || (meta.twitter && meta.twitter.description) || (meta.json_lds && meta.json_lds[0].description);
@@ -232,7 +239,7 @@
                   if(m.video_info && m.video_info.variants){
                     v =  m.video_info.variants.find(v_=>v_.content_type == "video/mp4");
                   }
-                  if(v){
+                  if(v && v.url){
 
           %>
         <video class="tweet-img" controls src="<%-v.url%>" />
