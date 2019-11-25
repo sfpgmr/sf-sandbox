@@ -17,9 +17,26 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <title>トップページをリニューアルする</title>
+  <meta name="description" content="リニューアル用のトップページデザインを考えて実装する" />
+  <meta name="keywords" content="Programming,Music,HTML5,WebGL,javascript,WebAudio" /> 	
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-
-
+  <meta itemprop="image" content="https://www.sfpgmr.net/img/sfweb.png" />
+  <meta itemprop="name" content="S.F. Web" />
+  
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:site" content="S.F. Web" />
+  <meta name="twitter:url" content="./index.html" />
+  <meta name="twitter:title" content="リニューアル用のトップページデザイン" />
+  <meta name="twitter:description" content="リニューアル用のトップページデザインを考えて実装する" />
+  <meta name="twitter:image" content="https://www.sfpgmr.net/img/sfweb.png" />
+  
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="./index.html" />
+  <meta property="og:title" content="リニューアル用のトップページデザイン"/>
+  <meta property="og:site_name" content="S.F. Web" />
+  <meta property="og:description" content="Programming,Music,HTML5,WebGL,javascript,WebAudio">
+  <meta property="og:image" content="https://www.sfpgmr.net/img/sfweb.png">
 
   <style>
     * {
@@ -31,6 +48,7 @@
     html {
       margin: 0;
       padding: 0;
+      font-size:10px;
     }
 
     body {
@@ -100,9 +118,46 @@
     }
 
     .youtube {
+      position: relative;
+      cursor: pointer;
+    }
+
+    .youtube > img {
       width: 100%;
       object-fit: cover;
     }
+
+    .youtube > svg.player-play {
+      width:64px;
+      height:64px;
+      left:calc(50% - 32px);
+      top:calc(50% - 32px);
+      position:absolute;
+      z-index: 1000;
+      opacity: 0.5;
+    }
+    
+    .youtube:hover > svg.player-play {
+      opacity: 1.0;
+    }
+
+    .youtube:hover .player-play-1 {
+      stroke:#80808080;
+    }
+
+    
+    .youtube > div.yt-title {
+      /*text-shadow: #fff 1px 1px 0;*/
+      font-size: 1.2rem;
+      color:white;
+      background:rgba(0, 0,0,0.5);
+      position:absolute;
+      left:0;
+      top:0;
+      overflow: auto;
+      z-index:998;
+    }
+
 
     .tweet-profile-img {
       grid-column: 1/2;
@@ -148,14 +203,22 @@
 
     blockquote.card > header {
       display:grid;
-      grid-template-columns:64px 1fr;
       grid-gap:4px;
       gap:4px;
+    }
+
+    blockquote.card-default > header {
+      grid-template-columns:64px 1fr;
+    }
+
+    blockquote.card-large > header {
+      grid-template-columns:1fr;
     }
 
     blockquote.card > header > img {
       width:100%;
     }
+
 
     div.no-image {
       display: block;
@@ -190,7 +253,7 @@
             target="_blank">2019/11/5 6:01:06</a></p>
       </header>
       <section>
-        <p class="tweet-text">Shadow DOMというのもすでにブラウザでは実装されているのか。。<br/><br/><blockquote class="card"><header><img src="https://developer.mozilla.org/static/img/opengraph-logo.72382e605ce3.png" /><a href="https://developer.mozilla.org/ja/docs/Web/Web_Components/Using_shadow_DOM" target="_blank">shadow DOM の使い方 - Web Components | MDN</a></header><div>Web コンポーネントにおいてカプセル化 (構造やスタイル、挙動を隠し、同じページの他のコードと分離すること) は重要です。これにより他の場所でのクラッシュを防ぎ、またコードが綺麗になります。Shadow DOM API はこの隠され分離された DOM を付加するための方法を提供しています。この記事では Shadow DOM を使う基本を記述しています。</div></blockquote></p>
+        <p class="tweet-text">Shadow DOMというのもすでにブラウザでは実装されているのか。。<br/><br/><blockquote class="card card-default"><header><img loading="lazy" src="https://developer.mozilla.org/static/img/opengraph-logo.72382e605ce3.png" /><a href="https://developer.mozilla.org/ja/docs/Web/Web_Components/Using_shadow_DOM" target="_blank">shadow DOM の使い方 - Web Components | MDN</a></header><div>Web コンポーネントにおいてカプセル化 (構造やスタイル、挙動を隠し、同じページの他のコードと分離すること) は重要です。これにより他の場所でのクラッシュを防ぎ、またコードが綺麗になります。Shadow DOM API はこの隠され分離された DOM を付加するための方法を提供しています。この記事では Shadow DOM を使う基本を記述しています。</div></blockquote></p>
         
       </section>
       
@@ -202,7 +265,7 @@
       <section>
         <p class="tweet-text">twitter apiのwidget.jsの動きをchrome developper toolで見ていて、「#shadow-root」なるものを見つけたので「これ何？」と思ったんだよね。まあしかし、ちょっと見ぬ間にいろいろ変わっとるなあ、Webの技術は。。 https://t.co/McrHnAjmio</p>
         
-        <img class="tweet-img" src="https://pbs.twimg.com/media/EIjrkSiU0AAXaAW.png" />
+        <img loading="lazy" class="tweet-img" src="https://pbs.twimg.com/media/EIjrkSiU0AAXaAW.png" />
         
       </section>
       
@@ -212,7 +275,7 @@
             target="_blank">2019/11/6 20:20:20</a></p>
       </header>
       <section>
-        <p class="tweet-text">「Display Locking」なるものもあるしな。。<br/><blockquote class="card"><header><img src="https://jxck.io/assets/img/jxck.png" /><a href="https://blog.jxck.io/entries/2019-06-16/display-locking.html" target="_blank">Display Locking によるレンダリングの最適化と Async DOM | blog.jxck.io</a></header><div>React や lit-html などにより、 DOM 操作の抽象化に加えて最適化が提供されることが一般的となった。見方を変えれば、本来ブラウザがやるような最適化を、ライブラリが肩代わりしていると捉えることもできる。これは、現在の標準 API には、規模が大きく処理が複雑な...</div></blockquote></p>
+        <p class="tweet-text">「Display Locking」なるものもあるしな。。<br/><blockquote class="card card-default"><header><img loading="lazy" src="https://jxck.io/assets/img/jxck.png" /><a href="https://blog.jxck.io/entries/2019-06-16/display-locking.html" target="_blank">Display Locking によるレンダリングの最適化と Async DOM | blog.jxck.io</a></header><div>React や lit-html などにより、 DOM 操作の抽象化に加えて最適化が提供されることが一般的となった。見方を変えれば、本来ブラウザがやるような最適化を、ライブラリが肩代わりしていると捉えることもできる。これは、現在の標準 API には、規模が大きく処理が複雑な...</div></blockquote></p>
         
       </section>
       
@@ -222,7 +285,7 @@
             target="_blank">2019/11/7 6:03:24</a></p>
       </header>
       <section>
-        <p class="tweet-text">仕様的には今こうなっているようだ。試してみたところ、jxckさんの方法ではできなくなってるようだ。<br/><br/><blockquote class="card"><header><img src="https://avatars3.githubusercontent.com/u/13145324?s=400&v=4" /><a href="https://github.com/WICG/display-locking" target="_blank">GitHub - WICG/display-locking: A repository for the Display Locking spec</a></header><div>A repository for the Display Locking spec. Contribute to WICG/display-locking development by creating an account on GitHub.</div></blockquote></p>
+        <p class="tweet-text">仕様的には今こうなっているようだ。試してみたところ、jxckさんの方法ではできなくなってるようだ。<br/><br/><blockquote class="card card-default"><header><img loading="lazy" src="https://avatars3.githubusercontent.com/u/13145324?s=400&v=4" /><a href="https://github.com/WICG/display-locking" target="_blank">GitHub - WICG/display-locking: A repository for the Display Locking spec</a></header><div>A repository for the Display Locking spec. Contribute to WICG/display-locking development by creating an account on GitHub.</div></blockquote></p>
         
       </section>
       
@@ -264,7 +327,7 @@
       <section>
         <p class="tweet-text">今の状況。ちょっとずつ進めている。。 https://t.co/OACvnEz28i</p>
         
-        <img class="tweet-img" src="https://pbs.twimg.com/media/EJCnOSgVAAASGL8.jpg" />
+        <img loading="lazy" class="tweet-img" src="https://pbs.twimg.com/media/EJCnOSgVAAASGL8.jpg" />
         
       </section>
       
@@ -274,7 +337,7 @@
             target="_blank">2019/11/11 18:08:17</a></p>
       </header>
       <section>
-        <p class="tweet-text">css grid + jsでやるのが、一番モダンなmasonryの実装方法かもね。。<br/><blockquote class="card"><header><img src="https://w3bits.com/wp-content/uploads/css-grid-masonry.jpg" /><a href="https://www.google.com/amp/s/w3bits.com/css-grid-masonry/amp/" target="_blank">Create Horizontal Masonry layouts with CSS Grid Layout</a></header><div>A tutorial to create a left-to-right masonry layout using CSS Grid Layout properties. Practical and dynamic use case involves a tiny bit of JavaScript.</div></blockquote></p>
+        <p class="tweet-text">css grid + jsでやるのが、一番モダンなmasonryの実装方法かもね。。<br/><blockquote class="card card-large"><header><img loading="lazy" src="https://w3bits.com/wp-content/uploads/css-grid-masonry.jpg" /><a href="https://www.google.com/amp/s/w3bits.com/css-grid-masonry/amp/" target="_blank">Create Horizontal Masonry layouts with CSS Grid Layout</a></header><div>A tutorial to create a left-to-right masonry layout using CSS Grid Layout properties. Practical and dynamic use case involves a tiny bit of JavaScript.</div></blockquote></p>
         
       </section>
       
@@ -284,7 +347,7 @@
             target="_blank">2019/11/12 20:28:28</a></p>
       </header>
       <section>
-        <p class="tweet-text">tweetを独自描画するのもいいんだけど、puppeteerを使ってプリレンダリングしたものを静的HTMLとして保存するのはどうだろうか。ちょっと試してみようかなと。<br/><blockquote class="card"><header><img src="https://avatars2.githubusercontent.com/u/6906516?s=400&v=4" /><a href="https://github.com/GoogleChrome/puppeteer" target="_blank">GitHub - puppeteer/puppeteer: Headless Chrome Node.js API</a></header><div>Headless Chrome Node.js API. Contribute to puppeteer/puppeteer development by creating an account on GitHub.</div></blockquote></p>
+        <p class="tweet-text">tweetを独自描画するのもいいんだけど、puppeteerを使ってプリレンダリングしたものを静的HTMLとして保存するのはどうだろうか。ちょっと試してみようかなと。<br/><blockquote class="card card-default"><header><img loading="lazy" src="https://avatars2.githubusercontent.com/u/6906516?s=400&v=4" /><a href="https://github.com/GoogleChrome/puppeteer" target="_blank">GitHub - puppeteer/puppeteer: Headless Chrome Node.js API</a></header><div>Headless Chrome Node.js API. Contribute to puppeteer/puppeteer development by creating an account on GitHub.</div></blockquote></p>
         
       </section>
       
@@ -304,9 +367,9 @@
             target="_blank">2019/11/15 6:14:31</a></p>
       </header>
       <section>
-        <p class="tweet-text">そして今の成果物。Youtube Playerを埋め込んでみた。なんかちょっともたつくわな。。<br/><blockquote class="card"><header><div class="no-image" >No Image</div><a href="https://www.sfpgmr.net/sandbox/new-page/releases/20191115/" target="_blank">Twitter APIを試す</a></header><div></div></blockquote> https://t.co/Dx68nOG3N8</p>
+        <p class="tweet-text">そして今の成果物。Youtube Playerを埋め込んでみた。なんかちょっともたつくわな。。<br/><blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="https://www.sfpgmr.net/sandbox/new-page/releases/20191115/" target="_blank">Twitter APIを試す</a></header><div></div></blockquote> https://t.co/Dx68nOG3N8</p>
         
-        <img class="tweet-img" src="https://pbs.twimg.com/media/EJXN3ooUcAAy31-.jpg" />
+        <img loading="lazy" class="tweet-img" src="https://pbs.twimg.com/media/EJXN3ooUcAAy31-.jpg" />
         
       </section>
       
@@ -316,7 +379,7 @@
             target="_blank">2019/11/17 7:00:00</a></p>
       </header>
       <section>
-        <p class="tweet-text">今まではAPI得たデータを適当に解釈して表示してきたが、今後は以下を読んでちゃんとやるか。。<br/><br/><blockquote class="card"><header><div class="no-image" >No Image</div><a href="https://developer.twitter.com/en/docs/tweets/data-dictionary/overview/intro-to-tweet-json" target="_blank">Introduction to Tweet JSON — Twitter Developers</a></header><div></div></blockquote></p>
+        <p class="tweet-text">今まではAPI得たデータを適当に解釈して表示してきたが、今後は以下を読んでちゃんとやるか。。<br/><br/><blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="https://developer.twitter.com/en/docs/tweets/data-dictionary/overview/intro-to-tweet-json" target="_blank">Introduction to Tweet JSON — Twitter Developers</a></header><div></div></blockquote></p>
         
       </section>
       
@@ -356,9 +419,9 @@
             target="_blank">2019/11/18 6:09:46</a></p>
       </header>
       <section>
-        <p class="tweet-text">といいつつogpあたりのところはほとんどいじらず、twitter videoのところをvideoタグで再生できるようにしたに留まる。。土日はほとんどコード書かずに終わる。。<br/><blockquote class="card"><header><div class="no-image" >No Image</div><a href="https://www.sfpgmr.net/sandbox/new-page/releases/20191118/" target="_blank">トップページをリニューアルする</a></header><div></div></blockquote> https://t.co/nWwZ8f0JL9</p>
+        <p class="tweet-text">といいつつogpあたりのところはほとんどいじらず、twitter videoのところをvideoタグで再生できるようにしたに留まる。。土日はほとんどコード書かずに終わる。。<br/><blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="https://www.sfpgmr.net/sandbox/new-page/releases/20191118/" target="_blank">トップページをリニューアルする</a></header><div></div></blockquote> https://t.co/nWwZ8f0JL9</p>
         
-        <img class="tweet-img" src="https://pbs.twimg.com/media/EJmpjW9UwAAqaxm.jpg" />
+        <img loading="lazy" class="tweet-img" src="https://pbs.twimg.com/media/EJmpjW9UwAAqaxm.jpg" />
         
       </section>
       
@@ -398,7 +461,7 @@
             target="_blank">2019/11/20 6:22:26</a></p>
       </header>
       <section>
-        <p class="tweet-text">今日書いたのはこのコード。。<br/><blockquote class="card"><header><img src="https://avatars0.githubusercontent.com/u/3806814?s=400&v=4" /><a href="https://github.com/sfpgmr/sandbox/blob/238f8f4b2c38082dcf5f944e364f2adcc10a5e80/new-page/tools/make-embeded.mjs#L40-L114" target="_blank">sandbox/make-embeded.mjs at 238f8f4b2c38082dcf5f944e364f2adcc10a5e80 · sfpgmr/sandbox · GitHub</a></header><div>JS,WebGL,three.jsをいじるためのレポジトリ. Contribute to sfpgmr/sandbox development by creating an account on GitHub.</div></blockquote></p>
+        <p class="tweet-text">今日書いたのはこのコード。。<br/><blockquote class="card card-default"><header><img loading="lazy" src="https://avatars0.githubusercontent.com/u/3806814?s=400&v=4" /><a href="https://github.com/sfpgmr/sandbox/blob/238f8f4b2c38082dcf5f944e364f2adcc10a5e80/new-page/tools/make-embeded.mjs#L40-L114" target="_blank">sandbox/make-embeded.mjs at 238f8f4b2c38082dcf5f944e364f2adcc10a5e80 · sfpgmr/sandbox · GitHub</a></header><div>JS,WebGL,three.jsをいじるためのレポジトリ. Contribute to sfpgmr/sandbox development by creating an account on GitHub.</div></blockquote></p>
         
       </section>
       
@@ -418,7 +481,7 @@
             target="_blank">2019/11/21 5:10:47</a></p>
       </header>
       <section>
-        <p class="tweet-text">puppeteerのevaluate()中でconsole.logの内容をホストに転送する方法。<br/><br/><blockquote class="card"><header><img src="https://avatars2.githubusercontent.com/u/6906516?s=400&v=4" /><a href="https://github.com/GoogleChrome/puppeteer/issues/1944" target="_blank">Console.log() from page.evaluate() not working · Issue #1944 · puppeteer/puppeteer · GitHub</a></header><div>Hello, I'm trying to console.log() in a page.evaluate() function and it's not working... Any solutions ? Thank you !</div></blockquote><br/><br/>しかし以下のIssueが発生。<br/><blockquote class="card"><header><img src="https://avatars2.githubusercontent.com/u/6906516?s=400&v=4" /><a href="https://github.com/GoogleChrome/puppeteer/issues/594" target="_blank">EventEmitter memory leak detected. 11 exit listeners added · Issue #594 · puppeteer/puppeteer · GitHub</a></header><div>This is the full error message: MaxListenersExceededWarning: Possible EventEmitter memory leak detected. 11 exit listeners added. Use emitter.setMaxListeners() to increase limit I run Node v8.1.2 with tip-of-tree Puppeteer The code is wr...</div></blockquote></p>
+        <p class="tweet-text">puppeteerのevaluate()中でconsole.logの内容をホストに転送する方法。<br/><br/><blockquote class="card card-default"><header><img loading="lazy" src="https://avatars2.githubusercontent.com/u/6906516?s=400&v=4" /><a href="https://github.com/GoogleChrome/puppeteer/issues/1944" target="_blank">Console.log() from page.evaluate() not working · Issue #1944 · puppeteer/puppeteer · GitHub</a></header><div>Hello, I'm trying to console.log() in a page.evaluate() function and it's not working... Any solutions ? Thank you !</div></blockquote><br/><br/>しかし以下のIssueが発生。<br/><blockquote class="card card-default"><header><img loading="lazy" src="https://avatars2.githubusercontent.com/u/6906516?s=400&v=4" /><a href="https://github.com/GoogleChrome/puppeteer/issues/594" target="_blank">EventEmitter memory leak detected. 11 exit listeners added · Issue #594 · puppeteer/puppeteer · GitHub</a></header><div>This is the full error message: MaxListenersExceededWarning: Possible EventEmitter memory leak detected. 11 exit listeners added. Use emitter.setMaxListeners() to increase limit I run Node v8.1.2 with tip-of-tree Puppeteer The code is wr...</div></blockquote></p>
         
       </section>
       
@@ -448,7 +511,7 @@
             target="_blank">2019/11/21 5:36:35</a></p>
       </header>
       <section>
-        <p class="tweet-text">さらにいかによれば<br/><br/>「Note: you don't need to launch browser just to create a page. Instead, you can open multiple pages in the same browser:」<br/><br/>らしい<br/><br/><blockquote class="card"><header><img src="https://avatars2.githubusercontent.com/u/6906516?s=400&v=4" /><a href="https://github.com/GoogleChrome/puppeteer/issues/594#issuecomment-325919885" target="_blank">EventEmitter memory leak detected. 11 exit listeners added · Issue #594 · puppeteer/puppeteer · GitHub</a></header><div>This is the full error message: MaxListenersExceededWarning: Possible EventEmitter memory leak detected. 11 exit listeners added. Use emitter.setMaxListeners() to increase limit I run Node v8.1.2 with tip-of-tree Puppeteer The code is wr...</div></blockquote></p>
+        <p class="tweet-text">さらにいかによれば<br/><br/>「Note: you don't need to launch browser just to create a page. Instead, you can open multiple pages in the same browser:」<br/><br/>らしい<br/><br/><blockquote class="card card-default"><header><img loading="lazy" src="https://avatars2.githubusercontent.com/u/6906516?s=400&v=4" /><a href="https://github.com/GoogleChrome/puppeteer/issues/594#issuecomment-325919885" target="_blank">EventEmitter memory leak detected. 11 exit listeners added · Issue #594 · puppeteer/puppeteer · GitHub</a></header><div>This is the full error message: MaxListenersExceededWarning: Possible EventEmitter memory leak detected. 11 exit listeners added. Use emitter.setMaxListeners() to increase limit I run Node v8.1.2 with tip-of-tree Puppeteer The code is wr...</div></blockquote></p>
         
       </section>
       
@@ -460,7 +523,7 @@
       <section>
         <p class="tweet-text">たしかにこれも考慮せんと同じエラーが出ますな。。 https://t.co/2Gd3AoW7YF</p>
         
-        <img class="tweet-img" src="https://pbs.twimg.com/media/EJ2BLtVWkAUZYoT.png" />
+        <img loading="lazy" class="tweet-img" src="https://pbs.twimg.com/media/EJ2BLtVWkAUZYoT.png" />
         
       </section>
       
@@ -482,7 +545,39 @@
       <section>
         <p class="tweet-text">ページのメタデータ(ogp/twitter card/json-ld/html meta)を取り出してカード形式で表示する部分は少し進捗。イメージの取り出しはもうちょっとちゃんとしないとなあ。。json-ldをもうちょっとちゃんとパースするとか、faviconも対象にするとか、アバターのイメージも含めるとか。。 https://t.co/KJpoZfGQ07</p>
         
-        <img class="tweet-img" src="https://pbs.twimg.com/media/EKFgsHJU4AAqH_p.jpg" />
+        <img loading="lazy" class="tweet-img" src="https://pbs.twimg.com/media/EKFgsHJU4AAqH_p.jpg" />
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1198420669593075713"
+            target="_blank">2019/11/24 10:58:47</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ツイート内部やカード内部のレイアウトはcss gridを使ってる。これはほんとに便利で楽。flexboxよりもずっとわかりやすいしね。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/731335621789147137/bWURa4wY_normal.jpg" />
+        <p class="tweet-user-name">トモカズ@tomo0354</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/tomo0354/status/1198384152535433216"
+            target="_blank">2019/11/24 8:33:41</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ベッドの脇に(PCと)ディスプレイを設置<br/>当時のラジカセを置いてあるかのような感じになり、サイズもほぼ同じ。<br/>中学生の頃に戻ったみたい。（懐古趣味） https://t.co/R0Lbzv6qA9</p>
+        
+        <img loading="lazy" class="tweet-img" src="https://pbs.twimg.com/media/EKGECEEUcAA3Ri1.jpg" />
+        
+        <img loading="lazy" class="tweet-img" src="https://pbs.twimg.com/media/EKGECEKUEAEZmWH.jpg" />
         
       </section>
       
@@ -520,7 +615,7 @@
             target="_blank">2019/11/19 5:02:05</a></p>
       </header>
       <section>
-        <p class="tweet-text">@osmk15 当時使っていたのはこれですね。<br/><blockquote class="card"><header><div class="no-image" >No Image</div><a href="https://amzn.to/2Qrcdjf" target="_blank">Amazon | 1stモール スマホにキーボード　無線キーボード Bluetooth 搭載 カバー ケース アンドロイド デザイン おしゃれ iPhone Android iPad　ブラック ST-１STSMAPASO2 | COM-SHOT | パソコン用キーボード 通販</a></header><div>1stモール スマホにキーボード　無線キーボード Bluetooth 搭載 カバー ケース アンドロイド デザイン おしゃれ iPhone Android iPad　ブラック ST-１STSMAPASO2がパソコン用キーボードストアでいつでもお買い得。当日お急ぎ便対象商品は、当日お届け可能です。アマゾン配送商品は、通常配送無料（一部除く）。</div></blockquote></p>
+        <p class="tweet-text">@osmk15 当時使っていたのはこれですね。<br/><blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="https://amzn.to/2Qrcdjf" target="_blank">Amazon CAPTCHA</a></header><div></div></blockquote></p>
         
       </section>
       
@@ -540,7 +635,7 @@
       <section>
         <p class="tweet-text">にんげんってなんだ https://t.co/05XcMpqjAi</p>
         
-        <img class="tweet-img" src="https://pbs.twimg.com/media/EJk2q89U0AMOelB.png" />
+        <img loading="lazy" class="tweet-img" src="https://pbs.twimg.com/media/EJk2q89U0AMOelB.png" />
         
       </section>
       
@@ -558,7 +653,7 @@
             target="_blank">2019/11/17 8:16:30</a></p>
       </header>
       <section>
-        <p class="tweet-text">最近この「ろっか・ばい・まい・べいびい」がとても気に入っていて、よく聴く。ギターとベースのシンプルなバッキング。ギターの音が心の琴線に触れているような感じ。デモをそのままミックスしたらしいね。。<br/><br/><img data-href="https://youtu.be/I8ms09u55Mk" data-type="yt" id="I8ms09u55Mk" class="youtube" src="https://i.ytimg.com/vi/I8ms09u55Mk/hqdefault.jpg" /></p>
+        <p class="tweet-text">最近この「ろっか・ばい・まい・べいびい」がとても気に入っていて、よく聴く。ギターとベースのシンプルなバッキング。ギターの音が心の琴線に触れているような感じ。デモをそのままミックスしたらしいね。。<br/><br/><div class="youtube" data-type="yt" id="I8ms09u55Mk"><div class="yt-title">Youtube - 細野晴臣 - ろっか・ばい・まい・べいびい</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/I8ms09u55Mk" class="youtube" src="https://i.ytimg.com/vi/I8ms09u55Mk/hqdefault.jpg" /></div>   <br/></p>
         
       </section>
       
@@ -568,7 +663,7 @@
             target="_blank">2019/11/17 8:19:25</a></p>
       </header>
       <section>
-        <p class="tweet-text">細野さんの曲で一番好きなのは「夏なんです」だ。これもアコギの音が耳に心地よいし、凝ってるなあという印象。。<br/><br/><img data-href="https://youtu.be/DpnSNRvG6rw" data-type="yt" id="DpnSNRvG6rw" class="youtube" src="https://i.ytimg.com/vi/DpnSNRvG6rw/hqdefault.jpg" /></p>
+        <p class="tweet-text">細野さんの曲で一番好きなのは「夏なんです」だ。これもアコギの音が耳に心地よいし、凝ってるなあという印象。。<br/><br/><div class="youtube" data-type="yt" id="DpnSNRvG6rw"><div class="yt-title">Youtube - Happy End - 風街ろまん - 07. 夏なんです</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/DpnSNRvG6rw" class="youtube" src="https://i.ytimg.com/vi/DpnSNRvG6rw/hqdefault.jpg" /></div>   <br/></p>
         
       </section>
       
@@ -578,7 +673,7 @@
             target="_blank">2019/11/17 8:21:03</a></p>
       </header>
       <section>
-        <p class="tweet-text">「夏なんです」に匹敵するくらい好きなのが「L.D.K.」なんですわ。これが。<br/><br/><img data-href="https://youtu.be/EWdo78lckoI" data-type="yt" id="EWdo78lckoI" class="youtube" src="https://i.ytimg.com/vi/EWdo78lckoI/hqdefault.jpg" /></p>
+        <p class="tweet-text">「夏なんです」に匹敵するくらい好きなのが「L.D.K.」なんですわ。これが。<br/><br/><div class="youtube" data-type="yt" id="EWdo78lckoI"><div class="yt-title">Youtube - Haruomi Hosono - Living Dining Kitchen</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/EWdo78lckoI" class="youtube" src="https://i.ytimg.com/vi/EWdo78lckoI/hqdefault.jpg" /></div>   <br/></p>
         
       </section>
       
@@ -588,7 +683,7 @@
             target="_blank">2019/11/17 8:23:15</a></p>
       </header>
       <section>
-        <p class="tweet-text">「灰色の段階」。いっときこればかり聴いてたときもある。ヤオヤのリズムってほんといいなあと思わせる一曲。<br/><br/><img data-href="https://youtu.be/0PtYGJhrXZo" data-type="yt" id="0PtYGJhrXZo" class="youtube" src="https://i.ytimg.com/vi/0PtYGJhrXZo/hqdefault.jpg" /></p>
+        <p class="tweet-text">「灰色の段階」。いっときこればかり聴いてたときもある。ヤオヤのリズムってほんといいなあと思わせる一曲。<br/><br/><div class="youtube" data-type="yt" id="0PtYGJhrXZo"><div class="yt-title">Youtube - Gradated Grey - YMO</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/0PtYGJhrXZo" class="youtube" src="https://i.ytimg.com/vi/0PtYGJhrXZo/hqdefault.jpg" /></div>   <br/></p>
         
       </section>
       
@@ -606,7 +701,7 @@
             target="_blank">2019/11/17 7:09:43</a></p>
       </header>
       <section>
-        <p class="tweet-text">タイムラインで流れてきたので知った、dwitterなるサービスもなかなか面白いよねぇ。。<br/><br/><blockquote class="card"><header><div class="no-image" >No Image</div><a href="https://www.dwitter.net/" target="_blank">Dwitter - javascript demos in 140 characters</a></header><div><br/>Dwitter is a social network for building and sharing visual javascript demos limited to 140 characters. See the impressive creations crammed into so few characters, and play around with your own code!<br/></div></blockquote></p>
+        <p class="tweet-text">タイムラインで流れてきたので知った、dwitterなるサービスもなかなか面白いよねぇ。。<br/><br/><blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="https://www.dwitter.net/" target="_blank">Dwitter - javascript demos in 140 characters</a></header><div><br/>Dwitter is a social network for building and sharing visual javascript demos limited to 140 characters. See the impressive creations crammed into so few characters, and play around with your own code!<br/></div></blockquote></p>
         
       </section>
       
@@ -616,7 +711,7 @@
             target="_blank">2019/11/17 7:11:26</a></p>
       </header>
       <section>
-        <p class="tweet-text"><blockquote class="card"><header><div class="no-image" >No Image</div><a href="https://www.dwitter.net/d/16630" target="_blank">fleur v2 by netule | Dwitter</a></header><div></div></blockquote></p>
+        <p class="tweet-text"><blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="https://www.dwitter.net/d/16630" target="_blank">fleur v2 by netule | Dwitter</a></header><div></div></blockquote></p>
         
       </section>
       
@@ -682,7 +777,7 @@
             target="_blank">2019/11/11 19:56:13</a></p>
       </header>
       <section>
-        <p class="tweet-text">今年買ったゲームは（全部STEAM）、<br/><br/>・Shadow Of The Tomb Raider<br/><img data-href="https://youtu.be/Dr4PWgh5FXI" data-type="yt" id="Dr4PWgh5FXI" class="youtube" src="https://i.ytimg.com/vi/Dr4PWgh5FXI/hqdefault.jpg" /></p>
+        <p class="tweet-text">今年買ったゲームは（全部STEAM）、<br/><br/>・Shadow Of The Tomb Raider<br/><div class="youtube" data-type="yt" id="Dr4PWgh5FXI"><div class="yt-title">Youtube - シャドウ オブ ザ トゥームレイダー ”Launch"トレーラー 日本語吹き替え版</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/Dr4PWgh5FXI" class="youtube" src="https://i.ytimg.com/vi/Dr4PWgh5FXI/hqdefault.jpg" /></div>   <br/></p>
         
       </section>
       
@@ -692,7 +787,7 @@
             target="_blank">2019/11/11 20:06:51</a></p>
       </header>
       <section>
-        <p class="tweet-text">・コナミ アーケード・クラシックス<br/><br/>これはサンダークロスやりたさに衝動買い。。<br/><br/><img data-href="https://youtu.be/yiYPZHOtteI" data-type="yt" id="yiYPZHOtteI" class="youtube" src="https://i.ytimg.com/vi/yiYPZHOtteI/hqdefault.jpg" /></p>
+        <p class="tweet-text">・コナミ アーケード・クラシックス<br/><br/>これはサンダークロスやりたさに衝動買い。。<br/><br/><div class="youtube" data-type="yt" id="yiYPZHOtteI"><div class="yt-title">Youtube - 「アーケードクラシックス アニバーサリーコレクション」ローンチトレーラー</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/yiYPZHOtteI" class="youtube" src="https://i.ytimg.com/vi/yiYPZHOtteI/hqdefault.jpg" /></div>   <br/></p>
         
       </section>
       
@@ -702,7 +797,7 @@
             target="_blank">2019/11/11 20:06:51</a></p>
       </header>
       <section>
-        <p class="tweet-text">・Cities Skylines<br/>以外にシム・シティみたいなやつ好きなんだよね。。<br/><br/><img data-href="https://youtu.be/0gI2N10QyRA" data-type="yt" id="0gI2N10QyRA" class="youtube" src="https://i.ytimg.com/vi/0gI2N10QyRA/hqdefault.jpg" /></p>
+        <p class="tweet-text">・Cities Skylines<br/>以外にシム・シティみたいなやつ好きなんだよね。。<br/><br/><div class="youtube" data-type="yt" id="0gI2N10QyRA"><div class="yt-title">Youtube - Cities: Skylines - Release Trailer</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/0gI2N10QyRA" class="youtube" src="https://i.ytimg.com/vi/0gI2N10QyRA/hqdefault.jpg" /></div>   <br/></p>
         
       </section>
       
@@ -712,7 +807,7 @@
             target="_blank">2019/11/11 20:06:51</a></p>
       </header>
       <section>
-        <p class="tweet-text">・Call Of Duty WW2<br/>まあこれは昔好きだったFPSが、WW2に回帰したバージョンである。。<br/><br/><img data-href="https://youtu.be/D4Q_XYVescc" data-type="yt" id="D4Q_XYVescc" class="youtube" src="https://i.ytimg.com/vi/D4Q_XYVescc/hqdefault.jpg" /></p>
+        <p class="tweet-text">・Call Of Duty WW2<br/>まあこれは昔好きだったFPSが、WW2に回帰したバージョンである。。<br/><br/><div class="youtube" data-type="yt" id="D4Q_XYVescc"><div class="yt-title">Youtube - Official Call of Duty®: WWII Reveal Trailer</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/D4Q_XYVescc" class="youtube" src="https://i.ytimg.com/vi/D4Q_XYVescc/hqdefault.jpg" /></div>   <br/></p>
         
       </section>
       
@@ -722,7 +817,7 @@
             target="_blank">2019/11/11 20:09:22</a></p>
       </header>
       <section>
-        <p class="tweet-text">そしてこれ。。R-TYPE Dimensions。これもちょっとやりたくてね。。3D &lt;--&gt; 2Dがシームレスに切り替わるのがちょっとすごいですわ。。<br/><br/><img data-href="https://youtu.be/g0K-4f6KNlw" data-type="yt" id="g0K-4f6KNlw" class="youtube" src="https://i.ytimg.com/vi/g0K-4f6KNlw/hqdefault.jpg" /></p>
+        <p class="tweet-text">そしてこれ。。R-TYPE Dimensions。これもちょっとやりたくてね。。3D &lt;--&gt; 2Dがシームレスに切り替わるのがちょっとすごいですわ。。<br/><br/><div class="youtube" data-type="yt" id="g0K-4f6KNlw"><div class="yt-title">Youtube - R-Type Dimensions　プロモーションムービー</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/g0K-4f6KNlw" class="youtube" src="https://i.ytimg.com/vi/g0K-4f6KNlw/hqdefault.jpg" /></div>   <br/></p>
         
       </section>
       
@@ -762,7 +857,7 @@
             target="_blank">2019/11/11 20:59:17</a></p>
       </header>
       <section>
-        <p class="tweet-text">FPSはWolfenstein 3Dからだけなんだけど、あんまり面白いとは思わんかったんだよね。<br/><br/><img data-href="https://youtu.be/x8o0a5ntxfc" data-type="yt" id="x8o0a5ntxfc" class="youtube" src="https://i.ytimg.com/vi/x8o0a5ntxfc/hqdefault.jpg" /></p>
+        <p class="tweet-text">FPSはWolfenstein 3Dからだけなんだけど、あんまり面白いとは思わんかったんだよね。<br/><br/><div class="youtube" data-type="yt" id="x8o0a5ntxfc"><div class="yt-title">Youtube - PC Longplay [563] Wolfenstein 3D</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/x8o0a5ntxfc" class="youtube" src="https://i.ytimg.com/vi/x8o0a5ntxfc/hqdefault.jpg" /></div>   <br/></p>
         
       </section>
       
@@ -772,7 +867,7 @@
             target="_blank">2019/11/11 21:00:27</a></p>
       </header>
       <section>
-        <p class="tweet-text">DOOMが出てそのグラフィックに「すげえ。」とは思ったものの、これもそんなに面白いとは思わんかった。。<br/><img data-href="https://youtu.be/iFnOLFd_ByQ" data-type="yt" id="iFnOLFd_ByQ" class="youtube" src="https://i.ytimg.com/vi/iFnOLFd_ByQ/hqdefault.jpg" /></p>
+        <p class="tweet-text">DOOMが出てそのグラフィックに「すげえ。」とは思ったものの、これもそんなに面白いとは思わんかった。。<br/><div class="youtube" data-type="yt" id="iFnOLFd_ByQ"><div class="yt-title">Youtube - [60FPS] DOOM (1993) LONGPLAY</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/iFnOLFd_ByQ" class="youtube" src="https://i.ytimg.com/vi/iFnOLFd_ByQ/hqdefault.jpg" /></div>   <br/></p>
         
       </section>
       
@@ -782,7 +877,7 @@
             target="_blank">2019/11/11 21:01:30</a></p>
       </header>
       <section>
-        <p class="tweet-text">FPSにハマったのは「Half-Life」からであろう。やはり。<br/><img data-href="https://youtu.be/JoV9o6b91Sc" data-type="yt" id="JoV9o6b91Sc" class="youtube" src="https://i.ytimg.com/vi/JoV9o6b91Sc/hqdefault.jpg" /></p>
+        <p class="tweet-text">FPSにハマったのは「Half-Life」からであろう。やはり。<br/><div class="youtube" data-type="yt" id="JoV9o6b91Sc"><div class="yt-title">Youtube - Half-Life:  Full Game Walkthrough</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/JoV9o6b91Sc" class="youtube" src="https://i.ytimg.com/vi/JoV9o6b91Sc/hqdefault.jpg" /></div>   <br/></p>
         
       </section>
       
@@ -814,7 +909,7 @@
       <section>
         <p class="tweet-text">EPISODE 2がなんか尻切れなというか、続編を匂わすようなエンディングだったような気がするんだな。なんか忘れてるなあ。。もう一回やるか。。 https://t.co/6CwQC0rwrQ</p>
         
-        <img class="tweet-img" src="https://pbs.twimg.com/media/EJF0JhuU8AAvZeN.jpg" />
+        <img loading="lazy" class="tweet-img" src="https://pbs.twimg.com/media/EJF0JhuU8AAvZeN.jpg" />
         
       </section>
       
@@ -824,7 +919,7 @@
             target="_blank">2019/11/11 21:11:13</a></p>
       </header>
       <section>
-        <p class="tweet-text">なんかファン・メイドのEpisode 3とかあったりして。<br/><img data-href="https://youtu.be/DAQucLUFOm4" data-type="yt" id="DAQucLUFOm4" class="youtube" src="https://i.ytimg.com/vi/DAQucLUFOm4/hqdefault.jpg" /></p>
+        <p class="tweet-text">なんかファン・メイドのEpisode 3とかあったりして。<br/><div class="youtube" data-type="yt" id="DAQucLUFOm4"><div class="yt-title">Youtube - Boreal Alyph Mini Update: October 2019</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/DAQucLUFOm4" class="youtube" src="https://i.ytimg.com/vi/DAQucLUFOm4/hqdefault.jpg" /></div>   <br/></p>
         
       </section>
       
@@ -834,7 +929,7 @@
             target="_blank">2019/11/11 21:15:49</a></p>
       </header>
       <section>
-        <p class="tweet-text">Half-Lifeをリメイクした「Black Mesa」もXenまでできとるということは完成が近いのかいな。。<br/><img data-href="https://youtu.be/IzR3vllw6O0" data-type="yt" id="IzR3vllw6O0" class="youtube" src="https://i.ytimg.com/vi/IzR3vllw6O0/hqdefault.jpg" /></p>
+        <p class="tweet-text">Half-Lifeをリメイクした「Black Mesa」もXenまでできとるということは完成が近いのかいな。。<br/><div class="youtube" data-type="yt" id="IzR3vllw6O0"><div class="yt-title">Youtube - Black Mesa: Xen - Opening Minutes (HALF-LIFE 1 REMAKE)</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/IzR3vllw6O0" class="youtube" src="https://i.ytimg.com/vi/IzR3vllw6O0/hqdefault.jpg" /></div>   <br/></p>
         
       </section>
       
@@ -893,6 +988,772 @@
       </header>
       <section>
         <p class="tweet-text">VST自作の断念要因<br/><br/>第１位：C++<br/><br/>(当社調べ) <a href="https://twitter.com/jscmla1118/status/1193380065892941825" target="_blank">twitter.com/jscmla1118/sta…</a></p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/931630233236643840/HQAly_QL_normal.jpg" />
+        <p class="tweet-user-name">ataritoobin@ataritoobin</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/ataritoobin/status/1193598037890781184"
+            target="_blank">2019/11/11 3:35:22</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ALERT! ALERT! <br/>#ナムコ #ボスコニアン https://t.co/Y72ANZAPZn</p>
+        
+        <img loading="lazy" class="tweet-img" src="https://pbs.twimg.com/media/EJCDE-XU4AEvR-T.jpg" />
+        
+        <img loading="lazy" class="tweet-img" src="https://pbs.twimg.com/media/EJCDE-XU0AAF6cl.jpg" />
+        
+        <img loading="lazy" class="tweet-img" src="https://pbs.twimg.com/media/EJCDE-WVUAAJRAx.jpg" />
+        
+        <img loading="lazy" class="tweet-img" src="https://pbs.twimg.com/media/EJCDE-YUYAA-PNa.jpg" />
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1192929571810660352"
+            target="_blank">2019/11/9 7:19:08</a></p>
+      </header>
+      <section>
+        <p class="tweet-text"><blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="https://developer.twitter.com/en/developer-terms/display-requirements.html" target="_blank">Display requirements – Twitter Developers</a></header><div>Tweets are one of our most visible brand elements, so it’s important that they are presented correctly. You should comply with the display requirements below when you display Tweets, timelines, and other Twitter content.  </div></blockquote></p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1192207233607557120"
+            target="_blank">2019/11/7 7:28:49</a></p>
+      </header>
+      <section>
+        <p class="tweet-text"><blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="https://triple-underscore.github.io/css-contain-ja.html" target="_blank">CSS Containment Module Level 2 （日本語訳）</a></header><div></div></blockquote></p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1192038516961632257"
+            target="_blank">2019/11/6 20:18:24</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">いやーしかし喉が痛いなあ。。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1191480886086160385"
+            target="_blank">2019/11/5 7:22:34</a></p>
+      </header>
+      <section>
+        <p class="tweet-text"><blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="http://chasen.org/~daiti-m/text/worse-is-better-ja.html" target="_blank">The Rise of "Worse is Better"</a></header><div></div></blockquote></p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/2416739893/akcu94o35i2apim048qe_normal.jpeg" />
+        <p class="tweet-user-name">Rui Ueyama@rui314</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/rui314/status/1191330668258582530"
+            target="_blank">2019/11/4 21:25:39</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">IPv6がなかなか普及しない理由について考察してみました。 <a href="https://note.mu/ruiu/n/n1676c1053a27" target="_blank">note.mu/ruiu/n/n1676c1…</a></p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/750407308140638210/aWCDTJdT_normal.jpg" />
+        <p class="tweet-user-name">荒木健太郎@arakencloud</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/arakencloud/status/1191062921381470208"
+            target="_blank">2019/11/4 3:41:43</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">宇宙から見た今朝の朝焼けがきれい． https://t.co/3OqeXuyWfa</p>
+        
+        <img loading="lazy" class="tweet-img" src="https://pbs.twimg.com/media/EIeBRyWUUAADuUI.png" />
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1191147653045702657"
+            target="_blank">2019/11/4 9:18:25</a></p>
+      </header>
+      <section>
+        <p class="tweet-text"><div class="youtube" data-type="yt" id="IBfmwjqi1-Q"><div class="yt-title">Youtube - 中川家ブルース  〜大阪地下鉄堺筋線〜</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/IBfmwjqi1-Q" class="youtube" src="https://i.ytimg.com/vi/IBfmwjqi1-Q/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1191227535465439232"
+            target="_blank">2019/11/4 14:35:51</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">堺筋線というのが渋いね。。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/819010930906279936/iQXZi7FX_normal.jpg" />
+        <p class="tweet-user-name">ワンダバン@wandaban</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/wandaban/status/1190962947440267265"
+            target="_blank">2019/11/3 21:04:28</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ニューラルネットでゴジラ1954をカラーにしてみた。(その3)<br/><br/>#ゴジラの日 https://t.co/dsaLgJrf2v</p>
+        
+        <video class="tweet-img" controls src="https://video.twimg.com/ext_tw_video/1190962745639870465/pu/vid/988x720/I6cw8_h5gTWgzTuj.mp4?tag=10" />
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/1179023603318157313/1XSRIRt6_normal.jpg" />
+        <p class="tweet-user-name">まかべひろし@sinpen</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/sinpen/status/1191147902686511104"
+            target="_blank">2019/11/4 9:19:25</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">昔、エミュに頼りまくって作ったGameBoyソフトが実機でまったく動かず、アルファ版提出したらクライアントに超怒られたのを思い出した。エミュは完璧じゃない前提でいないとダメね。（学生時代の思い出 <a href="https://twitter.com/mucom88/status/1190973994826006535" target="_blank">twitter.com/mucom88/status…</a></p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1185672257542086657"
+            target="_blank">2019/10/20 6:41:09</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">pm2も前はes moduleが読み込まれない「--experimental-modulesが無視される」というのがあったんだけど、今は解消されているようだね。とするとrollupでわざわざ変換しなくてもよくなるなあ。<br/><br/><blockquote class="card card-default"><header><img loading="lazy" src="https://avatars2.githubusercontent.com/u/757747?s=400&v=4" /><a href="https://github.com/Unitech/pm2/blob/29cccd9437e75e36f56d1afb0de3d73a5d033d21/test/e2e/cli/mjs.sh" target="_blank">pm2/mjs.sh at 29cccd9437e75e36f56d1afb0de3d73a5d033d21 · Unitech/pm2 · GitHub</a></header><div>Node.js Production Process Manager with a built-in Load Balancer. - Unitech/pm2</div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1186429234815758336"
+            target="_blank">2019/10/22 8:49:07</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">と思って試してみたらまだ解消されてなかったな。。<br/><blockquote class="card card-default"><header><img loading="lazy" src="https://avatars2.githubusercontent.com/u/757747?s=400&v=4" /><a href="https://github.com/Unitech/pm2/issues/3294" target="_blank">--experimental-modules flag appears to be ignored · Issue #3294 · Unitech/pm2 · GitHub</a></header><div>I'm using the node_args section as follows to enable module support in a Node v9.1 project: "node_args": "--experimental-modules" It appears to ignore the flag, as starting my script manually using the above works perfectly. Is there som...</div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1186442519501885440"
+            target="_blank">2019/10/22 9:41:54</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">理由はこれらしい。<br/><br/><blockquote class="card card-default"><header><img loading="lazy" src="https://avatars2.githubusercontent.com/u/757747?s=400&v=4" /><a href="https://github.com/Unitech/pm2/issues/3751#issuecomment-402880672" target="_blank">Node v10.5 + ESM not working · Issue #3751 · Unitech/pm2 · GitHub</a></header><div>Repro here: https://github.com/damianobarbati/yarsk/tree/50ms Just clone, yarn install and yarn serve:dev. It fires pm2-runtime which just reports the following: [WARN] PM2 Daemon is already running (node:4716) ExperimentalWarning: The E...</div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1186444278370729984"
+            target="_blank">2019/10/22 9:48:53</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">これによると、<br/><br/>・pm2は.mjsファイルをrequireによってサイド・ローディングしようとするので、そこで以下エラーが発生する<br/><br/> [ERR_REQUIRE_ESM]: Must use import to load ES Module</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1186444822216765440"
+            target="_blank">2019/10/22 9:51:03</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">回避するには2つの方法がある。<br/><br/>１．esmを使ってesmファイルの拡張子を.mjs -&gt; .jsに変えてnode_argsに-r esm をつけて実行<br/><br/>２．ダイナミック・ローディングを使って.jsから.mjsをインポートする<br/><br/>ということらしい</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1186445140400828416"
+            target="_blank">2019/10/22 9:52:19</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">この２つの方法でもいいような気がするが、私はrollupでバンドルしたjsで実行することにした。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1186445586737684480"
+            target="_blank">2019/10/22 9:54:05</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">というわけでkoaに移行して、ようやくnode12かつhttp/2でWebをホストできるようになった。<br/><br/><blockquote class="card card-default"><header><img loading="lazy" src="https://www.sfpgmr.net/img/sfweb.png" /><a href="https://www.sfpgmr.net/" target="_blank">S.F. Web</a></header><div>Programming,Music,Game,etc..</div></blockquote><br/><br/>あとはコンテンツをちゃんと作り直さんとな。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1186445864966881280"
+            target="_blank">2019/10/22 9:55:11</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ああ、ちょっとすっきりしたな。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1186572174187876352"
+            target="_blank">2019/10/22 18:17:06</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">トップページはTwitter,Youtube etc ... のアクティビティ表示をメインにするつもりなのだが、まだ具体的なアイデアは浮かばんな。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1186572567143780352"
+            target="_blank">2019/10/22 18:18:40</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">年内はページ改造で終わってしまいそうだな。。うーむゲーム音源作りはしばらくお預けか。。でもできるだけはやくこれを片付けて次に進もう。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1186573500972011520"
+            target="_blank">2019/10/22 18:22:22</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">HTTP2で動いてるかチェックしてたらhttp/2+quic/46とかいうプロトコルを発見した。なんじゃこれは。。 https://t.co/pdfs97LotU</p>
+        
+        <img loading="lazy" class="tweet-img" src="https://pbs.twimg.com/media/EHeOT0mUwAAnSeD.png" />
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1186574057757478912"
+            target="_blank">2019/10/22 18:24:35</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">quic（くぃっく）ちゅうプロトコルなのね。。udpによる多重接続か。。<br/><br/><blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="https://ja.wikipedia.org/wiki/QUIC" target="_blank">QUIC - Wikipedia</a></header><div></div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1186574292223320070"
+            target="_blank">2019/10/22 18:25:31</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">くそう、HTTP/2のサポートは結構はやめにやったんだけど、もう時代遅れになっとるのか。。いうてもまだquicはこれからのようだのぉ。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1186574731085901824"
+            target="_blank">2019/10/22 18:27:16</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">nginxも1.17でquicをサポートするのですな。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1186575244154171392"
+            target="_blank">2019/10/22 18:29:18</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">nodeもquicのサポートをしようとしとるのか。。<br/><blockquote class="card card-default"><header><img loading="lazy" src="https://avatars1.githubusercontent.com/u/9950313?s=400&v=4" /><a href="https://github.com/nodejs/quic" target="_blank">GitHub - nodejs/quic: Exploring a QUIC implementation for Node.js core</a></header><div>Exploring a QUIC implementation for Node.js core. Contribute to nodejs/quic development by creating an account on GitHub.</div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1186575294359949313"
+            target="_blank">2019/10/22 18:29:30</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">いやぁ。知らんかったなあ。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1186575548543164416"
+            target="_blank">2019/10/22 18:30:30</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">udpと聞くとゲームに向いてる気がする。なぜか..。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1186576133384359939"
+            target="_blank">2019/10/22 18:32:50</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">いまでこそTCP/IPが標準となってるが、私がNWを知ったころはIPXやらNetBEUIやらとかもありましたなあ。なんか思い出してしまったわ。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1186576799691493376"
+            target="_blank">2019/10/22 18:35:29</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">まあそれはさておき、ejsを復習しつつ、今のテンプレート・エンジン界隈をチェックするとするか。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1186850944471814144"
+            target="_blank">2019/10/23 12:44:50</a></p>
+      </header>
+      <section>
+        <p class="tweet-text"><blockquote class="card card-default"><header><img loading="lazy" src="https://jxck.io/assets/img/jxck.png" /><a href="https://www.google.com/amp/s/blog.jxck.io/entries/2019-05-20/lazyloading.amp.html" target="_blank">画像最適化戦略 Lazy Loading 編 | blog.jxck.io</a></header><div>長らく議論されてきた `&lt;img&gt;` や `&lt;iframe&gt;` における Lazyload について、仕様と実装が動きを見せている。ここでは、特に画像 `&lt;img&gt;` に注目し、 Lazyloading の議論の変遷を踏まえた上で現状を解...</div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1187974430611271680"
+            target="_blank">2019/10/26 15:09:10</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">トップページはTwitter、YouTube、自作ブログシステムのポストを時系列で表示するものにしようかなと思ってる。まずはtwitterのツィートをAPI経由で取り出してテンプレート・エンジンでHTMLしてみようかなと思っている。データのマネジメントはsqlite3で行おうかなと思ってる。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1187980549391937538"
+            target="_blank">2019/10/26 15:33:29</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">これすごく便利だと思うんだよね。。<br/><blockquote class="card card-default"><header><img loading="lazy" src="https://cdn.qiita.com/assets/qiita-fb-2887e7b4aad86fd8c25cea84846f2236.png" /><a href="https://qiita.com/SoraKumo/items/0e3455684d6f17d36895" target="_blank">SQLite3のJSON機能が便利だった - Qiita</a></header><div></div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1188561473083019264"
+            target="_blank">2019/10/28 6:01:52</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">とりあえず、Twitter APIをいじってみた結果。。200個のTweet&amp;RetweetをCSS Gridでただ並べただけ。。<br/><br/><blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="https://www.sfpgmr.net/sandbox/new-page/releases/20191028/" target="_blank">Document</a></header><div></div></blockquote> https://t.co/I2RN8E5UsY</p>
+        
+        <img loading="lazy" class="tweet-img" src="https://pbs.twimg.com/media/EH6eW5jVUAA6hK_.jpg" />
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1188562098340581377"
+            target="_blank">2019/10/28 6:04:21</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">Tweetのレンダリングはoembedに任せてみてるが、このままじゃいかんよなあ。。<br/><blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="https://developer.twitter.com/en/docs/tweets/post-and-engage/api-reference/get-statuses-oembed" target="_blank">GET statuses/oembed — Twitter Developers</a></header><div></div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1188563221805858816"
+            target="_blank">2019/10/28 6:08:49</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">表示のカスタマイズをしたいと思うけど、ルールを守らんといかんので、よく読んどかんといかんわな。。<br/><br/><blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="https://developer.twitter.com/en/developer-terms/display-requirements.html" target="_blank">Display requirements – Twitter Developers</a></header><div>Tweets are one of our most visible brand elements, so it’s important that they are presented correctly. You should comply with the display requirements below when you display Tweets, timelines, and other Twitter content.  </div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1188587904064348160"
+            target="_blank">2019/10/28 7:46:53</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">masonryっていうのか、このレイアウト。私がやりたいのはまさにこれなのだった。今はそうなってないけど、家に帰ったらトライしよう。。<br/><blockquote class="card card-large"><header><img loading="lazy" src="https://sitest.jp/images/ogp-image.png" /><a href="https://sitest.jp/blog/?p=11921" target="_blank">最低限の CSS のみで Masonry のようなグリッドレイアウトを組む方法 ｜ SiTest (サイテスト) ブログ</a></header><div>Masonry のようなグリッドレイアウトを CSS だけで実装する方法をサンプルコードを交えながらご紹介します。codepen でサンプルを公開しています。</div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1188588206238777344"
+            target="_blank">2019/10/28 7:48:05</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">cssだけでできることが増えてるんだなあ。トランジション系のやつもチェックしとかんといかんな。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1188590989180432384"
+            target="_blank">2019/10/28 7:59:09</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">flexboxを使う方法もあるのか。。<br/><br/><a href="https://digipress.info/tech/pure-css-flexbox-masonry-sample/" target="_blank">digipress.info/tech/pure-css-…</a></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1188591522263908353"
+            target="_blank">2019/10/28 8:01:16</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">これはcss gridを使うmasonryレイアウトの実装方法。これが良さそうですな。。<br/><blockquote class="card card-large"><header><img loading="lazy" src="https://miro.medium.com/max/1200/1*_tTA7GNSjhkEWj-BZzscqA.jpeg" /><a href="https://medium.com/@andybarefoot/a-masonry-style-layout-using-css-grid-8c663d355ebb" target="_blank">Masonry style layout with CSS Grid - Andy Barefoot - Medium</a></header><div>I’ve been working on a way of using CSS Grid and a small amount of JavaScript to make Masonry style layouts. I reproduce all the functionality of Masonry whilst remaining flexible and responsive…</div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1188591628551720960"
+            target="_blank">2019/10/28 8:01:41</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">家に帰ったら試してみよう。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1188924268593041408"
+            target="_blank">2019/10/29 6:03:29</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">いろいろあって今minimasonry.jsを試してる。。<br/><blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="https://spope.github.io/MiniMasonry.js/" target="_blank">MiniMasonry.js</a></header><div>Minimalist dependancy free Masonry layout library</div></blockquote> https://t.co/xaLbI2rK48</p>
+        
+        <img loading="lazy" class="tweet-img" src="https://pbs.twimg.com/media/EH_oUZRUEAAnWl2.png" />
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1189026765764583425"
+            target="_blank">2019/10/29 12:50:46</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">このソースコードを読んだが、なかなか面白いなあ。translate3d使って高速に配置するというね。。gpuのアクセラレーションが期待されるんだな。。と思ったらホームページに書いてあるわ。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1189027073664241664"
+            target="_blank">2019/10/29 12:52:00</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">コードも138行しかないわ。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1189863983978704896"
+            target="_blank">2019/10/31 20:17:35</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">このライブラリ、リサイズするとちょっと間隔がおかしくなるバグがある。ソース短いのでclassモジュール化するのと合わせてバグ修正を行った。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1189864913134469121"
+            target="_blank">2019/10/31 20:21:16</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">このライブラリはcss gridを使っているわけではなくて、親をposition:relative、子をposition:absoluteにして、JSで指定した幅で子を並べるという単純なものである。こういうJSはむかし見かけたことがあるが、違うのはtranslate3dを使って位置決めをしているところである。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1189865539675377665"
+            target="_blank">2019/10/31 20:23:45</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ちなみに修正したソースはこれである。<br/><blockquote class="card card-default"><header><img loading="lazy" src="https://avatars0.githubusercontent.com/u/3806814?s=400&v=4" /><a href="https://github.com/sfpgmr/sandbox/blob/master/new-page/current/src/js/minimasonry.js" target="_blank">sandbox/minimasonry.js at master · sfpgmr/sandbox · GitHub</a></header><div>JS,WebGL,three.jsをいじるためのレポジトリ. Contribute to sfpgmr/sandbox development by creating an account on GitHub.</div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1190012646277271552"
+            target="_blank">2019/11/1 6:08:18</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">現在の状況。ぼちぼち進めてる。。 https://t.co/05kMAngTTa</p>
+        
+        <img loading="lazy" class="tweet-img" src="https://pbs.twimg.com/media/EIPGMFcXkAAXF1H.jpg" />
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1190765544015712257"
+            target="_blank">2019/11/3 8:00:03</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">twitter APIのstatuses/user_timelineで取得できるtextが途中でtruncateされてしまうので調べたところ、ここに行き着いた。。<br/><blockquote class="card card-default"><header><img loading="lazy" src="https://cdn.sstatic.net/Sites/stackoverflow/img/apple-touch-icon@2.png?v=73d79a89bded" /><a href="https://stackoverflow.com/questions/38717816/twitter-api-text-field-value-is-truncated" target="_blank">ios - Twitter api text field value is truncated - Stack Overflow</a></header><div></div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1190765784630325248"
+            target="_blank">2019/11/3 8:01:01</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">新しいパラメータ「tweet_mode:'extended'」が必要なのね。ドキュメントには書いてなかったんだよなあ。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1190771214127525889"
+            target="_blank">2019/11/3 8:22:35</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">masonryレイアウトの勉強ついでに関連する技術について勉強中。。<br/><blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="https://codeincomplete.com/posts/bin-packing/" target="_blank">Binary Tree Bin Packing Algorithm</a></header><div></div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1191132808766345216"
+            target="_blank">2019/11/4 8:19:26</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">twitter APIで得たデータをmasonryレイアウトで表示してみてる。現在の成果。oembedで取得したHTMLをレンダリングして並べることができるようになった。が、猛烈に遅いな。。 https://t.co/cHvvLoMPO7</p>
+        
+        <img loading="lazy" class="tweet-img" src="https://pbs.twimg.com/media/EIfA-RFU8AEqjXG.jpg" />
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1191132811257733122"
+            target="_blank">2019/11/4 8:19:27</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">これがレンダリング時の動画。。猛烈に遅いことがわかっていただけると思う。oembedで取得したHTMLはwidgets.jsにレンダリングを任せてるんだけど、そこがまず遅い。これが２００個ともなるとまあこうなるわな。。<br/><div class="youtube" data-type="yt" id="VC_v-upUlsM"><div class="yt-title">Youtube - Twitter APIで取得したデータをMasonryレイアウトで表示してみる。</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/VC_v-upUlsM" class="youtube" src="https://i.ytimg.com/vi/VC_v-upUlsM/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1191134461741527040"
+            target="_blank">2019/11/4 8:26:00</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">事前に静的にページをレンダリングするときにwidgets.jsを実行すればこれは解消しそうだけど、Twitterのステータスはリアルに変動するから静的な領域にそれを移行するのは全部は難しいと思う。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1191134463117234177"
+            target="_blank">2019/11/4 8:26:00</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">工夫した点としては、widgets.jsはレンダリング終了時にイベントを発火してくれるので、それを捕まえてminimasonry.jsのlayout()を呼んでいるところだろうか。各tweetの高さはJSによるレンダリングが完了しないと判明しないので、layout()は最後に処理する必要がある。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1191135078903996416"
+            target="_blank">2019/11/4 8:28:27</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">あと一応レスポンシブに作ってるんだけどブラウザのサイズを変更すると妙な隙間が空いてしまう点も何とかせんといかんな。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1191137018589265922"
+            target="_blank">2019/11/4 8:36:10</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">あと各ツィートの横幅もある程度可変できるようにしたいんだよな。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1191137520685219840"
+            target="_blank">2019/11/4 8:38:09</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">トップページはTwitterだけではなくて、Youtubeのアップデートとか、ブログの記事とか、Qiitaの記事とかをまとめて表示するつもりなんだけどね。10～30アイテム位でページングしようと思っているんだよね。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1191153590972272640"
+            target="_blank">2019/11/4 9:42:01</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">これが今今の成果物ですがね。。まあ描画が遅いわ。。<br/><br/><blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="https://www.sfpgmr.net/sandbox/new-page/releases/20191104/" target="_blank">Document</a></header><div></div></blockquote></p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/778946041416605696/TnrttgMm_normal.jpg" />
+        <p class="tweet-user-name">D.S.A.@ym2413</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/ym2413/status/1191151908242591745"
+            target="_blank">2019/11/4 9:35:20</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">SINテーブル、指数テーブル、エンベロープ生成器を全交換した emu2413 の演奏です。動画はステレオで右チャンネルが emu2413、左チャンネルが ym2413 実チップの演奏。だいぶ実機に近くなったと思います。 https://t.co/XoL6mPzItZ</p>
+        
+        <video class="tweet-img" controls src="https://video.twimg.com/ext_tw_video/1191151865146200065/pu/vid/920x506/O443M2GKz5dpUBvz.mp4?tag=10" />
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/452850592910569472/ER2JN_BU_normal.jpeg" />
+        <p class="tweet-user-name">KenKenMkIISR@KenKenMkIISR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/KenKenMkIISR/status/1190979787579224067"
+            target="_blank">2019/11/3 22:11:23</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">やったー、できた！ボタンの代わりに基板を傾けて動かすパックマン。本体を軽くノックするとゲームスタート。PIC32マイコンと加速度センサー、液晶、圧電ブザーのシンプルな構成で、作るのも簡単。モバイルバッテリーをつなげればどこでも遊べちゃう。 https://t.co/P9jao5y2Vb</p>
+        
+        <video class="tweet-img" controls src="https://video.twimg.com/ext_tw_video/1190979409928507399/pu/vid/480x270/0YESyXIVKTB2T3LC.mp4?tag=10" />
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/1176112439470903296/Qp2zRrJ1_normal.jpg" />
+        <p class="tweet-user-name">三重野 慶art@mienokei</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/mienokei/status/1191015349270921217"
+            target="_blank">2019/11/4 0:32:41</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">この絵が出来たの2年前<br/>丸々1年半この絵だけ描いてた<br/>もうすごい昔に感じるな https://t.co/nYVa0Z7KGK</p>
+        
+        <img loading="lazy" class="tweet-img" src="https://pbs.twimg.com/media/EIdWJG1X0AEXGCH.jpg" />
+        
+        <img loading="lazy" class="tweet-img" src="https://pbs.twimg.com/media/EIdWJG2WoAESsMG.jpg" />
+        
+        <img loading="lazy" class="tweet-img" src="https://pbs.twimg.com/media/EIdWJG2W4AEHTt_.jpg" />
+        
+        <img loading="lazy" class="tweet-img" src="https://pbs.twimg.com/media/EIdWJG3WwAUKDoz.jpg" />
         
       </section>
       

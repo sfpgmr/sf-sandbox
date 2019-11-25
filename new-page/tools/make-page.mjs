@@ -61,20 +61,27 @@ import ejs from 'ejs';
   });
 
   //await fs.promises.writeFile('./data/tweets3.json',JSON.stringify(tweets,null,1),'utf8');
-  tweets.length = 10;
+  //tweets.length = 100;
 
-  const html = await ejs.renderFile('./current/src/ejs/index.ejs', 
-  { tweets: tweets,
-    head:{
-      title:'リニューアル用のトップページデザイン',
-      description:'リニューアル用のトップページデザインを考えて実装する',
-      url:'https://www.sfpgmr.net/sandbox/new-page/re',
-      imageUrl:'https://www.sfpgmr.net/img/sfweb.png',
-      siteName:'S.F. Web',
-      keywords:'',
-      twitterSite:'@sfpgmr'
-    }
-
-  });
-  await fs.promises.writeFile('./current/src/html/index.html', html, 'utf8');
+  let page = 0;
+  while (tweets.length > 0){
+    const tweetFragments = tweets.splice(0,25);
+    const fname = `index${!page?'':page}.html`;
+    const url = "./" + fname;
+    const html = await ejs.renderFile('./current/src/ejs/index.ejs', 
+    { tweets: tweetFragments,
+      meta:{
+        title:'リニューアル用のトップページデザイン',
+        description:'リニューアル用のトップページデザインを考えて実装する',
+        url:url,
+        imageUrl:'https://www.sfpgmr.net/img/sfweb.png',
+        siteName:'S.F. Web',
+        keywords:'Programming,Music,HTML5,WebGL,javascript,WebAudio',
+        twitterSite:'@sfpgmr'
+      }
+  
+    });
+    await fs.promises.writeFile(`./current/src/html/${fname}`, html, 'utf8');
+    ++page;
+  }
 })();

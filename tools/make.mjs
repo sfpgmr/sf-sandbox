@@ -154,8 +154,11 @@ try {
     if (config.copyFiles) {
       for (const p of config.copyFiles) {
         const src = path.normalize(path.join(projectPath, p));
-        const dest = path.normalize(path.join(currentBuildPath, path.basename(src)));
-        fse.stat(src);
+        let dest = path.normalize(path.join(currentBuildPath, path.basename(src)));
+        const st = await fse.stat(src);
+        if(st.isDirectory()){
+          dest = dest.slice(0,dest.lastIndexOf('/'));
+        }
         console.info(src, '=>', dest);
         if (src != dest) {
           await fse.copy(src, dest);

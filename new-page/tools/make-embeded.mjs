@@ -53,11 +53,13 @@ const youtube = {
                 return (o instanceof Object && !(o instanceof Array)) ? true : false;
               }
               // meta description
-              let description = document.querySelector('meta[name = "description"]');
-              description = description ? description.content : null;
+              let description = document.querySelector('meta[name = "description"]') ||  document.querySelector('meta[name = "Description"]')  || undefined;
+
               // meta keywords
-              let keywords = document.querySelector('meta[name="keywords"]');
-              keywords = keywords ? keywords.content : null;
+              let keywords = document.querySelector('meta[name="keywords"]') || document.querySelector('meta[name="Keywords"]')  || undefined;
+
+              // meta author
+              let author = document.querySelector('meta[name="author"]') || document.querySelector('meta[name="Author"]') || undefined;
 
 
               let twitterMeta = document.querySelectorAll('meta[name ^= "twitter:"]'),twitter;
@@ -69,7 +71,7 @@ const youtube = {
                     let tm_ns = tm.name.split(':').slice(1);
                     if(tm_ns.length > 1){
                       tm_ns.reduce((p,v,i,a)=>{
-                        console.log(`@prop@:${tm.name} ${p} ${v}`);
+                        console.log(`@twitter-prop@:${tm.name} ${p} ${v}`);
                         if(isObject(p)){
                           if(!(v in p)){
                             if(i == (a.length - 1)){
@@ -90,18 +92,21 @@ const youtube = {
                       twitter[tm_ns[0]] = tm.content;
                     }
                   }
+              } else {
+                twitterMeta = undefined;
               }
+
               // ogp
-              let ogps = document.querySelectorAll('meta[name ^= "og:"]');
+              let ogps = document.querySelectorAll('meta[property ^= "og:"]');
               let og;
               if(ogps){
                 try {
                   og = {};
                 for(const o of ogps){
-                  let og_ns = o.name.split(':').slice(1);
+                  let og_ns = o.getAttribute('property').split(':').slice(1);
                   if(og_ns.length > 1){
                     og_ns.reduce((p,v,i,a)=>{
-                      console.log(`@prop@:${o.name} ${p} ${v}`);
+                      console.log(`@og-prop@:${o.getAttribute('property')} ${p} ${v}`);
                       if(isObject(p)){
                         if(!(v in p)){
                           if(i == (a.length - 1)){
@@ -119,6 +124,7 @@ const youtube = {
                       return p[v];
                     },og);
                   } else {
+                    console.log(`@og-prop@:${og_ns[0]} ${o.content}`);
                     og[og_ns[0]] = o.content;
                   }
                 }
@@ -126,7 +132,10 @@ const youtube = {
                 console.log(e);
               }
   
+              } else {
+                ogps = undefined;
               }
+
               // json-ld
               let json_ld_tags = document.querySelectorAll('script[type="application/ld+json"]'),json_lds;
               if(json_ld_tags){
@@ -140,16 +149,66 @@ const youtube = {
                     console.log(e);                    
                   }
                 }
+              } else {
+                json_ld_tags = undefined;
               }
 
+              // icon image
+              let icons = document.querySelectorAll('link[rel = "icon"]');
+              if(icons.length){
+                const ti = [];
+                icons.forEach(icon=>{ti.push({
+                  url:icon.getAttribute('href'),
+                  sizes:icon.getAttribute('sizes') || undefined
+                });});
+                icons = ti;
+              } else {
+                icons = undefined;
+              }
 
+              let appleIcon = document.querySelector('link[rel ^="apple-touch-icon"]');
+              
+              if(appleIcon){
+                appleIcon = {
+                  url:appleIcon.getAttribute('href')
+                }
+              } else {
+                appleIcon = undefined;
+              }
+
+              let msapplicationTileImage = document.querySelector('meta[name ^= "msapplication-TileImage"]');
+              if(msapplicationTileImage){
+                msapplicationTileImage = {
+                  url:msapplicationTileImage.getAttribute('content')
+                }
+              } else {
+                msapplicationTileImage = undefined;
+              }
+
+              // json oembed
+
+              let jsonOembed = document.querySelector('link[type ^= "application/json+oembed"]');
+              if(jsonOembed){
+                jsonOembed = jsonOembed.getAttribute('href');
+                if(!jsonOembed.match(/^http/i)){
+                  jsonOembed = location.origin + jsonOembed;
+                }
+              } else {
+                jsonOembed = undefined;
+              }
               return  {
-                title:document.title,
-                description:description,
-                keywords:keywords,
+                title:document.title ? document.title : undefined,
+                description:description ? description : undefined,
+                keywords:keywords ? keywords : undefined,
                 twitter:twitter,
                 og:og,
-                json_lds:json_lds
+                json_lds:json_lds,
+                icons:{
+                  icons:icons,
+                  appleIcon:appleIcon,
+                  msapplicationTileImage:msapplicationTileImage
+                },
+                jsonOembed:jsonOembed
               }
             });
 
@@ -161,6 +220,10 @@ const youtube = {
             // let title = document.querySelector('title').textContent
             // console.log(title,description);
             //url.ogp = ogp;
+            if(meta.jsonOembed){
+              //console.log(meta.jsonOembed);
+              meta.jsonOembed = JSON.parse(await request(meta.jsonOembed));
+            }
             url.meta = meta;
             await page.close();
             //console.log(meta);
