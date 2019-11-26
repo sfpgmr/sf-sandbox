@@ -1,0 +1,2280 @@
+<!DOCTYPE html>
+<html lang="ja" prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb# article: http://ogp.me/ns/article#">
+
+<head>
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-15457703-9"></script>
+  <script>
+    if (!location.hostname.match(/localhost/)) {
+      window.dataLayer = window.dataLayer || [];
+      function gtag() { dataLayer.push(arguments); }
+      gtag('js', new Date());
+      gtag('config', 'UA-15457703-9');
+    }
+  </script>
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>トップページをリニューアルする</title>
+  <meta name="description" content="リニューアル用のトップページデザインを考えて実装する" />
+  <meta name="keywords" content="Programming,Music,HTML5,WebGL,javascript,WebAudio" /> 	
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <meta itemprop="image" content="https://www.sfpgmr.net/img/sfweb.png" />
+  <meta itemprop="name" content="S.F. Web" />
+  
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:site" content="S.F. Web" />
+  <meta name="twitter:url" content="./index11.html" />
+  <meta name="twitter:title" content="リニューアル用のトップページデザイン" />
+  <meta name="twitter:description" content="リニューアル用のトップページデザインを考えて実装する" />
+  <meta name="twitter:image" content="https://www.sfpgmr.net/img/sfweb.png" />
+  
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="./index11.html" />
+  <meta property="og:title" content="リニューアル用のトップページデザイン"/>
+  <meta property="og:site_name" content="S.F. Web" />
+  <meta property="og:description" content="Programming,Music,HTML5,WebGL,javascript,WebAudio">
+  <meta property="og:image" content="https://www.sfpgmr.net/img/sfweb.png">
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    html {
+      margin: 0;
+      padding: 0;
+      font-size:10px;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      background: black;
+      color: white;
+    }
+
+    .contents {
+      width: 100%;
+      position: relative;
+      content: strict;
+    }
+
+    @keyframes blinking {
+      0% {
+        color: black;
+      }
+
+      50% {
+        color: white;
+      }
+
+      100% {
+        color: black;
+      }
+    }
+
+    .loading {
+      font-family: monospace;
+      font-size: 24px;
+      position: fixed;
+      width: 100vw;
+      height: 100vh;
+      text-align: center;
+      padding-top: 50vh;
+      z-index: 32768;
+      background: black;
+      animation: blinking 2s infinite;
+      content: strict;
+    }
+
+
+    .contents>article {
+      background: #f0f0f0;
+      color: #202020;
+      position: absolute;
+      max-height: 960px;
+      overflow: auto;
+      border-radius: 3px;
+    }
+
+    .tweet-header {
+      display: grid;
+      align-items: end;
+      grid-template-columns: 40px 2fr 1fr;
+      grid-template-rows: 1fr;
+      font-size: 12px;
+      font-weight: bold;
+    }
+
+
+    .tweet-img {
+      width: 100%;
+      object-fit: cover;
+    }
+
+    .youtube {
+      position: relative;
+      cursor: pointer;
+    }
+
+    .youtube > img {
+      width: 100%;
+      object-fit: cover;
+    }
+
+    .youtube > svg.player-play {
+      width:64px;
+      height:64px;
+      left:calc(50% - 32px);
+      top:calc(50% - 32px);
+      position:absolute;
+      z-index: 1000;
+      opacity: 0.5;
+    }
+    
+    .youtube:hover > svg.player-play {
+      opacity: 1.0;
+    }
+
+    .youtube:hover .player-play-1 {
+      stroke:#80808080;
+    }
+
+    
+    .youtube > div.yt-title {
+      /*text-shadow: #fff 1px 1px 0;*/
+      font-size: 1.2rem;
+      color:white;
+      background:rgba(0, 0,0,0.5);
+      position:absolute;
+      left:0;
+      top:0;
+      overflow: auto;
+      z-index:998;
+    }
+
+
+    .tweet-profile-img {
+      grid-column: 1/2;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+    }
+
+    .tweet-user-name {
+      grid-column: 2/3;
+    }
+
+    .tweet-date {
+      font-size: 8px;
+      text-align: right;
+      grid-column: 3/4;
+    }
+
+    .contents>twitter-widget {
+      overflow: auto;
+      max-height: 960px;
+      position: absolute;
+    }
+
+    .contents>article>section>.tweet-text {
+      display: block;
+      padding: 4px;
+      word-break: break-all;
+      font-size: 12px;
+    }
+
+    .contents>article>h3 {
+      font-size: 12px;
+    }
+
+    blockquote.card {
+      margin:4px;
+      padding:4px;
+      font-size:12px;
+      background:white;
+      border-radius: 4px;
+    }
+
+    blockquote.card > header {
+      display:grid;
+      grid-gap:4px;
+      gap:4px;
+    }
+
+    blockquote.card-default > header {
+      grid-template-columns:64px 1fr;
+    }
+
+    blockquote.card-large > header {
+      grid-template-columns:1fr;
+    }
+
+    blockquote.card > header > img {
+      width:100%;
+    }
+
+
+    div.no-image {
+      display: block;
+      width:64px;
+      height:64px;
+      background:gray;
+      color:white;
+      text-align: center;
+      line-height: 64px;
+    }
+
+  </style>
+</head>
+
+<body>
+  <div class="loading" id="loading">Loading</div>
+  <header class="top-nav">
+    <h1>S.F. Info.</h1>
+  </header>
+  <div class="contents" id="contents" rendersubtree="invisible skip-activation"> 
+    
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/1131873606663790592/tb1XuMol_normal.jpg" />
+        <p class="tweet-user-name">redcamel@redcamel15</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/redcamel15/status/1128252155457036288"
+            target="_blank">2019/5/14 19:54:10</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">RedGL - add Demo <br/>1. AutoProgram Test : <a href="https://redcamel.github.io/RedGL2/example/program/testAutoProgram.html" target="_blank">redcamel.github.io/RedGL2/example…</a><br/>2. GLTF MultiMorph Animation performance Test : <br/><a href="https://redcamel.github.io/RedGL2/example/loader/gltf/RedGLTFLoader_Multi_morphTarget_performance.html" target="_blank">redcamel.github.io/RedGL2/example…</a><br/><br/>#RedGL #webgl #GLTF #redcamel https://t.co/KV8FQ7ND6l</p>
+        
+        <img loading="lazy" class="tweet-img" src="https://pbs.twimg.com/media/D6hbQ2VUYAAi3sD.jpg" />
+        
+        <img loading="lazy" class="tweet-img" src="https://pbs.twimg.com/media/D6hbVPlUIAA3ij5.jpg" />
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/561193472095297538/geSfl2cn_normal.jpeg" />
+        <p class="tweet-user-name">たかトン@JNR@Takaton_JNR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/Takaton_JNR/status/1127511204463702017"
+            target="_blank">2019/5/12 18:49:53</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">MZ-700に不可能はないんだな<br/>…(ﾟдﾟ) https://t.co/3WIzhdvqXW</p>
+        
+        <video class="tweet-img" controls src="https://video.twimg.com/ext_tw_video/1127511003283972096/pu/vid/360x640/gqMtqZ5GQPsKekWT.mp4?tag=9" />
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/1567578351/chikoski_handwritten_lightened_normal.jpg" />
+        <p class="tweet-user-name">chikoski@chikoski</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/chikoski/status/1127747616928755712"
+            target="_blank">2019/5/13 10:29:19</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">これは大変なことやと思うよ。 <a href="https://twitter.com/about_hiroppy/status/1127740491783499777" target="_blank">twitter.com/about_hiroppy/…</a></p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/778946041416605696/TnrttgMm_normal.jpg" />
+        <p class="tweet-user-name">D.S.A.@ym2413</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/ym2413/status/1126644637555290117"
+            target="_blank">2019/5/10 9:26:28</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">OSX + node.js での SPFM + Re:Birth 制御の続き。YM2203も普通に鳴るように。タイマー精度の問題はCPU1個潰す覚悟で一旦ビジーループに。 https://t.co/ri39uZYnGc</p>
+        
+        <video class="tweet-img" controls src="https://video.twimg.com/ext_tw_video/1126644423087943680/pu/vid/576x360/_VA1uqbDNL8neXc8.mp4?tag=9" />
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/1115702832705892352/ZLChmKyI_normal.jpg" />
+        <p class="tweet-user-name">Futo Horio@Futo_Horio</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/Futo_Horio/status/1126175336444522498"
+            target="_blank">2019/5/9 2:21:38</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ターミナル画面だけで、こんなにカッコ良く展示できるの凄い。燃え滾ってる。#MSBuild https://t.co/Y4XxjA9jTn</p>
+        
+        <video class="tweet-img" controls src="https://video.twimg.com/ext_tw_video/1126175263300018182/pu/vid/640x360/NckuH8HmkiPe1hVE.mp4?tag=9" />
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/625942356894748672/4uBWrxZ2_normal.png" />
+        <p class="tweet-user-name">すーぱーたーぼ@SuperturboZ</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SuperturboZ/status/1126667175316475904"
+            target="_blank">2019/5/10 10:56:01</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">とあるファイルをしていたら、一番最初に見つけたPSGのノイズ発生回路のロシア文書が出てきた。<br/>AY_YM_NoiseGenerator.7z で検索すれば今でも見つかるみたい。readmeに経緯のようなものが書いてあるけど当時はロシア語が翻訳できなくて読めなかった。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/1567578351/chikoski_handwritten_lightened_normal.jpg" />
+        <p class="tweet-user-name">chikoski@chikoski</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/chikoski/status/1126243166862995456"
+            target="_blank">2019/5/9 6:51:10</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">V8のJITについて。WASMの最適化は必ず起こる。それが、JSとの違い #io19jp https://t.co/E6tXdcOebw</p>
+        
+        <img loading="lazy" class="tweet-img" src="https://pbs.twimg.com/media/D6E4L94UYAA08tb.jpg" />
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/736944193059229697/cjVzDlPe_normal.jpg" />
+        <p class="tweet-user-name">ドッグ@Linda_pp</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/Linda_pp/status/1125586623700164608"
+            target="_blank">2019/5/7 11:22:18</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">Windows API をより安全かつ簡単に使うためのヘッダオンリーな汎用 C++ ライブラリ WIL というのがあるのか．現時点でエラーハンドリングとか RAII によるリソース管理などが実装されてる | 'microsoft/wil: Windows Implementation Library' <a href="https://github.com/microsoft/wil" target="_blank">github.com/microsoft/wil</a></p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1125359997519446016"
+            target="_blank">2019/5/6 20:21:46</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">さらば、梅田の「泉の広場」　愛されて半世紀、最終日に惜別する人たち <a href="https://www.j-cast.com/2019/05/06356759.html" target="_blank">j-cast.com/2019/05/063567…</a> @jcast_newsさんから</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1123357805967073280"
+            target="_blank">2019/5/1 7:45:46</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">春季千葉県大会は今日やるのか。。観に行こうかなとは思ったりしてるんだけど、いつにするかが読みにくい天候だよね。今年のGWは。。 https://t.co/uQQTigTfjn</p>
+        
+        <img loading="lazy" class="tweet-img" src="https://pbs.twimg.com/media/D5b3-EfUIAAmW5E.png" />
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1123359576663846912"
+            target="_blank">2019/5/1 7:52:48</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">秋季大会でベスト８まで来たチームは<br/><br/>中央学院<br/>習志野<br/>千葉敬愛<br/>東海大市原望洋<br/>銚子商業<br/>成田<br/>暁星国際<br/>木更津総合<br/><br/>でしたな。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1123360283274006528"
+            target="_blank">2019/5/1 7:55:37</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">今残っているのが<br/><br/>中央学院　〇<br/>習志野　〇<br/>千葉敬愛　〇<br/>東海大市原望洋　〇<br/>銚子商業　〇<br/>成田　〇<br/>暁星国際　×<br/>木更津総合　〇<br/><br/>まあほぼ順当といったところだろうか。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1123361380394909696"
+            target="_blank">2019/5/1 7:59:58</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">以下が夏県大会のCシード確定。。<br/><br/>中央学院<br/>習志野<br/>千葉敬愛<br/>東海大市原望洋<br/>銚子商業<br/>成田<br/>木更津総合<br/>千葉学芸<br/><br/>専修大松戸<br/>佐倉<br/>千葉黎明<br/>君津<br/>翔凜<br/>千葉明徳<br/>東京学館<br/>四街道</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1123366718313615360"
+            target="_blank">2019/5/1 8:21:11</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">県立が３校残っている。<br/><br/>四街道<br/>佐倉<br/>君津<br/><br/>君津は県立の中では強豪の船橋に勝っての16入りですか。佐倉は名門、四街道はここ2-3年に上位に入ってくる高校ですわな。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1123367047197413376"
+            target="_blank">2019/5/1 8:22:29</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">銚子商業は打線がいい感じですわね。黒潮打線復活ですかね。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1123367616314134528"
+            target="_blank">2019/5/1 8:24:45</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">拓大紅陵が早々に敗退はちょっと意外でしたな。そして千葉商や千葉経大付属も敗退ですか。。西武台千葉は地区予選で敗退か。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1123367915372199936"
+            target="_blank">2019/5/1 8:25:56</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">他の私立は順当ですわな。習志野は春季関東大会確定だから、今年は春季関東大会は3校出場できるわけだな。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1123368708515057664"
+            target="_blank">2019/5/1 8:29:05</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">実際のところ今の4強は<br/><br/>中央学院<br/>木総<br/>習志野<br/>望洋<br/><br/>あたりか。<br/><br/>成田<br/>専大松戸<br/>千葉黎明<br/>千葉敬愛<br/><br/>千葉明徳<br/>銚子商業<br/><br/>あたりまででトップ１０だと勝手に思ってる（笑）</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1123369742595575808"
+            target="_blank">2019/5/1 8:33:12</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">習志野は千葉県では実力からいえば3番手くらいじゃないかなと勝手に思ってる。そのチームがセンバツで準優勝したのだから、中央学院や木総は優勝できる力はあるよな。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1123369743782572032"
+            target="_blank">2019/5/1 8:33:12</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">中央学院はあの大谷くんが故障で甲子園では十分に活躍できなかった。もっと上に上がれるチーム力はあったんだけどね。関東大会でも優勝したしね。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1123370289839009792"
+            target="_blank">2019/5/1 8:35:22</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">1昨年（だったかな。。）の秋予選では大谷くんのスライダーは切れに切れていて、習志野の打線はほとんど手が出せなかったもんな。。ただそういう状況でもコツコツ点を取るのが習志野のすごいとこなんだけど。中央学院が力でねじ伏せたけどね。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1123371118633472000"
+            target="_blank">2019/5/1 8:38:40</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">そして去年の秋大会では1年の左にしてやられて、2点しか取れず、逆に習志野はエースの杉山くんがたち上がりで打ち込まれて6-2で負けてしまった。なかなかいい球投げてたんだけど、制球が悪くて置きにいった球を痛打されてしまってた。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1123371467100397568"
+            target="_blank">2019/5/1 8:40:03</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">そして秋関東ではメンバーから外れ、そしてセンバツのメンバーからも外れてしまってて、ちょっと心配だったんよね（というか私が心配してもなんもならんけど。。）。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1123372654113607680"
+            target="_blank">2019/5/1 8:44:46</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ちょっと前にこの記事を見て、ああ、監督がインタビューで言ってた打撃投手って杉山くんのことだったんだ。。とちょっと胸をなでおろしたりして。<br/><br/><blockquote class="card card-large"><header><img loading="lazy" src="https://lpt.c.yimg.jp/amd/20190327-00000001-senbatsuc-000-view.jpg" /><a href="https://headlines.yahoo.co.jp/hl?a=20190327-00000001-senbatsuc-base" target="_blank">第９１回選抜高校野球　勝利の裏に打撃投手　一球一球に思い託し　杉山隆玄さん（３年）　／千葉（センバツLIVE！） - Yahoo!ニュース</a></header><div>＜センバツ高校野球＞　第９１回選抜高校野球大会で初戦突破した習志野は２６日、兵庫県西宮市内の球場で打撃練習などに励んだ。２４日の日章学園（宮崎）戦で大量点を奪い、小林徹監督は試合後に「打撃投手に感謝</div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1123372655426527232"
+            target="_blank">2019/5/1 8:44:46</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">そして春季関東大会ではベンチ入り復活してたから、ああ、よかったね。。という感じ。習志野は飯塚くん、山内くん、岩沢くん、杉山くんとＰが充実してきてるわな。。<a href="https://sportiva.shueisha.co.jp/clm/baseball/hs_other/2019/04/01/_split_17/" target="_blank">sportiva.shueisha.co.jp/clm/baseball/h…</a></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1123373336258416640"
+            target="_blank">2019/5/1 8:47:29</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">岩沢くんはもう少し低めに制球するようにしないといけないだろうな。そうしないとアンダーの良さが出ない。球速はむしろ遅いほうがいい。高めは完全な棒球になってしまうもんね。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1123373675795730432"
+            target="_blank">2019/5/1 8:48:50</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">アンダーの球の特性を生かして、打者付近ではストライクゾーンに掠って、ミットではかなり低めで受けるような球ですわな。。それと右左の投げ分けですわ。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1123375644321050625"
+            target="_blank">2019/5/1 8:56:39</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">準優勝したとはいえ強豪校がそろってるからそう簡単には勝ち上がれないよな。ただ言えるのはＡシードをとるのが目的の大会なので、ベスト４まではなんとしても進めたいところだろう。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1123376868072181762"
+            target="_blank">2019/5/1 9:01:31</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">まず東海大望洋との一戦がポイントですわな。。ここの打線でどれだけ失点を抑えるか。中央学院は専松と木総がいるブロックなので大変だなこりゃ。。でも秋大会でも勝ってるからね。。ひょっとするとまた中央学院と習志野が決勝で当たるかもね。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1123377528469643264"
+            target="_blank">2019/5/1 9:04:08</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">しかし今天台球場が工事中なので準決・決勝はゼットエーなんだよね。ちょっと遠いから行く気はちょっと萎えてるけどね。。天台だと自転車でなんとか行ける距離だし、運動にもなるんで心体のコンディションを整える意味で私の聖地なんだけど（笑）。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1123378581785047041"
+            target="_blank">2019/5/1 9:08:19</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">木総のＰも見てみたいんだよなあ。。いい球なげるんだろうなあ。。たぶん。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1123697376533852161"
+            target="_blank">2019/5/2 6:15:06</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">結局ベスト８は<br/><br/>千葉学芸 - 専修大松戸<br/>木更津総合 - 成田<br/>銚子商業 - 千葉明徳<br/>習志野 - 東海大市原望洋<br/><br/>千葉学芸以外はベスト8常連校ですわな。。<br/>千葉学芸は専松との一戦でどうなるかで実力がわかるね。。正直ベスト８まで来るとどの試合観ても面白いもんね。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1123697378559700993"
+            target="_blank">2019/5/2 6:15:06</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">しかし天台でないので行く気がちょっと萎えてる。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1123697380195545089"
+            target="_blank">2019/5/2 6:15:07</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">習志野はこの先は結構厳しい戦いが続くよなあ。16では主力温存して５－１で勝ったようだけど。。東海大市原望洋戦でどれくらいのスコアで相手を抑えることができるかだよな。過去の結果からみてもごぶごぶくらいだったと思うし。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1123698102043643905"
+            target="_blank">2019/5/2 6:17:59</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">銚子商と千葉明徳はどちらかというと千葉敬愛を下した明徳に分があると思ってるんだけど、高校野球ファンからしたら銚子商と習志野が勝ってベスト４で対戦してほしいと思うよなあ。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1123698103947862016"
+            target="_blank">2019/5/2 6:17:59</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">何度かこの一戦は観てるけどまあ、観客の年齢層がものすごい上がる（笑）。古豪同士だと歴史もあるからね。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1123699200154316801"
+            target="_blank">2019/5/2 6:22:21</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">成田と木更津総合はやっぱり木総に分があると思う。しかし成田はここ1-2年他の強豪校に阻まれてなかなか決勝まで顔を出してないからここはひとつ踏ん張りたいところだろうなあ。。勝てば勢いがつくだろう。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1123699202037514250"
+            target="_blank">2019/5/2 6:22:21</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">このブロックも普通に考えると専松と木総が当たると思うし、この試合も面白いよねえ。。専松のPがどれだけ木総を抑えることができるかにかかってはいるけどね。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1124061902546657280"
+            target="_blank">2019/5/3 6:23:36</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">さて今日のベスト８はどうなるか。面白そうだよね。チバテレが夏みたく中継してくれれば良いのだが。無理か。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1124168784833441793"
+            target="_blank">2019/5/3 13:28:19</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">さて反対側のブロックはどうなるか。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1124169580081926146"
+            target="_blank">2019/5/3 13:31:28</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">木総と成田は一巡したか。さあ二巡目はどうなるか。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1124211392985300994"
+            target="_blank">2019/5/3 16:17:37</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">やっぱりなあ。。木総の投手力と打線はいつも通りだということになりますな。二巡目で対応してくるんだよ。。専松もいい感じだけど、木総とやってみないと実力はまだ測れんわな。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1124211866220187650"
+            target="_blank">2019/5/3 16:19:30</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">銚子商と習志野は秋でも対戦して、習志野が勝ったけど今回はどうなるか。。投手戦に持ち込まないとなかなか習志野に勝つのは難しそう。すくなくともエラーは最小にとどめないといけないよな。。そういうしまった試合にしないといけない。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1124213154743873536"
+            target="_blank">2019/5/3 16:24:37</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ベスト４は<br/><br/>・銚子商業 - 習志野<br/>・専大松戸 - 木更津総合<br/><br/>公立校同士、私立強豪同士の対戦となった。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1124213156044099584"
+            target="_blank">2019/5/3 16:24:37</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">秋の結果から見るに習志野と木更津総合が決勝に進みそうだが、まあここまでくるとどっちに転ぶかはわからんよな。。もし習志野が決勝に進むと、ベスト4で敗退したチームが代表決定戦に進める。今回の春関東は千葉が3チーム出場することになるんだな。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1124214128531333121"
+            target="_blank">2019/5/3 16:28:29</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">春の県大会は全国大会の切符ではなく、夏の選手権のシード権がかかっている。ベスト４までくるとAシードになって、春のベスト４とは準決勝まで当たらないということになる。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1124214129776971776"
+            target="_blank">2019/5/3 16:28:30</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">そういうことでベスト４まで行けば春大会の目的は達せられるわけだが、決勝に進めば春関東に行けるので、関東の強豪校と公式戦でやれるというまたとない成長のチャンスを得ることができるんだよな。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1124214727154921473"
+            target="_blank">2019/5/3 16:30:52</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">それを経験できるのとできないのとでは夏大会までの実力に差が多少出ると思うんだな。そこはやっぱり大きいと思うんだよな。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1124216988958486528"
+            target="_blank">2019/5/3 16:39:51</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">去年(2018年)の春関東大会は千葉県開催だったので、ベスト４のチーム<br/><br/>・木更津総合（優勝）<br/>・習志野（準優勝）<br/>・専大松戸（3位）<br/>・千葉黎明（4位）<br/><br/>が全校出場した。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1124216990309048321"
+            target="_blank">2019/5/3 16:39:52</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">木総は国士館、横浜に勝ってベスト４まで行き、健大高崎に惜敗した。習志野は作新学院に勝ち、日大三に完敗。専大松戸は花咲徳栄に完敗、千葉黎明は青藍泰斗に勝って浦和学院に負けている。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1124217313341759489"
+            target="_blank">2019/5/3 16:41:09</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">私は習志野と作新学院の試合を観に行った。内野席は残念ながらいっぱいで入れなかった。ブラバンは来てたような気がするが覚えてないな。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1124217730310103040"
+            target="_blank">2019/5/3 16:42:48</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ピッチャーは佐藤くん先発、古谷くんリリーフでしたな。確か。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1124218098003861505"
+            target="_blank">2019/5/3 16:44:16</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">で夏の選手権はどうだったかというと、記念大会だったので千葉県は２校出場となり、西地区と東地区に分かれて代表を争ったんですな。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1124230501995241472"
+            target="_blank">2019/5/3 17:33:33</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">でまあ西地区では準決勝で中央学院が習志野を延長サヨナラで下して、そのままの勢いで東京学館浦安に勝ち、甲子園出場を果たした。大谷くんは故障であまり投げられず、2番手の西村くんが踏ん張った大会だったんだよな。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1124231366651011072"
+            target="_blank">2019/5/3 17:36:59</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">東地区は木更津総合が決勝で成田を10-2で下して甲子園を勝ち取った。あの野尻くんが投打に活躍した。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1124231869313064960"
+            target="_blank">2019/5/3 17:38:59</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">成田は東地区で決勝まで行ったんでしたな。しかし木総が相手では分が悪すぎる。今回も力負けした感があるよなあ。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1124232219042574337"
+            target="_blank">2019/5/3 17:40:22</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">当たり前かもしれないけど、春関で上位に行けるようなチームが甲子園に行くんだなあ。。とその時思ったよ。中央学院はセンバツ出てるから例外ですわ。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1124847879716081666"
+            target="_blank">2019/5/5 10:26:47</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ウーム。やはり専松の横山くんはすごいな。。ただ2巡目以降がどうなるかですが。。木総-専松は投手戦になりそうな気配ですな。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1124866751877898246"
+            target="_blank">2019/5/5 11:41:47</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">なんと7-1になっとるな。一気に均衡が破られた。。これはあと1点取れば7回コールドの可能性も出てきたな。しかしあの木総だからこのまま終わるとも思えないけど、横山くんが今日もいい球投げてるっぽいよなあ。ああ、観たい。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1124867673391632384"
+            target="_blank">2019/5/5 11:45:27</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">そうかあ。木総は根本くんを温存してるんだな。木総はここまでも5安打打ってるから、横山くんが疲れてきて、甘い球投げると逆に連打されて追いつかれるかもしれん。そういうとこあるんだよなあ。いやあ、木総相手はほんと怖い。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1124869680810774528"
+            target="_blank">2019/5/5 11:53:25</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">横山くん10Kかあ。いいピッチャーですな。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1124874396848386049"
+            target="_blank">2019/5/5 12:12:10</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">いやあ木総をここまで抑えることができてるというのはもう本物としかいいようがない。多分決勝では投げないんだろうけど。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1124880364013408256"
+            target="_blank">2019/5/5 12:35:52</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">木総に8回コールドとは勢いがつくなあ。さて第2試合の習志野と銚子商はどうなるか。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1124920357067022338"
+            target="_blank">2019/5/5 15:14:47</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">5回まで2-1か。。いい試合してるなあ。。しかし習志野の山本くんもいいピッチングしてるよなあ。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1124930746114760710"
+            target="_blank">2019/5/5 15:56:04</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">お、杉山くんリリーフで投げてるのかな？これで抑えることができると山本くんー杉山くん、山内くんー飯塚くんという2本柱ができるんでは。大きな成果ですなあ。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1124942727978700800"
+            target="_blank">2019/5/5 16:43:41</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">3-2で習志野が決勝か。銚子商は秋よりさらに強くなった感じがするなあ。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1124951550428762113"
+            target="_blank">2019/5/5 17:18:44</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">専松の横山くんはサイドスローでちょっと外角のスライダーがすごそうな感じだなあ。球速も上がってるというし、これは脅威だなあ。明日はたぶん休みだろうな。専松なら2番手もすごそうだし。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1125317400025391104"
+            target="_blank">2019/5/6 17:32:30</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">今日は決勝戦を観戦。延長で習志野が優勝。 https://t.co/qihs732RXM</p>
+        
+        <img loading="lazy" class="tweet-img" src="https://pbs.twimg.com/media/D53uNSCUcAAFaam.jpg" />
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1125317869418438656"
+            target="_blank">2019/5/6 17:34:22</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">しかしバントするとは予想外だった。2アウト3塁で普通やらないことをここしかないポイントで使ってきた。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1125338299747393536"
+            target="_blank">2019/5/6 18:55:33</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">第一試合の第3代表決定戦は木更津総合高校が関東大会進出を決めた。根本くんの今日の投球はちょっといまいちだった。リリーフの篠木くんの投球は力のあるストレートが低めにコントロールできているし、変化球の切れもよかった。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1125338301148176384"
+            target="_blank">2019/5/6 18:55:33</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">銚子商は根本くんの調子の悪さを差し引いたとしても打力に関してはかなりのもので、木総の攻撃をもう少し抑え込むことができれば勝機はあったかもしれない。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1125338302452625410"
+            target="_blank">2019/5/6 18:55:33</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">が篠木くんのあの出来では、3点差を取り返すことはちょっと難しかったと思う。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1125338462448521216"
+            target="_blank">2019/5/6 18:56:11</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">いやーやっぱり木総はすごい選手層だ。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1125339787332767744"
+            target="_blank">2019/5/6 19:01:27</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">が銚子商が関東大会に出ればもう一皮むける気もするし、観てて複雑な気持ちだったね。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1125350706246905857"
+            target="_blank">2019/5/6 19:44:51</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">習志野ー専大松戸戦はなかなかすごい試合だった。専松先行、習志野逆転、専松追いつき延長、習志野意表を突くバントタイムリーで再度逆転、そして飯塚くんが最後を締めるという。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1125350707542970370"
+            target="_blank">2019/5/6 19:44:51</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">専大松戸の20番の左投手、中村くんは少し投球フォームに特徴がありなかなか打ちづらそうで、実際4回までヒット2本に抑えられていた。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1125353365083262976"
+            target="_blank">2019/5/6 19:55:24</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">今日の先発は岩沢くんで、おそらく春大会は初めて投げるのではないかと思う。今日は低めに球が集まっていていい感じだったが、3回につかまり3点を失ってしまう。今日も高めに入る球を痛打されており、低めへの制球力がやっぱり少し足りないな、と思った。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1125353366391885824"
+            target="_blank">2019/5/6 19:55:25</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">2アウトから3点を取られており、エラーもあったもののちょっともったいない気がした。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1125354651237269507"
+            target="_blank">2019/5/6 20:00:31</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">専松の丹呉くんのHRはなかなか素晴らしく、クリーンナップはなかなかの破壊力を感じた。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1125354652621344768"
+            target="_blank">2019/5/6 20:00:31</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">5回はラッキーボーイの角田くんが2点本塁打を打ち、1点差に詰め寄る。そして6回をむかえ、スイッチした11番の小野くんから今度は高橋くんが2点本塁打を放ち逆転に成功する。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1125356325372751872"
+            target="_blank">2019/5/6 20:07:10</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">こつこつ単打で点を積み重ねる習志野らしくない点の取り方ですな。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1125357188006866945"
+            target="_blank">2019/5/6 20:10:36</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">4回からは山本くんがリリーフして5回まで抑えたものの、6回に安打・四球を出したところでなんと飯塚くんにスイッチ。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1125357189428797440"
+            target="_blank">2019/5/6 20:10:36</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">4回あたりまで杉山くんが投球練習をしていたので、杉山くんにスイッチするのかと思いきや、気がつくてブルペンに飯塚くんがいたんだよな。勝ち越したからかもしれないな。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1125357743206875136"
+            target="_blank">2019/5/6 20:12:48</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">飯塚くんはそのあとの打者2人を三振に仕留めて、ピンチを凌いだ。このあたりもう貫禄さえ感じるピッチングですわ。安心感がハンパない。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1125358645233897472"
+            target="_blank">2019/5/6 20:16:23</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">7回に専松はヒット2本で同点に追いつく。専松のクリーンナップは飯塚くんのストレートにタイミングが合っていて、観ていてちょっとドキドキした。少しチェンジアップとか混ぜてもいいと観てて思ったんだけど、直球でグイグイ押そうとして打たれてしまってたように思う。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1125359441312763906"
+            target="_blank">2019/5/6 20:19:33</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">そして8回・9回は0点が続き延長に突入。そしてあの10回の小澤くんのセーフティ・スクイズで勝ち越して、その裏をゴロ2三振で締めたんだな。結局飯塚くんは5回を投げ7Kというピッチング。やっぱりすごいな。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1125359823434833920"
+            target="_blank">2019/5/6 20:21:04</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">専松は横山くんが木総戦で登板したので今日は投げなかったが、投げていたらまた違った結果になっていたのではないかと思うな。打力からすると横山くんはやはり木総戦で投げるべきだもんな。。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/969572002217410560/V1uhNO0d_normal.jpg" />
+        <p class="tweet-user-name">まっしゅ@masch_studio</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/masch_studio/status/1125296016494813190"
+            target="_blank">2019/5/6 16:07:31</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">千葉 春季大会 決勝<br/><br/>【試合終了】(延長10回)<br/>習志野 5 ‐ 4 専大松戸<br/><br/>習志 ０００ ０２２ ０００ １<br/>専松 ００３ ０００ １００ ０<br/><br/>習志野が春の大会で優勝、おめでとう！ https://t.co/RLMFHVBlTm</p>
+        
+        <img loading="lazy" class="tweet-img" src="https://pbs.twimg.com/media/D53aamsUUAIguxs.png" />
+        
+        <img loading="lazy" class="tweet-img" src="https://pbs.twimg.com/media/D53adTwUUAIYwiO.jpg" />
+        
+        <img loading="lazy" class="tweet-img" src="https://pbs.twimg.com/media/D53af8nUUAA_bSX.jpg" />
+        
+        <img loading="lazy" class="tweet-img" src="https://pbs.twimg.com/media/D53ahWPUIAIJcMv.png" />
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1124997459678076929"
+            target="_blank">2019/5/5 20:21:10</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">@RE_DO うーん。おっしゃりたいことの意味がよくわからないのですが。。「オリジナルなフレーズが思い浮かばないということは、オリジナルなフレーズなどそもそも存在しないので、作曲をしないという直接的な理由にならない。」ということでしょうかね。。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/1010779849487552512/oh33DCB2_normal.jpg" />
+        <p class="tweet-user-name">Akira_Yuki@akira_yuki_toin</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/akira_yuki_toin/status/1124940505626734592"
+            target="_blank">2019/5/5 16:34:51</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">#習志野<br/>春季千葉大会 準決勝のデータ<br/><br/>習志野3－2銚子商業 https://t.co/RdVTCvaBCb</p>
+        
+        <img loading="lazy" class="tweet-img" src="https://pbs.twimg.com/media/D5yXZzOU8AA-aSf.jpg" />
+        
+        <img loading="lazy" class="tweet-img" src="https://pbs.twimg.com/media/D5yXZzdU0AAAr8B.jpg" />
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/1111177849333923840/68xTowA3_normal.jpg" />
+        <p class="tweet-user-name">D-labo@d_lab_Narashino</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/d_lab_Narashino/status/1124941887121420288"
+            target="_blank">2019/5/5 16:40:20</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">山本君 5イニング打者19人 被安打3 四死球2 三振4 失点1<br/>杉山君 4イニング打者18人 被安打4 四死球1 三振0 失点1<br/>2人とも要所で踏ん張りましたね^_^<br/><br/>#習志野 #杉山隆玄 #山本慶都</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/1105657635401949184/3LSJooUS_normal.jpg" />
+        <p class="tweet-user-name">いしいちゃん@ishiichan_2019</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/ishiichan_2019/status/1124885533371523073"
+            target="_blank">2019/5/5 12:56:25</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">千葉県春季高校野球大会 準決勝第2試合 習志野高校 対 銚子商業<br/>観戦者がたくさんいるよ〜( *・ω・)ノ https://t.co/g3y9TyI6dq</p>
+        
+        <img loading="lazy" class="tweet-img" src="https://pbs.twimg.com/media/D5xlZkkUYAAem6D.jpg" />
+        
+        <img loading="lazy" class="tweet-img" src="https://pbs.twimg.com/media/D5xla2BUIAAzgQ1.jpg" />
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/596376750650621952/xThYweep_normal.jpg" />
+        <p class="tweet-user-name">武田@ご当地VTuber運営したり@tamanyo</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/tamanyo/status/1123988498783068160"
+            target="_blank">2019/5/3 1:31:55</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">基本的にCPUで計算するのは3Dオブジェクトの位置と角度だけ。<br/><br/>オブジェクトの番号と位置ベクトル、3軸の回転角度を全オブジェクトに対して計算してDSPボードの間の共有のRAMに書くだけ。<br/><br/>そうするとそっから先のポリゴン単位の3Dのややこしい計算とかレンダリングとか、全部やってくれる。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1124649596817297408"
+            target="_blank">2019/5/4 21:18:53</a></p>
+      </header>
+      <section>
+        <p class="tweet-text"><div class="youtube" data-type="yt" id="tI6K3f60hOw"><div class="yt-title">Youtube - Cabaret Voltaire - Three Mantras (1980) full 12" EP</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/tI6K3f60hOw" class="youtube" src="https://i.ytimg.com/vi/tI6K3f60hOw/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1124650061147672576"
+            target="_blank">2019/5/4 21:20:44</a></p>
+      </header>
+      <section>
+        <p class="tweet-text"><div class="youtube" data-type="yt" id="jCvTCw4dLFA"><div class="yt-title">Youtube - Cabaret Voltaire - Nag Nag Nag (1979)</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/jCvTCw4dLFA" class="youtube" src="https://i.ytimg.com/vi/jCvTCw4dLFA/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1124651188601798658"
+            target="_blank">2019/5/4 21:25:13</a></p>
+      </header>
+      <section>
+        <p class="tweet-text"><div class="youtube" data-type="yt" id="UsCbws2brM4"><div class="yt-title">Youtube - Kraftwerk - Airwaves</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/UsCbws2brM4" class="youtube" src="https://i.ytimg.com/vi/UsCbws2brM4/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1124651790824198146"
+            target="_blank">2019/5/4 21:27:36</a></p>
+      </header>
+      <section>
+        <p class="tweet-text"><div class="youtube" data-type="yt" id="qcKLjU0nzv8"><div class="yt-title">Youtube - Quiet Men</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/qcKLjU0nzv8" class="youtube" src="https://i.ytimg.com/vi/qcKLjU0nzv8/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1124652673930653696"
+            target="_blank">2019/5/4 21:31:07</a></p>
+      </header>
+      <section>
+        <p class="tweet-text"><div class="youtube" data-type="yt" id="8jetpwghTiU"><div class="yt-title">Youtube - DAF - El Que (Video)</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/8jetpwghTiU" class="youtube" src="https://i.ytimg.com/vi/8jetpwghTiU/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1124653747026530304"
+            target="_blank">2019/5/4 21:35:23</a></p>
+      </header>
+      <section>
+        <p class="tweet-text"><div class="youtube" data-type="yt" id="-yP8aVfXMKY"><div class="yt-title">Youtube - Tanzmusik</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/-yP8aVfXMKY" class="youtube" src="https://i.ytimg.com/vi/-yP8aVfXMKY/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1124656887897530368"
+            target="_blank">2019/5/4 21:47:51</a></p>
+      </header>
+      <section>
+        <p class="tweet-text"><div class="youtube" data-type="yt" id="XoZwom8_dm8"><div class="yt-title">Youtube - Haruomi Hosono and The Yellow Magic Band - 07. Shambhala Signal</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/XoZwom8_dm8" class="youtube" src="https://i.ytimg.com/vi/XoZwom8_dm8/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1124658679016353792"
+            target="_blank">2019/5/4 21:54:58</a></p>
+      </header>
+      <section>
+        <p class="tweet-text"><div class="youtube" data-type="yt" id="RnjDTlnrY0A"><div class="yt-title">Youtube - Differencia</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/RnjDTlnrY0A" class="youtube" src="https://i.ytimg.com/vi/RnjDTlnrY0A/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1124659599011794944"
+            target="_blank">2019/5/4 21:58:38</a></p>
+      </header>
+      <section>
+        <p class="tweet-text"><div class="youtube" data-type="yt" id="HHPe-IzR2D0"><div class="yt-title">Youtube - Throbbing Gristle ‎– 20 Jazz Funk Greats</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/HHPe-IzR2D0" class="youtube" src="https://i.ytimg.com/vi/HHPe-IzR2D0/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1124662297312423937"
+            target="_blank">2019/5/4 22:09:21</a></p>
+      </header>
+      <section>
+        <p class="tweet-text"><div class="youtube" data-type="yt" id="d5XJ2GiR6Bo"><div class="yt-title">Youtube - Orchestral Manoeuvres In The Dark - Enola Gay</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/d5XJ2GiR6Bo" class="youtube" src="https://i.ytimg.com/vi/d5XJ2GiR6Bo/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1124662551411748864"
+            target="_blank">2019/5/4 22:10:22</a></p>
+      </header>
+      <section>
+        <p class="tweet-text"><div class="youtube" data-type="yt" id="vMPR6Ujop4k"><div class="yt-title">Youtube - VISAGE - Fade To Grey [Rare Video 1981] HQ</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/vMPR6Ujop4k" class="youtube" src="https://i.ytimg.com/vi/vMPR6Ujop4k/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1124663378469769216"
+            target="_blank">2019/5/4 22:13:39</a></p>
+      </header>
+      <section>
+        <p class="tweet-text"><div class="youtube" data-type="yt" id="avFyM3gmSkE"><div class="yt-title">Youtube - Haruomi Hosono - Omni Sight Seeing - 07 Laugh-Gas</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/avFyM3gmSkE" class="youtube" src="https://i.ytimg.com/vi/avFyM3gmSkE/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1124664192386994178"
+            target="_blank">2019/5/4 22:16:53</a></p>
+      </header>
+      <section>
+        <p class="tweet-text"><div class="youtube" data-type="yt" id="ABOMrTgPNZA"><div class="yt-title">Youtube - Kraftwerk: Ruck Zuck (LIVE in Soest, 1970)</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/ABOMrTgPNZA" class="youtube" src="https://i.ytimg.com/vi/ABOMrTgPNZA/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1124664686920605697"
+            target="_blank">2019/5/4 22:18:51</a></p>
+      </header>
+      <section>
+        <p class="tweet-text"><div class="youtube" data-type="yt" id="1pbcC99C-Y8"><div class="yt-title">Youtube - The End Of Europe by Ryuichi Sakamoto</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/1pbcC99C-Y8" class="youtube" src="https://i.ytimg.com/vi/1pbcC99C-Y8/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1105934434824404997"
+            target="_blank">2019/3/14 5:51:31</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">とまあそんなこと言いながら、裏ではYMO RYDEENのカバー曲の手直しをしてるわけですが。。なんでこんなにRYDEENに執着（粘着）するのか自分でもわからない。。1日に50回くらいは同じ曲を聴くのってやっぱり異常だよね。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1105935105141280768"
+            target="_blank">2019/3/14 5:54:11</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ようするにRYDEENの手直しをして、ffmpegで動画に変換してる間にオレオレ言語の仕様書をどうするか考えてるわけですが。ということはRYDEENのカバー曲へのモチベーションは絶不調な今でも高いレベルで保ち続けているということになるよなあ。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1105935277598531584"
+            target="_blank">2019/3/14 5:54:52</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">自分で自分のことがよくわからないや。。ほんとに。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1105936304938704896"
+            target="_blank">2019/3/14 5:58:57</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">なんてこと言いながら、<br/><br/>1. REAPERから.aifでレンダリング<br/>2. ffmpegで動画化<br/>3. Youtubeにアップ<br/><br/>というのをREAPER自体でアドオン書いて自動化できないかなあ？とか今思ってるわけですが。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1105936305773404160"
+            target="_blank">2019/3/14 5:58:57</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">そのような能力がREAPERに備わっていそうなのでこんなこと考えてしまう。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1105951527431135232"
+            target="_blank">2019/3/14 6:59:26</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">アップしたやつよく聴き直したらシンドラのピッチがなぜか上がってしまってたので慌てて非公開にした。これはちょっとヒドイ。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1105951597408874497"
+            target="_blank">2019/3/14 6:59:43</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">何にもいじってないんだけどなあ。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1105951902833958913"
+            target="_blank">2019/3/14 7:00:55</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">うーむ。よくわからんな。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1105961170006040576"
+            target="_blank">2019/3/14 7:37:45</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">これを機会にして、シンドラの音色を作り直そうかな。パチパチノイズも再現したいしなあ。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1106301942551076864"
+            target="_blank">2019/3/15 6:11:51</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">なぜかわからんが直ったのでそのままレンダリングするか。。しかしOSがアプデするとなぜかドライバが動かなくなってしまう。正確にいうとなぜか96Khz→44.1KHzに戻ってしまう。その後の設定画面の動作もおかしくてなぜかインストーラが走ってそのままフリーズする。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1106301943381557249"
+            target="_blank">2019/3/15 6:11:52</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">再度ドライバを入れなおすと直るのだが。不思議な動きだ。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1106301944211988485"
+            target="_blank">2019/3/15 6:11:52</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">しかし44.1KHzと96KHzではVSTの音がものすごく変わるのでこれが困る。リードはいい方向に変わってくれたんだけど、他のパートは変な音になってしまうものもある。リバーブなどはかかり方も変わってしまったりするんだな。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1106301945000558592"
+            target="_blank">2019/3/15 6:11:52</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">でシーケンスパートは44.1KHzで鳴らすほうが近い音になることがわかったりする。でまあ今回のトラブルで44.1KHｚに戻ってるの気づかなくて、音がすごく変わって「あれ？」となった。慌ててデータを直したんだけど。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1106301945810059264"
+            target="_blank">2019/3/15 6:11:52</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">でも周波数が変わってしまってることに気づいて、96KHzに戻すと今度は音色が変わったり、変なミックスになってしまった。44.1KHzで音を合わせてしまったからだ。もとに戻すのがまた大変なのですよ。いろいろなパラメータいじるから。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1106304928165715968"
+            target="_blank">2019/3/15 6:23:43</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">というわけで再度アップ。いやー難しい。<br/><br/><div class="youtube" data-type="yt" id="2DzqtQF_Qi4"><div class="yt-title">Youtube - YMO - RYDEEN (83)</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/2DzqtQF_Qi4" class="youtube" src="https://i.ytimg.com/vi/2DzqtQF_Qi4/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1106401501902061569"
+            target="_blank">2019/3/15 12:47:28</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">うーむ。コードの音色。これはいかんな。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1107244912045518850"
+            target="_blank">2019/3/17 20:38:53</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">シンセ・ドラムとコードの音色を変えてみた。<br/><br/><div class="youtube" data-type="yt" id="zL5CBclPQ1Q"><div class="yt-title">Youtube - YMO - RYDEEN (84)</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/zL5CBclPQ1Q" class="youtube" src="https://i.ytimg.com/vi/zL5CBclPQ1Q/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1111748997448753152"
+            target="_blank">2019/3/30 6:56:30</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">リードの音色を作り直しなど。あとは動画を作り始めた。まだまだですわ。。<br/><br/><div class="youtube" data-type="yt" id="w7G3sfs2_Sg"><div class="yt-title">Youtube - YMO - RYDEEN (85)</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/w7G3sfs2_Sg" class="youtube" src="https://i.ytimg.com/vi/w7G3sfs2_Sg/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1117387722505670657"
+            target="_blank">2019/4/14 20:22:47</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">リード音をさらに作り直し。難しい。なんか違うんだよね。。<br/><br/><div class="youtube" data-type="yt" id="2Z1E-1z-drk"><div class="yt-title">Youtube - YMO - RYDEEN (86)</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/2Z1E-1z-drk" class="youtube" src="https://i.ytimg.com/vi/2Z1E-1z-drk/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1123201933781553152"
+            target="_blank">2019/4/30 21:26:23</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">リード音は少し良くなった気がする。これがよくなるとほかの音色が気になってくる。どこかが改善されると似てない部分が浮き彫りになってくる。シーケンスの部分がちょっとだめかなあ。。と思ってここ1日半ほどはシーケンスの作り直しをしてた。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1123201935048232961"
+            target="_blank">2019/4/30 21:26:24</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">この音は私の分析では（笑）、少なくとも2音色で作られてると推測している。表と裏の音色ですわな。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1123204163553320960"
+            target="_blank">2019/4/30 21:35:15</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">それでまあ、そこまではかなり前にわかってて、その音色とシーケンスパターンを試行錯誤し続けてるのだが、満足したものにならないのである。。おそらくパートの中では一番耳につくところである。あ、ブレークのSEもそうだけど。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1123209773845843968"
+            target="_blank">2019/4/30 21:57:32</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">これが改良前。間奏のシーケンスが一番よくわかるので。。裏の音色が全然違うんですな。<br/><div class="youtube" data-type="yt" id="HDgDNFHOy_0"><div class="yt-title">Youtube - YMO - Rydeen をカバーする～シーケンスパターン（改良前）</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/HDgDNFHOy_0" class="youtube" src="https://i.ytimg.com/vi/HDgDNFHOy_0/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1123209775389372416"
+            target="_blank">2019/4/30 21:57:33</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">そしてこれが改良後。裏の音色がかなり近くなった気がするのですわ。。<br/><div class="youtube" data-type="yt" id="3LsK3MtKOBU"><div class="yt-title">Youtube - YMO - Rydeen をカバーする～シーケンスパターン（改良後）</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/3LsK3MtKOBU" class="youtube" src="https://i.ytimg.com/vi/3LsK3MtKOBU/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1123211122834792448"
+            target="_blank">2019/4/30 22:02:54</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">裏の音色のシーケンスのゲートタイムもかなりのスタッカートだったのを思い切って長くしてみたんですな。そうすると今度は音量がでかくなりすぎるのでアンプのADSRのSを小さくしてみたんですわ。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1123211124189515776"
+            target="_blank">2019/4/30 22:02:54</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">音色はSynth-1で作ってる（9割そう）のだが、元の音色に少し三角波を足してみたんですな。そして高音域でフィルタを開けるようにしてみたと。あ、そうだ。矩形波がベースだったのも鋸波に変えたんだった。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1123211608056926208"
+            target="_blank">2019/4/30 22:04:50</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">表のシーケンス音も音色を変えたんだけど、微調整レベル。以前は表の音のアタック感が乏しいので、裏の音色で補うようなことをしてた。今回はそれをやめて、コンプでなんとかしてみた。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1123212102557061121"
+            target="_blank">2019/4/30 22:06:48</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">コンプのアタックを少し長めにして、アタックが強く出るようにしてみたんですな。これは音がいい方向に変わったんだよな。でもちょっといじると裏の音とのバランスが崩れるのでこの試行錯誤に数時間もかけてしまった。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1123221403409338369"
+            target="_blank">2019/4/30 22:43:45</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">そして先ほどAのシーケンスパターンが違うのではというご指摘あり。早速修正を実施。。<br/>【修正前】<br/><div class="youtube" data-type="yt" id="JF2mQJzwAHo"><div class="yt-title">Youtube - YMO - RYDEEN A/Bのシーケンスパターンの修正・改善（改善前）</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/JF2mQJzwAHo" class="youtube" src="https://i.ytimg.com/vi/JF2mQJzwAHo/hqdefault.jpg" /></div>   <br/><br/><br/>【修正後】<br/><div class="youtube" data-type="yt" id="k32VxeBcKtE"><div class="yt-title">Youtube - YMO - RYDEEN A/Bのシーケンスパターンの修正・改善（改善後）</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/k32VxeBcKtE" class="youtube" src="https://i.ytimg.com/vi/k32VxeBcKtE/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1123221856880812032"
+            target="_blank">2019/4/30 22:45:33</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">多分まだいろいろ違うとこあるんだろうなあ。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1123234414282940416"
+            target="_blank">2019/4/30 23:35:27</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">さて(87)を投稿したが、平成にぎりぎり間に合うだろうか。処理が結構かかるのでね。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1123235220465938434"
+            target="_blank">2019/4/30 23:38:39</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">令和以降はちょっとプログラミングに戻ろうかな。PSGエミュレータを作りたいし。。でもTECHNOPOLISやBEHIND THE MASKもやりたいしなあ。。あと30年くらいかかりそうだが。寿命が先に来てしまいそうだ。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1123238779890819072"
+            target="_blank">2019/4/30 23:52:48</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">平成最後のアップ。。<br/><br/><div class="youtube" data-type="yt" id="F6ya5xnaj5U"><div class="yt-title">Youtube - YMO - RYDEEN (87)</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/F6ya5xnaj5U" class="youtube" src="https://i.ytimg.com/vi/F6ya5xnaj5U/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1123348983785484288"
+            target="_blank">2019/5/1 7:10:43</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">うーん。シーケンスに集中したせいかやっぱり各パートのバランスが崩れてしまったような。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1123349319967395842"
+            target="_blank">2019/5/1 7:12:03</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">あ、それとリードの間奏前のレミファもカットした。これもコメントでいただいた指摘。ここも自分ではまったく気づいていなかった部分。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1123350063260942336"
+            target="_blank">2019/5/1 7:15:00</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">令和になっても昭和の曲をカバーし続けるいう。。考えると平成の30年間はRYDEENをカバーし続けたということになってしまうんだな。。もちろんところどころ中休みはあるんだけどね。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1123350698630893568"
+            target="_blank">2019/5/1 7:17:32</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">この間奏のシーケンスはかなり元曲に近づいたと自分では思っている。あとはブリッジのシーケンスか。ブリッジっていうのかあの部分。あとはブレークのビームに対応する破壊音のSEですわな。。これはどう作ったらいいのか皆目見当がついてないんだよな。。<br/><blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="https://www.youtube.com/watch?v=F6ya5xnaj5U&feature=youtu.be&t=159" target="_blank">YMO - RYDEEN (87) - YouTube</a></header><div>YouTube でお気に入りの動画や音楽を楽しみ、オリジナルのコンテンツをアップロードして友だちや家族、世界中の人たちと共有しましょう。</div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1123351057604591617"
+            target="_blank">2019/5/1 7:18:57</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">いうても、そこがもしできてもほかのパートもまだまだなので同じように直さないといかんですわな。。PercのLRも音が違うしな。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1123352474994106368"
+            target="_blank">2019/5/1 7:24:35</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">当初は音色をまねるのはSynth1では難しいと思ってたんだけど、かなり近い音が出せるんだなあと今は思ってる。使い手のレベルが低かっただけだと今は理解できる。まだまだですけどね。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1123353155301822464"
+            target="_blank">2019/5/1 7:27:17</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">そういえばSynth1はジオ・シティーズで公開してたけどジオは閉鎖されちゃったよなあ。もうダウンロードできなくなっちゃってるな。これはやばいな。<br/><blockquote class="card card-default"><header><img loading="lazy" src="https://s.yimg.jp/images/geo/common/share_btn/bnr_sns_468x468_140609.png" /><a href="http://www.geocities.jp/daichi1969/softsynth/index.html" target="_blank">サービス終了のお知らせ - Yahoo!ジオシティーズ</a></header><div>2019年3月31日をもちましてYahoo!ジオシティーズのサービス提供を終了いたしました。</div></blockquote> https://t.co/UezqSEyALj</p>
+        
+        <img loading="lazy" class="tweet-img" src="https://pbs.twimg.com/media/D5bzvTPUUAEvEdO.jpg" />
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1123354216339128320"
+            target="_blank">2019/5/1 7:31:30</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ひょっとすると試行錯誤を続けるうちにエフェクトの使い方もそれなりにできるようななってるのかもしれん。。まったくの独学なので正しいのかはさっぱりわからんが。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1123354217610002432"
+            target="_blank">2019/5/1 7:31:31</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">先日もそうだったんだけど、1-2年前にボリューム・エンベロープであるフレーズのレベルを上げていることを忘れてて、なんでここだけこんなに音量がでかいんだ。。とか小一時間悩んだりとかしてる（笑）。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1123354219002515456"
+            target="_blank">2019/5/1 7:31:31</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">年齢のせいもあると思うんだけど、長期間同じ曲を作り続けていることのほうが理由としては強いと思うんですわ。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1123354793378865152"
+            target="_blank">2019/5/1 7:33:48</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">確かBeta3で止まってるんだよな。さすがにもう開発を再開するということはないだろうな。近い将来メインで使うシンセを変えないといけなくなるかもしれんね。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1123355191246372865"
+            target="_blank">2019/5/1 7:35:23</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">お、今日REAPERアップデートがリリースされとるな。。アップしとくか。。 https://t.co/xyYYRL0tNM</p>
+        
+        <img loading="lazy" class="tweet-img" src="https://pbs.twimg.com/media/D5b1l2gUEAAIkEz.png" />
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1123356096561799168"
+            target="_blank">2019/5/1 7:38:59</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">一応正式ユーザーなので、REAPERが5.xの間は無償でアップグレードできるのである。6.xになるとライセンス買わないといけないけど、1万以下でこのスペックだから多分次バージョンも買うと思う。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1123357031857938433"
+            target="_blank">2019/5/1 7:42:42</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">私のレベルならMODトラッカー系でも十分すぎるスペックなんだけど、編集機能はDAWのほうが数段上なんだな。。やっぱりラク。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1123357265950457856"
+            target="_blank">2019/5/1 7:43:37</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ただREAPERもマイナーなDAWなんでいつまでリリースされるかは微妙だけどなあ。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1123576707171008514"
+            target="_blank">2019/5/1 22:15:36</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">そしてまあ令和最初のリリース（８８）<br/><div class="youtube" data-type="yt" id="5-76i6E1_sQ"><div class="yt-title">Youtube - YMO - RYDEEN (88)</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/5-76i6E1_sQ" class="youtube" src="https://i.ytimg.com/vi/5-76i6E1_sQ/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1123933380863774720"
+            target="_blank">2019/5/2 21:52:54</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">Bの最初のコード2音とSEを変えてみた。。<br/><br/><div class="youtube" data-type="yt" id="tOFV1SGDVVA"><div class="yt-title">Youtube - YMO - RYDEEN (89)</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/tOFV1SGDVVA" class="youtube" src="https://i.ytimg.com/vi/tOFV1SGDVVA/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1123935919826984960"
+            target="_blank">2019/5/2 22:02:59</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">今のコードの構成音はこうなってる。。 https://t.co/LWZDt6ZN1H</p>
+        
+        <img loading="lazy" class="tweet-img" src="https://pbs.twimg.com/media/D5kFwsQWkAIDT9w.png" />
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1123935926210695169"
+            target="_blank">2019/5/2 22:03:01</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">1つ前はこうだった。。そもそもこの部分のコードってなんとも不安定な感じのものなんだけど、違和感ありありでなんとも気持ちが悪かった。。 https://t.co/4iRDdXgtez</p>
+        
+        <img loading="lazy" class="tweet-img" src="https://pbs.twimg.com/media/D5kFxDqX4AMxq86.png" />
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1123936333783818240"
+            target="_blank">2019/5/2 22:04:38</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">あ、Bはフラットですからね。。<br/>2つ前はこうだった。。これだとなんか低域が足らんな。。とかなってたんだよね。。 https://t.co/KTStir7Ik6</p>
+        
+        <img loading="lazy" class="tweet-img" src="https://pbs.twimg.com/media/D5kGIytXoAAF9iM.png" />
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1123936796671344641"
+            target="_blank">2019/5/2 22:06:28</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">Gを１オクターブ下げたんだよな。結局。それが一番近い気がしてね。。しかしなんでこんな構成音にしたんだろうな。。なんとも不思議な響きですわ。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1123937109264556038"
+            target="_blank">2019/5/2 22:07:43</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">坂本さんの考えは私のようなど素人にはわからんです。が、この響きのおかげでポップ・ミュージックとは一味違う感じになってるんだよなあ。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1123938131718414338"
+            target="_blank">2019/5/2 22:11:47</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">コード（和声）についてもいくつか本を買って読んでみたりしたけど、もうすっかり忘れとるわけですわ。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1124041515209252865"
+            target="_blank">2019/5/3 5:02:35</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">譜面（2つ持ってる。。）を見るとBの最初に2つはGm7 -&gt; Dm7(11)となってて、コードネーム的にはややこしそうではなさそう（笑）なんだけどね。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1124041517025431554"
+            target="_blank">2019/5/3 5:02:35</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">当初打ち込んだコードは「YMO BEST TRACKS」のもの。そしてGの音をオクターブ下げたのが今のバージョン。こういうのを転回とかいうんだったけかな。。Gを下げることによって響きが少し濁って低音が補われる。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1124543003677351936"
+            target="_blank">2019/5/4 14:15:19</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">とうとう（９０）になってしまった。。<br/>ようやく間奏のSEの発音タイミングを合わせた。。がSEの音色がイマイチすぎる。。<br/><br/><div class="youtube" data-type="yt" id="kUzOXHuj3Rk"><div class="yt-title">Youtube - YMO - RYDEEN (90)</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/kUzOXHuj3Rk" class="youtube" src="https://i.ytimg.com/vi/kUzOXHuj3Rk/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1124580021530611713"
+            target="_blank">2019/5/4 16:42:25</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">聴きなおすとバスドラの音が異様に大きい気がするな。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1124580087209254912"
+            target="_blank">2019/5/4 16:42:41</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">またミックスがおかしくなっとるかな。。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1124574169822162944"
+            target="_blank">2019/5/4 16:19:10</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">今伽羅蕗を作っている。。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/624057681960022016/GdKS-iba_normal.png" />
+        <p class="tweet-user-name">プロ野球ドラフト会議ドットコム@draft_com</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/draft_com/status/1124311584283619329"
+            target="_blank">2019/5/3 22:55:45</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">高校野球、春の千葉県大会はベスト4出揃う！ベスト4に進出した4校は夏の県予選にてAシードを獲得。#専大松戸  #木更津総合、#銚子商、#習志野 https://t.co/oB2m2E4e59</p>
+        
+        <img loading="lazy" class="tweet-img" src="https://pbs.twimg.com/media/D5pbaroUYAAt3hU.png" />
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/1081413714601857024/Dj5u_5YD_normal.jpg" />
+        <p class="tweet-user-name">Hirokazu Yokohara@Yokohara_h</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/Yokohara_h/status/1124109614834966530"
+            target="_blank">2019/5/3 9:33:11</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">CGキャラに表情パターン追加してみた。変顔っぽいスライドショー。先日のpolywinkで制作したブレンドシェイプを使用。修正なしでこのくらいの精度。rig組んだら動画にしたい。#C4D #redshift #polywink https://t.co/aA3AnVIODW</p>
+        
+        <video class="tweet-img" controls src="https://video.twimg.com/ext_tw_video/1124107804300546048/pu/vid/320x320/GTnTkLUZHcb0xlZt.mp4?tag=9" />
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1124239551680008193"
+            target="_blank">2019/5/3 18:09:31</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">@RE_DO こんな半端ものの私に、なんかありがとうございます。<br/>アカウントは持ってないですね。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1124238060999208960"
+            target="_blank">2019/5/3 18:03:35</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">@RE_DO あ、すみません。そこはスルーしていただいてもいいかと。まあそれほどまでにRYDEENが好きだということが言いたいだけなので。。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1124234147659112450"
+            target="_blank">2019/5/3 17:48:02</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">@RE_DO 修行僧（笑）。音楽に関しては自分の色というのがそもそもないからではないでしょうか。要するに私は聴き手の一人で、それをどうやってるか探求してるだけですから。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1124236595228340224"
+            target="_blank">2019/5/3 17:57:46</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">@RE_DO 若いころ、デトロイト・テクノやシカゴ・ハウスというのにはまって、シンセ・MTR・シーケンサを買って自作曲を作ろうとした時期はあったのです。が、そもそも自分なりのフレーズがまったくといっていいほど浮かんでこないのでそこで諦めがついた感じですね。で今に至ると。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1124237309644234752"
+            target="_blank">2019/5/3 18:00:36</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">@RE_DO 作曲法・和声・進行などを学べば曲作りのツールとしてはそろうんでしょうけど、私が音をイメージすると既成曲のフレーズしか浮かんでこない（笑）。学びによってそういうことができるようになるのかもしれないですけど、そこまでやりたいとは思わないんですよね。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1124237742433394691"
+            target="_blank">2019/5/3 18:02:19</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">@RE_DO そうしなくても世の中にはたくさんの素晴らしい楽曲があるし、それをなぞるだけでも十分幸せな時間を送ることができてるから欲がでないのかもしれません。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1124235711190712320"
+            target="_blank">2019/5/3 17:54:15</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">@RE_DO Cakewalkも使ったことあります。がVST対応前のやつでしたね（古）。フリーになったんですね。あれ。REAPERってマイナーなんで将来が不安なんですよね（笑）。</p>
+        
+      </section>
+      
+    </article>
+    
+  </div>
+  <footer>
+    CopyLight 2019 Satoshi Fujiwara
+  </footer>
+  <script async src="https://platform.twitter.com/widgets.js"></script>
+
+  <script async src="./index.js"></script>
+
+</body>
+
+</html>

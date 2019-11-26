@@ -1,0 +1,1664 @@
+<!DOCTYPE html>
+<html lang="ja" prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb# article: http://ogp.me/ns/article#">
+
+<head>
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-15457703-9"></script>
+  <script>
+    if (!location.hostname.match(/localhost/)) {
+      window.dataLayer = window.dataLayer || [];
+      function gtag() { dataLayer.push(arguments); }
+      gtag('js', new Date());
+      gtag('config', 'UA-15457703-9');
+    }
+  </script>
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>トップページをリニューアルする</title>
+  <meta name="description" content="リニューアル用のトップページデザインを考えて実装する" />
+  <meta name="keywords" content="Programming,Music,HTML5,WebGL,javascript,WebAudio" /> 	
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <meta itemprop="image" content="https://www.sfpgmr.net/img/sfweb.png" />
+  <meta itemprop="name" content="S.F. Web" />
+  
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:site" content="S.F. Web" />
+  <meta name="twitter:url" content="./index18.html" />
+  <meta name="twitter:title" content="リニューアル用のトップページデザイン" />
+  <meta name="twitter:description" content="リニューアル用のトップページデザインを考えて実装する" />
+  <meta name="twitter:image" content="https://www.sfpgmr.net/img/sfweb.png" />
+  
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="./index18.html" />
+  <meta property="og:title" content="リニューアル用のトップページデザイン"/>
+  <meta property="og:site_name" content="S.F. Web" />
+  <meta property="og:description" content="Programming,Music,HTML5,WebGL,javascript,WebAudio">
+  <meta property="og:image" content="https://www.sfpgmr.net/img/sfweb.png">
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    html {
+      margin: 0;
+      padding: 0;
+      font-size:10px;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      background: black;
+      color: white;
+    }
+
+    .contents {
+      width: 100%;
+      position: relative;
+      content: strict;
+    }
+
+    @keyframes blinking {
+      0% {
+        color: black;
+      }
+
+      50% {
+        color: white;
+      }
+
+      100% {
+        color: black;
+      }
+    }
+
+    .loading {
+      font-family: monospace;
+      font-size: 24px;
+      position: fixed;
+      width: 100vw;
+      height: 100vh;
+      text-align: center;
+      padding-top: 50vh;
+      z-index: 32768;
+      background: black;
+      animation: blinking 2s infinite;
+      content: strict;
+    }
+
+
+    .contents>article {
+      background: #f0f0f0;
+      color: #202020;
+      position: absolute;
+      max-height: 960px;
+      overflow: auto;
+      border-radius: 3px;
+    }
+
+    .tweet-header {
+      display: grid;
+      align-items: end;
+      grid-template-columns: 40px 2fr 1fr;
+      grid-template-rows: 1fr;
+      font-size: 12px;
+      font-weight: bold;
+    }
+
+
+    .tweet-img {
+      width: 100%;
+      object-fit: cover;
+    }
+
+    .youtube {
+      position: relative;
+      cursor: pointer;
+    }
+
+    .youtube > img {
+      width: 100%;
+      object-fit: cover;
+    }
+
+    .youtube > svg.player-play {
+      width:64px;
+      height:64px;
+      left:calc(50% - 32px);
+      top:calc(50% - 32px);
+      position:absolute;
+      z-index: 1000;
+      opacity: 0.5;
+    }
+    
+    .youtube:hover > svg.player-play {
+      opacity: 1.0;
+    }
+
+    .youtube:hover .player-play-1 {
+      stroke:#80808080;
+    }
+
+    
+    .youtube > div.yt-title {
+      /*text-shadow: #fff 1px 1px 0;*/
+      font-size: 1.2rem;
+      color:white;
+      background:rgba(0, 0,0,0.5);
+      position:absolute;
+      left:0;
+      top:0;
+      overflow: auto;
+      z-index:998;
+    }
+
+
+    .tweet-profile-img {
+      grid-column: 1/2;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+    }
+
+    .tweet-user-name {
+      grid-column: 2/3;
+    }
+
+    .tweet-date {
+      font-size: 8px;
+      text-align: right;
+      grid-column: 3/4;
+    }
+
+    .contents>twitter-widget {
+      overflow: auto;
+      max-height: 960px;
+      position: absolute;
+    }
+
+    .contents>article>section>.tweet-text {
+      display: block;
+      padding: 4px;
+      word-break: break-all;
+      font-size: 12px;
+    }
+
+    .contents>article>h3 {
+      font-size: 12px;
+    }
+
+    blockquote.card {
+      margin:4px;
+      padding:4px;
+      font-size:12px;
+      background:white;
+      border-radius: 4px;
+    }
+
+    blockquote.card > header {
+      display:grid;
+      grid-gap:4px;
+      gap:4px;
+    }
+
+    blockquote.card-default > header {
+      grid-template-columns:64px 1fr;
+    }
+
+    blockquote.card-large > header {
+      grid-template-columns:1fr;
+    }
+
+    blockquote.card > header > img {
+      width:100%;
+    }
+
+
+    div.no-image {
+      display: block;
+      width:64px;
+      height:64px;
+      background:gray;
+      color:white;
+      text-align: center;
+      line-height: 64px;
+    }
+
+  </style>
+</head>
+
+<body>
+  <div class="loading" id="loading">Loading</div>
+  <header class="top-nav">
+    <h1>S.F. Info.</h1>
+  </header>
+  <div class="contents" id="contents" rendersubtree="invisible skip-activation"> 
+    
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/1189192630506115072/ZXGk_Pv-_normal.jpg" />
+        <p class="tweet-user-name">Dai Tamesue (為末大)@daijapan</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/daijapan/status/1097615883063574528"
+            target="_blank">2019/2/19 6:56:33</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">失望が多い人は期待している。そのうちに他者に期待をしては勝手に怒って疲弊している人がいる。誰も頼んでいないのに自分はこうあるべきだ、みんなもこうあるべきだと考えていて思い通りにならなくて怒り疲れる。他人は他人なのでコントロールできないだけなのだがそれがわからない。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1097601161836654593"
+            target="_blank">2019/2/19 5:58:04</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">まとめを更新しました。「オレオレ言語を作る」 <blockquote class="card card-default"><header><img loading="lazy" src="https://pimg.togetter.com/c5f6d97ea69f2fcf2cc20bd4924645c864ea1c3c/68747470733a2f2f7062732e7477696d672e636f6d2f6d656469612f44696d73492d4f57734141393232492e6a70673a6c61726765" /><a href="https://togetter.com/li/1266927" target="_blank">オレオレ言語を作る - Togetter</a></header><div>node.jsでWASMを吐くコンパイラを作っています。まだ完成には至っていません。。リポジトリ</div></blockquote></p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/534760468/iYobk_normal.jpg" />
+        <p class="tweet-user-name">masafumi@masafumi</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/masafumi/status/1097501503860797442"
+            target="_blank">2019/2/18 23:22:03</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">C++でSIMDで最適化の話 <a href="http://masafumi.cocolog-nifty.com/masafumis_diary/2019/02/csimd-c8a1.html" target="_blank">masafumi.cocolog-nifty.com/masafumis_diar…</a></p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1097582011462561794"
+            target="_blank">2019/2/19 4:41:58</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">WindowsからLinuxファイルへのアクセスが可能に ～「Windows 10 19H1」におけるWSLの改善 - 窓の杜 <blockquote class="card card-large"><header><img loading="lazy" src="https://forest.watch.impress.co.jp/img/wf/list/1170/221/image1.jpg" /><a href="https://forest.watch.impress.co.jp/docs/news/1170221.html" target="_blank">WindowsからLinuxファイルへのアクセスが可能に ～「Windows 10 19H1」におけるWSLの改善 - 窓の杜</a></header><div></div></blockquote> @madonomoriさんから</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/475890350683193345/Ph46nmcY_normal.jpeg" />
+        <p class="tweet-user-name">Oguchi T／小口 高@ogugeo</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/ogugeo/status/1097437691333926912"
+            target="_blank">2019/2/18 19:08:29</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ベゼライト（ベゼリ石）はハンガリーの鉱山技師のベゼリ氏にちなむ銅の二次鉱物で、美しい青色が特徴。日本では秋田県の荒川鉱山や岐阜県の神岡鉱山で見つかり、当初は荒川石や神岡石と呼ばれた。ベゼライトを多く含む球状の石の動画。 <a href="https://imgur.com/gallery/9tSMBtB" target="_blank">imgur.com/gallery/9tSMBtB</a> 外部もかなり青いが内部はさらに青い。 https://t.co/AdIyvlNlh6</p>
+        
+        <video class="tweet-img" controls src="https://video.twimg.com/ext_tw_video/1097437259836444672/pu/vid/360x450/iAenVeH3C3NbPbjG.mp4?tag=6" />
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/378800000687150459/490b5d4910935b763047b1b0c755a481_normal.jpeg" />
+        <p class="tweet-user-name">ボタQ@bota9</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/bota9/status/1097126279545942016"
+            target="_blank">2019/2/17 22:31:03</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">映画「ファースト・マン」に日本の新聞が出てきた。ウチにも当時の新聞があったはずと探したら、ありました。中日新聞の号外。ボロボロですが、50年前のモノなので、ご勘弁。 https://t.co/YVypANULmW</p>
+        
+        <img loading="lazy" class="tweet-img" src="https://pbs.twimg.com/media/DznGhyDUUAMfrtC.jpg" />
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/711160148341862400/Ojtvmp_Y_normal.jpg" />
+        <p class="tweet-user-name">人工知能・機械学習ニュース [公式]@A_I_News</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/A_I_News/status/1096967710473252864"
+            target="_blank">2019/2/17 12:00:57</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">100ページ以上の強化学習の資料が公開（日本語）<br/>強化学習について分かりやすくまとめられています。<br/><br/>《対象読者》<br/>・強化学習について知らない<br/>・機械学習に興味がある<br/>・生物学の分野出身でモデル生成の行動に興味がある<br/>・ゲームを AI に解かせたい<br/><br/>@komi_edtr_1230<br/><a href="https://github.com/komi1230/Resume/tree/master/book_reinforcement" target="_blank">github.com/komi1230/Resum…</a> https://t.co/pEmDu2nwR5</p>
+        
+        <img loading="lazy" class="tweet-img" src="https://pbs.twimg.com/media/Dzk2ThdVYAAxgsU.jpg" />
+        
+        <img loading="lazy" class="tweet-img" src="https://pbs.twimg.com/media/Dzk2T1JU0AAdW-R.jpg" />
+        
+        <img loading="lazy" class="tweet-img" src="https://pbs.twimg.com/media/Dzk2UFzU8AA23FV.jpg" />
+        
+        <img loading="lazy" class="tweet-img" src="https://pbs.twimg.com/media/Dzk2UWfUcAAnO0B.jpg" />
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/737289500305412096/C-z5etGF_normal.jpg" />
+        <p class="tweet-user-name">FM-7好きの姪bot@fm7mei</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/fm7mei/status/1097050165364563968"
+            target="_blank">2019/2/17 17:28:36</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">お父さんに「プログラムをしたいなー」とアピールしてNew3DSとプチコンをねだったんだけど、伯父さんが「んー、手軽だけどBASICより速いぞ」って言って、FM-7用のKコンパイラをくれたよ。<br/>…お、おう。姪は頑張るぞい（汗 <a href="https://goo.gl/YJmf1C" target="_blank">goo.gl/YJmf1C</a> https://t.co/VhZ8zaiIDj</p>
+        
+        <img loading="lazy" class="tweet-img" src="https://pbs.twimg.com/media/DzmBT8CWkAI3-um.jpg" />
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/2463416670/du9qjfz8433snhxqg0e9_normal.jpeg" />
+        <p class="tweet-user-name">I-zk tom@Izk_tom</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/Izk_tom/status/1097060258529177600"
+            target="_blank">2019/2/17 18:08:42</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">締めはこのゲーム。<br/>よく喋るなぁ。 https://t.co/Jgx4Dv9zHN</p>
+        
+        <video class="tweet-img" controls src="https://video.twimg.com/ext_tw_video/1097060218737815552/pu/vid/360x640/bmuj3R9e-EADxN0l.mp4?tag=6" />
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1095654793027014656"
+            target="_blank">2019/2/13 21:03:53</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ランタイムのデバッグを可能にするためにglsl-simulatorは作られたんだよな。cpuでglsl動かしたらそれが可能になるもんね。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1095657217125113856"
+            target="_blank">2019/2/13 21:13:31</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">makeって軽くていいなあ。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1095794671081578496"
+            target="_blank">2019/2/14 6:19:43</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">まずはglsl-simulatorをes6モジュール化することから始めることにする。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1095883285358555136"
+            target="_blank">2019/2/14 12:11:50</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">と思ってソースに手をつけ始めたけど、これはちょっと方向が違うよなあ。。元の路線に戻るか。。って元の路線ってなんだっけ？</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1095883826968969216"
+            target="_blank">2019/2/14 12:13:59</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">要するに型変換のコストをなくしたいんだよな。。あとはglsl風の文法とプリプロセッサ、文字列対応すればいいのだよな。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1095884084729933824"
+            target="_blank">2019/2/14 12:15:00</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ただglsl-simulatorのコードは参考にさせていただこう。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1095972256017145856"
+            target="_blank">2019/2/14 18:05:22</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">pratt parser ベース → peg.js ベースと来たけど、最初のバージョンの路線でいいのではという気もする。が、なんかだんだん夢が広がってきてオーバースペック気味だしそのあたり自分の身の丈に戻さんといかんよなあ。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1095972931945938944"
+            target="_blank">2019/2/14 18:08:03</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">pegブランチを捨てる決断をせんといかん。。というような大袈裟なことではないが。所詮下手の横好きだからね。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1096016366782504962"
+            target="_blank">2019/2/14 21:00:39</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">しかしながらオレオレ言語を作り始めてはや1年が経過しようとしている。wasmの情報もアップデートせねばいかんな。。おそらく今年は何らかの成果物を作ることができると思ってるが、甘いかもしれん。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1096018072874278914"
+            target="_blank">2019/2/14 21:07:26</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">でもちょっとどこまで作ってどうしようとして放置したのか思い出せんな。。今年の1月の頭までは作ってたはずなのだが。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1096018409614073856"
+            target="_blank">2019/2/14 21:08:46</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">こういう時のためにつぶやきをTogetterにまとめといたんだった。。まさに備忘録。。<br/><br/><blockquote class="card card-default"><header><img loading="lazy" src="https://pimg.togetter.com/c5f6d97ea69f2fcf2cc20bd4924645c864ea1c3c/68747470733a2f2f7062732e7477696d672e636f6d2f6d656469612f44696d73492d4f57734141393232492e6a70673a6c61726765" /><a href="https://togetter.com/li/1266927" target="_blank">オレオレ言語を作る - Togetter</a></header><div>node.jsでWASMを吐くコンパイラを作っています。まだ完成には至っていません。。リポジトリ</div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1096020945704120320"
+            target="_blank">2019/2/14 21:18:51</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">そうかあ。<br/><br/>・pratt parserのコードをもとに手書きパーサ＆コードジェネレータを作りかけ<br/>・グラマーの文書化の重要性に気づき、peg.jsで文法を書き直し<br/>・glslに立ち返り、仕様書のBNFをPEGに変換しはじめた<br/><br/>でしたな。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1096021247165485057"
+            target="_blank">2019/2/14 21:20:03</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">この辺も読んどくか。<br/><br/><blockquote class="card card-default"><header><img loading="lazy" src="https://pimg.togetter.com/d3ec717e2354ba54931def7a33097b7e4058088a/68747470733a2f2f7062732e7477696d672e636f6d2f6d656469612f44726e56666c785577414139436f312e6a70673a6c61726765" /><a href="https://togetter.com/li/1287507" target="_blank">コンパイラ勉強会 まとめ #compiler_study - Togetter</a></header><div>2018/11/10(土) コンパイラ勉強会 @ Fixstars のまとめです。</div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1096021788671111168"
+            target="_blank">2019/2/14 21:22:12</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">これも読まんとな。。<br/><br/><blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="https://www.sigbus.info/compilerbook/" target="_blank">低レイヤを知りたい人のためのCコンパイラ作成入門</a></header><div></div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1096021789921013760"
+            target="_blank">2019/2/14 21:22:12</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ベクトル解析の本を図書館で借りたんだけどこれも全然読んでない。というか読む時間がない。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1096022079713886213"
+            target="_blank">2019/2/14 21:23:21</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">binaryen.jsの現バージョンをちらりと見たらなんかSIMDというキーワードを見かけたけどひょっとして実装されたのかな？</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1096023066394615809"
+            target="_blank">2019/2/14 21:27:16</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">これですかな。<br/><blockquote class="card card-default"><header><img loading="lazy" src="https://avatars3.githubusercontent.com/u/11578470?s=400&v=4" /><a href="https://github.com/WebAssembly/binaryen/pull/1820" target="_blank">SIMD by tlively · Pull Request #1820 · WebAssembly/binaryen · GitHub</a></header><div>This PR has:<br/><br/>Parsing and printing<br/>Assembling and disassembling<br/>Interpretation<br/>C API<br/>JS API<br/><br/>and their respective tests. It does not have:<br/><br/>Fuzzing</div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1096023928047194112"
+            target="_blank">2019/2/14 21:30:42</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">あかん。wasmのインストラクション半分忘れとる。。<br/><br/><blockquote class="card card-default"><header><img loading="lazy" src="https://avatars3.githubusercontent.com/u/28916798?s=400&v=4" /><a href="https://github.com/AssemblyScript/binaryen.js/" target="_blank">GitHub - AssemblyScript/binaryen.js: A buildbot for binaryen.js, a port of Binaryen to the Web, with TypeScript support.</a></header><div>A buildbot for binaryen.js, a port of Binaryen to the Web, with TypeScript support. - AssemblyScript/binaryen.js</div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1096133965268676608"
+            target="_blank">2019/2/15 4:47:57</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">そうかそしてbinaryen.jsをwasmでビルドすると動かなくなってしまったんだっけ。。確か。対応しないといかんなあ。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1096143899985248256"
+            target="_blank">2019/2/15 5:27:25</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ビルドしなおすと確かに命令増えとるな。。SIMDですがな。。これでベクトルの演算書いたらいいかんじになるのでは。。 https://t.co/SsTEy1xBLv</p>
+        
+        <img loading="lazy" class="tweet-img" src="https://pbs.twimg.com/media/DzZI7dDU8AAoesY.png" />
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1096150218507116544"
+            target="_blank">2019/2/15 5:52:32</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">前にbinaryen.jsをwasmでビルドしたときの記録はこれだ。<br/>Promiseチェーンがどこで切れてるかをもうちょっと詳細に書いておけばよかったよ。どこで切れてたのか忘れちゃったよ。。<br/><br/><blockquote class="card card-default"><header><img loading="lazy" src="https://www.sfpgmr.net/img/sf.png" /><a href="https://www.sfpgmr.net/blog/entry/2018/05/bf5958a1e29c307c13179264246a313c.html" target="_blank">S.F. Blog:binaryenをwasmでコンパイルしなおす</a></header><div>今作っているオレオレ言語はbinaryen.jsというライブラリでwasmバイナリを出力している。これを使うことによってJS上でwasmオペコードを編集・バイナリ出力・テキスト形式出力などが簡単にできる。https://github.com/AssemblyScript/binaryen.jsbinaryen.jsはbinaryenをemscriptenでコンパイルしたjsファイルである。これを今...</div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1096150738823049216"
+            target="_blank">2019/2/15 5:54:36</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">そこが修正されてるかどうかわからんもんな。。それとemscriptenが吐くJSはES5レベルっぽいのでちと古い。。なんかES6で吐くオプションがありそうな気がするけれど。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1096151498000453632"
+            target="_blank">2019/2/15 5:57:37</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">このSIMDインストラクション群たぶん内部でエミュレーションするんだろうなあ。このインストラクションをそのまま受けることができるブラウザは存在するのかな。 https://t.co/RuXa8JMG2C</p>
+        
+        <img loading="lazy" class="tweet-img" src="https://pbs.twimg.com/media/DzZP6GIUwAAXZB-.png" />
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1096151866621054976"
+            target="_blank">2019/2/15 5:59:05</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ちなみにビルドするときはbuild.jsをこのようにしている。<br/><br/>compileWasm({<br/>  post: path.join(projectDirectory,"scripts" ,"binaryen.js-post.js"),<br/>  pre: path.join(projectDirectory, "scripts" ,"binaryen.js-pre.js"),<br/>  out: "binaryen-wasm.js"<br/>});</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1096152067477925889"
+            target="_blank">2019/2/15 5:59:53</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">binaryenの中身見たらエミュレーションかどうかすぐわかることだけどな。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1096152495531773953"
+            target="_blank">2019/2/15 6:01:35</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">いずれにしろSIMDでベクトルの演算を吐くようにしとけばブラウザやnode.jsがよしなにしてくれるようになるのだろうし、利用しない手はないな。。なんかうれしいなあ。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1096153270580465669"
+            target="_blank">2019/2/15 6:04:39</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">一応ビルドはできたんだけど、動かしてみるのはこれから。。動くかなあ。。<br/><br/><blockquote class="card card-default"><header><img loading="lazy" src="https://avatars0.githubusercontent.com/u/3806814?s=400&v=4" /><a href="https://github.com/sfpgmr/binaryen.js/tree/support-binaryen-wasm-esm" target="_blank">GitHub - sfpgmr/binaryen.js at support-binaryen-wasm-esm</a></header><div>A buildbot for binaryen.js, a port of Binaryen to the Web, with TypeScript support. - sfpgmr/binaryen.js</div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1096250500121411584"
+            target="_blank">2019/2/15 12:31:01</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">やっぱり動かんな。でも直せそうな気がする。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1096513105348091905"
+            target="_blank">2019/2/16 5:54:31</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">どこでダメになってるのかは分かった。binaryen.jsはparseText()というメソッドがある。<br/><br/><blockquote class="card card-default"><header><img loading="lazy" src="https://avatars3.githubusercontent.com/u/28916798?s=400&v=4" /><a href="https://github.com/AssemblyScript/binaryen.js/#module-construction" target="_blank">GitHub - AssemblyScript/binaryen.js: A buildbot for binaryen.js, a port of Binaryen to the Web, with TypeScript support.</a></header><div>A buildbot for binaryen.js, a port of Binaryen to the Web, with TypeScript support. - AssemblyScript/binaryen.js</div></blockquote><br/><br/>Creates a module from Binaryen's s-expression text format (not official stack-style text format).</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1096513540859392000"
+            target="_blank">2019/2/16 5:56:15</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">bynaryen独自のs式を渡すとモジュールバイナリを返してくれるというメソッドである。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1096516573538312192"
+            target="_blank">2019/2/16 6:08:18</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">でこれを使って、watで書いたヘルパ関数をwasmバイナリ化してJSから呼んでいるのだが、このparseText()メソッドで以下のエラーが発生していた。以前のバージョンではエラーは起こらなかった。<br/><br/>[parse exception: f32.reinterpret/i32]Fatal: error in parsing wasm text</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1096517017031458816"
+            target="_blank">2019/2/16 6:10:03</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ちなみにf32.reinterpret/i32というのは、i32のビット配列をそのままに型だけをf32にするというインストラクションである。これ自体は特に問題ないのだが、なぜかここでエラーが発生してしまう。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1096519147574386688"
+            target="_blank">2019/2/16 6:18:31</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ソースはこれである。実際これをwat2wasmに食わせるとエラーなしでwasmバイナリを吐く。だがparseText()に渡すと先ほどのエラーが出るのだ。。<br/><br/><blockquote class="card card-default"><header><img loading="lazy" src="https://avatars0.githubusercontent.com/u/3806814?s=400&v=4" /><a href="https://github.com/sfpgmr/sgl2/blob/binaryen-debug/generateCode.mjs#L4" target="_blank">sgl2/generateCode.mjs at binaryen-debug · sfpgmr/sgl2 · GitHub</a></header><div>TDOPパーサをベースとした言語を作っていく. Contribute to sfpgmr/sgl2 development by creating an account on GitHub.</div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1096519785796366336"
+            target="_blank">2019/2/16 6:21:03</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">私が書いたS式は「official stack-style text format」で、「Binaryen's s-expression text format」じゃないからかな？と推測してるところだが、この「Binaryen's s-expression text format」って何？ちゅうのが今今の状況。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1096520513365528577"
+            target="_blank">2019/2/16 6:23:57</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">S式って論理的・あいまいさがなく・無駄もない感じがしてちょっと好きになった。LISPが根強く残るのもよくわかる気がする。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1096539246309953536"
+            target="_blank">2019/2/16 7:38:23</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">しかし以下のS式はいけるんだよな。<br/>(module<br/> (export "test" (func $test))<br/> (memory $memory 1)<br/> (export "memory" (memory $memory))<br/> (func $test<br/>  (drop(grow_memory (i32.const 3)))<br/>  (<a href="http://i32.store" target="_blank">i32.store</a><br/>   (i32.const 0)<br/>   (i32.mul (current_memory) (i32.const 65536))<br/>  )<br/> )<br/>)</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1096539579232837633"
+            target="_blank">2019/2/16 7:39:43</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">reinterpret/i32という記法がいかんのだろうか。。ちょっとbinaryenのソースを覗いてみるとするか。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1096542540453433344"
+            target="_blank">2019/2/16 7:51:29</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">これがS式のパーサのコードっぽいな。。<br/><blockquote class="card card-default"><header><img loading="lazy" src="https://avatars3.githubusercontent.com/u/11578470?s=400&v=4" /><a href="https://github.com/WebAssembly/binaryen/blob/1.38.10/src/wasm/wasm-s-parser.cpp" target="_blank">binaryen/wasm-s-parser.cpp at 1.38.10 · WebAssembly/binaryen · GitHub</a></header><div>Compiler infrastructure and toolchain library for WebAssembly - WebAssembly/binaryen</div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1096547640123129856"
+            target="_blank">2019/2/16 8:11:44</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ここがreinterpretインストラクションを判別してるコードなんだけどなかなか効率的ですわ。。<br/><blockquote class="card card-default"><header><img loading="lazy" src="https://avatars3.githubusercontent.com/u/11578470?s=400&v=4" /><a href="https://github.com/WebAssembly/binaryen/blob/1.38.10/src/wasm/wasm-s-parser.cpp#L760" target="_blank">binaryen/wasm-s-parser.cpp at 1.38.10 · WebAssembly/binaryen · GitHub</a></header><div>Compiler infrastructure and toolchain library for WebAssembly - WebAssembly/binaryen</div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1096547641800908800"
+            target="_blank">2019/2/16 8:11:45</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">reiまで見ればreinterpretだと判別できるからな。。ただこのコード見ると、型を見てソースの型を判断してるようだから、reinterpret/i32の「/i32」はあってもなくてもいいような気もしないでもない。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1096547643411488768"
+            target="_blank">2019/2/16 8:11:45</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ちょっと気になるのはreinterpret/i32と書いたときにトークナイザーがどういう処理をしてるかなんだな。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1096548742574919680"
+            target="_blank">2019/2/16 8:16:07</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">このエラーを見る限りはきちんと解釈しているようには見えるのだが。もし「/」を区切り文字として解釈してるのであれば違うエラーがでそうな気もする。。<br/>[parse exception: f32.reinterpret/i32]Fatal: error in parsing wasm text</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1096549064886214656"
+            target="_blank">2019/2/16 8:17:24</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">もうちょっとコードを読まないといかんなあ。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1096550155426230272"
+            target="_blank">2019/2/16 8:21:44</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ここを読んでる。<br/><br/>SExpressionParser::parse()<br/><br/><blockquote class="card card-default"><header><img loading="lazy" src="https://avatars3.githubusercontent.com/u/11578470?s=400&v=4" /><a href="https://github.com/WebAssembly/binaryen/blob/1.38.10/src/wasm/wasm-s-parser.cpp#L115" target="_blank">binaryen/wasm-s-parser.cpp at 1.38.10 · WebAssembly/binaryen · GitHub</a></header><div>Compiler infrastructure and toolchain library for WebAssembly - WebAssembly/binaryen</div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1096582783718195200"
+            target="_blank">2019/2/16 10:31:23</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">わかった。。<br/>記法が変わったんだ。。<br/><br/>f32.reinterpret/i32<br/>↓<br/>f32.reinterpret_i32<br/><br/><blockquote class="card card-default"><header><img loading="lazy" src="https://avatars3.githubusercontent.com/u/11578470?s=400&v=4" /><a href="https://github.com/WebAssembly/binaryen/blob/master/src/gen-s-parser.inc#L207" target="_blank">binaryen/gen-s-parser.inc at master · WebAssembly/binaryen · GitHub</a></header><div>Compiler infrastructure and toolchain library for WebAssembly - WebAssembly/binaryen</div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1096584840491675648"
+            target="_blank">2019/2/16 10:39:34</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">いろいろ変わっとる。。<br/><br/>get_local → local.get<br/>i64.extend_u_i32 → i64.extend_i32_u<br/><br/>これはwatと互換性なさそうな感じだけどこのインストラクションでwat2wasmやるとどうなるのかな。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1096585980943843328"
+            target="_blank">2019/2/16 10:44:06</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">やってみたらエラーでたわ。。<br/>wat2wasm ./sgl2lib2.wat<br/>./sgl2lib2.wat:10:6: error: unexpected token "f32.reinterpret_i32", expected an instr.<br/> (f32.reinterpret_i32<br/> ^^^^^^^^^^^^^^^^^^^<br/>./sgl2lib2.wat:12:12: error: unexpected token local.get.<br/> (local.get $i)<br/>  ^^^^^^^^^<br/>.<br/>.</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1096585981866663936"
+            target="_blank">2019/2/16 10:44:06</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ちゅうことはこの一文は正しいなあ。。<br/><br/>parseText(text: string): <br/><br/>Module Creates a module from Binaryen's s-expression text format (not official stack-style text format).<br/><br/><blockquote class="card card-default"><header><img loading="lazy" src="https://avatars3.githubusercontent.com/u/11578470?s=400&v=4" /><a href="https://github.com/WebAssembly/binaryen/wiki/binaryen.js-API#module-construction" target="_blank">binaryen.js API · WebAssembly/binaryen Wiki · GitHub</a></header><div>Compiler infrastructure and toolchain library for WebAssembly - WebAssembly/binaryen</div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1096588317007568896"
+            target="_blank">2019/2/16 10:53:23</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">masterブランチのコードは修正した。binaryen's s-expression text formatにね。。<br/><br/><blockquote class="card card-default"><header><img loading="lazy" src="https://avatars0.githubusercontent.com/u/3806814?s=400&v=4" /><a href="https://github.com/sfpgmr/sgl2/blob/master/generateCode.mjs#L3" target="_blank">sgl2/generateCode.mjs at master · sfpgmr/sgl2 · GitHub</a></header><div>TDOPパーサをベースとした言語を作っていく. Contribute to sfpgmr/sgl2 development by creating an account on GitHub.</div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1096588664799285248"
+            target="_blank">2019/2/16 10:54:45</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">コンパイラのエラーも消えたわ。。<br/><blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="https://github.sfpgmr.net/sgl2/" target="_blank">オレオレ言語を作る</a></header><div>オレオレ言語を作る</div></blockquote> https://t.co/yr0KIbHB4e</p>
+        
+        <img loading="lazy" class="tweet-img" src="https://pbs.twimg.com/media/DzfdksyUwAEUVGC.jpg" />
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1096617456678760448"
+            target="_blank">2019/2/16 12:49:10</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">インストラクションから特殊文字を消すという提案があったのですな。。<br/><br/><blockquote class="card card-default"><header><img loading="lazy" src="https://avatars3.githubusercontent.com/u/11578470?s=400&v=4" /><a href="https://github.com/WebAssembly/spec/issues/884#issuecomment-426433329" target="_blank">Text format revisions · Issue #884 · WebAssembly/spec · GitHub</a></header><div>At the Oct. 2 CG meeting, there was unanimous consent to consider making changes to the text format to improve the consistency of instruction names and remove special characters. Specifically, interest has been expressed in removing slas...</div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1096619220119384065"
+            target="_blank">2019/2/16 12:56:10</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">変わっとる。。「/」が消えたのですな。。<br/><br/><blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="https://webassembly.github.io/spec/core/text/instructions.html" target="_blank">Instructions — WebAssembly 1.0</a></header><div></div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1096665136415236096"
+            target="_blank">2019/2/16 15:58:38</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">wabtもビルドしなおすか。。<br/><br/><blockquote class="card card-default"><header><img loading="lazy" src="https://avatars3.githubusercontent.com/u/11578470?s=400&v=4" /><a href="https://github.com/WebAssembly/wabt" target="_blank">GitHub - WebAssembly/wabt: The WebAssembly Binary Toolkit</a></header><div>The WebAssembly Binary Toolkit. Contribute to WebAssembly/wabt development by creating an account on GitHub.</div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1096665650674622464"
+            target="_blank">2019/2/16 16:00:40</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">まあいずれにしろ、動かなかった原因はテキスト・フォーマットが変わったということでいいかな。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1096666877877661696"
+            target="_blank">2019/2/16 16:05:33</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">wabtをアップデートしたら新しいインストラクションでも大丈夫だったわ。とりあえずよかった。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1096667830483701765"
+            target="_blank">2019/2/16 16:09:20</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">しかしSIMDのサポートが入ったのはちょっと大きいよな。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1096893149937491968"
+            target="_blank">2019/2/17 7:04:40</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ようやくというか、考え迷っていたオレオレ言語の方向性が昨日固まったので、それに従って進めていこうかなと。キーワードは「CPUとGPUコードのシームレスな統合」なんだけど。きれいに言うと。ただそれを実現することは私にとっては容易いことではない。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1096893433493389312"
+            target="_blank">2019/2/17 7:05:48</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ちょっとスッキリした。。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1096250751054041088"
+            target="_blank">2019/2/15 12:32:01</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">wasm SIMDって今開発中のステータスなのね。。 <blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="https://www.chromestatus.com/feature/6533147810332672" target="_blank">WebAssembly SIMD - Chrome Platform Status</a></header><div>WebAssembly SIMD will expose hardware SIMD instructions to WebAssembly applications in a platform-independent way. Implementations will explore using SIMD.js as a basis for WebAssembly SIMD. Add three SIMD vector types: float32x4, float64x2, and int32x4, and corresponding Typed Array views.<br/><br/>SIMD can speed up applications that process lots of data that is naturally organized as 2, 3, or 4 element vectors. SIMD is also useful when compiling native code to WebAssembly.</div></blockquote></p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1096024127113093120"
+            target="_blank">2019/2/14 21:31:29</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">とりあえず眠いので寝ることにしよう。おやすみなさい。。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1096022941593067520"
+            target="_blank">2019/2/14 21:26:47</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">こ、これは。。 <blockquote class="card card-default"><header><img loading="lazy" src="https://pbs.twimg.com/profile_images/413843118031503360/xCeRq7Oc_400x400.jpeg" /><a href="https://twitter.com/kripken/status/1073393055959441409" target="_blank">Alon Zakaiさんのツイート: "Binaryen now has experimental wasm SIMD support, thanks to tlively https://t.co/wQwux5liE6 probably the largest PR we've ever had!"</a></header><div></div></blockquote></p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1094899425132986368"
+            target="_blank">2019/2/11 19:02:19</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">まとめを更新しました。相当紆余曲折してますな。。「オレオレ言語を作る」 <blockquote class="card card-default"><header><img loading="lazy" src="https://pimg.togetter.com/c5f6d97ea69f2fcf2cc20bd4924645c864ea1c3c/68747470733a2f2f7062732e7477696d672e636f6d2f6d656469612f44696d73492d4f57734141393232492e6a70673a6c61726765" /><a href="https://togetter.com/li/1266927" target="_blank">オレオレ言語を作る - Togetter</a></header><div>node.jsでWASMを吐くコンパイラを作っています。まだ完成には至っていません。。リポジトリ</div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1094899683208511488"
+            target="_blank">2019/2/11 19:03:21</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">そろそろGLSL/C++の仕様書読みを再開しようか。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1094901328633942016"
+            target="_blank">2019/2/11 19:09:53</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">仕様書読みでなくて「オレオレ言語」作りだった。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1095090920184107009"
+            target="_blank">2019/2/12 7:43:15</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">気がつくとC++ のドラフトも N4800に上がってるな。。日々進化し続けるC++。<br/><br/><blockquote class="card card-default"><header><img loading="lazy" src="https://avatars3.githubusercontent.com/u/59276?s=400&v=4" /><a href="https://github.com/cplusplus/draft/blob/master/papers/n4800.pdf" target="_blank">draft/n4800.pdf at master · cplusplus/draft · GitHub</a></header><div>C++ standards drafts. Contribute to cplusplus/draft development by creating an account on GitHub.</div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1095092228085542912"
+            target="_blank">2019/2/12 7:48:27</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">オレオレ言語もまずは可能な限りglsl es 3.0に忠実に実装を進めようかなと。できる限りだけどね。文字列関係はC++の仕様を借りようかなあと思ったりしてる。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1095290523340816388"
+            target="_blank">2019/2/12 20:56:24</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">でももうこういうのあるんだよねえ。これをベースにしてwasm化するのがいいかもね。。<br/><br/><blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="http://brrian.org/glsl-simulator/" target="_blank">glsl-simulator</a></header><div>glsl-simulator : A simulator for OpenGL ES 1.0 Shader Language written in JavaScript.</div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1095290761770233858"
+            target="_blank">2019/2/12 20:57:21</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">これのデモページもかなりいい感じ。。<br/><br/><blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="http://brrian.org/glsl-simulator/demo/debugger.html" target="_blank">glsl-simulator: debugger</a></header><div></div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1095291777764941824"
+            target="_blank">2019/2/12 21:01:24</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">このglsl-simulatorはglslのデバッグ目的なんだよね。確かに変数トレースやブレークやステップ実行とかできんもんな。ふつう。CPUでそれをシミュレーションすればできるわな。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1095292084473319424"
+            target="_blank">2019/2/12 21:02:37</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">まあでもプリプロセッサを自作したいちゅう欲望が渦巻いてるので、まずはそこから再開しようかなと。今年中にできるだろうか。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1095412256114786304"
+            target="_blank">2019/2/13 5:00:08</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">去年はコンパイラをどうやれば作れるのかが多少理解できたレベルで終わった。今年はまともなやつを作りたいよねぇ。。でもソースをコンパイルして実行できた時のうれしさは去年第一位ですよ。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1095412256932675585"
+            target="_blank">2019/2/13 5:00:08</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">しかしまずは勉強のため、glsl-simulatorの中身を見てみようか。残念ながらレポジトリは4年前で更新が止まっている。<br/><br/><blockquote class="card card-default"><header><img loading="lazy" src="https://avatars2.githubusercontent.com/u/70680?s=400&v=4" /><a href="https://github.com/burg/glsl-simulator" target="_blank">GitHub - burg/glsl-simulator: A simulator for OpenGL ES 1.0 Shader Language written in JavaScript.</a></header><div>A simulator for OpenGL ES 1.0 Shader Language written in JavaScript. - burg/glsl-simulator</div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1095412257775710208"
+            target="_blank">2019/2/13 5:00:08</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">とりあえずglsl-simulatorをforkした。<br/>中身見るとES6化したくなったり、binaryen使ったりしたくなるだろうだけど、それは成り行きで。。趣味ですから。。<br/><br/><blockquote class="card card-default"><header><img loading="lazy" src="https://avatars0.githubusercontent.com/u/3806814?s=400&v=4" /><a href="https://github.com/sfpgmr/glsl-simulator" target="_blank">GitHub - sfpgmr/glsl-simulator: A simulator for OpenGL ES 1.0 Shader Language written in JavaScript.</a></header><div>A simulator for OpenGL ES 1.0 Shader Language written in JavaScript. - sfpgmr/glsl-simulator</div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1095412258807504897"
+            target="_blank">2019/2/13 5:00:08</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">binaryen.jsはforkしてwasm化した。ASTのレベルでこれを使ってwasmを吐けばいいかなあと。<br/><br/><blockquote class="card card-default"><header><img loading="lazy" src="https://www.sfpgmr.net/img/sf.png" /><a href="https://www.sfpgmr.net/blog/entry/2018/05/bf5958a1e29c307c13179264246a313c.html" target="_blank">S.F. Blog:binaryenをwasmでコンパイルしなおす</a></header><div>今作っているオレオレ言語はbinaryen.jsというライブラリでwasmバイナリを出力している。これを使うことによってJS上でwasmオペコードを編集・バイナリ出力・テキスト形式出力などが簡単にできる。https://github.com/AssemblyScript/binaryen.jsbinaryen.jsはbinaryenをemscriptenでコンパイルしたjsファイルである。これを今...</div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1095412259747028992"
+            target="_blank">2019/2/13 5:00:09</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">あとはちょっと考えてるのはAssemblyScriptを使ってコンパイラを書き直すというパターン。<br/><blockquote class="card card-default"><header><img loading="lazy" src="https://avatars3.githubusercontent.com/u/28916798?s=400&v=4" /><a href="https://github.com/AssemblyScript/assemblyscript" target="_blank">GitHub - AssemblyScript/assemblyscript: Definitely not a TypeScript to WebAssembly compiler 🚀</a></header><div>Definitely not a TypeScript to WebAssembly compiler 🚀 - AssemblyScript/assemblyscript</div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1095412260699222016"
+            target="_blank">2019/2/13 5:00:09</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">AssemblyScriptって筋のいいプロジェクトだと思ってるんだよね。私。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1095415989624164352"
+            target="_blank">2019/2/13 5:14:58</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">binaryen.jsというのは、binaryenをemsciptenでjs化したもの。<br/><br/><blockquote class="card card-default"><header><img loading="lazy" src="https://avatars3.githubusercontent.com/u/11578470?s=400&v=4" /><a href="https://github.com/WebAssembly/binaryen" target="_blank">GitHub - WebAssembly/binaryen: Compiler infrastructure and toolchain library for WebAssembly</a></header><div>Compiler infrastructure and toolchain library for WebAssembly - WebAssembly/binaryen</div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1095415990467276801"
+            target="_blank">2019/2/13 5:14:58</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">これをインフラにしてtypescript風のsyntaxを載せたのがAssemblyScriptである。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1095417036912480256"
+            target="_blank">2019/2/13 5:19:08</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">これ使って書き直せば、コンパイラ自身もwasm化できるんだよな。でまあ最終的にはセルフ・コンパイルしてAssemblyScriptから卒業するというパターンとかどうかなあとか。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1095429824514973696"
+            target="_blank">2019/2/13 6:09:56</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">とりあえずレポジトリをforkしてビルド環境を整えている途中。AssemblyScriptで書き直せるか試してみよう。ん。ちょっとまてよ。。<br/><br/><blockquote class="card card-default"><header><img loading="lazy" src="https://avatars0.githubusercontent.com/u/3806814?s=400&v=4" /><a href="https://github.com/sfpgmr/glsl-simulator" target="_blank">GitHub - sfpgmr/glsl-simulator: A simulator for OpenGL ES 1.0 Shader Language written in JavaScript.</a></header><div>A simulator for OpenGL ES 1.0 Shader Language written in JavaScript. - sfpgmr/glsl-simulator</div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1095429825588686848"
+            target="_blank">2019/2/13 6:09:57</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">pegjsを使うということはpegjsが吐くコードをAssemblyScript化しないといかんよな。うわぁ。。ちゅうことはpegjsも改造が必要。。ちょっと無理かもな。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1095432445569060864"
+            target="_blank">2019/2/13 6:20:21</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">パーサー部分を手書きすれば回避できるんだけど、どうしようかなあ。。pegjs自体をAssemblyScriptで書き直すという考えもあるけど、そうなるとそれ自体の依存モジュールをAssemblyScript化しないといけなくなるよなあ。。この筋はちょっとあきらめるか。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1095432446374424576"
+            target="_blank">2019/2/13 6:20:22</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">結局ファイルI/Oとか考えるとJSを使わないといけないように思うから、JSをまとめ役として考えて、モジュールレベルでAssmeblyScriptの使用を検討するのがいいよなあ。。使うのなら。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1095448293067304960"
+            target="_blank">2019/2/13 7:23:20</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">binaryen.jsで直接wasmを吐く形で当面は進めるかな。。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/1183794478986887173/vPhKKYI0_normal.jpg" />
+        <p class="tweet-user-name">スナップドラゴン1.3GHz@ドラガリ@Snapdragon_XZ</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/Snapdragon_XZ/status/1094827154804625409"
+            target="_blank">2019/2/11 14:15:09</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">パソコンの改造に欠かせない知識<br/>パソコンの分解中にネジ山が潰れてしまった時の緊急的な対処方法。<br/>＃パソコン改造 #パソコン分解 https://t.co/R8shDHr8mO</p>
+        
+        <video class="tweet-img" controls src="https://video.twimg.com/ext_tw_video/1094825618019999745/pu/vid/1280x720/aEeYf3rnzAHVa5PI.mp4?tag=6" />
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/1101228794818584577/Vgk8g2SL_normal.png" />
+        <p class="tweet-user-name">Adam Samson@adamshmamshon</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/adamshmamshon/status/1094924214069592064"
+            target="_blank">2019/2/11 20:40:49</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">Wave 3.1 - Made a rotating version to show just how bonkers the shader turned out to be #madewithunity #unity3d #HDRP https://t.co/8WHPjfszxM</p>
+        
+        <video class="tweet-img" controls src="https://video.twimg.com/ext_tw_video/1094924140673462272/pu/vid/720x720/CMri95_FSIzlfTVS.mp4?tag=6" />
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1095289461905055745"
+            target="_blank">2019/2/12 20:52:11</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">40年近く前だと静止画でもレイトレでレンダリングするのに数日かかってたんですよね。。隔世の感がありますな。。 <blockquote class="card card-default"><header><img loading="lazy" src="https://pbs.twimg.com/ext_tw_video_thumb/1095205540685205505/pu/img/Fs0JaFyaJ8PAxPEV.jpg" /><a href="https://twitter.com/hannover_bloss/status/1095205626186059776" target="_blank">はのばさんのツイート: "レイトレ動いた〜！ #UE4… "</a></header><div></div></blockquote></p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/688323178/ballip_rev20_normal.jpg" />
+        <p class="tweet-user-name">Kumagai, M@kumarobo</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/kumarobo/status/1092207430837055488"
+            target="_blank">2019/2/4 8:45:18</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">おっかねー(笑<br/>というか、宇宙開発ってコンサバ技術で積み上げる物だとおもっていたのだけど、ここに見えるだけでもアグレッシブ。<br/>＞ apollo11号のソースコードを読みつつ - aerith7’s blog <a href="http://aerith7.hatenablog.com/entry/2016/12/21/171726" target="_blank">aerith7.hatenablog.com/entry/2016/12/…</a></p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1095064358386683904"
+            target="_blank">2019/2/12 5:57:43</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">昔作ったShadertoyで作ったシェーダーで2Dラインを引くコード。なんとも地味なGPUの使い方。。<br/><br/><blockquote class="card card-default"><header><img loading="lazy" src="https://www.shadertoy.com/media/shaders/4ltSzH.jpg" /><a href="https://www.shadertoy.com/view/4ltSzH" target="_blank">Shader - Shadertoy BETA</a></header><div></div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1095064359301111808"
+            target="_blank">2019/2/12 5:57:43</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">それを作った時の記録がこれ。「対象ピクセルが線分上にある場合はそこに色を付ける」っていう考えで作ったんだよな。<br/><br/><blockquote class="card card-default"><header><img loading="lazy" src="https://www.sfpgmr.net/img/sf.png" /><a href="https://www.sfpgmr.net/blog/entry/2016/11/06/095327.html" target="_blank">S.F. Blog:フラグメント・シェーダー(Shadertoy)で2D Line（線分）を描く</a></header><div>フラグメント・シェーダー(Shadertoy)で線分を書いてみようと思った。Shadertoyのフラグメント・シェーダーは描画するピクセルごとにmainImage(out vec4 fragColor, in vec2 fragCoord)が呼ばれる。画面のピクセル個数分このmainImage()が呼ばれるのである。この関数で描画色を決め、fragColorに色をセットする。fragCoordは描...</div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1095064360337137664"
+            target="_blank">2019/2/12 5:57:43</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">でもっと簡単に線を引いている人がいて、衝撃を受けたという。。<br/><br/>下のポストのコメントに書いてあったんだけど。。<br/><br/><blockquote class="card card-default"><header><img loading="lazy" src="https://www.shadertoy.com/media/shaders/Xd2XWR.jpg" /><a href="https://www.shadertoy.com/view/Xd2XWR" target="_blank">Shader - Shadertoy BETA</a></header><div></div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1095064361402429440"
+            target="_blank">2019/2/12 5:57:43</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">引用するとこれなんですが。<br/><br/>float line( in vec2 p, in vec2 a, in vec2 b )<br/>{<br/>    vec2 pa = p - a;<br/>    vec2 ba = b - a;<br/>    float h = clamp( dot(pa,ba)/dot(ba,ba), 0.0, 1.0 );<br/>    float d = length( pa - ba*h );<br/>    return clamp(((1.0 - d)-0.99)*100.0, 0.0, 1.0);<br/>}</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1095064362606182400"
+            target="_blank">2019/2/12 5:57:44</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">まあこのコメントの人はiqさんだったのですが。。かの有名な「elevated」という4k intro デモを作った人だったという。。<br/><br/><div class="youtube" data-type="yt" id="jB0vBmiTr6o"><div class="yt-title">Youtube - elevated by Rgba & TBC | 4k intro (FullHD 1080p demoscene demo)</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/jB0vBmiTr6o" class="youtube" src="https://i.ytimg.com/vi/jB0vBmiTr6o/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1095064827402235906"
+            target="_blank">2019/2/12 5:59:34</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">これのwebgl版がこれ。今にすれば「ふつう」なのかもしれないが、当時は衝撃を受けたんだなあ。こういうのに。。<br/><br/><blockquote class="card card-default"><header><img loading="lazy" src="https://www.shadertoy.com/media/shaders/MdX3Rr.jpg" /><a href="https://www.shadertoy.com/view/MdX3Rr" target="_blank">Shader - Shadertoy BETA</a></header><div></div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1095065314792861696"
+            target="_blank">2019/2/12 6:01:31</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">これとかもすごいよねえ。。<br/><br/><blockquote class="card card-default"><header><img loading="lazy" src="https://www.shadertoy.com/media/shaders/ld3Gz2.jpg" /><a href="https://www.shadertoy.com/view/ld3Gz2" target="_blank">Shader - Shadertoy BETA</a></header><div></div></blockquote> https://t.co/eCTlmy6HWd</p>
+        
+        <img loading="lazy" class="tweet-img" src="https://pbs.twimg.com/media/DzJz_Q0UwAAj8XV.jpg" />
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1095066142106824705"
+            target="_blank">2019/2/12 6:04:48</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">シェーダーだけで作ったパックマンとかもうどうやってんだ。。<br/><br/><blockquote class="card card-default"><header><img loading="lazy" src="https://www.shadertoy.com/media/shaders/Ms3XWN.jpg" /><a href="https://www.shadertoy.com/view/Ms3XWN" target="_blank">Shader - Shadertoy BETA</a></header><div></div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1095066820891922432"
+            target="_blank">2019/2/12 6:07:30</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">3DCGは数学や物理の知識が役に立つというか、知識があればあるほど生産性向上に繋がる分野だと思うなあ。。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1095057353789984768"
+            target="_blank">2019/2/12 5:29:52</a></p>
+      </header>
+      <section>
+        <p class="tweet-text"><blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="http://glslsandbox.com/" target="_blank">GLSL Sandbox Gallery</a></header><div></div></blockquote></p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/982925920536223745/4sNQXIl9_normal.jpg" />
+        <p class="tweet-user-name">全手動ドラム式でこぽん@saku2kosaku</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/saku2kosaku/status/1094821279973105664"
+            target="_blank">2019/2/11 13:51:48</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">メンがヘラって何もやる気が起きないから、photoshopで金星をたこ焼きにしてる。結構いい感じにできたので才能を感じている。 https://t.co/PgoaMtWCZU</p>
+        
+        <img loading="lazy" class="tweet-img" src="https://pbs.twimg.com/media/DzGV2__VAAAAiu7.jpg" />
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1094931409947439104"
+            target="_blank">2019/2/11 21:09:25</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">TLにモジュラー接続の画面が出てきてた。私も昔WebAudioのNodeをモジュラー接続して鳴らすやつ途中まで作ってたのを思い出したな。。<br/><br/><blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="http://github.sfpgmr.net/webaudiomodular/dist/20151206/" target="_blank"></a></header><div></div></blockquote> https://t.co/gmQjDZWuoK</p>
+        
+        <img loading="lazy" class="tweet-img" src="https://pbs.twimg.com/media/DzH6QpNVsAE228u.jpg" />
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1094931967584329728"
+            target="_blank">2019/2/11 21:11:38</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">結構頑張ってたみたいだな。。<br/><br/><blockquote class="card card-default"><header><img loading="lazy" src="https://www.sfpgmr.net/img/sf.png" /><a href="https://www.sfpgmr.net/blog/archive/category/webaudiomodular.html" target="_blank">S.F. Blog:キーワード「webaudiomodular」 のアーカイブ</a></header><div>キーワード「webaudiomodular」 のアーカイブ</div></blockquote><br/><br/>シーケンサーのエディタを作ってる途中で放置したか。。 https://t.co/37h8K7fNwi</p>
+        
+        <img loading="lazy" class="tweet-img" src="https://pbs.twimg.com/media/DzH6wInU8AE8qIc.jpg" />
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1094932124497371136"
+            target="_blank">2019/2/11 21:12:15</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">放置してもう3年以上になるのか。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1094932496574177281"
+            target="_blank">2019/2/11 21:13:44</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">WebAudio自体中身変わってるだろうから、実際に音が鳴るかというと怪しい。。が、触ってみたところUIはちゃんと動いたな。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1094933021583499266"
+            target="_blank">2019/2/11 21:15:49</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ほう。。EGのエディタとかも一応作ってたのか。すっかり忘れとるわ。。 https://t.co/7xPzSwcyDv</p>
+        
+        <img loading="lazy" class="tweet-img" src="https://pbs.twimg.com/media/DzH7tNcUUAA5d1K.jpg" />
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1094933519728488449"
+            target="_blank">2019/2/11 21:17:48</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">一応使い方はここに書いてあるな。。<br/><br/><blockquote class="card card-default"><header><img loading="lazy" src="https://www.sfpgmr.net/img/sf.png" /><a href="https://www.sfpgmr.net/blog/entry/2015/12/06/192341.html" target="_blank">S.F. Blog:Web Audio APIのモジュラー接続デモを作ってみる（１７） - localStorageを使ってデータ保存・読み込みを作る</a></header><div>コードを改良するたびにテスト用のモジュラー接続を作ったりデータ入力をするのが面倒なのでlocalStorageに保存するようにしてみた。Bugはあるがとりあえず保存・読み込みができるようになった。データ形式はJSONである。例によってChromeのみで動作する。http://sfpgmr.github.io/webaudiomoduler/dist/20151206/使い方だが、マウス操作は以下の...</div></blockquote></p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/827806020273463296/Xrw0zkDf_normal.jpg" />
+        <p class="tweet-user-name">Masatatsu Nakamura@mattatz</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/mattatz/status/1094900484756844545"
+            target="_blank">2019/2/11 19:06:32</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">インプットから複数アウトプットへのデータフロー、コネクションのオーバーライト、Ctrl+Dragで描けるPolylineでコネクションを切るUIを実装した💯 #javascript #svg https://t.co/5dagS38jKK</p>
+        
+        <video class="tweet-img" controls src="https://video.twimg.com/ext_tw_video/1094899361555767296/pu/vid/564x360/AXbk3YfgFvzaAPO5.mp4?tag=6" />
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/562661741771771904/iUp6GZ04_normal.jpeg" />
+        <p class="tweet-user-name">寺町電人@DentoTeramachi</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/DentoTeramachi/status/1094267761411293184"
+            target="_blank">2019/2/10 1:12:19</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">おまけ。&lt;VECTOR PILOT(ベクターパイロット)&gt;。ゲーム本体の完成度はもちろん、ほぼ”まんま”のサウンドがたまりません! 5面をクリアすると何かが起こる･･･! #ocyame https://t.co/aEVJcKEBKE</p>
+        
+        <video class="tweet-img" controls src="https://video.twimg.com/ext_tw_video/1094267700862279681/pu/vid/320x376/3x-IzNy-F0XT-lRm.mp4?tag=6" />
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/669048659649040384/LUjcnJ7m_normal.jpg" />
+        <p class="tweet-user-name">イスラエルエリカちゃん@syuu1228</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/syuu1228/status/1094747328836100096"
+            target="_blank">2019/2/11 8:57:57</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">カーネル構造にかなり手を加えた「新しいWindows 10」が噂されている、みたいな話なんだけども、そこまで手を入れたものも10って呼ぶの… <a href="https://twitter.com/syuu1228/status/1094746359796662272?s=21" target="_blank">twitter.com/syuu1228/statu…</a></p>
+        
+      </section>
+      
+    </article>
+    
+  </div>
+  <footer>
+    CopyLight 2019 Satoshi Fujiwara
+  </footer>
+  <script async src="https://platform.twitter.com/widgets.js"></script>
+
+  <script async src="./index.js"></script>
+
+</body>
+
+</html>

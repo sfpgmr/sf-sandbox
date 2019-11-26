@@ -204,6 +204,7 @@
 
   };
 
+  let observer;
 
   window.addEventListener('load', () => {
     const tag = document.createElement('script');
@@ -212,16 +213,27 @@
     firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
     document.getElementById('loading').remove();
     masonry.layout();
-    contents.setAttribute('rendersubtree', '');
 
-    fetch('./index1.html')
-      .then(async c=>{
-        const domparser = new DOMParser();
-        const dom = domparser.parseFromString(await c.text(),'text/html');
-        const articles = dom.querySelectorAll('#contents > article');
-        document.getElementById('contents').append(...articles);
-        masonry.layout();
-      });
+    const contents = document.getElementById('contents');
+    contents.setAttribute('rendersubtree', '');
+    
+    observer = new IntersectionObserver(changes=>{
+      console.log('i');
+      const c = changes[0];
+      console.log(c.boundingClientRect.height,c.intersectionRect.height,c.rootBounds.height,c.intersectionRatio,c.isIntersecting,c.isVisible);
+    },{root: null,
+      rootMargin: "0px",threshold:[0.0,0.25,0.5,0.75,1.0]});
+
+    observer.observe(contents);
+
+    // fetch('./index1.html')
+    //   .then(async c=>{
+    //     const domparser = new DOMParser();
+    //     const dom = domparser.parseFromString(await c.text(),'text/html');
+    //     const articles = dom.querySelectorAll('#contents > article');
+    //     document.getElementById('contents').append(...articles);
+    //     masonry.layout();
+    //   });
 
     //masonry.layout();
     //twttr.events.bind('rendered',masonry.layout.bind(masonry));

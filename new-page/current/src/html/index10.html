@@ -1,0 +1,2966 @@
+<!DOCTYPE html>
+<html lang="ja" prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb# article: http://ogp.me/ns/article#">
+
+<head>
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-15457703-9"></script>
+  <script>
+    if (!location.hostname.match(/localhost/)) {
+      window.dataLayer = window.dataLayer || [];
+      function gtag() { dataLayer.push(arguments); }
+      gtag('js', new Date());
+      gtag('config', 'UA-15457703-9');
+    }
+  </script>
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>トップページをリニューアルする</title>
+  <meta name="description" content="リニューアル用のトップページデザインを考えて実装する" />
+  <meta name="keywords" content="Programming,Music,HTML5,WebGL,javascript,WebAudio" /> 	
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <meta itemprop="image" content="https://www.sfpgmr.net/img/sfweb.png" />
+  <meta itemprop="name" content="S.F. Web" />
+  
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:site" content="S.F. Web" />
+  <meta name="twitter:url" content="./index10.html" />
+  <meta name="twitter:title" content="リニューアル用のトップページデザイン" />
+  <meta name="twitter:description" content="リニューアル用のトップページデザインを考えて実装する" />
+  <meta name="twitter:image" content="https://www.sfpgmr.net/img/sfweb.png" />
+  
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="./index10.html" />
+  <meta property="og:title" content="リニューアル用のトップページデザイン"/>
+  <meta property="og:site_name" content="S.F. Web" />
+  <meta property="og:description" content="Programming,Music,HTML5,WebGL,javascript,WebAudio">
+  <meta property="og:image" content="https://www.sfpgmr.net/img/sfweb.png">
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    html {
+      margin: 0;
+      padding: 0;
+      font-size:10px;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      background: black;
+      color: white;
+    }
+
+    .contents {
+      width: 100%;
+      position: relative;
+      content: strict;
+    }
+
+    @keyframes blinking {
+      0% {
+        color: black;
+      }
+
+      50% {
+        color: white;
+      }
+
+      100% {
+        color: black;
+      }
+    }
+
+    .loading {
+      font-family: monospace;
+      font-size: 24px;
+      position: fixed;
+      width: 100vw;
+      height: 100vh;
+      text-align: center;
+      padding-top: 50vh;
+      z-index: 32768;
+      background: black;
+      animation: blinking 2s infinite;
+      content: strict;
+    }
+
+
+    .contents>article {
+      background: #f0f0f0;
+      color: #202020;
+      position: absolute;
+      max-height: 960px;
+      overflow: auto;
+      border-radius: 3px;
+    }
+
+    .tweet-header {
+      display: grid;
+      align-items: end;
+      grid-template-columns: 40px 2fr 1fr;
+      grid-template-rows: 1fr;
+      font-size: 12px;
+      font-weight: bold;
+    }
+
+
+    .tweet-img {
+      width: 100%;
+      object-fit: cover;
+    }
+
+    .youtube {
+      position: relative;
+      cursor: pointer;
+    }
+
+    .youtube > img {
+      width: 100%;
+      object-fit: cover;
+    }
+
+    .youtube > svg.player-play {
+      width:64px;
+      height:64px;
+      left:calc(50% - 32px);
+      top:calc(50% - 32px);
+      position:absolute;
+      z-index: 1000;
+      opacity: 0.5;
+    }
+    
+    .youtube:hover > svg.player-play {
+      opacity: 1.0;
+    }
+
+    .youtube:hover .player-play-1 {
+      stroke:#80808080;
+    }
+
+    
+    .youtube > div.yt-title {
+      /*text-shadow: #fff 1px 1px 0;*/
+      font-size: 1.2rem;
+      color:white;
+      background:rgba(0, 0,0,0.5);
+      position:absolute;
+      left:0;
+      top:0;
+      overflow: auto;
+      z-index:998;
+    }
+
+
+    .tweet-profile-img {
+      grid-column: 1/2;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+    }
+
+    .tweet-user-name {
+      grid-column: 2/3;
+    }
+
+    .tweet-date {
+      font-size: 8px;
+      text-align: right;
+      grid-column: 3/4;
+    }
+
+    .contents>twitter-widget {
+      overflow: auto;
+      max-height: 960px;
+      position: absolute;
+    }
+
+    .contents>article>section>.tweet-text {
+      display: block;
+      padding: 4px;
+      word-break: break-all;
+      font-size: 12px;
+    }
+
+    .contents>article>h3 {
+      font-size: 12px;
+    }
+
+    blockquote.card {
+      margin:4px;
+      padding:4px;
+      font-size:12px;
+      background:white;
+      border-radius: 4px;
+    }
+
+    blockquote.card > header {
+      display:grid;
+      grid-gap:4px;
+      gap:4px;
+    }
+
+    blockquote.card-default > header {
+      grid-template-columns:64px 1fr;
+    }
+
+    blockquote.card-large > header {
+      grid-template-columns:1fr;
+    }
+
+    blockquote.card > header > img {
+      width:100%;
+    }
+
+
+    div.no-image {
+      display: block;
+      width:64px;
+      height:64px;
+      background:gray;
+      color:white;
+      text-align: center;
+      line-height: 64px;
+    }
+
+  </style>
+</head>
+
+<body>
+  <div class="loading" id="loading">Loading</div>
+  <header class="top-nav">
+    <h1>S.F. Info.</h1>
+  </header>
+  <div class="contents" id="contents" rendersubtree="invisible skip-activation"> 
+    
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1133306192099282944"
+            target="_blank">2019/5/28 18:37:06</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">wasmのテキストフォーマットでコードを書いてるが、なかなか面白い。S式の簡潔さが心地よい。lispをきちんと学習したくなる。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1125704308077371392"
+            target="_blank">2019/5/7 19:09:56</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">いろいろあって今は、wavファイルをjsで読み込もうとしている私。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1125704888506146816"
+            target="_blank">2019/5/7 19:12:14</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">RYDEENのカバーにつける動画をアップデートするためだが。音づくりは一つのマイルストーンに達したので。マイルストーンはあと100段階くらいありそうだが。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1125880554224644096"
+            target="_blank">2019/5/8 6:50:16</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">wavフォーマットのデータ読み込みは過去何度もやってることだけど、知らないことがまだまだ多いな。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1125897840171962368"
+            target="_blank">2019/5/8 7:58:57</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">パートごとに波形データを横にスクロールして表示しようとしてるだけですけどね。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1125897842441084929"
+            target="_blank">2019/5/8 7:58:58</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">リニアPCMのデータは読めるようになった。汎用じゃないから今のところこれで十分ですな。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1125898894208978945"
+            target="_blank">2019/5/8 8:03:09</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">そのデータをDataTextureにして少しずつgpuに渡して、フラグメントシェーダで描くのですわ。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1125899532925980672"
+            target="_blank">2019/5/8 8:05:41</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">three.jsがwebgl2.0に対応したのでまたthree.jsのShaderMaterialでゴニョゴニョやろうとしてるわけですな。の割にはglsl es 3.0では書いてないのですが（笑）。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1125900263246532608"
+            target="_blank">2019/5/8 8:08:35</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">シェーダでこういうことしようとすると、canvasで波形を描くのとは違ったアプローチをしないといけないので、私なんぞの凡人は結構頭を絞られるのですわ。まさに修行（笑）。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1126048198328369153"
+            target="_blank">2019/5/8 17:56:26</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">glsl es 3.0だと配列の添字の定数縛りが外れるのか。書き直すか。。使うかどうかわからんけど。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1126229199331577856"
+            target="_blank">2019/5/9 5:55:40</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">今のところこんな感じ。。シェーダーを#version 300 esで書き直し、パートごとに波形を描けるようにしてみたところ。 https://t.co/PqoBu7VZq7</p>
+        
+        <img loading="lazy" class="tweet-img" src="https://pbs.twimg.com/media/D6ErfGqVUAAbHFG.png" />
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1126233482751909888"
+            target="_blank">2019/5/9 6:12:41</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">いうてもこんな簡単なコードなんですけどね。。<br/>板ポリにフラグメント・シェーダーで描くというごくごく簡単なしくみ。。これに苦悩する私の凡人さよ。。 https://t.co/Zwsrh39uSk</p>
+        
+        <img loading="lazy" class="tweet-img" src="https://pbs.twimg.com/media/D6EvYedUwAAhW6I.png" />
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1126233484945547265"
+            target="_blank">2019/5/9 6:12:41</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">WebGL 2.0だとシェーダー配列の添え字が定数でなくてもよくなったのはやっぱり大きいなあ。<br/><br/>in vec2 vUv;<br/>.<br/>.<br/>float amplitude = amp[int(vUv.y * CHANNEL)];</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1126256492573642752"
+            target="_blank">2019/5/9 7:44:07</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">three.jsのwebgl 2.0の対応でちょっと面白いなと思ったのは、<br/><br/>#define varying out<br/><br/>かしてるとこ。<br/><br/><blockquote class="card card-large"><header><img loading="lazy" src="https://repository-images.githubusercontent.com/576201/cf70a380-6b1d-11e9-9ce2-457e9517de10" /><a href="https://github.com/mrdoob/three.js/blob/1bb851f8decaeb855edf2e23e2278f405350b4a6/src/renderers/webgl/WebGLProgram.js#L553" target="_blank">three.js/WebGLProgram.js at 1bb851f8decaeb855edf2e23e2278f405350b4a6 · mrdoob/three.js · GitHub</a></header><div>JavaScript 3D library. Contribute to mrdoob/three.js development by creating an account on GitHub.</div></blockquote><br/><br/>確かにこのあたりこうしとけば既存のコードがes 3.0でも動くようになるもんなあ。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1126257326501924864"
+            target="_blank">2019/5/9 7:47:26</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">なので私のフラグメントシェーダーコードもtexture2D()が使えたのですな。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1126599529829036032"
+            target="_blank">2019/5/10 6:27:13</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">とりあえず動画化してアップ。ちょっと地味ですな。<br/><br/><div class="youtube" data-type="yt" id="a6D_FiexY7Y"><div class="yt-title">Youtube - YMO - RYDEEN (91)</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/a6D_FiexY7Y" class="youtube" src="https://i.ytimg.com/vi/a6D_FiexY7Y/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1129697918183591937"
+            target="_blank">2019/5/18 19:39:07</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">トータルコンプ・EQを主に調整。ちょっとバスドラの音量も下げてみた。。<br/><br/><div class="youtube" data-type="yt" id="DOLBXwisM5A"><div class="yt-title">Youtube - YMO - RYDEEN (92)</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/DOLBXwisM5A" class="youtube" src="https://i.ytimg.com/vi/DOLBXwisM5A/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1130059602622423040"
+            target="_blank">2019/5/19 19:36:19</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ベースとバランス調整、そしてWebGL(three.js) + electronで作っている波形描画動画？を変えてみた。ちょっと見やすくなったかも。。<br/><div class="youtube" data-type="yt" id="9zGiQcrImpY"><div class="yt-title">Youtube - YMO - RYDEEN (93)</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/9zGiQcrImpY" class="youtube" src="https://i.ytimg.com/vi/9zGiQcrImpY/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1130060506960502785"
+            target="_blank">2019/5/19 19:39:55</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">electronで1フレームずつjpegに落として、それを音声とffmpegで動画化しているというベタなやり方。結構時間がかかる。10分くらいかかるよなあ。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1130061963000569857"
+            target="_blank">2019/5/19 19:45:42</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">youtubeはおそらくカメラ撮影した動画をターゲットにチューニングしてるだろうから、画面全体が動くようなのを作ると途端に画像が荒れる。そういうのって圧縮効率が悪くなるからだろうなあとか思ってる。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1132225473784606720"
+            target="_blank">2019/5/25 19:02:43</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ハイハットを差し替え。そして微調整。<br/><br/><div class="youtube" data-type="yt" id="4TphvABArpI"><div class="yt-title">Youtube - YMO - RYDEEN (94)</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/4TphvABArpI" class="youtube" src="https://i.ytimg.com/vi/4TphvABArpI/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1132761508314664961"
+            target="_blank">2019/5/27 6:32:43</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">久しぶりに「TECHNOPOLIS」をいじる。この曲もいろいろ調整しないとな。。難しいわ。。<br/><div class="youtube" data-type="yt" id="Ca5QiJ8RWE4"><div class="yt-title">Youtube - YMO - TECHNOPOLIS (6)</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/Ca5QiJ8RWE4" class="youtube" src="https://i.ytimg.com/vi/Ca5QiJ8RWE4/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1132566692863758336"
+            target="_blank">2019/5/26 17:38:36</a></p>
+      </header>
+      <section>
+        <p class="tweet-text"><div class="youtube" data-type="yt" id="MY4hyWds6Qk"><div class="yt-title">Youtube - Optigan TV Commercial</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/MY4hyWds6Qk" class="youtube" src="https://i.ytimg.com/vi/MY4hyWds6Qk/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1132562196334927872"
+            target="_blank">2019/5/26 17:20:44</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">KRAFTWERKが使ってるのはメロトロンではなくオーケストロンなのか？<br/><br/><div class="youtube" data-type="yt" id="JCybRH8gIBI"><div class="yt-title">Youtube - Vako Orchestron Optical Disc Playback Sampler</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/JCybRH8gIBI" class="youtube" src="https://i.ytimg.com/vi/JCybRH8gIBI/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1132563428722167809"
+            target="_blank">2019/5/26 17:25:38</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">Wikipediaにはこう書いてあるな。。<br/>The band Kraftwerk made heavy use of the Orchestron on their albums Radio-Activity (1975), Trans Europe Express (1977) and The Man-Machine (1978).</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1132563903290830851"
+            target="_blank">2019/5/26 17:27:31</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">メロトロンではないのね。。光学ディスクってなんだろうな。さっきの動画に映ってたけどね。。<br/><div class="youtube" data-type="yt" id="JCybRH8gIBI"><div class="yt-title">Youtube - Vako Orchestron Optical Disc Playback Sampler</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/JCybRH8gIBI" class="youtube" src="https://i.ytimg.com/vi/JCybRH8gIBI/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1132564208699101184"
+            target="_blank">2019/5/26 17:28:44</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">Europe Endlessのコーラス・ボイスもオーケストロンなんですな。。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1130056267378987010"
+            target="_blank">2019/5/19 19:23:04</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">この試合を観てから「シダックス・ファイヤー」を口ずさまない日はない。。<br/><div class="youtube" data-type="yt" id="B7v9ygOO_Lw"><div class="yt-title">Youtube - シダックスファイヤー　2018秋決勝　中央学院1回表</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/B7v9ygOO_Lw" class="youtube" src="https://i.ytimg.com/vi/B7v9ygOO_Lw/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1130056451601252352"
+            target="_blank">2019/5/19 19:23:48</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">千葉の高校の応援は全国的にみてもレベルが高いのではないかと個人的には思ってる。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1130056933430317056"
+            target="_blank">2019/5/19 19:25:43</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">私大阪出身だが、夏の予選でもこんなにガッツリ応援してなかったと思うんだけどね。でも府大会のテレビ中継なんて観てたのもう25年以上前だから今どうなってるかわからんけど。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1130057326717575169"
+            target="_blank">2019/5/19 19:27:16</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">この一回の中央学院の攻撃がすごかったんだよなあ。ストライク取りにきた甘い球を逃さないんだよな。。中央学院って強い。。てこの時思った。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1130058042462969860"
+            target="_blank">2019/5/19 19:30:07</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">中央学院もピッチャーが今年は課題かもしれんね。。打撃は素晴らしいものがある。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1130058545301340160"
+            target="_blank">2019/5/19 19:32:07</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">専大松戸に7-3で負けたんだけど、あの横山くんから3点取ってるのはやっぱりすごいんじゃないかな。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1130419838550077440"
+            target="_blank">2019/5/20 19:27:46</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">専大松戸は10-6で桐光学園に勝利。専大松戸の先発は千葉県大会でも決勝で先発で投げた西村くん。杉田くんかな？と思ってたけど、違った。ただ西村くんは捕まって杉田くんにスイッチ。杉田くんはそのあとはしっかり抑えた。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1130419839711948802"
+            target="_blank">2019/5/20 19:27:46</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">やっぱり横山くんと杉田君の二本柱はすごいよなあ。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1130420151470264320"
+            target="_blank">2019/5/20 19:29:00</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">次は東海大相模。おそらく明日は雨だから中1日空くんじゃないだろうか。そうすると横山くん先発ー杉田くんリリーフの黄金の継投で最少失点で勝利の可能性も出てきたな。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1130440536400121856"
+            target="_blank">2019/5/20 20:50:01</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">投手力・打力で見るといまいまのベスト４の順位は<br/><br/>１.専大松戸<br/>２.木更津総合<br/>３.習志野<br/>４.銚子商<br/><br/>の順になるよなあ。ピッチャーの枚数と完成度は専大松戸が1つ頭出てる気がする。習志野と木更津総合がどれだけ伸びてくるかだけど、ポテンシャルは木更津総合のほうに分があるように思うなあ。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1130440537654288384"
+            target="_blank">2019/5/20 20:50:01</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">木総は根本くんがどれだけ復調するかにかかってるよな。習志野は2人目のピッチャーの安定性にかかってる。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1130440833486843905"
+            target="_blank">2019/5/20 20:51:11</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ベスト５となると中央学院がやっぱり入ってくるよな。あとは畔柳くんと2番手の出来次第。打線は申し分ないんじゃなかろうか。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1130441500351819776"
+            target="_blank">2019/5/20 20:53:50</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">春から夏予選にかけては1年生も入ってくきて戦力も多少変わるし、他のメンバーも2-3か月の過ごし方でコロっと変わるから、わからんよなあ。。思いもよらぬチームが行く可能性もなくはない。八千代東を思い出すなあ。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1131120193617289216"
+            target="_blank">2019/5/22 17:50:44</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">うーむ。専大松戸負けたか。。杉田くん先発とは意外でしたな。。横山くん登板なしか。。黄金の投手リレーは夏におあずけですな。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1131120336085250048"
+            target="_blank">2019/5/22 17:51:17</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">まあでも杉田くんの投球内容はそんなに悪くないよね。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1131120916174270465"
+            target="_blank">2019/5/22 17:53:36</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">山村学園は和田くんが4試合連投なんじゃないの？しかも延長で勝ち越されるまであの東海大相模を一点に抑えたのは大したもんだ。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1131504816218288128"
+            target="_blank">2019/5/23 19:19:05</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">そして東海大の冠を背負った同士の春季関東大会の決勝、下馬評通り東海大相模が優勝した。東海大相模はあの打力で結構細やかな野球をするのですな。これは手ごわいですわ。とはいえ神奈川は激戦区だから夏の甲子園はそう簡単には行けないんだな。これが。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1131505637026742272"
+            target="_blank">2019/5/23 19:22:20</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">春季大会が終了すると次はいよいよ夏の予選。千葉県予選が始まる7月10日までは1か月半ほどある。この1か月半をどう過ごすかで結果が変わってくるわけですな。。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1131491730425991168"
+            target="_blank">2019/5/23 18:27:05</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">KRAFTWERKの「Franz Schubert」。このストリングスの音を聴いたとき、1977年でまさかサンプリングか！と思った。がこれは「メロトロン」というアナログ・サンプラの音らしい。テープ・サンプラと言ったほうが正確だろうか。。<br/><div class="youtube" data-type="yt" id="twlZ9t4Gg1E"><div class="yt-title">Youtube - Franz Schubert (2009 Remastered Version)</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/twlZ9t4Gg1E" class="youtube" src="https://i.ytimg.com/vi/twlZ9t4Gg1E/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1131493493195436035"
+            target="_blank">2019/5/23 18:34:05</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">メロトロンはキーボード一つ一つにテーププレーヤーがついてて、キーボードを押すと再生して、話すとテープが巻き戻るというものすごいメカニカルなものである。。<br/><div class="youtube" data-type="yt" id="N07-YAKtRAw"><div class="yt-title">Youtube - The Mellotron: Famous Songs!</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/N07-YAKtRAw" class="youtube" src="https://i.ytimg.com/vi/N07-YAKtRAw/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1131494262493700096"
+            target="_blank">2019/5/23 18:37:08</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ビートルズの「Strawberry Fields Forever」のイントロでも使われてるよね。。<br/><div class="youtube" data-type="yt" id="HtUH9z_Oey8"><div class="yt-title">Youtube - The Beatles - Strawberry Fields Forever</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/HtUH9z_Oey8" class="youtube" src="https://i.ytimg.com/vi/HtUH9z_Oey8/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1131495144908156929"
+            target="_blank">2019/5/23 18:40:39</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">これを知った当時（1980年後半）実物をみたことはなかったし、そんなメカニカルなものできちんと演奏できるのか？と思ってたが、Youtubeのおかげで実物の構造や演奏を見ることができた。<br/>これはポールマッカトニーよるメロトロンの紹介動画。<br/><br/><div class="youtube" data-type="yt" id="TUcfB5Whp4I"><div class="yt-title">Youtube - Paul McCartney shows the Mellotron</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/TUcfB5Whp4I" class="youtube" src="https://i.ytimg.com/vi/TUcfB5Whp4I/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1131495252567584770"
+            target="_blank">2019/5/23 18:41:05</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">よい時代になったものだ。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1131498070938570752"
+            target="_blank">2019/5/23 18:52:16</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">こういうメロトロンもあったのか。。左手でバッキング・トラックを弾いて、右手でソロを弾くという。この時代(1965年)でこれができてるのもすごいよね。音色のスイッチもできるような。<br/><div class="youtube" data-type="yt" id="HdkixaxjZCM"><div class="yt-title">Youtube - The Mellotron: A Keyboard with the Power of an Orchestra (1965) | British Pathé</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/HdkixaxjZCM" class="youtube" src="https://i.ytimg.com/vi/HdkixaxjZCM/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1131499398775488512"
+            target="_blank">2019/5/23 18:57:33</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">若いときには全然知りえなかったことが、いまいろいろ知ることができるようになって、ほんと楽しい世の中になったよな。。逆もあるけど。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1131490681124401152"
+            target="_blank">2019/5/23 18:22:55</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">KRAFTWERK 「Kometenmelodie 2 」。1974年ですでにこのベースの音色。すごいことですわな。。<br/><div class="youtube" data-type="yt" id="FyzkykVO6wM"><div class="yt-title">Youtube - Kometenmelodie 2 (2009 Remaster)</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/FyzkykVO6wM" class="youtube" src="https://i.ytimg.com/vi/FyzkykVO6wM/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1131475193300492288"
+            target="_blank">2019/5/23 17:21:22</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">Jeff Beckの「Play With Me」。シンセのソロがギター・シンセなのかヤン・ハマーの演奏によるものなのか私はいまだにわからない。ヤン・ハマーもギターのようにキーボードを演奏するそうだと聞いてるし。「Narada Michael Walden」のドラムもいいよね。。<br/><br/><div class="youtube" data-type="yt" id="uwHBtUIKV70"><div class="yt-title">Youtube - Jeff Beck - Play With Me</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/uwHBtUIKV70" class="youtube" src="https://i.ytimg.com/vi/uwHBtUIKV70/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1131475194659233792"
+            target="_blank">2019/5/23 17:21:22</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">Jeff Beckの「Red Boots」。<br/>「Narada Michael Walden」のドラムがすごいなあと思った一曲。超絶技巧を持つ演奏家が集まってセッションやると「なんとなく弾いてみた」で１曲できてしまうんじゃないだろうか。。<br/><div class="youtube" data-type="yt" id="BQIdjHcS4m4"><div class="yt-title">Youtube - Jeff Beck-Led Boots</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/BQIdjHcS4m4" class="youtube" src="https://i.ytimg.com/vi/BQIdjHcS4m4/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1131476794601758721"
+            target="_blank">2019/5/23 17:27:44</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">Jeff Beck - Come Dancing<br/>このイントロのドラムの部分はUAの曲で使われてるよね。「情熱」聴いたとき「あ、ジェフベック」ってなった。。<br/><div class="youtube" data-type="yt" id="xtbUcCe7rM0"><div class="yt-title">Youtube - Jeff Beck - Come Dancing</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/xtbUcCe7rM0" class="youtube" src="https://i.ytimg.com/vi/xtbUcCe7rM0/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1131468762635329536"
+            target="_blank">2019/5/23 16:55:49</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">私がJames Brownで一番好きな曲はこれ。<br/><br/><div class="youtube" data-type="yt" id="fEVnFGnjnGU"><div class="yt-title">Youtube - James Brown - Give It Up Or Turnit A Loose (In The Jungle Groove Remix)</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/fEVnFGnjnGU" class="youtube" src="https://i.ytimg.com/vi/fEVnFGnjnGU/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1131468803483684865"
+            target="_blank">2019/5/23 16:55:59</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">このCDも持っている。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1131469395983650818"
+            target="_blank">2019/5/23 16:58:20</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">Licking Stick。これもちょっと好きですな。。<br/><br/><div class="youtube" data-type="yt" id="AWVd-UHov0Q"><div class="yt-title">Youtube - Licking Stick, Licking Stick by James Brown</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/AWVd-UHov0Q" class="youtube" src="https://i.ytimg.com/vi/AWVd-UHov0Q/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1131470202716057605"
+            target="_blank">2019/5/23 17:01:32</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">Kool &amp; The Gang チョコレート・バターミルク。<br/>このドラムのノリにちょっとハマってた。何度聴いたことか。。ノリとはなんなのか。。<br/><br/><div class="youtube" data-type="yt" id="dAB6BHTAdXI"><div class="yt-title">Youtube - Chocolate Buttermilk - Kool & The Gang (1969)</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/dAB6BHTAdXI" class="youtube" src="https://i.ytimg.com/vi/dAB6BHTAdXI/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1131470939948867584"
+            target="_blank">2019/5/23 17:04:28</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">Kool &amp; The Gang の「N.T.」。これもちょっとリズムのノリがちょっとクセになる一曲。初期のKool &amp; The Gangの曲が結構好きなんだなあ。。とはいえKool &amp; The Gangの曲全部聴きこんだわけではないけどね。<br/><br/><div class="youtube" data-type="yt" id="LSAqC6zxlnY"><div class="yt-title">Youtube - Kool & the Gang N.T. Pts 1 & 2</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/LSAqC6zxlnY" class="youtube" src="https://i.ytimg.com/vi/LSAqC6zxlnY/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1131471613868761089"
+            target="_blank">2019/5/23 17:07:09</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">多分Kool &amp; The Gangはこの曲のイメージが強いと思うが。。<br/><div class="youtube" data-type="yt" id="3GwjfUFyY6M"><div class="yt-title">Youtube - Kool & The Gang - Celebration (Official Video)</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/3GwjfUFyY6M" class="youtube" src="https://i.ytimg.com/vi/3GwjfUFyY6M/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1119206779164848128"
+            target="_blank">2019/4/19 20:51:04</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">wasm テキスト・フォーマットに定数ラベルなどの機能を拡張しようと試みてる。まあ完成するかどうかはまたアレだが。<br/>プリプロセッサとして作り、watを吐くようにするつもり。「夢のオレオレ言語」にも生かせそうだしね。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1119206779974381569"
+            target="_blank">2019/4/19 20:51:04</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">定数ラベルだけではなく、定数式も処理できたほうがいいというかできないと使い物にならないことに気づいて、どうしようか実装しながら考えてる。peg.jsを使ってパーサを書こうと思ってるんだけどね。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1119206780796432385"
+            target="_blank">2019/4/19 20:51:05</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">最初は定数ラベルの定義をパースして、wasmのテキスト部分をトークン分割して定数ラベル名と識別子名が同じなら定数ラベル名に対応する定数を置き換えればいいじゃないかと思っていた。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1119207921118629888"
+            target="_blank">2019/4/19 20:55:36</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">定数ラベルだけだと簡単だけど、定数式を導入するとなるとそうはいかない。wasm命令をある程度解釈して、定数が入る部分を特定する必要が出てくる。特定すれば後はプリプロセス段階でその式を実行してできた値に置き換えていけばいいよな。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1119207922217771013"
+            target="_blank">2019/4/19 20:55:37</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">wasmテキスト・モードで定数式書けるならもうちょっと端折れるかなあと思ったけど、人間が直接書くことは想定してないから無いのだよね。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1119208499576094721"
+            target="_blank">2019/4/19 20:57:54</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">これは連休明けくらいまでには形なってればいいなあくらいの感じで進めようと思ってるけどね。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1119208841613176832"
+            target="_blank">2019/4/19 20:59:16</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">でまあ定数周りの式が書けるようになるとあとは#ifディレクティブみたいなことや、ソースインクルードをつければまあそこそこのものは開発できるのではないかなあと思ってるんだけどね。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1119420404357984257"
+            target="_blank">2019/4/20 10:59:56</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">いろいろ考えた結果、マクロを（というかプリプロセス処理を）JSで書けるようにしてみた。一応画像のような記法のものをプリプロセスできている。 https://t.co/zpH00CDbCj</p>
+        
+        <img loading="lazy" class="tweet-img" src="https://pbs.twimg.com/media/D4j65rMU8AAf97c.png" />
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1119421558970208256"
+            target="_blank">2019/4/20 11:04:32</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">プリプロセス後はこうなる。 https://t.co/HV7x9LpRlT</p>
+        
+        <img loading="lazy" class="tweet-img" src="https://pbs.twimg.com/media/D4j7-HAU8AA_tvu.png" />
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1119422036223254529"
+            target="_blank">2019/4/20 11:06:25</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">gist<br/><blockquote class="card card-large"><header><img loading="lazy" src="https://github.githubassets.com/images/modules/gists/gist-og-image.png" /><a href="https://gist.github.com/sfpgmr/1af26755495b676d54f59ea2980335ca" target="_blank">WASMテキストモードのプリプロセスをJSでできるようにしてみた。 · GitHub</a></header><div>WASMテキストモードのプリプロセスをJSでできるようにしてみた。. GitHub Gist: instantly share code, notes, and snippets.</div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1119422514327777280"
+            target="_blank">2019/4/20 11:08:19</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">JSで書けるようにしたのはマクロのパーサを書くのが面倒なのがその理由。Functionオブジェクトを使って$というコンテキスト変数を使ってあれこれやる。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1119424068153819136"
+            target="_blank">2019/4/20 11:14:30</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">マクロのパーサというか式実行とかを書くのが面倒なので、JSにマクロ部分のコードを預ければ結果が返ってくるのでそうしようかなと。。evalは使わずFunctionでやってる。そしてマクロブロック内はContextクラスのインスタンスをthisとして実行するようにしてる。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1119424242951397376"
+            target="_blank">2019/4/20 11:15:12</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">Contextインスタンスの変数名が「$」である。thisでもいいが長いので「$」にした。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1119427077336223744"
+            target="_blank">2019/4/20 11:26:27</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">コードブロックなかではJSが動くのでWASMソースコードをJSで吐くようにすることも可能だわな。。 https://t.co/RHjMGSEreY</p>
+        
+        <img loading="lazy" class="tweet-img" src="https://pbs.twimg.com/media/D4kA-1IU0AEAXSK.png" />
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1119427425186631680"
+            target="_blank">2019/4/20 11:27:50</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">そしてこれをプリプロセスするとこうなるというわけですな。 https://t.co/KpFTxx4IJM</p>
+        
+        <img loading="lazy" class="tweet-img" src="https://pbs.twimg.com/media/D4kBS9uU0AAA4_V.png" />
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1119428677765189632"
+            target="_blank">2019/4/20 11:32:49</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">wabtに読ませてtoText()した結果がこれ。 https://t.co/h6jyJMTpC9</p>
+        
+        <img loading="lazy" class="tweet-img" src="https://pbs.twimg.com/media/D4kCcXDVUAE8woP.png" />
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1119430999236984832"
+            target="_blank">2019/4/20 11:42:02</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">あとはソースインクルードと条件つきプリプロセスですわな。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1119431278313349120"
+            target="_blank">2019/4/20 11:43:09</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">とりあえずこのレベルでwasmだけでpsgエミュレータを移植してみようかなと思ってるんだけどね。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1119431339780870145"
+            target="_blank">2019/4/20 11:43:24</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">自分用なのでこれでいいかなと。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1119520373853155329"
+            target="_blank">2019/4/20 17:37:11</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ソースインクルードってやっぱりややこしいなあ。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1119529014815649794"
+            target="_blank">2019/4/20 18:11:31</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">まずはソースインクルードして１つのソーステキストにしないといかんわな。でもインクルードしたソーステキスト中にソースインクルードがあったらそれもインクルードせんといかんわな。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1119529015637725185"
+            target="_blank">2019/4/20 18:11:31</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ちゅうことは再帰的にソースインクルードを繰り返して最終的にソースインクルードがなくなるまでインクルードしないといかんわな。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1119923045492113408"
+            target="_blank">2019/4/21 20:17:15</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ソースインクルードはできた感じ。あとはCでいうところの#if ディレクティブができたらとりあえず何か作れる状態にはなるかなと。マクロもS式で書けるようにするべきかもしれんが。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1119939524191145984"
+            target="_blank">2019/4/21 21:22:44</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">一応こんなコードがwasmバイナリ化できるようになった。。 https://t.co/d326zviDAm</p>
+        
+        <img loading="lazy" class="tweet-img" src="https://pbs.twimg.com/media/D4rS4dvUYAIEXOT.png" />
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1119939616990121984"
+            target="_blank">2019/4/21 21:23:06</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">これの結果は以下の通り https://t.co/BuCQ0uPKu0</p>
+        
+        <img loading="lazy" class="tweet-img" src="https://pbs.twimg.com/media/D4rTI4GUIAAa6jQ.png" />
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1119940118343585795"
+            target="_blank">2019/4/21 21:25:06</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">いまいまの構文はこんな感じ。<br/><blockquote class="card card-default"><header><img loading="lazy" src="https://avatars0.githubusercontent.com/u/3806814?s=400&v=4" /><a href="https://github.com/sfpgmr/mwasm/blob/master/README.md" target="_blank">mwasm/README.md at master · sfpgmr/mwasm · GitHub</a></header><div>wasmテキストフォーマットのプリプロセッサ拡張. Contribute to sfpgmr/mwasm development by creating an account on GitHub.</div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1119945803529768960"
+            target="_blank">2019/4/21 21:47:41</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">プリプロセッサとしてはかなり高機能になりそうな感じではある。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1120053357232574464"
+            target="_blank">2019/4/22 4:55:04</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">一応リポジトリは以下。<br/><br/><blockquote class="card card-default"><header><img loading="lazy" src="https://avatars0.githubusercontent.com/u/3806814?s=400&v=4" /><a href="https://github.com/sfpgmr/mwasm" target="_blank">GitHub - sfpgmr/mwasm: wasmテキストフォーマットのプリプロセッサ拡張</a></header><div>wasmテキストフォーマットのプリプロセッサ拡張. Contribute to sfpgmr/mwasm development by creating an account on GitHub.</div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1121026402919170049"
+            target="_blank">2019/4/24 21:21:36</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">プリプロセッサの実装は続けている。当初作り始めたものは1パスというか、peg.jsで生成したパーサー上でプリプロセスを同時に行うというしろものだった。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1121026404240375808"
+            target="_blank">2019/4/24 21:21:37</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">しかしそれではソース・インクルードや条件付きインクルードできない、できたとしても非常に面倒くさい実装になるのでいったんパーサでソース・ツリーを出力してからそれを実行するように変更した。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1121026405481897985"
+            target="_blank">2019/4/24 21:21:37</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">つまり2パス的な処理に変更した。そして今はメモリレイアウトを定義する仕様を決めつつ実装を進めているところである。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1121026406824079361"
+            target="_blank">2019/4/24 21:21:37</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">これはアセンブラでいうところのDWとかEQUとかの擬似命令の類のものである。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1121027307483746309"
+            target="_blank">2019/4/24 21:25:12</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">あとはstructとマクロ命令を定義できるようにしようと思っているが、ここまで来るとオレオレ言語の続き作ったほうがいいんじゃないかという気もしてきたけど、とりあえずこれは続けてPSGエミュレータを書くまでは続けるつもりである。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1121027308825923584"
+            target="_blank">2019/4/24 21:25:12</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">そこまでできればまた違う世界が見えてくる、そういう気がしている。というのは大げさだろうか。オレオレ言語へのモチベーションも復活するかもしれんかなと。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1121031239719276544"
+            target="_blank">2019/4/24 21:40:49</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">このプリプロセッサのメタ言語としてJSを使うというのは実現したかったところ。だけどそれだけではちょっと足りんというかコードを書くのが面倒なので変なディレクティブを作ってる感じ。だけどちょっと楽しい。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1121033581445337089"
+            target="_blank">2019/4/24 21:50:08</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">今回のことでpeg.jsの理解が少し深まって、またちょっと評価が変わってきてる。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1121033582795841536"
+            target="_blank">2019/4/24 21:50:08</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">S式も何となく好きなんだけどやっぱり書きにくいので、昔のアセンブラ風ニーモニックにできんかなとか考えてたりする。どうしても夢ばかり膨らんでしまうなあ。誇大妄想癖かもね。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1121033584427421696"
+            target="_blank">2019/4/24 21:50:08</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">load.i32 0x00000000<br/>store.i32 0x04000000<br/>load.i32 1<br/><br/>↓アセンブル<br/><br/>(<a href="http://i32.store" target="_blank">i32.store</a> (i32.const 0) (i32.load ( i32.const 0 )))<br/><br/>みたいな.</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1121033856696512513"
+            target="_blank">2019/4/24 21:51:13</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">あ、ちょっと間違った。。でもそれは次の段階にして、とりあえず動くものを作ろう。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1121495913438965760"
+            target="_blank">2019/4/26 4:27:16</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ちょっとアセンブラの処理プロセスを考えなおし２つプロセスを追加することにした。結果、<br/><br/>１．トークナイズ＆パース<br/>２．プリプロセス<br/>３．（新規）擬似命令の展開<br/>４．（新規）定数ラベルの置換<br/>５．wasmモジュール変換</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1121495914911191040"
+            target="_blank">2019/4/26 4:27:17</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">wasmのmemory内のメモリマップを作る処理は、プリプロセッサではなく、擬似命令レベルの処理だよなあと気づいた？からである。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1121495916383354880"
+            target="_blank">2019/4/26 4:27:17</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">この擬似命令レベルの処理というのはマクロ命令の処理も入ることになるのでは？というのが今の考え。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1121495918031908866"
+            target="_blank">2019/4/26 4:27:17</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">MASMとかMACRO-80のマクロについておさらいできればしておくか。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1121495919642365953"
+            target="_blank">2019/4/26 4:27:18</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">あとは命令は独自の簡略記法にしようかなあとも思ってるけどね。これは成り行きですな。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1123568182617202690"
+            target="_blank">2019/5/1 21:41:44</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">何とかまあ、メモリー配置を記述するマクロをパースする部分はできた模様。。<br/>まあ、こういうのがパースできるようになっただけだど。。<br/>{@map <br/>  offset {10};<br/>  i32 label[16] {return [1,2,3,4];};<br/>  i64 label2,label2_1,label2_2;<br/>  i32 label3;<br/>  f64 label4;<br/>}</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1123568184194285569"
+            target="_blank">2019/5/1 21:41:44</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">C-Likeなメモリラベル定義を書けば、offsetで指定したアドレスから定義順にラベルに先頭オフセットを割り当てる。メモリにはラベル名でアクセスできるというわけ。これ使えるだけでだいぶwasmも書きやすくなると思ってるんだけど。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1123568185699995655"
+            target="_blank">2019/5/1 21:41:45</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">でパーサが吐いた定義ツリーを解析してオフセットを求めて割り当てるところはまだだけど、そんなに難しくはないだろう。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1123568188476624897"
+            target="_blank">2019/5/1 21:41:45</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">これと構造体(struct)も定義できるようにしようと思ってるんだけどね。メモリラベルを階層化できるようにするものとしてのものだけどね。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1123568596485939201"
+            target="_blank">2019/5/1 21:43:22</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">あ、初期化部分をデータセグメントで定義しなおすところはちと面倒かなと。データセグメントの初期値は文字列でしか定義できないからね。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1123568984509390848"
+            target="_blank">2019/5/1 21:44:55</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">まあRYDEENのカバー曲作りも成り行きで進めていて、その合間の作業となってしまってるなあ。。GWはこっちをメインでやろうと思ってたんだけどね。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1127541780059000833"
+            target="_blank">2019/5/12 20:51:23</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">wasmのテキストフォーマット用のプリプロセッサの作成は結局高校野球やらRYDEENのカバー曲つくりやら動画つくりやらですっかり後回しになってしまったが、少しずつ続けてはいる。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1127541781514444801"
+            target="_blank">2019/5/12 20:51:24</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">今やっているのは、<br/>１．wasmのリニア・メモリのオフセット・アドレスにラベルを付ける機能（メモリ・マップと勝手に呼んでいる）<br/>２．構造体（struct）<br/>を実装してみている。仕様はころころ変わっているが、所望のものができつつある。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1127542094321446912"
+            target="_blank">2019/5/12 20:52:38</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">構造体の定義は今のところこんな感じ。C言語の変数定義みたいな感じになっている。 https://t.co/3G114CoMdN</p>
+        
+        <img loading="lazy" class="tweet-img" src="https://pbs.twimg.com/media/D6XVjsOVUAA-pc5.png" />
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1127542382793068544"
+            target="_blank">2019/5/12 20:53:47</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">メモリマップの定義はこんな感じ。 https://t.co/sUgBj1DgIv</p>
+        
+        <img loading="lazy" class="tweet-img" src="https://pbs.twimg.com/media/D6XV0ZqU0AAwd4D.png" />
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1127543393494503426"
+            target="_blank">2019/5/12 20:57:48</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">こういうのでオフセット・アドレスのラベル定義を行って、こんな感じでラベルでオフセット・アドレスの指定ができるようにしようとしている。 https://t.co/38ZzIjreAT</p>
+        
+        <img loading="lazy" class="tweet-img" src="https://pbs.twimg.com/media/D6XWvVrUEAsYH1J.png" />
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1127545775779528704"
+            target="_blank">2019/5/12 21:07:16</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">式でも指定できるようになっていて<br/><br/>&amp;<blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="http://psg.ch" target="_blank">Pascal S. Gysi Architekten - www.psga.ch</a></header><div>Pascal S. Gysi Architekten GmbH, Stäfa</div></blockquote>_c.vol + 4<br/><br/>みたいな演算ができる。この計算はプリプロセスの段階で行われる。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1127545777595641856"
+            target="_blank">2019/5/12 21:07:16</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ちなみに<br/>&amp;<blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="http://psg.ch" target="_blank">Pascal S. Gysi Architekten - www.psga.ch</a></header><div>Pascal S. Gysi Architekten GmbH, Stäfa</div></blockquote>_c.vol<br/>とするとラベルのオフセット・アドレスが取れる。<br/>#psg.ch_c.vol<br/>とするとラベルのサイズが取れる。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1127545779210424321"
+            target="_blank">2019/5/12 21:07:17</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">演算はできる限り自前ではやらず、実行時にJSコード化してJSのFunctionオブジェクトで演算をやらせるようにし、実装を端折ろうとしてる。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1127546784543174660"
+            target="_blank">2019/5/12 21:11:16</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">式をパーサで解釈させてJSをなぞるように実行してもいいんだろうけどね。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1127547180066136064"
+            target="_blank">2019/5/12 21:12:51</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">Functionコンストラクタを使って実行時に関数を作って実行させることができるのでこれ使って式の評価をしてるんだよね。evalでもいいんだけど、evalは非推奨な感じがしてちょっと敬遠してる。<br/><blockquote class="card card-default"><header><img loading="lazy" src="https://developer.mozilla.org/static/img/opengraph-logo.72382e605ce3.png" /><a href="https://developer.mozilla.org/ja/docs/Web/JavaScript/Reference/Functions#The_Function_constructor" target="_blank">関数 - JavaScript | MDN</a></header><div>一般的に言うと、関数とは外部 (再帰の場合は内部) から 呼ばれる ことのできる「サブプログラム」です。プログラムそのもののように、関数は関数本体と呼ばれる連続した文で構成されます。値を関数に 渡す 事ができ、関数は値を返す事ができます。</div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1127547809526308865"
+            target="_blank">2019/5/12 21:15:21</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">オリジナルの式がJSの式として解釈できるように変換できるレベルまでパーサで構文を分解するのにちょっと時間がかかってるんだよね。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1127548321147408385"
+            target="_blank">2019/5/12 21:17:23</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ちょうどいい塩梅のところをきめるのに手間取ったというか。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1129348991269855232"
+            target="_blank">2019/5/17 20:32:36</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">今週はデータセクションの実装をしている。ちょっと面倒なのは、文字列でデータ表現しないといけないところ。これを配列で表現できるようにしてプリプロセスでdatastringにしようとしてる。<br/><br/><blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="https://webassembly.github.io/spec/core/bikeshed/index.html#data-segments%E2%91%A4" target="_blank">WebAssembly Core Specification</a></header><div></div></blockquote> https://t.co/HQT0drPjxB</p>
+        
+        <img loading="lazy" class="tweet-img" src="https://pbs.twimg.com/media/D6xA67rUwAAlZ9H.jpg" />
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1129350421569343488"
+            target="_blank">2019/5/17 20:38:17</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">バイナリでは単なるbyte arrayなんだけど、テキストフォーマットだと文字配列にしないといけないんだな。これが。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1129350426338316291"
+            target="_blank">2019/5/17 20:38:18</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">こんな感じでメモリの初期値を定義できるようにしようと思ってるのですわ。。パースはとりあえずできてて、これをdatastringにするコードを今書いてるところ。 https://t.co/RTHFbNQq8w</p>
+        
+        <img loading="lazy" class="tweet-img" src="https://pbs.twimg.com/media/D6xCOemVsAUS4LP.png" />
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1129351597673156608"
+            target="_blank">2019/5/17 20:42:57</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">この配列はu32型なので、配列のそれぞれの値を4バイト、リトルエンディアンで並べてそれぞれのバイトを文字に変えるわけですわな。処理自体難しいわけではないけど、配列のリテラル値は16/10/2の整数と浮動小数を指定できるようにしようと思ってるので面倒くさいんだよね。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1129352466183548928"
+            target="_blank">2019/5/17 20:46:24</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">数値リテラルのパースをまともにやらなくてはならなくなったのが面倒だということですわな。ここはJSのFunctionオブジェクトでevalして端折ろうともくろんでたんだけど、64ビット整数リテラルの対応をしないといけないのでやむなく自前で書くことにした。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1129353645072371712"
+            target="_blank">2019/5/17 20:51:06</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">BigIntが使えればこの問題も解決するんだけどね。今はまだ普通には使えないからね。64bitの整数リテラルはwasmの力を借りてサポートコードを書いてるのである。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1130444076157792256"
+            target="_blank">2019/5/20 21:04:05</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ちびちび続けてるけど、なかなか進まないねえ。。もちょっとなんだけど、ほかの趣味に時間を割かれてしまってる。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1130444398653628416"
+            target="_blank">2019/5/20 21:05:21</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">休日はゴロゴロ＆ウトウトタイムは死守してるし、それが何より一番時間をとってる気がするけど（笑）</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1130444836392226816"
+            target="_blank">2019/5/20 21:07:06</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">このプリプロセッサができたらオレオレ言語のパーサもやっぱりpeg.jsで作り直そうと思ってるんだよね。。あと5年くらいはかかるかな・・（笑）</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1130445220791717888"
+            target="_blank">2019/5/20 21:08:37</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">趣味とはいえ、パソコンやってると肩と首がものすごく凝るからストレッチタイムも必要だしね。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1130811763413245957"
+            target="_blank">2019/5/21 21:25:08</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">メモリラベルはバイト単位でのオフセット指定が必要だろうなあ。。そうせんとレトロなチップのエミュレーションができんなあ。割り切って32ビット未満のデータ型は切り捨てるつもりでいたが、そうもいかんな。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1130812765554089985"
+            target="_blank">2019/5/21 21:29:07</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">JSの10進文字列を64ビット整数化するのwasmで書くのが楽そうなので書いてみてるところ。かなりいい加減だけどね。 https://t.co/7SutS81JKC</p>
+        
+        <img loading="lazy" class="tweet-img" src="https://pbs.twimg.com/media/D7F0N0bU8AAOmxf.png" />
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1130812767450017792"
+            target="_blank">2019/5/21 21:29:07</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">今は16進文字列を64ビット整数化するコードを書いてる。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1130814108788334593"
+            target="_blank">2019/5/21 21:34:27</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">wat(wasmのテキストフォーマット）はアセンブラというよりはアセンブラ風LISP言語な体である。このプリプロセスをJS風なメタ言語で書けるようにするのが今作ってるmwasmである。とりあえずPSGエミュレータを自作プリプロセッサを使ってコード書いて完成させるまでは続けたいなあ。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1130814467011297280"
+            target="_blank">2019/5/21 21:35:53</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">watに慣れてすらすら書けるようにならんとオレオレ言語コンパイラもいいものが作れないと勝手に思っていて、それがモチベーションになっている状況。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1130814876887027712"
+            target="_blank">2019/5/21 21:37:30</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">最終的にはbinaryenやwat2wasmに頼らず自前でバイナリを書き出せるところまではやろうかなと思ってるんだけどね。10年後くらいかな（笑）。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1130947119794204673"
+            target="_blank">2019/5/22 6:22:59</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">いまいまの16進utf-16文字列を64ビット整数に変換するwasmコード。。<br/><blockquote class="card card-large"><header><img loading="lazy" src="https://github.githubassets.com/images/modules/gists/gist-og-image.png" /><a href="https://gist.github.com/sfpgmr/692dc0a4dcaf2f8998f2acc8280dbf9e" target="_blank">test.wat · GitHub</a></header><div>GitHub Gist: instantly share code, notes, and snippets.</div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1130947121257967616"
+            target="_blank">2019/5/22 6:23:00</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">短い期間でとりあえず動く成果物を作ってモチベーションを萎えないようにする作戦で今年は行こう。進捗はゆっくりになるけど継続が大切ですからな。。1年もやってればそれなりのものができるだろう。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1130947569088024576"
+            target="_blank">2019/5/22 6:24:47</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">wasmのテキスト・モードでコードを書くのは結構楽しいね。。まだ簡単なものしか書いてないし、いい加減だけど。。 https://t.co/YmRNHH6UYJ</p>
+        
+        <img loading="lazy" class="tweet-img" src="https://pbs.twimg.com/media/D7Huz-RUYAAoM4C.png" />
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1130947660725141505"
+            target="_blank">2019/5/22 6:25:08</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">テキスト・モードじゃなかった。テキスト・フォーマットだった。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1130948558432038912"
+            target="_blank">2019/5/22 6:28:42</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">スタックに積んだまま値を評価できればもっと簡潔に書けるような気もするのだが。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1130949200680693760"
+            target="_blank">2019/5/22 6:31:16</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">頭の中でスタックの中身を想像しながらコードを書く感じが楽しいんだな。そしてS式の簡潔な表現にハマりつつある。emacsが流行った理由もわからなくはないな。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1130962787528630272"
+            target="_blank">2019/5/22 7:25:15</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ありゃ、gtじゃなくてgeだった。コード間違ってるな。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1131293901212475392"
+            target="_blank">2019/5/23 5:20:59</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">とりあえず一通りx進整数文字配列 -&gt; 64bit符号あり/なし整数への変換コードを作成した。<br/><blockquote class="card card-default"><header><img loading="lazy" src="https://avatars0.githubusercontent.com/u/3806814?s=400&v=4" /><a href="https://github.com/sfpgmr/mwasm/blob/dev/lib/mwasm-lib.wat#L67" target="_blank">mwasm/mwasm-lib.wat at dev · sfpgmr/mwasm · GitHub</a></header><div>wasmテキストフォーマットのプリプロセッサ拡張. Contribute to sfpgmr/mwasm development by creating an account on GitHub.</div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1131294492173058048"
+            target="_blank">2019/5/23 5:23:20</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">wasmに「dup」インストラクションを追加する提案。<br/>スタックトップの値を複製して積むやつ。あればちょっと楽かなーとか思う。<br/><br/><blockquote class="card card-default"><header><img loading="lazy" src="https://avatars3.githubusercontent.com/u/11578470?s=400&v=4" /><a href="https://github.com/WebAssembly/design/issues/1102" target="_blank">dup instruction · Issue #1102 · WebAssembly/design · GitHub</a></header><div>There is a drop instruction to drop a topmost value of the stack, but there's no dup instruction to duplicate the topmost value. It would be very useful in cases like raising to power. Imagine we're going to square a value from memory. C...</div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1131297331456880640"
+            target="_blank">2019/5/23 5:34:36</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">凡ミスも甚だしい。。u64型なんてwasmにないよな。。アホだ。。今wat2wasmして気づいた。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1131299522510872576"
+            target="_blank">2019/5/23 5:43:19</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">そうだオレオレ言語作ってるときに疑似的にu64型を作ったんだった。。結局i64型だけのコードでいいんだな。。<br/><blockquote class="card card-default"><header><img loading="lazy" src="https://avatars0.githubusercontent.com/u/3806814?s=400&v=4" /><a href="https://github.com/sfpgmr/mwasm/blob/dev/lib/mwasm-lib.wat#L62" target="_blank">mwasm/mwasm-lib.wat at dev · sfpgmr/mwasm · GitHub</a></header><div>wasmテキストフォーマットのプリプロセッサ拡張. Contribute to sfpgmr/mwasm development by creating an account on GitHub.</div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1131299997150957568"
+            target="_blank">2019/5/23 5:45:12</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">符号付きであろうとなかろうとi64型でよくて、インストラクションだけ符号ありかなしかを気を付ければよかったんだった。すっかり忘れてた。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1131301744762269697"
+            target="_blank">2019/5/23 5:52:09</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">dup命令は今のところ採用する方向ではなさそう。dropというスタックの先頭を破棄する命令はあるんだけどね。pick命令（演算子）というスタックから値を取り出す命令も提案されていたようだ。<br/><br/><blockquote class="card card-default"><header><img loading="lazy" src="https://lh4.googleusercontent.com/sWT5jeVm7vEO4UHM-e-f0N4z22JV9ptxXJdRs72EJufBKjv6w7Zq3rmU1-xA14zWFM7G7Q=w1200-h630-p" /><a href="https://docs.google.com/presentation/d/16o4xzw1lFspoHfcSf2J-xQ98lWsVNev3hfuwbKYzIyI/edit#slide=id.g232c3ed910_0_15" target="_blank">Multiple Values for Wasm - Google スライド</a></header><div></div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1131302730406825985"
+            target="_blank">2019/5/23 5:56:04</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">この辺が問題だからかなあ。。<br/><br/>Ben T: Pick should be separate item, since it requires a more complex type checking in the context of unreachable code (polymorphic stack).</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1131304193581494272"
+            target="_blank">2019/5/23 6:01:53</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">wasmはローカル変数を使えるのでスタック操作しなくてもそれに相当する処理は可能だし、wasmは実CPUのアセンブラではないので、結局はネイティブ・コードに変換されるときに最適化されるのだからそこまで必要ないということなのだろうかね。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1131305252806774784"
+            target="_blank">2019/5/23 6:06:05</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">それに相当する処理というか、それを使用したいと思うケースがあった場合だよな。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1131306167651557376"
+            target="_blank">2019/5/23 6:09:43</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ローカル変数はふつうスタックにアロケートされるので、結局スタック操作することになるんだよな。知らんけど。dupもスタックから値を取り出してまたスタックに積むのだから、結局ローカル変数から2回local.getするのと変わらんだろうしな。。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/834996502959267840/bGwoBZkS_normal.jpg" />
+        <p class="tweet-user-name">のぶほっぷ福井【ZModeler超入門講座】発売もうすぐ@nobgame</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/nobgame/status/1131089300517314560"
+            target="_blank">2019/5/22 15:47:58</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">やばいね！透明もすごい綺麗！<br/>ミマキエンジニアリングさんのフルカラー3Dプリンター『3DUJ-553』で出力。ミニ版を出してもらったー。<br/>前面とか磨いてないのにめちゃくちゃ透明度が高い。<br/>ミマキさん凄いなあ。<br/>モデリングはZBrush。<br/>#ZBrush https://t.co/S6chG1jd6S</p>
+        
+        <video class="tweet-img" controls src="https://video.twimg.com/ext_tw_video/1131089202840346625/pu/vid/480x480/4j0q2dN6yWe3s_zs.mp4?tag=9" />
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/877429782685794305/_JQDxVX__normal.jpg" />
+        <p class="tweet-user-name">Josh Ge@GridSageGames</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/GridSageGames/status/1130260594467061761"
+            target="_blank">2019/5/20 8:54:59</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">Ape is sharing ASCII explosions with realistic blast waves, where blue is the negative pressure wave (source: r/RoguelikeDev Discord) https://t.co/iVk8Q7EvK7</p>
+        
+        <video class="tweet-img" controls src="https://video.twimg.com/tweet_video/D6999k0U8AAUoMg.mp4" />
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/1197100615060451328/acLcLNUY_normal.jpg" />
+        <p class="tweet-user-name">フリーダム嫁の旦那 書籍化決定12月5日発売@freeyomekan</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/freeyomekan/status/1129313124903923712"
+            target="_blank">2019/5/17 18:10:05</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">⚡️ "嫁が生きてきた壮絶な16年間"<br/>全編をまとめました。良かったら見て下さい　#虐待<br/><a href="https://twitter.com/i/moments/1120271903304740864" target="_blank">twitter.com/i/moments/1120…</a></p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/791313359710793728/pYsYBmaf_normal.jpg" />
+        <p class="tweet-user-name">やじるし@chanomach</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/chanomach/status/1130438267839508481"
+            target="_blank">2019/5/20 20:41:00</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">現実にあったらよかったシステム https://t.co/AIv6Qu444n</p>
+        
+        <img loading="lazy" class="tweet-img" src="https://pbs.twimg.com/media/D693vrdU0AAi6UQ.jpg" />
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/863913986462330881/COjIU6ir_normal.jpg" />
+        <p class="tweet-user-name">TAN-Y(たに)@TANY_FMPMD</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/TANY_FMPMD/status/1130598709597679617"
+            target="_blank">2019/5/21 7:18:32</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">#MUCOM88 on Web<br/>ブラウザでMUCOMのMMLコンパイル＆再生ができるようになりました。<br/>sampl2.muc / Copyright(C) by Yuzo Koshiro<br/><br/><a href="https://aosoft.github.io/MucomWeb.Play/" target="_blank">aosoft.github.io/MucomWeb.Play/</a> https://t.co/JtKAjqmODt</p>
+        
+        <video class="tweet-img" controls src="https://video.twimg.com/ext_tw_video/1130598676210917376/pu/vid/704x664/lIa2UaqdbHDwqE2Y.mp4?tag=9" />
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1130100157930848256"
+            target="_blank">2019/5/19 22:17:28</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">好きなクラフト・ワークの曲を挙げろと言われたらまずこれかなあ。。<br/><div class="youtube" data-type="yt" id="4YPiCeLwh5o"><div class="yt-title">Youtube - Kraftwerk - Numbers</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/4YPiCeLwh5o" class="youtube" src="https://i.ytimg.com/vi/4YPiCeLwh5o/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1130101164010160130"
+            target="_blank">2019/5/19 22:21:28</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">次にこれですわな。「Europe Endless」。おそらくドラム・ベースも手で弾いてると思われ。<br/><div class="youtube" data-type="yt" id="Ms6kC-3yq0k"><div class="yt-title">Youtube - Europe Endless (2009 Remastered Version)</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/Ms6kC-3yq0k" class="youtube" src="https://i.ytimg.com/vi/Ms6kC-3yq0k/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1130101549114376192"
+            target="_blank">2019/5/19 22:23:00</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">メロトロンとかボコーダーとか、いわゆるテクノの要素が全部入ってるんだよね。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1130102062983725056"
+            target="_blank">2019/5/19 22:25:02</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">「Neon Lights」もうこれも何回聴いたことか。。後半の長いこと、長いこと。。でもちょっと常習性があるよ。。<br/><br/><div class="youtube" data-type="yt" id="KqmGZ_6LaUw"><div class="yt-title">Youtube - Kraftwerk - Neon Lights</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/KqmGZ_6LaUw" class="youtube" src="https://i.ytimg.com/vi/KqmGZ_6LaUw/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1130102493298302977"
+            target="_blank">2019/5/19 22:26:45</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ショー・ルーム・ダミーズ。このベースですよ。この音。<br/><br/><div class="youtube" data-type="yt" id="ZJ9Stc9ONyY"><div class="yt-title">Youtube - Kraftwerk - Showroom Dummies</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/ZJ9Stc9ONyY" class="youtube" src="https://i.ytimg.com/vi/ZJ9Stc9ONyY/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1130103026805399553"
+            target="_blank">2019/5/19 22:28:52</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">放射能の中でなぜか一番好きな、「Air Waves」。このノイズ・パーカッションが人のノリで作られている。。<br/><br/><div class="youtube" data-type="yt" id="UsCbws2brM4"><div class="yt-title">Youtube - Kraftwerk - Airwaves</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/UsCbws2brM4" class="youtube" src="https://i.ytimg.com/vi/UsCbws2brM4/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1130103168002478081"
+            target="_blank">2019/5/19 22:29:26</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">結局ポップな曲がすきなんだろうな。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1130103901967962112"
+            target="_blank">2019/5/19 22:32:21</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">The Man Machineはスネアがどれもパーカッシブ。アルバムの中でも変わり種のこの「The Model」が好き。<br/><br/><div class="youtube" data-type="yt" id="TDLhBYqNzv8"><div class="yt-title">Youtube - Kraftwerk - The Model (1978)</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/TDLhBYqNzv8" class="youtube" src="https://i.ytimg.com/vi/TDLhBYqNzv8/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1130104323558371333"
+            target="_blank">2019/5/19 22:34:01</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ま、「The Robots」も好きなんですけどね。このリズムはやっぱりすごいよなあ。<br/><br/><div class="youtube" data-type="yt" id="D_8Pma1vHmw"><div class="yt-title">Youtube - Kraftwerk - The Robots HQ Audio</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/D_8Pma1vHmw" class="youtube" src="https://i.ytimg.com/vi/D_8Pma1vHmw/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1130104762475601920"
+            target="_blank">2019/5/19 22:35:46</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">Kraftwerkがサンプリング・マシンを手に入れるとこんな曲を作る。<br/><br/><div class="youtube" data-type="yt" id="LTZyXlLhvxs"><div class="yt-title">Youtube - Kraftwerk - Tour de France [Original Version, 1984] HD</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/LTZyXlLhvxs" class="youtube" src="https://i.ytimg.com/vi/LTZyXlLhvxs/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1130105710715363328"
+            target="_blank">2019/5/19 22:39:32</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">やっぱり「アウトバーン」はすごいですわ。リズムが跳ねとるんですから。しかも20分以上もあるし。<br/><br/><div class="youtube" data-type="yt" id="x-G28iyPtz0"><div class="yt-title">Youtube - Kraftwerk Autobahn full</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/x-G28iyPtz0" class="youtube" src="https://i.ytimg.com/vi/x-G28iyPtz0/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1130087477455101952"
+            target="_blank">2019/5/19 21:27:05</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">最近はなぜかシーカーズの動画もよく観る。女性シンガーの声がいいよね。<br/><br/><div class="youtube" data-type="yt" id="KmactMIhrRM"><div class="yt-title">Youtube - The Seekers - I'll Never Find Another You 1965 STEREO</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/KmactMIhrRM" class="youtube" src="https://i.ytimg.com/vi/KmactMIhrRM/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1130088180642795521"
+            target="_blank">2019/5/19 21:29:52</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">こっちのほうが有名かも。「ヘイ・デアー・ジョージガール」<br/><br/><div class="youtube" data-type="yt" id="wsIbfYEizLk"><div class="yt-title">Youtube - The Seekers - Georgy Girl (1967 - Stereo)</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/wsIbfYEizLk" class="youtube" src="https://i.ytimg.com/vi/wsIbfYEizLk/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1130088352684728320"
+            target="_blank">2019/5/19 21:30:33</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">あ、曲名は「ジョージガール」ね。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1130089338207842304"
+            target="_blank">2019/5/19 21:34:28</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">California Dreamin' <br/><br/>ママス・アンド・パパスのはカバーなのかな？<br/><br/><div class="youtube" data-type="yt" id="lwxF8hfxx64"><div class="yt-title">Youtube - The Seekers California Dreamin' 1966</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/lwxF8hfxx64" class="youtube" src="https://i.ytimg.com/vi/lwxF8hfxx64/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1130089819399380993"
+            target="_blank">2019/5/19 21:36:23</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">これね。<br/><a href="https://youtu.be/dwYYPWGVvEQ" target="_blank">youtu.be/dwYYPWGVvEQ</a></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1130090396581675014"
+            target="_blank">2019/5/19 21:38:41</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">逆か。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1130091178731364352"
+            target="_blank">2019/5/19 21:41:47</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">これがオリジナルか？<br/><div class="youtube" data-type="yt" id="5W2se8MMqwo"><div class="yt-title">Youtube - Barry McGuire - California Dreamin</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/5W2se8MMqwo" class="youtube" src="https://i.ytimg.com/vi/5W2se8MMqwo/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1130092273213906945"
+            target="_blank">2019/5/19 21:46:08</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">Surfin USA - ビーチ・ボーイズ<br/>コーラスがキレイですな。。<br/><br/><div class="youtube" data-type="yt" id="2s4slliAtQU"><div class="yt-title">Youtube - Beach Boys - Surfin Usa HD</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/2s4slliAtQU" class="youtube" src="https://i.ytimg.com/vi/2s4slliAtQU/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1130092663212990464"
+            target="_blank">2019/5/19 21:47:41</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">これも有名ですわ。「あぎゅーらーん」<br/><br/>The Beach Boys - I Get Around<br/><div class="youtube" data-type="yt" id="KnPL5OXSBNE"><div class="yt-title">Youtube - The Beach Boys - I Get Around</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/KnPL5OXSBNE" class="youtube" src="https://i.ytimg.com/vi/KnPL5OXSBNE/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1130092930058690560"
+            target="_blank">2019/5/19 21:48:45</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">コーラスが美しいなあ。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1130093755338436608"
+            target="_blank">2019/5/19 21:52:02</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ビートルズの「I Saw Her Standing There」。このあたり中学生あたりで毎日のように聴いてたなあ。もちろんリアルタイムではないけどね。。<br/><br/><div class="youtube" data-type="yt" id="wLNQ8EfTiJs"><div class="yt-title">Youtube - THE BEATLES - I Saw Her Standing There</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/wLNQ8EfTiJs" class="youtube" src="https://i.ytimg.com/vi/wLNQ8EfTiJs/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1130094272340828160"
+            target="_blank">2019/5/19 21:54:05</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ツイスト・アンド・シャウト。これもカバーだったよね。<br/><br/><div class="youtube" data-type="yt" id="b-VAxGJdJeQ"><div class="yt-title">Youtube - The Beatles - Twist & Shout - Performed Live On The Ed Sullivan Show 2/23/64</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/b-VAxGJdJeQ" class="youtube" src="https://i.ytimg.com/vi/b-VAxGJdJeQ/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1130094491702927361"
+            target="_blank">2019/5/19 21:54:57</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">キャーキャー言ってますなあ。失神者続出か。ビートルズのアイドルぶりはすごいな。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1130095453725384705"
+            target="_blank">2019/5/19 21:58:46</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">デイ・トリッパー。YMOもカバーしてましたなあ。。<br/><br/><div class="youtube" data-type="yt" id="AYZlME0mQB8"><div class="yt-title">Youtube - The Beatles - Day Tripper (Official Video)</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/AYZlME0mQB8" class="youtube" src="https://i.ytimg.com/vi/AYZlME0mQB8/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1130096618382929922"
+            target="_blank">2019/5/19 22:03:24</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">yesterday。シーカーズのカバー。<br/><br/><div class="youtube" data-type="yt" id="u2d7RSu0Xo0"><div class="yt-title">Youtube - The Seekers - 1966 - 'Yesterday".</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/u2d7RSu0Xo0" class="youtube" src="https://i.ytimg.com/vi/u2d7RSu0Xo0/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1130098696677289984"
+            target="_blank">2019/5/19 22:11:40</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">私もカバーしてたりして。。<br/><br/><div class="youtube" data-type="yt" id="S42TensLpZM"><div class="yt-title">Youtube - BeatlesのYesterdayをカバーしてみている。（４）</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/S42TensLpZM" class="youtube" src="https://i.ytimg.com/vi/S42TensLpZM/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1130067060812161025"
+            target="_blank">2019/5/19 20:05:57</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">マーティン・デニーのFire Cracker。<br/><br/><div class="youtube" data-type="yt" id="SAdMFiNlRkI"><div class="yt-title">Youtube - Fire Cracker</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/SAdMFiNlRkI" class="youtube" src="https://i.ytimg.com/vi/SAdMFiNlRkI/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1130067500752728065"
+            target="_blank">2019/5/19 20:07:42</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">Quiet Village。初夏から夏にかけて聴くと涼しく感じる。。<br/><div class="youtube" data-type="yt" id="w9C2tHYZ3R8"><div class="yt-title">Youtube - Martin Denny - Quiet Village (1957)</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/w9C2tHYZ3R8" class="youtube" src="https://i.ytimg.com/vi/w9C2tHYZ3R8/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1129930348681236480"
+            target="_blank">2019/5/19 11:02:42</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">習志野はコールド負けしそうな雰囲気ですな。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1129930908633522176"
+            target="_blank">2019/5/19 11:04:56</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">7-0となると習志野の打線では取り返すことは難しそうだね。。相手の和田くんもいいピッチャーそうだしね。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1129932057855946757"
+            target="_blank">2019/5/19 11:09:30</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">８－０か。。下手すると5回コールドかもしれん。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1129932257764859904"
+            target="_blank">2019/5/19 11:10:18</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">いかん。。悪い時の杉山くんになっちゃってるな。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1129932420499722240"
+            target="_blank">2019/5/19 11:10:56</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ダブルプレーでなんとかしのいだか。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1129932605086789633"
+            target="_blank">2019/5/19 11:11:40</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">さて習志野の2巡目がどうなるか。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1129936738418188288"
+            target="_blank">2019/5/19 11:28:06</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">９－０。失策で失点とは、習志野の選手もかなり動揺してるとみえるな。今日は観に行かなくてよかったな。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1129937488456216579"
+            target="_blank">2019/5/19 11:31:05</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">しかし3回も2アウトから4失点。どうも山本くんも制球がいまいち。習志野はピッチャーがいかに抑えるか次第なので、打ち合いになるとダメなんだよな。。打力で取り返すことは今のチームでは難しい。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1129938155300216832"
+            target="_blank">2019/5/19 11:33:44</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">あと1点取られると5回コールドが成立する。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1129938261047070720"
+            target="_blank">2019/5/19 11:34:09</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">裏習志野が点とれなきゃだけど。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1129938965912465410"
+            target="_blank">2019/5/19 11:36:57</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">杉山くんちょっと立ち直った感ありですな。三振でしのいだか。山本くんか杉山くんが3つ目の矢になってくれると夏は結構楽になるんだけどね。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1129939969902927873"
+            target="_blank">2019/5/19 11:40:56</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">なおまだ2点取らないと7回Cのピンチ。今無死１・2塁のチャンスか。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1129940258475323398"
+            target="_blank">2019/5/19 11:42:05</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">杉山くんが抑えたのはちょっと期待が持てる。ほんとはもうちょっと関東の強豪とやっておきたいとこだけどね。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1129940787024633856"
+            target="_blank">2019/5/19 11:44:11</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ようやく1点を返したか。でも後2点以上取らないとだめか。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1129942907237031936"
+            target="_blank">2019/5/19 11:52:37</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">うーむ。やはり杉山くん厳しいか。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1129944290182885377"
+            target="_blank">2019/5/19 11:58:06</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">10-1で6回裏か。。うーむ。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1129951161274912768"
+            target="_blank">2019/5/19 12:25:24</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">13-2。完敗もいいとこですな。いまさら飯塚くんを出すわけにもいかんしね。。おそらく山本くん→飯塚くんスイッチだったらちょっと変わってたかもしれんが。。投手起用は小林監督にしかわからない哲学があるからなあ。。山村学園もシニア出身ぞろいですごいチームだな。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1129953122003050497"
+            target="_blank">2019/5/19 12:33:12</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">13-2のまま試合終了。7回C負け。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1129953867871936512"
+            target="_blank">2019/5/19 12:36:10</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">やっぱりちょっと投手起用には疑問が残るときがあるよなあ。。これって監督の判断だけじゃなくて選手の自主性も加味してるのかもしれないなあ。。続投か交代かのタイミングは投げてる投手が決めるとか。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1129954987981672449"
+            target="_blank">2019/5/19 12:40:37</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">去年の夏の西千葉大会の時の7回もそうだったよなあ。。早めに古谷くんにスイッチしていたら、おそらく違った結果になってたんじゃないだろうか。あの時もひょっとしたら佐藤くんの意思を尊重してたかもしれない。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1129954989496049665"
+            target="_blank">2019/5/19 12:40:37</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">我々観戦者からしたら試合に勝つにはあそこで。。みたいなことを考えるけど、高校野球は教育の一環でもあるから、勝ちにこだわりすぎるのもどうかなと思わないでもない。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1129954990884155392"
+            target="_blank">2019/5/19 12:40:38</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">と思う面もあるけど、習志野の戦い方は究極のスモール・ベースボールといったもので勝ちにこだわるスタイルでもあるから、そこにちょっと矛盾を感じないこともない。。まあ、ひとりごとです。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1129955229976342529"
+            target="_blank">2019/5/19 12:41:35</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">まあ、しょせんは部外者ですからね。。ほんとうのところはわからない。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1129955847704965121"
+            target="_blank">2019/5/19 12:44:02</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ここはひとつ、千葉県民としては専松に気を吐いてもらうしかないね。なんとか勝ち残ってもらいたい。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1129956290204037122"
+            target="_blank">2019/5/19 12:45:47</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">今回の収穫は、一球速報.comがなかなすごいWebサービスだなということ（笑）。<br/><blockquote class="card card-large"><header><img loading="lazy" src="https://baseball.omyutech.com/webdata/snsshare/sns_public_image.png" /><a href="https://baseball.omyutech.com/CupHomePageHistory.action?gameId=20197962845" target="_blank">山村学園 vs 習志野 試合経過-第71回春季関東地区高等学校野球大会 : 一球速報.com | OmyuTech</a></header><div>その一球を見逃すな! 第71回春季関東地区高等学校野球大会の試合を一球毎にリアルタイム配信中。打席ごとの全配球や、打球位置、走塁記録まで、スコアブックに記載しきれないほどの情報がいつでも確認できます。電子スコアブックが自動生成！データ分析機能も豊富！</div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1129957426696863744"
+            target="_blank">2019/5/19 12:50:18</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">私としては、山本くんと杉山くんがこの春関東でもう一皮むけて、盤石な投手体制を築いてほしかったところであるが、今日は2人ともいまいちだったようだね。もちろん山村学園が強かったというのもあるし、今後の山村学園が強豪にどのような試合運びをするのかにもよるけどね。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1129957428492087296"
+            target="_blank">2019/5/19 12:50:19</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ただ甲子園に行くには、そのような強いチームであっても、飯塚くん以外にもう一人2-3点以内に抑える投手が習志野には必要ということである。そうでないと飯塚くんひとりではもたないんだな。特に夏は。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1129957805014695936"
+            target="_blank">2019/5/19 12:51:48</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">リリーフで投げた山内くんも今一つ安定性に欠けるところがあるからね。岩沢くんはやはりもう少しアンダースローの特性を生かした投球術を身につけないとちと厳しい気がする。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1130000399295864833"
+            target="_blank">2019/5/19 15:41:04</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ただここ10年ほど習志野高校を見てきた感じからすると、この負け方は習志野が関東大会に出た時のいつもの結果っぽい感じなのでそんなに驚きはなかったりする。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1130001212927987712"
+            target="_blank">2019/5/19 15:44:18</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">一球速報.comの試合経過を見るとやっぱり山本くんも杉山くんもボール先行の苦しいピッチングだったようだね。置きにいった球を痛打されるイメージ。。秋関東の決勝のイメージかな。ここが一番の課題、2番手の安定性ですわ。。<br/><blockquote class="card card-large"><header><img loading="lazy" src="https://baseball.omyutech.com/webdata/snsshare/sns_public_image.png" /><a href="https://baseball.omyutech.com/CupHomePageHistory.action?gameId=20197962845" target="_blank">山村学園 vs 習志野 試合経過-第71回春季関東地区高等学校野球大会 : 一球速報.com | OmyuTech</a></header><div>その一球を見逃すな! 第71回春季関東地区高等学校野球大会の試合を一球毎にリアルタイム配信中。打席ごとの全配球や、打球位置、走塁記録まで、スコアブックに記載しきれないほどの情報がいつでも確認できます。電子スコアブックが自動生成！データ分析機能も豊富！</div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1130003634274484225"
+            target="_blank">2019/5/19 15:53:55</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">千葉県だとノーシードで1回戦からだと、8回勝たないと甲子園には行けないんだよね。習志野はAシードだけど、それでも7回勝たないと甲子園には行けないわけだ。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1130003635809603586"
+            target="_blank">2019/5/19 15:53:55</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">4回戦あたりまでは、強豪校はエースを温存して控えで勝ち上がる。エースが出てくるのは5回戦以降が多い。Cシードの強豪とあたる可能性が高いしね。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1130004318969458688"
+            target="_blank">2019/5/19 15:56:38</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">それ以降はエースが投げないと試合にならないので、多投になってしまってエースが疲れて、それが原因で打たれて負けるというパターンになってしまうことも多い。なので勝ち上がるには2番手のピッチャーがエースに匹敵するほどの実力が必要なんだよね。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1130005008643022848"
+            target="_blank">2019/5/19 15:59:23</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">専松は横山くんという盤石のエースがいて、そして杉田くんという強力な2番手がいる。習志野との決勝は2人とも温存して接戦に持ち込んでたから、専松は2番手・3番手もほかのチームだったらエース級のピッチャーを抱えていることになるね。春の時点では盤石な投手陣ではないかなと思うな。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1130005198489804800"
+            target="_blank">2019/5/19 16:00:08</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">次の試合では杉田くんが投げるのはないだろうかね。知らんけど。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1130005957499428864"
+            target="_blank">2019/5/19 16:03:09</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">木総も、根本くんというエース、そして篠木くん、吉鶴くん、四反田くんという140Km台のストレートを投げる投手が4人いる。ただ根本くんの復調がカギといったところだろうか。春は木総は調整のイメージが強く夏になると「アレ、強い。。」となるのが普通。だからまあこれから。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1130007627763609600"
+            target="_blank">2019/5/19 16:09:47</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">習志野はというと、飯塚くんがやはりチームの中ではやっぱり頭ひとつ出てる感がある。打力はあまりないから、最少失点で試合を作らないといけない。投手の役割は他の強豪チームとくらべてかなり重い。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1129651147063513088"
+            target="_blank">2019/5/18 16:33:16</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">専大松戸2-0で健大高崎に勝利。やっぱり横山くんすごいな。。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1129584224233615362"
+            target="_blank">2019/5/18 12:07:20</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">やっぱりいい試合してる。さすが木総。午後の専松はどうか。 <blockquote class="card card-default"><header><img loading="lazy" src="https://pbs.twimg.com/profile_images/1057916096731181057/gk1L0zE9_400x400.jpg" /><a href="https://twitter.com/kh10_98/status/1129582296615477248" target="_blank">K-880さんのツイート: "春季関東地区高等学校野球大会 1回戦 県営大宮 5回終了 木更津総合 000 10 =0 H2 E0 B0 東海大相模 010 00 =1 H2 E1 B0 木)篠木 東)遠藤 [本] [三] [二]木)小池 [盗]東)茂谷,金城2 4回木総は先頭の小池が2塁打,4番岩井の適時打で同点‼️ 5回相模は0死1,2塁の好機を作るが無得点"</a></header><div></div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1129584827764695041"
+            target="_blank">2019/5/18 12:09:44</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">あの東海大相模をヒット2本に抑えるとは、篠木くんはやっぱりすごいなあ。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1129594829174820864"
+            target="_blank">2019/5/18 12:49:28</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">根本くん打たれたか。。銚子商の試合の時も制球がままならない感じであきらかに調子わるそうだったもんなあ。。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/1026843577878343681/nhRb6hdM_normal.jpg" />
+        <p class="tweet-user-name">バラルバレル@BalalBarrel</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/BalalBarrel/status/1129362011618365441"
+            target="_blank">2019/5/17 21:24:20</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">現在制作中のフリーゲームに登場する予定のボスです。巨大なボスを作るのは楽しい。#gamedev #indiedev https://t.co/76kKt7zBW5</p>
+        
+        <video class="tweet-img" controls src="https://video.twimg.com/ext_tw_video/1129196866388684801/pu/vid/240x180/T5zcFF4KE-TB2JI8.mp4?tag=9" />
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1128644867108655105"
+            target="_blank">2019/5/15 21:54:40</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">会社帰りに八ツ山橋を通りかかったら警察が非常線を張ろうとしてて消防車がすごい来て何かなあ？と思ったら人身事故だったのか。。あの橋から飛び降りたのかな。。怖い。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1128645175708753925"
+            target="_blank">2019/5/15 21:55:53</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">橋のたもとに鞄が置いてあって。やっぱりあれが遺物だったのかなあと今思ってゾッとしてる。。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1128269433149857793"
+            target="_blank">2019/5/14 21:02:49</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ファースト・レーンのBGM好きだなあ。FM音源全盛の時代にD/A（サンプリング音源）だけという当時としてはちょっと変わった仕様のサウンド。予算の都合でそうなったとかなってないとか。。<br/><br/><div class="youtube" data-type="yt" id="2OfQ6BenNHY"><div class="yt-title">Youtube - Arcade Longplay [429] Fast Lane</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/2OfQ6BenNHY" class="youtube" src="https://i.ytimg.com/vi/2OfQ6BenNHY/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1128269687530254336"
+            target="_blank">2019/5/14 21:03:50</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">これ日本で発売されたのかな。。私はデモテープも貰ったくらいこのBGMに心酔していたが。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1128270314377318400"
+            target="_blank">2019/5/14 21:06:19</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ゲームの内容は私の好みではあまりなかったが。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1128272919581192192"
+            target="_blank">2019/5/14 21:16:40</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">バトランティス。当時アルカノイドのヒットによってこのようなリバイバルものがちょっとはやった。<br/><div class="youtube" data-type="yt" id="z7Y-4n6YZqc"><div class="yt-title">Youtube - 1987 [60fps] Battlantis ALL</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/z7Y-4n6YZqc" class="youtube" src="https://i.ytimg.com/vi/z7Y-4n6YZqc/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1128273166327894016"
+            target="_blank">2019/5/14 21:17:39</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">このゲームがはやったかどうかといえば、推してはかるべし。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1128274101355704320"
+            target="_blank">2019/5/14 21:21:22</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">フラック・アタックもちょっと不運なSTGかもしれん。。<br/><div class="youtube" data-type="yt" id="v_dzA8oxRx0"><div class="yt-title">Youtube - Arcade Archives FLAK ATTACK Trophies　アーケードアーカイブス　フラックアタック</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/v_dzA8oxRx0" class="youtube" src="https://i.ytimg.com/vi/v_dzA8oxRx0/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1128275439602954240"
+            target="_blank">2019/5/14 21:26:41</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">Devil Worldも独特の世界観。開発が難航してた感あり。。<br/><div class="youtube" data-type="yt" id="gSRH2qXpcL8"><div class="yt-title">Youtube - Arcade Longplay [184] Devil World</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/gSRH2qXpcL8" class="youtube" src="https://i.ytimg.com/vi/gSRH2qXpcL8/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1128276777590067202"
+            target="_blank">2019/5/14 21:32:00</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">THE HUSTLER。知る人ぞ知るビリヤードゲーム。当時はリアルな動きだなあと思ってた。<br/><br/><div class="youtube" data-type="yt" id="ChEnjlaiFN8"><div class="yt-title">Youtube - The Hustler - Arcade</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/ChEnjlaiFN8" class="youtube" src="https://i.ytimg.com/vi/ChEnjlaiFN8/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1128278077333618690"
+            target="_blank">2019/5/14 21:37:10</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">WEC Le Mans も回転する専用筐体まで発売されたよな。。当時相当遊んだんだけど、他のレース・ゲームに比べるとレトロ界隈での露出度が少ない気がしないでもない。。<br/><a href="https://youtu.be/IlD9Paejj-Y" target="_blank">youtu.be/IlD9Paejj-Y</a></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1128278289468968960"
+            target="_blank">2019/5/14 21:38:01</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">この手のレースゲームってコナミのイメージではないからかもね。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1128278676263407616"
+            target="_blank">2019/5/14 21:39:33</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ロード・ファイターなんつうのもあったな。この上から見下ろし画面で見る車のグラフィックが立体的ですごい！って当時思ったんだよな。。<br/><div class="youtube" data-type="yt" id="4pLTBOdczCg"><div class="yt-title">Youtube - Arcade Game: Road Fighter (1984 Konami)</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/4pLTBOdczCg" class="youtube" src="https://i.ytimg.com/vi/4pLTBOdczCg/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1128264565215465472"
+            target="_blank">2019/5/14 20:43:29</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ああ、これだ。。アクティブタイプか。。 <blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="https://twitter.com/togemet2/status/1128086814466592768" target="_blank">Twitter / ?</a></header><div></div></blockquote></p>
+        
+      </section>
+      
+    </article>
+    
+  </div>
+  <footer>
+    CopyLight 2019 Satoshi Fujiwara
+  </footer>
+  <script async src="https://platform.twitter.com/widgets.js"></script>
+
+  <script async src="./index.js"></script>
+
+</body>
+
+</html>
