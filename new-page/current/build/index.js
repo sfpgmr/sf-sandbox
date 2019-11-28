@@ -263,6 +263,12 @@
                   return;
                 }
                 cacheArticles = fetchArticles();
+                // 少しスリープする
+                await new Promise((resolve,reject)=>{
+                  setTimeout(()=>{
+                    resolve();
+                  },200);
+                });
               }
             }
            })();
