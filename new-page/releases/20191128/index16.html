@@ -1,0 +1,1474 @@
+<!DOCTYPE html>
+<html lang="ja" prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb# article: http://ogp.me/ns/article#">
+
+<head>
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-15457703-9"></script>
+  <script>
+    if (!location.hostname.match(/localhost/)) {
+      window.dataLayer = window.dataLayer || [];
+      function gtag() { dataLayer.push(arguments); }
+      gtag('js', new Date());
+      gtag('config', 'UA-15457703-9');
+    }
+  </script>
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>トップページをリニューアルする</title>
+  <meta name="description" content="リニューアル用のトップページデザインを考えて実装する" />
+  <meta name="keywords" content="Programming,Music,HTML5,WebGL,javascript,WebAudio" /> 	
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <meta itemprop="image" content="https://www.sfpgmr.net/img/sfweb.png" />
+  <meta itemprop="name" content="S.F. Web" />
+  
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:site" content="S.F. Web" />
+  <meta name="twitter:url" content="./index16.html" />
+  <meta name="twitter:title" content="リニューアル用のトップページデザイン" />
+  <meta name="twitter:description" content="リニューアル用のトップページデザインを考えて実装する" />
+  <meta name="twitter:image" content="https://www.sfpgmr.net/img/sfweb.png" />
+  
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="./index16.html" />
+  <meta property="og:title" content="リニューアル用のトップページデザイン"/>
+  <meta property="og:site_name" content="S.F. Web" />
+  <meta property="og:description" content="Programming,Music,HTML5,WebGL,javascript,WebAudio">
+  <meta property="og:image" content="https://www.sfpgmr.net/img/sfweb.png">
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    html {
+      margin: 0;
+      padding: 0;
+      font-size:10px;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      background: black;
+      color: white;
+    }
+
+    #sentinel {
+      width:1px;
+      height:1px;
+    }
+    .contents {
+      width: 100%;
+      position: relative;
+      content: strict;
+    }
+
+    @keyframes blinking {
+      0% {
+        color: black;
+      }
+
+      50% {
+        color: white;
+      }
+
+      100% {
+        color: black;
+      }
+    }
+
+    .loading {
+      font-family: monospace;
+      font-size: 24px;
+      position: fixed;
+      width: 100vw;
+      height: 100vh;
+      text-align: center;
+      padding-top: 50vh;
+      z-index: 32768;
+      background: black;
+      animation: blinking 2s infinite;
+      content: strict;
+    }
+
+
+    .contents>article {
+      background: #f0f0f0;
+      color: #202020;
+      position: absolute;
+      max-height: 960px;
+      overflow: auto;
+      border-radius: 3px;
+    }
+
+    .tweet-header {
+      display: grid;
+      align-items: end;
+      grid-template-columns: 40px 2fr 1fr;
+      grid-template-rows: 1fr;
+      font-size: 12px;
+      font-weight: bold;
+    }
+
+
+    .tweet-img {
+      width: 100%;
+      object-fit: cover;
+    }
+
+    .youtube {
+      position: relative;
+      cursor: pointer;
+    }
+
+    .youtube > img {
+      width: 100%;
+      object-fit: cover;
+    }
+
+    .youtube > svg.player-play {
+      width:64px;
+      height:64px;
+      left:calc(50% - 32px);
+      top:calc(50% - 32px);
+      position:absolute;
+      z-index: 1000;
+      opacity: 0.5;
+    }
+    
+    .youtube:hover > svg.player-play {
+      opacity: 1.0;
+    }
+
+    .youtube:hover .player-play-1 {
+      stroke:#80808080;
+    }
+
+    
+    .youtube > div.yt-title {
+      /*text-shadow: #fff 1px 1px 0;*/
+      font-size: 1.2rem;
+      color:white;
+      background:rgba(0, 0,0,0.5);
+      position:absolute;
+      left:0;
+      top:0;
+      overflow: auto;
+      z-index:998;
+    }
+
+
+    .tweet-profile-img {
+      grid-column: 1/2;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+    }
+
+    .tweet-user-name {
+      grid-column: 2/3;
+    }
+
+    .tweet-date {
+      font-size: 8px;
+      text-align: right;
+      grid-column: 3/4;
+    }
+
+    .contents>twitter-widget {
+      overflow: auto;
+      max-height: 960px;
+      position: absolute;
+    }
+
+    .contents>article>section>.tweet-text {
+      display: block;
+      padding: 4px;
+      word-break: break-all;
+      font-size: 12px;
+    }
+
+    .contents>article>h3 {
+      font-size: 12px;
+    }
+
+    blockquote.card {
+      margin:4px;
+      padding:4px;
+      font-size:12px;
+      background:white;
+      border-radius: 4px;
+    }
+
+    blockquote.card > header {
+      display:grid;
+      grid-gap:4px;
+      gap:4px;
+    }
+
+    blockquote.card-default > header {
+      grid-template-columns:64px 1fr;
+    }
+
+    blockquote.card-large > header {
+      grid-template-columns:1fr;
+    }
+
+    blockquote.card > header > img {
+      width:100%;
+    }
+
+
+    div.no-image {
+      display: block;
+      width:64px;
+      height:64px;
+      background:gray;
+      color:white;
+      text-align: center;
+      line-height: 64px;
+    }
+
+  </style>
+</head>
+
+<body>
+  <div class="loading" id="loading">Loading</div>
+  <header class="top-nav">
+    <h1>S.F. Info.</h1>
+  </header>
+  <div class="contents" id="contents" rendersubtree="invisible skip-activation"> 
+    
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1104468536372518912"
+            target="_blank">2019/3/10 4:46:33</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">@RE_DO ありがとうございます。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1104460083063283713"
+            target="_blank">2019/3/10 4:12:58</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">@RE_DO よろしければご紹介いただけばればと思います。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1104458284977672193"
+            target="_blank">2019/3/10 4:05:49</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">@RE_DO 音楽理論に関してはほぼゼロです。ミキシングも我流です。譜面がなんとか読めるレベルです。作曲に向かうモチベーションは今はないですね。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1104383027310845952"
+            target="_blank">2019/3/9 23:06:46</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">@RE_DO 作曲は段違いに難しいです。。その素養は私にはどうもないようで。。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1104275663530254336"
+            target="_blank">2019/3/9 16:00:09</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">2分ほどウッドデッキに出ただけでもう目がかゆい。。今日はどれだけ飛んでるんだ。と思ったら今日非常に多いですがな。。 https://t.co/aVy2IczwEK</p>
+        
+        <img loading="lazy" class="tweet-img" src="https://pbs.twimg.com/media/D1Ms2pCVsAEejId.png" />
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1104276325500518403"
+            target="_blank">2019/3/9 16:02:47</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">午前中はよかったけど午後は胃腸の調子がすごく悪いや。。下る下る。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1104276888288034817"
+            target="_blank">2019/3/9 16:05:01</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">花粉の量は関西にいたときにくらべて関東のほうがすごい気がするんだよな。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1104276986568957953"
+            target="_blank">2019/3/9 16:05:24</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">これでは外には出れんわ。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1104278154384830464"
+            target="_blank">2019/3/9 16:10:03</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">しかし家にいるときはそんなに痒くならんということは、家の中はそんなに花粉がないということなんだよな。でもマスクはしてますが。。マスクも普通のやつだから遮断効果はあまり期待できない。がプラセボ的な効果は期待できる。安心するんだよな。マスクすると。。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1104215899895033857"
+            target="_blank">2019/3/9 12:02:40</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">@syntaxerrors72 うーむ。なるほどぉ。。冷えの改善はなかなか手ごわいですね。。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1104117575359782912"
+            target="_blank">2019/3/9 5:31:58</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">花粉症の症状が一気に悪化してしまって、だるくて何もしたくない状態に2日ほどなってしまった。この状態になるとほんとに何もしたくなくなって、ひたすら寝るだけになってしまう。1日～2日くらいたつと回復するんだけどね。今ようやく回復した感じ。風邪とは違うんだな。これが。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1104119414209699840"
+            target="_blank">2019/3/9 5:39:16</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">花粉の飛散量が増す前にアレグラを飲んでるから、鼻炎対策はこれでいけるんだけど、飛散量が増すとなぜか片頭痛・下痢・だるさが同時に発生する。それで日中ものすごく消耗して疲れてしまう。疲れてるんだけど、夜も掻痒感みたいなものもあって眠りも浅くなってしまうんだな。これが。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1104119618552029184"
+            target="_blank">2019/3/9 5:40:05</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">それと体が冷蔵庫で冷やされるような冷感というか寒気を感じる。真冬よりも3-4月のほうが寒さを感じる時が多い。そういうときには体温は決まって35度ちょっとくらいで低い。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1104121136902619136"
+            target="_blank">2019/3/9 5:46:07</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">毎年ではないのだがこの時期になると関節が少し痛む感じがする。数年前はこの時期左膝が痛くて普通に歩けなくなった。これはとうとう加齢の膝関節痛が来たかなと思って整形外科に行ったことがあった。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1104121137745690624"
+            target="_blank">2019/3/9 5:46:07</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">そしてレントゲンを撮ると膝関節はなんともないという診断。MRI撮ってみる？と言われたので撮ってみると、確かに関節の内部で炎症を起こしているという。何かにぶつけた？と聞かれたけどぶつけてはいない。。そしてこれも花粉の飛散時期が過ぎると治ってしまった。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1104123375146786816"
+            target="_blank">2019/3/9 5:55:00</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">しかし頭痛・下痢に関しては、アレグラの副作用かもしれんな。クラリチンを飲んでたときもそうだし、ひょっとするとこれは薬のせいかもしれんなあ。。長期にわたって毎日飲むもんね。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1104123376015093760"
+            target="_blank">2019/3/9 5:55:01</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">アレグラの副作用としては<br/><br/>・頭痛、眠気、疲労、倦怠感、めまい、不眠、、神経過敏、悪夢、睡眠障害、しびれ感<br/>・嘔気、嘔吐、口渇、腹痛、下痢、消化不良、便秘<br/><br/>とあるから、そうかもしれん。花粉過ぎたら飲まなくなるし。。<br/>眠気は感じないからいい薬なんだけど。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1104123883068698625"
+            target="_blank">2019/3/9 5:57:02</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">クラリチンも似たような副作用だなあ。。<br/><blockquote class="card card-default"><header><img loading="lazy" src="https://medical.nikkeibp.co.jp/images/nm1311/logo/ogp_shohoyaku.png" /><a href="https://medical.nikkeibp.co.jp/inc/all/drugdic/prd/44/4490027F1022.html" target="_blank">クラリチン錠10mgの基本情報（薬効分類・副作用・添付文書など）｜日経メディカル処方薬事典</a></header><div>クラリチン錠10mg（一般名：ロラタジン錠）の薬効分類・副作用・添付文書・薬価などを掲載しています。「処方薬事典」は日経メディカルが運営する医療・医薬関係者向け医薬品検索データベースです。</div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1104124545705766912"
+            target="_blank">2019/3/9 5:59:39</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">抗ヒスタミン剤というのはどれも似たような副作用があるなあ。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1104125443756580864"
+            target="_blank">2019/3/9 6:03:14</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">しかしこの3月の2-3日不調というのはほぼ毎年起こる。薬の副作用だけではないよなあ。。この時の疲労感というのはもうほんとに「何もしたくない。」レベルなのですよ。。PCも10分も触ってられないんだよな。。今は嘘のように回復してるけどね。「魔の3月」だと自分では思ってる。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1104198314205970433"
+            target="_blank">2019/3/9 10:52:47</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">週一回通っている耳鼻科＆内科によると<br/><br/>１．花粉症や副鼻腔炎で鼻の通りが悪い<br/>２．熟睡できない<br/>３．疲れが取れない<br/>４．頭痛が発生→疲れる<br/>５．胃腸が悪くなる→消化不良→栄養不足→疲れが取れない<br/>６．疲れがたまり、１．に戻る<br/><br/>というループになっているらしい。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1104198315053182976"
+            target="_blank">2019/3/9 10:52:47</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">こうしてどんどん疲れが溜まっていって、ある時疲れが溜まりすぎて動けなくなるようである。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1104199273569087488"
+            target="_blank">2019/3/9 10:56:36</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">私の場合「冷え性」で、そもそも疲れやすい＆疲れが溜まりやすいということもあって、動けなくなるほど疲れてしまうようである。花粉症が無ければなんとか持ち堪えることができるようだが、花粉症で一気に「疲れ」が加速してしまうようだ。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1104201312722251776"
+            target="_blank">2019/3/9 11:04:42</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">私の場合「冷え」をできる限り取るため週一回温熱治療を受けている。が、それに加えて40℃くらいの風呂に30分以上使って体の芯まであったまるようにしなさいとのことだった。30分つかるのはなかなか長いな。。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1104153801366224896"
+            target="_blank">2019/3/9 7:55:55</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">chromeにおけるsimdの実装って2017年2月から始まってるんだな。。<br/><blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="https://bugs.chromium.org/p/v8/issues/detail?id=6020&desc=2" target="_blank">6020 - Loading issue... - Monorail</a></header><div></div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1104155509584683009"
+            target="_blank">2019/3/9 8:02:42</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">今はまだ開発中のステータスですな。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1104155513040732160"
+            target="_blank">2019/3/9 8:02:43</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">binaryenの現バージョンでSIMDのバイナリは吐くんだけど、ブラウザやnodeがまだ未サポートだから動かんちゅうことなんだろうな。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1097599243643019265"
+            target="_blank">2019/2/19 5:50:26</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ブログを投稿。<br/>「オレオレ言語のこれまでと今後」<br/><br/><blockquote class="card card-default"><header><img loading="lazy" src="https://www.sfpgmr.net/img/sf.png" /><a href="https://www.sfpgmr.net/blog/entry/2019/02/18591be0314b94dee15c5af127b4f79a.html" target="_blank">S.F. Blog:オレオレ言語のこれまでと今後</a></header><div>はや1年2018年2月ころから作り始めた「オレオレ言語（sgl2）」は1年を経過したが、やはりストレートに成果物を作るというわけにはいかず、紆余曲折し中途半端なところで止まっているところである。そもそも静的型付け言語のglslと動的型付けのJSとのデータのやり取りのオーバーヘッド（実装コスト＆実行時の型変換のオーバーヘッド）が気になってしょうがないことや、コルーチンの言語サポートを動機としてオレオ...</div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1098325086346461190"
+            target="_blank">2019/2/21 5:54:41</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">と書いてみたものの、いろいろ考えることが多く、特にメタ・プログラミングをどのようにソースコードで表現するのかうまいアイデアを思いつけない。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1098326187992989696"
+            target="_blank">2019/2/21 5:59:03</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">1つのアイデアとしては昔こういうのをtweetしとるな。。<br/><blockquote class="card card-default"><header><img loading="lazy" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_400x400.jpg" /><a href="https://twitter.com/SFPGMR/status/1004126800237113344" target="_blank">S.F.さんのツイート: "こういうのが書けるようになるのはいつの日か type MyShip&lt;Base = f32&gt; { private: type vec4&lt;Base&gt; V; V pos; V delta; public: constructor(Base x,Base y){ pos.x = x,pos.y = y; } move(){ pos.y += # Base == i32? 1 : (Base == f32 ? 1.0f : 1.0) #; pos += delta; } }"</a></header><div></div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1098328261757562880"
+            target="_blank">2019/2/21 6:07:18</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">まあこれはちょっと違うか。メタ・プログラミングは型操作だけを行うものではないしな。。実行時に静的になるものも対象に入るしな。。おお、constexpr !!</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1098329132272766976"
+            target="_blank">2019/2/21 6:10:45</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ML系の言語も知っておく必要がありそうだなあ。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1104132516854751232"
+            target="_blank">2019/3/9 6:31:20</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ここに来て「オレオレ言語」つくりのモチベーションも復活してきたので、少しでも進めることにしようかな。。といいつも進め方に迷いが多少あり、今年もまた実装が流動しそうな感じですわ。。良い言い方をすればですが。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1104133418365771776"
+            target="_blank">2019/3/9 6:34:55</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">パーサーはpeg.jsの利用をやめて、手書きトークナイザ・パーサに戻そうかなと思っている。今のところブランチがpeg-ver/preprocess/typeとあるんだけど、peg-ver/preprocessで進めるのはやめて、typeブランチで進めることにする。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1104134004142309377"
+            target="_blank">2019/3/9 6:37:15</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">そして言語仕様は他言語の仕様（JS/C/C++/GLSLを主に）を拝借しながら作って行こうかなと。C-Likeであるのは崩さない。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1104135195291074560"
+            target="_blank">2019/3/9 6:41:59</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">といいつつtypeブランチで何をしていたのかは半分忘れているので、自分のTogetterで思い出すと。<br/><br/><blockquote class="card card-default"><header><img loading="lazy" src="https://pimg.togetter.com/c5f6d97ea69f2fcf2cc20bd4924645c864ea1c3c/68747470733a2f2f7062732e7477696d672e636f6d2f6d656469612f44696d73492d4f57734141393232492e6a70673a6c61726765" /><a href="https://togetter.com/li/1266927" target="_blank">オレオレ言語を作る - Togetter</a></header><div>node.jsでWASMを吐くコンパイラを作っています。まだ完成には至っていません。。リポジトリ</div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1104135196104810496"
+            target="_blank">2019/3/9 6:41:59</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">記憶力の減退を補うために、その時の考えをツィートしてデータ化しておくのは老害な私にとってはとても助かる。ITが発展した現代に感謝。私の脳が拡張されるイメージがある。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1104135993798479872"
+            target="_blank">2019/3/9 6:45:09</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">今の環境で育つ子供って、我々の時代とはまったく違う感覚でこのようなツール類に触れるのだろうし、それが当たり前だと感じるからこそ、進化へのモチベーションが生まれるんだろうなあとか思う。うまく言えてないな。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1104136530883297280"
+            target="_blank">2019/3/9 6:47:17</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">今ちょっと実装したいなあと思ってるのはソースインクルードなんですが。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1103992300886061057"
+            target="_blank">2019/3/8 21:14:10</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">エクスパンスのシーズン１－３を観終えた。久しぶりにSFのドラマを堪能できたなあ。。<br/><br/><blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="https://amzn.to/2TwGoYc" target="_blank">Amazon.co.jp: エクスパンス ～巨獣めざめる～　シーズン3 (字幕版)を観る | Prime Video</a></header><div>シーズン３は太陽系の各所で起こる地球対火星の戦争と、人類の存在を脅かすプロト分子がさらに進化した脅威とで始まる。</div></blockquote><br/><br/>いやーおかげでほかのこと何もできんかった。。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/1046803782011518976/Oyc61KRm_normal.jpg" />
+        <p class="tweet-user-name">とりのささみ。（漫画家）@torinosashimi</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/torinosashimi/status/1103218796729376768"
+            target="_blank">2019/3/6 18:00:32</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">https://t.co/f9h3cN5GIG</p>
+        
+        <img loading="lazy" class="tweet-img" src="https://pbs.twimg.com/media/D09rpfCWkAAVWAA.jpg" />
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/2266027451/ihzpz07j299cbsu2a9pp_normal.gif" />
+        <p class="tweet-user-name">山本アットホーム冬ｺﾐ12/30西Ｋ35b@yamapon_bot</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/yamapon_bot/status/1103129977912881152"
+            target="_blank">2019/3/6 12:07:36</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">桃太郎に消費税が導入された話を 描きました こちらで全7ページ公開中です→<a href="https://www.freee.co.jp/special/consumption-tax/manga.html" target="_blank">freee.co.jp/special/consum…</a> https://t.co/HCcp5EJfUO</p>
+        
+        <img loading="lazy" class="tweet-img" src="https://pbs.twimg.com/media/D08a2K4UcAA5Qo-.jpg" />
+        
+        <img loading="lazy" class="tweet-img" src="https://pbs.twimg.com/media/D08a2h9U4AE1WSp.jpg" />
+        
+        <img loading="lazy" class="tweet-img" src="https://pbs.twimg.com/media/D08a23NVYAAwR7z.jpg" />
+        
+        <img loading="lazy" class="tweet-img" src="https://pbs.twimg.com/media/D08a3RyUYAMRbdS.jpg" />
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1103269448780115968"
+            target="_blank">2019/3/6 21:21:49</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">トロンという映画ってちょっと不思議だよなあ。。ローポリなんだけどやたら解像度高いような気がするし、あまりジャギーも目立たないよね。<br/><br/><div class="youtube" data-type="yt" id="-BZxGhNdz1k"><div class="yt-title">Youtube - Tron (1982) - "Light Cycle Battle"</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/-BZxGhNdz1k" class="youtube" src="https://i.ytimg.com/vi/-BZxGhNdz1k/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1103270533687173121"
+            target="_blank">2019/3/6 21:26:07</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">CGってここまでできるんだ！って当時思ったんだよなあ。。PCでレイトレすると1枚描くのに数日かかった時代だから、そりゃもうこの映像はすごいわけですよ。当時はポリゴン・グラフィクスとかは知らなかったんだよなあ。なぜかレイトレのほうが先だった気がする。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1103271029755895810"
+            target="_blank">2019/3/6 21:28:05</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ちゅうてもトロンはレイトレではないんだろうけどね。グーローやフォンシェーディングなんだろうけど、こんなフルカラーなCGは私の知識の中ではあり得ないわけですよ。やはり。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1103271542106992640"
+            target="_blank">2019/3/6 21:30:08</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">パーリン・ノイズというのはこの「トロン」のために開発されたものらしいですな。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1103272111676645376"
+            target="_blank">2019/3/6 21:32:23</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">「TRON」という名前は私はBASICのTRON命令（TRace ON）からだと思ってたけど、違うんだなあ。。<br/><blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="https://ja.wikipedia.org/wiki/%E3%83%88%E3%83%AD%E3%83%B3_(%E6%98%A0%E7%94%BB)" target="_blank">トロン (映画) - Wikipedia</a></header><div></div></blockquote></p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1103057510225698818"
+            target="_blank">2019/3/6 7:19:38</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">エクスパンスというドラマを観てる。面白い。また時間がとられてしまう。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1103266049728774144"
+            target="_blank">2019/3/6 21:08:18</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">エクスパンスのシーズン１を終え、今はシーズン２を観てる。。久しぶりにSFの新作ドラマを観たよなあ。ってドラマというカテゴリだと「スターウルフ」以来じゃなかろうか。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1103266961234964481"
+            target="_blank">2019/3/6 21:11:55</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">「2001年宇宙の旅」を観たときは30歳超えたくらいでだれでも宇宙旅行ができるようになるんだろうなあとか思ってたけど、現実はそうはならなかったなあ。。どちらかというと有人飛行という面では退化してるような気もする。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1103267492862996480"
+            target="_blank">2019/3/6 21:14:02</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">探査という目的では有人でなくても可能になったというのが大きいんだろうけど。宇宙に人を送るというのはものすごいリスキーかつコストがかかることだからなあ。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1103268498069831681"
+            target="_blank">2019/3/6 21:18:02</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">エクスパンスを観てるとテレビモニターも液晶になってて、タブレットやスマフォの進化形みたいなのが出てくる。これが昔の映画だったら電話機だし、モニターはブラウン管だったりする。SF映画も制作時期の時代背景を映し出してるところが面白いところだよなあ。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1100006225901547526"
+            target="_blank">2019/2/25 21:14:56</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">テクノポリスのベースパートを打ち込み終え、ほかのパートを入力してるところ。。カメのようにのろい。。<br/><br/><blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="https://www.youtube.com/watch?v=5MBxYU4ojEE&feature=youtu.be" target="_blank">YouTube</a></header><div>YouTube でお気に入りの動画や音楽を楽しみ、オリジナルのコンテンツをアップロードして友だちや家族、世界中の人たちと共有しましょう。</div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1100141111371227138"
+            target="_blank">2019/2/26 6:10:55</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">TECHNOPOLISのカバー曲つくり。<br/>ようやくメロディのところまできた。<br/><br/><div class="youtube" data-type="yt" id="YhzEI9B6fWI"><div class="yt-title">Youtube - YMO - TECHNOPOLIS データ入力（２）</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/YhzEI9B6fWI" class="youtube" src="https://i.ytimg.com/vi/YhzEI9B6fWI/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1100155215553093632"
+            target="_blank">2019/2/26 7:06:57</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">かつてAodixという故arguru氏のトラッカーで作ってたが、そのシーケンスデータを目視しながらreaperに入力してる。そのデータを見るとなかなか面白い。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1100158363441057792"
+            target="_blank">2019/2/26 7:19:28</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">データ解析してmidiデータにしてreaperに取り込むというのもアリだが。。もしくはreaperのプロジェクトファイルのフォーマットが公開されてるならダイレクトに変換してもいいかもね。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1100158788080824322"
+            target="_blank">2019/2/26 7:21:09</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">メロの音色が単音では痩せて聞こえるからオクターブで重ねてたりとか。ああ、こんなことしてたんだ。。と自分のデータ見て驚いたりしてる。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1100159613171716096"
+            target="_blank">2019/2/26 7:24:26</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">へえ。。reaperのrppはテキストエディタで読めるのか。。<br/><blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="https://forum.cockos.com/showpost.php?s=01a62696d75a518a7f2b1d7b19b25de1&p=399588&postcount=3" target="_blank">Cockos Incorporated Forums - View Single Post - question about reaper's project file format</a></header><div>Cockos Confederated Forums</div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1100160679984607232"
+            target="_blank">2019/2/26 7:28:40</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">buzz trackerで作ってたbehind the maskのデータも読み込みしようとするとアプリが落ちるようになってしまった。これもなんとかしたいところなんだけど。。とにかくreaperへの移植を進めないとなあ。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1100160971505426432"
+            target="_blank">2019/2/26 7:29:50</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">何を焦ってるかというと、刻一刻と自分の耳の可聴周波数領域が狭まってきてるのもある。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1100161173691879424"
+            target="_blank">2019/2/26 7:30:38</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">そしてアプリが動かなくなり、データが実質失われてしまうのも危惧しだしたのもある。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1100162037164822528"
+            target="_blank">2019/2/26 7:34:04</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ソリッドステイトサバイバーを全曲カバーしたいという野望があるのだが、このままでは果たせない可能性も出てきた。20代の頃は思いもしなかったことであるが。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1100162530385702915"
+            target="_blank">2019/2/26 7:36:01</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">今のところ手をつけてるのが<br/><br/>technopolis<br/>rydeen<br/>behind the mask<br/>absolute ego dance<br/><br/>である。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1100163024566931456"
+            target="_blank">2019/2/26 7:37:59</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">後の3曲<br/><br/>day tripper<br/>insomnia<br/>solid state survivor<br/><br/>は手もつけられていない。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1100163621097693184"
+            target="_blank">2019/2/26 7:40:21</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">absolute ego danceは音色も難しいし、リズムはハネてるし、間奏のサンディーの声をどうするんだという。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1100164113072775168"
+            target="_blank">2019/2/26 7:42:19</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">あ、castaliaが抜けてた。。これもいい曲ですわなあ。。まあ若かりし頃は飛ばして聴いたりしてたが、おっさんになった今聴くと泣きそうになる時があるわ。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1100507703779061760"
+            target="_blank">2019/2/27 6:27:37</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">7割がたデータを入力。ミックス・音色はまだ手を付けていない。。<br/><br/><div class="youtube" data-type="yt" id="TgB-uv8fMIk"><div class="yt-title">Youtube - YMO - TECHNOPOLIS データ入力（３）</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/TgB-uv8fMIk" class="youtube" src="https://i.ytimg.com/vi/TgB-uv8fMIk/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1101228951500840960"
+            target="_blank">2019/3/1 6:13:36</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">8割がたデータを入力。ちょっとドラムをEQとノイズゲートでいじってみた。<br/><br/><div class="youtube" data-type="yt" id="QuV6rw8R6XY"><div class="yt-title">Youtube - YMO - TECHNOPOLIS データ入力（４）</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/QuV6rw8R6XY" class="youtube" src="https://i.ytimg.com/vi/QuV6rw8R6XY/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1101229071701204992"
+            target="_blank">2019/3/1 6:14:05</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ノートデータも間違ってるところちょこちょこあるなあ。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1102147075712540673"
+            target="_blank">2019/3/3 19:01:54</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">とりあえずデータ入力は終わった感じ。これからミックスなどの調整に入る。しかしボコーダーは難しいなあ。。「トキオ！」のところだけど。。<br/><br/><div class="youtube" data-type="yt" id="2HxAAbzrYpE"><div class="yt-title">Youtube - YMO - TECHNOPOLIS データ入力（５）</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/2HxAAbzrYpE" class="youtube" src="https://i.ytimg.com/vi/2HxAAbzrYpE/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1102692033045573633"
+            target="_blank">2019/3/5 7:07:22</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">イヤーここ2-3日、といっても1日1時間くらいボコーダーの音づくりやってるけと全然違うわ。。と思ってライディーンのカバー聴き直したらドラムの音が歪み過ぎてる感じがするなあ。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1102692127677403136"
+            target="_blank">2019/3/5 7:07:44</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">うーむ。難しい。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1103043941752946688"
+            target="_blank">2019/3/6 6:25:43</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ボコーダー改良中をアップ。。<br/><br/><div class="youtube" data-type="yt" id="oTjX_pkcdrw"><div class="yt-title">Youtube - YMO - TECHNOPOLIS 20190306 ボコーダーパートの改良（１）</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/oTjX_pkcdrw" class="youtube" src="https://i.ytimg.com/vi/oTjX_pkcdrw/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1103023456973516800"
+            target="_blank">2019/3/6 5:04:19</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">機械学習というか、カテゴライズの自動化というテーマでword2vecをいじろうと思って勉強してるところ。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1103023457766264832"
+            target="_blank">2019/3/6 5:04:20</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">AIというカテゴリは難しくてよくわからないが、興味はものすごくあるんだよなあ。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1102690681196175360"
+            target="_blank">2019/3/5 7:02:00</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">あー花粉がきつい。。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/534760468/iYobk_normal.jpg" />
+        <p class="tweet-user-name">masafumi@masafumi</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/masafumi/status/1102371911617544193"
+            target="_blank">2019/3/4 9:55:19</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">Ray Tracing GemsのPDFが登録なしで全部ダウンロードできるようになったのね<br/><a href="https://link.springer.com/book/10.1007/978-1-4842-4427-2" target="_blank">link.springer.com/book/10.1007/9…</a></p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1100716872914202624"
+            target="_blank">2019/2/27 20:18:47</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ちょっとフラットな特性のカナル型イヤホンが欲しくて、でも高いからなあ。。と思ってたら2nd StreetでShure E3cが2100円で売ってたので思わず購入。当時2万円くらいしてたと思うのですごいと思ったけどもう10年以上前の製品なのね。。どうりで安いわけだ。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1100717281955336192"
+            target="_blank">2019/2/27 20:20:25</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">思い切り耳にねじ込むように入れなきゃいけなくて、耳も痛くなるんだけどね。このイヤホン。でも音を大きくしても漏れないし、疲れないんだよなあ。。おじさんにはうれしいのである。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1101567484925140992"
+            target="_blank">2019/3/2 4:38:49</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">だいぶねじ込みも慣れてきて、いい音で聴こえるようになってきた。やっぱり普通のヘッドフォンは高域と低域がよく聴こえるようにチューニングされてるんだなあということがこのヘッドフォンを使うとよくわかる。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1101568698626662400"
+            target="_blank">2019/3/2 4:43:38</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">一聴するとメリハリがあっていい音のように思えるけど、耳がものすごく疲れる。対してフラットが特性なのはなんか最初曇ったような音するように思えるんだけど、慣れてくるとそれが自然な感じだと感じるようになる。そしてあまり疲れない。この点もおじさんにはうれしい。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1101568699465515009"
+            target="_blank">2019/3/2 4:43:38</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">そして聴こえてなかった音も聴こえるようになってくる。なんでかはわからんが。そもそものミックスのバランスを崩さないで聴こえるからかなあとか思ってる。勝手に。でもE3cとかも確か低音よりらしいんだよなあ。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1101569384701542400"
+            target="_blank">2019/3/2 4:46:22</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">現行だとSE215あたりなのかなあと思うけど。もひとつ上のランクかもな。。高いものだと10万近くする。ひえぇ。しかしそういうのってどんな音がするんだろうなあ。。とは思う。<br/><br/><blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="https://amzn.to/2SxkNdH" target="_blank">Amazon.co.jp： SHURE イヤホン UNIシリーズ SE215 カナル型 高遮音性 リモコン・マイク付き ブラック SE215-K-UNI-A 【国内正規品】: 家電・カメラ</a></header><div>Amazon.co.jp： SHURE イヤホン UNIシリーズ SE215 カナル型 高遮音性 リモコン・マイク付き ブラック SE215-K-UNI-A 【国内正規品】: 家電・カメラ</div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1101571054017761280"
+            target="_blank">2019/3/2 4:53:00</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">REAPERでYMOのカバー曲を作るときに使ってるのはオーテクのATH-M20xだけれどもね。これもフラットな特性として知られてるヘッドフォンとのこと。<br/><br/><blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="https://www.amazon.co.jp/gp/product/B00HVLUR18?ie=UTF8&camp=1207&creative=8411&creativeASIN=B00HVLUR18&linkCode=shr&tag=sfprogrpage-22&qid=1551469679&sr=8-4&keywords=ATH+m20x" target="_blank">Amazon | audio-technica オーディオテクニカ プロフェッショナルモニターヘッドホン ATH-M20x スタジオレコーディング / 楽器練習 / ミキシング / DJ / ゲーム | モニターヘッドホン | 楽器</a></header><div>audio-technica オーディオテクニカ プロフェッショナルモニターヘッドホン ATH-M20x スタジオレコーディング / 楽器練習 / ミキシング / DJ / ゲームがモニターヘッドホンストアでいつでもお買い得。当日お急ぎ便対象商品は、当日お届け可能です。アマゾン配送商品は、通常配送無料（一部除く）。</div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1101571700892688384"
+            target="_blank">2019/3/2 4:55:34</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">これも低音をブーストするような類のヘッドフォンではないので、音がかなりショボく聴こえるかもしれないが、素の音を聴かせてくれる。まあEDMなんかはそもそも音圧がすごいのでこのヘッドフォンでもかなり来ますけどね。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1101572727545094144"
+            target="_blank">2019/3/2 4:59:39</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">私最近（といっても過去数年で）買ったCDってかなり古いものばかりで、<br/><br/>・シュガーベイブ<br/>・荒井由美のファースト「ひこうき雲」<br/>・大瀧詠一の「ナイアガラ・ムーン」<br/>・はっぴぃえんど「風街ろまん」<br/><br/>だったりする。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1101573695795949568"
+            target="_blank">2019/3/2 5:03:29</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">私もいいおじさんなのだが、この辺りはまだ2歳から8歳くらいに発売されたものなので、リアルタイムでは聴いたことはない。けど日本のポップミュージックを遡っていくとこのあたりに行き着くんだよな。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1101574390079057920"
+            target="_blank">2019/3/2 5:06:15</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">今はPrime Musicで聴くようになったので、CDはもう買ってないけどね。矢野顕子の「ジャパニーズ・ガール」とか聴いたりして感動したりとかね。この時代の曲を聴くのにもフラットな特性なヘッドフォンが向いてる気がするんだよな。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1101574969312440320"
+            target="_blank">2019/3/2 5:08:33</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">しかし矢野顕子の若いころのエネルギーというのは半端ないなあとこの「ジャパニーズ・ガール」を聴いてて思った。それとやっぱり「天才だなあ。」とも。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1101575209851613184"
+            target="_blank">2019/3/2 5:09:30</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">この「気球に乗って」とかすごいですよ。このグルーブとボーカル。<br/><br/><div class="youtube" data-type="yt" id="Ox4T8OSis1w"><div class="yt-title">Youtube - Akiko Yano, Kikyu ni Notte</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/Ox4T8OSis1w" class="youtube" src="https://i.ytimg.com/vi/Ox4T8OSis1w/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1101576207491985408"
+            target="_blank">2019/3/2 5:13:28</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">この「気球に乗って」のセルフカバーともいえるyanokamiの「sayonara」。このアレンジも秀逸ですわ。rei harakamiさんはお亡くなりになってしまったね。。<br/><br/><div class="youtube" data-type="yt" id="l7YrYF3x-Vg"><div class="yt-title">Youtube - Sayonara - yanokami</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/l7YrYF3x-Vg" class="youtube" src="https://i.ytimg.com/vi/l7YrYF3x-Vg/hqdefault.jpg" /></div>   <br/><br/><br/>これSC-88だけでトラック作ってるんだよね。すごいよね。。たしかにあのSC-88のチープだけど味のある音してる。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1101576537277521920"
+            target="_blank">2019/3/2 5:14:47</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ピアノは違うかな。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1101577729424551936"
+            target="_blank">2019/3/2 5:19:31</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">rei harakamiさんの曲聴いてハードオフでSC-88 Pro買ったもんなあ。。今は寝かせてるけどね。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1101577997931274240"
+            target="_blank">2019/3/2 5:20:35</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">SC-88 Proが今唯一自宅あるハード音源。。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1100524510166409216"
+            target="_blank">2019/2/27 7:34:24</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">@chikoski 100倍では？</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/378800000269543618/5e06fbf1ebf49df68aed6ace207841ea_normal.png" />
+        <p class="tweet-user-name">nhiroki@nhiroki_</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/nhiroki_/status/1100241488577871872"
+            target="_blank">2019/2/26 12:49:47</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">C/C++ 向けメモリアロケータ MESH の論文を読んだので記事にまとめました。Chromium での議論についてもちょろっと触れてます / "論文「MESH: Compacting Memory Management for C/C++ Applications」(PLDI 2019) - nhiroki's weblog" <a href="https://nhiroki.jp/2019/02/26/paper-mesh-compacting-memory-management" target="_blank">nhiroki.jp/2019/02/26/pap…</a></p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/817864664851750912/hN2kbele_normal.jpg" />
+        <p class="tweet-user-name">阿部@ave620</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/ave620/status/1093206650817720321"
+            target="_blank">2019/2/7 2:55:51</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">別に何もしてないのになんかしんどいのなんで！！！！ https://t.co/Id75x5EenW</p>
+        
+        <img loading="lazy" class="tweet-img" src="https://pbs.twimg.com/media/DyvZpmCUcAA4L89.jpg" />
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/817864664851750912/hN2kbele_normal.jpg" />
+        <p class="tweet-user-name">阿部@ave620</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/ave620/status/1100301036298752000"
+            target="_blank">2019/2/26 16:46:24</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">最近どうにも眠りが浅いのでいい方法あったら教えてください… https://t.co/mzdMja756X</p>
+        
+        <img loading="lazy" class="tweet-img" src="https://pbs.twimg.com/media/D0UN9CHUcAIIgDG.jpg" />
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/1022150732634419200/yZg4xLsO_normal.jpg" />
+        <p class="tweet-user-name">mattn@mattn_jp</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/mattn_jp/status/1100206799012032514"
+            target="_blank">2019/2/26 10:31:56</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">vim は思考を停止させない為のテキストエディタなんだけど、思考を停止させない様になれるまでにしこたま思考しないといけないテキストエディタなので、便利さを理解してもらい辛い。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1100124983827750912"
+            target="_blank">2019/2/26 5:06:50</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">DAWいじりがちょっと楽しくなってきたので、オレオレ言語つくりはちょっとお休みですなあ。。</p>
+        
+      </section>
+      
+    </article>
+    
+  </div>
+  <footer>
+    CopyLight 2019 Satoshi Fujiwara
+  </footer>
+  <script async src="https://platform.twitter.com/widgets.js"></script>
+
+  <script async src="./index.js"></script>
+
+</body>
+
+</html>

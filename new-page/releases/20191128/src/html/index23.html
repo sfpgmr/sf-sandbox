@@ -1,0 +1,918 @@
+<!DOCTYPE html>
+<html lang="ja" prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb# article: http://ogp.me/ns/article#">
+
+<head>
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-15457703-9"></script>
+  <script>
+    if (!location.hostname.match(/localhost/)) {
+      window.dataLayer = window.dataLayer || [];
+      function gtag() { dataLayer.push(arguments); }
+      gtag('js', new Date());
+      gtag('config', 'UA-15457703-9');
+    }
+  </script>
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>トップページをリニューアルする</title>
+  <meta name="description" content="リニューアル用のトップページデザインを考えて実装する" />
+  <meta name="keywords" content="Programming,Music,HTML5,WebGL,javascript,WebAudio" /> 	
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <meta itemprop="image" content="https://www.sfpgmr.net/img/sfweb.png" />
+  <meta itemprop="name" content="S.F. Web" />
+  
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:site" content="S.F. Web" />
+  <meta name="twitter:url" content="./index23.html" />
+  <meta name="twitter:title" content="リニューアル用のトップページデザイン" />
+  <meta name="twitter:description" content="リニューアル用のトップページデザインを考えて実装する" />
+  <meta name="twitter:image" content="https://www.sfpgmr.net/img/sfweb.png" />
+  
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="./index23.html" />
+  <meta property="og:title" content="リニューアル用のトップページデザイン"/>
+  <meta property="og:site_name" content="S.F. Web" />
+  <meta property="og:description" content="Programming,Music,HTML5,WebGL,javascript,WebAudio">
+  <meta property="og:image" content="https://www.sfpgmr.net/img/sfweb.png">
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    html {
+      margin: 0;
+      padding: 0;
+      font-size:10px;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      background: black;
+      color: white;
+    }
+
+    #sentinel {
+      width:1px;
+      height:1px;
+    }
+    .contents {
+      width: 100%;
+      position: relative;
+      content: strict;
+    }
+
+    @keyframes blinking {
+      0% {
+        color: black;
+      }
+
+      50% {
+        color: white;
+      }
+
+      100% {
+        color: black;
+      }
+    }
+
+    .loading {
+      font-family: monospace;
+      font-size: 24px;
+      position: fixed;
+      width: 100vw;
+      height: 100vh;
+      text-align: center;
+      padding-top: 50vh;
+      z-index: 32768;
+      background: black;
+      animation: blinking 2s infinite;
+      content: strict;
+    }
+
+
+    .contents>article {
+      background: #f0f0f0;
+      color: #202020;
+      position: absolute;
+      max-height: 960px;
+      overflow: auto;
+      border-radius: 3px;
+    }
+
+    .tweet-header {
+      display: grid;
+      align-items: end;
+      grid-template-columns: 40px 2fr 1fr;
+      grid-template-rows: 1fr;
+      font-size: 12px;
+      font-weight: bold;
+    }
+
+
+    .tweet-img {
+      width: 100%;
+      object-fit: cover;
+    }
+
+    .youtube {
+      position: relative;
+      cursor: pointer;
+    }
+
+    .youtube > img {
+      width: 100%;
+      object-fit: cover;
+    }
+
+    .youtube > svg.player-play {
+      width:64px;
+      height:64px;
+      left:calc(50% - 32px);
+      top:calc(50% - 32px);
+      position:absolute;
+      z-index: 1000;
+      opacity: 0.5;
+    }
+    
+    .youtube:hover > svg.player-play {
+      opacity: 1.0;
+    }
+
+    .youtube:hover .player-play-1 {
+      stroke:#80808080;
+    }
+
+    
+    .youtube > div.yt-title {
+      /*text-shadow: #fff 1px 1px 0;*/
+      font-size: 1.2rem;
+      color:white;
+      background:rgba(0, 0,0,0.5);
+      position:absolute;
+      left:0;
+      top:0;
+      overflow: auto;
+      z-index:998;
+    }
+
+
+    .tweet-profile-img {
+      grid-column: 1/2;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+    }
+
+    .tweet-user-name {
+      grid-column: 2/3;
+    }
+
+    .tweet-date {
+      font-size: 8px;
+      text-align: right;
+      grid-column: 3/4;
+    }
+
+    .contents>twitter-widget {
+      overflow: auto;
+      max-height: 960px;
+      position: absolute;
+    }
+
+    .contents>article>section>.tweet-text {
+      display: block;
+      padding: 4px;
+      word-break: break-all;
+      font-size: 12px;
+    }
+
+    .contents>article>h3 {
+      font-size: 12px;
+    }
+
+    blockquote.card {
+      margin:4px;
+      padding:4px;
+      font-size:12px;
+      background:white;
+      border-radius: 4px;
+    }
+
+    blockquote.card > header {
+      display:grid;
+      grid-gap:4px;
+      gap:4px;
+    }
+
+    blockquote.card-default > header {
+      grid-template-columns:64px 1fr;
+    }
+
+    blockquote.card-large > header {
+      grid-template-columns:1fr;
+    }
+
+    blockquote.card > header > img {
+      width:100%;
+    }
+
+
+    div.no-image {
+      display: block;
+      width:64px;
+      height:64px;
+      background:gray;
+      color:white;
+      text-align: center;
+      line-height: 64px;
+    }
+
+  </style>
+</head>
+
+<body>
+  <div class="loading" id="loading">Loading</div>
+  <header class="top-nav">
+    <h1>S.F. Info.</h1>
+  </header>
+  <div class="contents" id="contents" rendersubtree="invisible skip-activation"> 
+    
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/858308632785559553/Jbzn5SfT_normal.jpg" />
+        <p class="tweet-user-name">鉄拳@Tekken_omachi</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/Tekken_omachi/status/1077425611726077952"
+            target="_blank">2018/12/25 13:47:38</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">子供の頃はクリスマスのおもちゃ屋さんのチラシを見るのが好きでした。特に買って貰えるわけではないんですが、ゲームウォッチ、超合金、ボードゲームなど眺めているだけでワクワク夢の世界にいられるチラシでした。<br/><br/>今はお正月のチラシが楽しみです笑。☺️ https://t.co/gdU5fs7E6k</p>
+        
+        <img loading="lazy" class="tweet-img" src="https://pbs.twimg.com/media/DvPI4SiVsAAZCA7.jpg" />
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1077865617791696896"
+            target="_blank">2018/12/26 18:56:03</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">すごい時代になったものですね。。 <blockquote class="card card-default"><header><img loading="lazy" src="https://pbs.twimg.com/profile_images/673911244064075776/i9iNiAp6_400x400.png" /><a href="https://twitter.com/cpp_akira/status/1077791327620722689" target="_blank">Akira Takahashiさんのツイート: "std::arrayがfillとswap以外全部constexprになった https://t.co/6E00JIo9om"</a></header><div></div></blockquote></p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1077494313515274240"
+            target="_blank">2018/12/25 18:20:37</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">すごい。。 <blockquote class="card card-default"><header><img loading="lazy" src="https://pbs.twimg.com/media/DvO3_aYU0AIwLzg.jpg:large" /><a href="https://twitter.com/info_ymcat/status/1077407059014909952" target="_blank">YMCAT(迎霧狼慢)さんのツイート: "【switch版デーモンクリスタル】 今朝の朝刊、地元紙「日本海新聞」にて紹介されました。 先週ラジオ出演の後、取材を申し込まれましたが、顔写真だけは丁重にお断りしましたw #Nintendoswitch #デーモンクリスタル #大好評配信中 ▼ダウンロードは▼ https://t.co/AJ4RmrJHrM… https://t.co/DItJr7UBln"</a></header><div></div></blockquote></p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1077416855252361217"
+            target="_blank">2018/12/25 13:12:50</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ん、地震？</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/1133019079/doxas_smile_normal.jpg" />
+        <p class="tweet-user-name">h_doxas@h_doxas</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/h_doxas/status/1077214637442007040"
+            target="_blank">2018/12/24 23:49:17</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">これを読んで「めっちゃ煽ってごめんな……」という気持ちになってるｗ ＞ GLSL Compoに役立つ！GLSL Sandbox互換のVSCode拡張『Shader Toy』の紹介 | <a href="http://gam0022.net" target="_blank">gam0022.net</a> <a href="https://gam0022.net/blog/2018/12/24/vscode-glslsandbox/" target="_blank">gam0022.net/blog/2018/12/2…</a></p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1076983815816437760"
+            target="_blank">2018/12/24 8:32:05</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">C++標準化委員会、ついに文字とは何かを理解する: char8_t - Qiita <blockquote class="card card-default"><header><img loading="lazy" src="https://cdn.qiita.com/assets/qiita-fb-2887e7b4aad86fd8c25cea84846f2236.png" /><a href="https://qiita.com/yumetodo/items/54e1a8230dbf513ea85b" target="_blank">C++標準化委員会、ついに文字とは何かを理解する: char8_t - Qiita</a></header><div></div></blockquote></p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1075137979214028801"
+            target="_blank">2018/12/19 6:17:23</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">そうとうな回り道になりそうだなあ。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1076831138570592256"
+            target="_blank">2018/12/23 22:25:24</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ようやくプリプロセス部分を作り始めた。プリプロセッサをpeg.jsで作りはじめたのだが、どうなることやら。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1076831699659513861"
+            target="_blank">2018/12/23 22:27:38</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">いろいろ思い悩んでツイートする余裕もなかったここ数日。。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/603918430639521792/zZNtUnXN_normal.png" />
+        <p class="tweet-user-name">Hideyuki Tanaka@tanakh</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/tanakh/status/1076090062922645504"
+            target="_blank">2018/12/21 21:20:38</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">なんでホスト側の計算が重くなってきてもディープラーニングにみんなPython使うんですか、普通にC++でテンソルフロー叩いたらいいんじゃないんですかねっていったら、そうですねって言われて会話が終わった話。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/875570583630528513/uidmF-pD_normal.jpg" />
+        <p class="tweet-user-name">PC Watch@pc_watch</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/pc_watch/status/1076099987547668480"
+            target="_blank">2018/12/21 22:00:04</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">【今日の人気記事】リンクス、キーボードつきAndroidクラムシェル「Gemini PDA」を国内販売 <a href="https://pc.watch.impress.co.jp/docs/news/1159623.html" target="_blank">pc.watch.impress.co.jp/docs/news/1159…</a> https://t.co/VIHbVWUe5E</p>
+        
+        <img loading="lazy" class="tweet-img" src="https://pbs.twimg.com/media/Du8TPDIVYAAdNNS.jpg" />
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1074231291006996480"
+            target="_blank">2018/12/16 18:14:32</a></p>
+      </header>
+      <section>
+        <p class="tweet-text"><div class="youtube" data-type="yt" id="KmactMIhrRM"><div class="yt-title">Youtube - The Seekers - I'll Never Find Another You 1965 STEREO</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/KmactMIhrRM" class="youtube" src="https://i.ytimg.com/vi/KmactMIhrRM/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1074231781958680578"
+            target="_blank">2018/12/16 18:16:29</a></p>
+      </header>
+      <section>
+        <p class="tweet-text"><div class="youtube" data-type="yt" id="wsIbfYEizLk"><div class="yt-title">Youtube - The Seekers - Georgy Girl (1967 - Stereo)</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/wsIbfYEizLk" class="youtube" src="https://i.ytimg.com/vi/wsIbfYEizLk/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1074232312831725573"
+            target="_blank">2018/12/16 18:18:36</a></p>
+      </header>
+      <section>
+        <p class="tweet-text"><div class="youtube" data-type="yt" id="Q8AM356TXZ4"><div class="yt-title">Youtube - カーペンターズ　トップオブザワールド　The Carpenters　HQ</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/Q8AM356TXZ4" class="youtube" src="https://i.ytimg.com/vi/Q8AM356TXZ4/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1074232948210130944"
+            target="_blank">2018/12/16 18:21:07</a></p>
+      </header>
+      <section>
+        <p class="tweet-text"><div class="youtube" data-type="yt" id="3kcmwXUdDCE"><div class="yt-title">Youtube - The Mamas And The Papas - California Dreamin'. Audio Gold Song ful HD.mp4</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/3kcmwXUdDCE" class="youtube" src="https://i.ytimg.com/vi/3kcmwXUdDCE/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1074233374674345984"
+            target="_blank">2018/12/16 18:22:49</a></p>
+      </header>
+      <section>
+        <p class="tweet-text"><div class="youtube" data-type="yt" id="BrZBiqK0p9E"><div class="yt-title">Youtube - Sergio Mendes & Brasil 66 - Mas que nada (introduced by Eartha Kitt / Something Special 1967)</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/BrZBiqK0p9E" class="youtube" src="https://i.ytimg.com/vi/BrZBiqK0p9E/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1074234442334359552"
+            target="_blank">2018/12/16 18:27:04</a></p>
+      </header>
+      <section>
+        <p class="tweet-text"><div class="youtube" data-type="yt" id="V2ikZZDeogo"><div class="yt-title">Youtube - Peter, Paul and Mary - Where Have All The Flowers Gone ?</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/V2ikZZDeogo" class="youtube" src="https://i.ytimg.com/vi/V2ikZZDeogo/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1074234625109544960"
+            target="_blank">2018/12/16 18:27:47</a></p>
+      </header>
+      <section>
+        <p class="tweet-text"><div class="youtube" data-type="yt" id="gp5JCrSXkJY"><div class="yt-title">Youtube - Buffalo Springfield - For What It's Worth 1967</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/gp5JCrSXkJY" class="youtube" src="https://i.ytimg.com/vi/gp5JCrSXkJY/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1074235977063755776"
+            target="_blank">2018/12/16 18:33:09</a></p>
+      </header>
+      <section>
+        <p class="tweet-text"><div class="youtube" data-type="yt" id="QjtD8A-MWBc"><div class="yt-title">Youtube - Jigsaw - Sky High [HQ]</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/QjtD8A-MWBc" class="youtube" src="https://i.ytimg.com/vi/QjtD8A-MWBc/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1074237094732619777"
+            target="_blank">2018/12/16 18:37:36</a></p>
+      </header>
+      <section>
+        <p class="tweet-text"><div class="youtube" data-type="yt" id="xFrGuyw1V8s"><div class="yt-title">Youtube - Abba - Dancing Queen (Official Video)</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/xFrGuyw1V8s" class="youtube" src="https://i.ytimg.com/vi/xFrGuyw1V8s/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1074237312505065472"
+            target="_blank">2018/12/16 18:38:28</a></p>
+      </header>
+      <section>
+        <p class="tweet-text"><div class="youtube" data-type="yt" id="la35ph4gpuA"><div class="yt-title">Youtube - 赤い鳥 - 翼をください</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/la35ph4gpuA" class="youtube" src="https://i.ytimg.com/vi/la35ph4gpuA/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1074237961640660992"
+            target="_blank">2018/12/16 18:41:03</a></p>
+      </header>
+      <section>
+        <p class="tweet-text"><div class="youtube" data-type="yt" id="XbAM2_6jKY0"><div class="yt-title">Youtube - The Nolans - I'm In the Mood for Dancing</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/XbAM2_6jKY0" class="youtube" src="https://i.ytimg.com/vi/XbAM2_6jKY0/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1074239290014494720"
+            target="_blank">2018/12/16 18:46:19</a></p>
+      </header>
+      <section>
+        <p class="tweet-text"><div class="youtube" data-type="yt" id="NAEppFUWLfc"><div class="yt-title">Youtube - Simon & Garfunkel - The Sound of Silence (from The Concert in Central Park)</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/NAEppFUWLfc" class="youtube" src="https://i.ytimg.com/vi/NAEppFUWLfc/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1074239669741617153"
+            target="_blank">2018/12/16 18:47:50</a></p>
+      </header>
+      <section>
+        <p class="tweet-text"><div class="youtube" data-type="yt" id="5JVPdb6Urhw"><div class="yt-title">Youtube - Simon & Garfunkel - Mrs. Robinson (from The Concert in Central Park)</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/5JVPdb6Urhw" class="youtube" src="https://i.ytimg.com/vi/5JVPdb6Urhw/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1074240835187662850"
+            target="_blank">2018/12/16 18:52:28</a></p>
+      </header>
+      <section>
+        <p class="tweet-text"><div class="youtube" data-type="yt" id="xvqeSJlgaNk"><div class="yt-title">Youtube - The Monkees - Daydream Believer (Official Music Video)</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/xvqeSJlgaNk" class="youtube" src="https://i.ytimg.com/vi/xvqeSJlgaNk/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1074241386797387776"
+            target="_blank">2018/12/16 18:54:39</a></p>
+      </header>
+      <section>
+        <p class="tweet-text"><div class="youtube" data-type="yt" id="EDb303T-B1w"><div class="yt-title">Youtube - The Beach Boys - Surfin' USA</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/EDb303T-B1w" class="youtube" src="https://i.ytimg.com/vi/EDb303T-B1w/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1074241616079011840"
+            target="_blank">2018/12/16 18:55:34</a></p>
+      </header>
+      <section>
+        <p class="tweet-text"><div class="youtube" data-type="yt" id="hs22Smspn9w"><div class="yt-title">Youtube - 夢見るシャンソン人形　Poupée de cire, poupée de son</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/hs22Smspn9w" class="youtube" src="https://i.ytimg.com/vi/hs22Smspn9w/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1075715662209662976"
+            target="_blank">2018/12/20 20:32:54</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">このあたりの曲が耳に心地よくてすごくいい。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1075356569942937600"
+            target="_blank">2018/12/19 20:46:00</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">うわー。ここまで来たか。。 <blockquote class="card card-default"><header><img loading="lazy" src="https://pbs.twimg.com/ext_tw_video_thumb/1075046571895590912/pu/img/7RB9PO0ifdy6Xz1g.jpg" /><a href="https://twitter.com/gaug888/status/1075046649372778498" target="_blank">gaugさんのツイート: "#ミニチュア #アーケード #アフターバーナー 毎日少しずつ。専用工具の使い方がわかったのでケーブルを作り直して組立て。ちょっと改造もしました。これで本当に完成ver1.2て感じです。キュイキュイ言わなくなりました。色々と出来るようになったのでハリアーを改修します。… https://t.co/hrgHEkccw9"</a></header><div></div></blockquote></p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1074640349786566657"
+            target="_blank">2018/12/17 21:19:59</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">でまあこれのpegjsコードを試しに使ってみようと思ったら、バージョンが古くて動かなかった。。であれば自分のを頑張って直すとするか。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1075135010624090112"
+            target="_blank">2018/12/19 6:05:36</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ようやくこういうのがASTで出せるようになったなあ。。<br/>struct S {<br/>int sa;<br/>int sb;<br/>};<br/><br/>struct S1 {<br/>  S s1a;<br/>  int s1b;<br/>  float s1c;<br/>};<br/><br/>int func(in int a){<br/>  S s;<br/>  S1 s1;<br/>  int c = a;<br/>  do {<br/>    c++;<br/>    if(a &gt; 10){<br/>      break;<br/>    }<br/>  } while(c &lt; 10);<br/>  return c;<br/>}</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1075135011760746496"
+            target="_blank">2018/12/19 6:05:36</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">構文的にあってるかどうかは別にして。。かなりの回り道ですわ。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1075136306756280321"
+            target="_blank">2018/12/19 6:10:45</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">いちからPEGで構文を書くというのもなかなかスキルがいるんだなあ。そんなに簡単でも　ないや。。さらにいうと文法ドキュメントも兼ねるというのもちょっとヤバイ感じがしてるし。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1075136307909644288"
+            target="_blank">2018/12/19 6:10:45</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">というのもアクションのJSコードを書きすぎて、文法自体がわかりにくくなってしまいそうなんだな。。セマンティクスを部分的に表しているといえなくもないけど。。やっぱりコメントで仕様との関連を書いておかんといかんよな。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1075136800576794625"
+            target="_blank">2018/12/19 6:12:42</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">コードが自明であれば、そういうコメントはいらんのだけど。セマンティクスはやっぱりコメントによる注釈は必要なんだろうなあ。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1075137896061923331"
+            target="_blank">2018/12/19 6:17:04</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">これが今のところの成果物なんだけど。。<br/><blockquote class="card card-default"><header><img loading="lazy" src="https://avatars0.githubusercontent.com/u/3806814?s=400&v=4" /><a href="https://github.com/sfpgmr/sgl2/blob/21f1e91955d0376bb5515cbfa51ba807dc34339d/sgl2-1.pegjs" target="_blank">sgl2/sgl2-1.pegjs at 21f1e91955d0376bb5515cbfa51ba807dc34339d · sfpgmr/sgl2 · GitHub</a></header><div>TDOPパーサをベースとした言語を作っていく. Contribute to sfpgmr/sgl2 development by creating an account on GitHub.</div></blockquote></p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/960092455486996480/cRvvhRUO_normal.jpg" />
+        <p class="tweet-user-name">herumi@herumi</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/herumi/status/1073559495458996224"
+            target="_blank">2018/12/14 21:45:04</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">C++(clang)でWASMライブラリ開発してるけど、メモリ管理自前、多倍長演算自前、例外なし、stringなし、vectorなどのコンテナなし、標準ライブラリなし縛りなので他の言語のWASMバインディングが夢のようだ。#emsn</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/1149881385458364417/7eq63lE8_normal.jpg" />
+        <p class="tweet-user-name">🍵柏のひと🍣@KashiwaOwner</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/KashiwaOwner/status/1074102077301780480"
+            target="_blank">2018/12/16 9:41:05</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">観衆数百人の目線が自分に集まるなか、何度かシュートを外して恥ずかしさのあまり立ち去ろうとする女の子。<br/><br/>そんなときにNBAのスター、ステフィン・カリーが「入らないのは全然問題じゃない。大事なのは入るまで打ち続けること」と説く姿がイケメン過ぎるので是非見て欲しい。https://t.co/zY6FQsW10B</p>
+        
+        <video class="tweet-img" controls src="https://video.twimg.com/ext_tw_video/1040205012733898754/pu/vid/360x450/6tPjtHYu4vaBoW5Q.mp4?tag=5" />
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/745868591191437314/GhuPkl5O_normal.jpg" />
+        <p class="tweet-user-name">noguo@noguo_</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/noguo_/status/1074159481548730369"
+            target="_blank">2018/12/16 13:29:11</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">大体出来た！<br/>デスクトップエレメカゲーム"Secrets of the Deep" https://t.co/AnhKqHhGCi</p>
+        
+        <video class="tweet-img" controls src="https://video.twimg.com/ext_tw_video/1074158994657239040/pu/vid/360x640/L-7YFEAShAM-pjFt.mp4?tag=6" />
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/1198163460493733894/vFfAbouU_normal.png" />
+        <p class="tweet-user-name">シャポコ🌵@shapoco</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/shapoco/status/1073355744248905728"
+            target="_blank">2018/12/14 8:15:26</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">linuxにtrexというコマンドが追加され、実行すると暴れまわるティラノサウルスがコンソールを横切るようになる回</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/1141670918906793986/OytozQZK_normal.jpg" />
+        <p class="tweet-user-name">マクシム (経世済民)@thksngy</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/thksngy/status/1073216503242059777"
+            target="_blank">2018/12/13 23:02:08</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">世の中はこういった考え方が多数派なんだろうな。<br/>でも僕は大学に入って衝撃を受けた、我々の生活の根底を支える電気や電波を扱う製品というのは、「社会では役に立たない｣と思っていた複素数平面や行列式、微分方程式、ベクトルや数列といった高等数学を余すことなく知らなければ全く理解できないと https://t.co/O5MmMoitXn</p>
+        
+        <img loading="lazy" class="tweet-img" src="https://pbs.twimg.com/media/DuTUtuiU8AIRln4.jpg" />
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/901301264406896640/Eis46gPG_normal.jpg" />
+        <p class="tweet-user-name">Rita Panahi@RitaPanahi</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/RitaPanahi/status/1072763227337977861"
+            target="_blank">2018/12/12 17:00:59</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">Fascinating.  https://t.co/MPV12RFdLb</p>
+        
+        <video class="tweet-img" controls src="https://video.twimg.com/ext_tw_video/1058034490293940224/pu/vid/320x180/VGDww05uQZDudXLL.mp4?tag=5" />
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1072958100607401984"
+            target="_blank">2018/12/13 5:55:20</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">寒いこともあってコタツに入りがち。コタツに入るとすべてのやる気を奪われてしまう。。ああ、やばい。コタツは。。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1072955058105409538"
+            target="_blank">2018/12/13 5:43:15</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">気が付くと、webサーバーが死んでいた。<br/>原因はこれだった。<br/><br/><blockquote class="card card-default"><header><img loading="lazy" src="https://avatars1.githubusercontent.com/u/9950313?s=400&v=4" /><a href="https://github.com/nodejs/node/issues/24097" target="_blank">RangeError: Invalid typed array length · Issue #24097 · nodejs/node · GitHub</a></header><div>Version: v11.1.0 Platform: Linux xxx 4.18.16-1-ck #1 SMP PREEMPT Mon Oct 22 08:00:13 CEST 2018 x86_64 GNU/Linux After upgrading to node 11.1 webpack-dev-server (i assume) can't serve angular 5 app build with this error: webpack: Compiled...</div></blockquote><br/><br/>とりあえずダウングレードして対応。<br/><br/>sudo npm cache clean -f<br/>sudo npm install -g n<br/>sudo n &lt;version&gt; &lt;- I downgraded to 10.6.0<br/><br/>とりあえず復旧。<br/><blockquote class="card card-default"><header><img loading="lazy" src="https://www.sfpgmr.net/img/sfweb.png" /><a href="https://www.sfpgmr.net/" target="_blank">S.F. Web</a></header><div>Programming,Music,Game,etc..</div></blockquote></p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1072823775027052545"
+            target="_blank">2018/12/12 21:01:34</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">amazon fire 8でtermuxを動かしてみてこれは使えるということで純正 androidタブレットが欲しくなった。しかしボーナス小遣いは２０ｋしかない。アマゾンで探しまくって見つけたのがchuwiというメーカーのタブレット。タイムセールで１７Kだったので思わず購入してしまった。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1072825540950745088"
+            target="_blank">2018/12/12 21:08:35</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">今どきのスマフォやタブレットのCPUは、クロック周波数の異なるコアでマルチコアを構成していて、負荷の高い処理は高クロックのコア、そうでもないのは低クロックのコアに仕事させることで、無駄な消費電力を抑えてるらしい。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1072825542297051140"
+            target="_blank">2018/12/12 21:08:36</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">でマルチコア化が進んで、ハイエンドモデルではオクタコアとか１０コアなんていうのが２−３年前のトレンドだったとか。今はクアッドコアぐらいでコアあたりの性能向上を図る方向にあるらしい。iphoneのCPUはコアあたりの性能がすごいとか。たしかにもたつくことはあんまりないもんなあ。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1072826403362488321"
+            target="_blank">2018/12/12 21:12:01</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">というわけで私のタブレットは２−３年前の１０コアCPUが載っている。Fire8よりは動きは軽快だが、まあ普通くらいのパフォーマンスらしい。だけどパーサのテストコード走らせたらやっぱりすごく速かった。あくまでFire8と比べてだけどね。</p>
+        
+      </section>
+      
+    </article>
+    
+  </div>
+  <footer>
+    CopyLight 2019 Satoshi Fujiwara
+  </footer>
+  <script async src="https://platform.twitter.com/widgets.js"></script>
+
+  <script async src="./index.js"></script>
+
+</body>
+
+</html>

@@ -100,6 +100,31 @@ window.onYouTubeIframeAPIReady = function() {
 }
 
 let observer;
+const MaxContents = 58;
+
+let cacheContentNo = ((p)=>{
+  const m = (/index(\d+)\.html/i).exec(p);
+  if(m){
+    return parseInt(m[1]) + 1;
+  } 
+  
+  return 1;
+})(location.pathname);
+
+const domparser = new DOMParser();
+
+async function fetchArticles(){
+  if(cacheContentNo > MaxContents){
+    return null;
+  }
+  console.log(cacheContentNo);
+  let content = await fetch(`./index${cacheContentNo++}.html`);
+
+  const dom = domparser.parseFromString(await content.text(),'text/html');
+  return dom.querySelectorAll('#contents > article');
+}
+
+let cacheArticles = fetchArticles();
 
 window.addEventListener('load', () => {
   const tag = document.createElement('script');
@@ -111,25 +136,42 @@ window.addEventListener('load', () => {
 
   const contents = document.getElementById('contents');
   contents.setAttribute('rendersubtree', '');
-  
+  // window.addEventListener('scroll',()=>{
+  //   console.log(window.scrollY,document.body.offsetHeight);
+  // },{passive: true})
+  let isIntersecting = false;
   observer = new IntersectionObserver(changes=>{
-    console.log('i');
     const c = changes[0];
+    if(c.isIntersecting){
+        isIntersecting = true;
+        (async ()=>{
+          if(cacheContentNo <= MaxContents){
+            while(isIntersecting){
+              let articles = await cacheArticles;
+              if(articles && articles.length && (cacheContentNo <= MaxContents)){
+                document.getElementById('contents').append(...articles);
+                masonry.layout();
+              } else {
+                masonry.layout();
+                observer.unobserve(sentinel);
+                isIntersecting = false;
+                return;
+              }
+              cacheArticles = fetchArticles();
+            }
+          }
+         })();
+    } else {
+      isIntersecting = false;
+    }
     console.log(c.boundingClientRect.height,c.intersectionRect.height,c.rootBounds.height,c.intersectionRatio,c.isIntersecting,c.isVisible);
   },{root: null,
-    rootMargin: "0px",threshold:[0.0,0.25,0.5,0.75,1.0]});
+    rootMargin: Math.round(window.innerHeight * 0.8) + 'px'/*,threshold:[0.0,0.5,1.0]*/});
 
-  observer.observe(contents);
-
-  // fetch('./index1.html')
-  //   .then(async c=>{
-  //     const domparser = new DOMParser();
-  //     const dom = domparser.parseFromString(await c.text(),'text/html');
-  //     const articles = dom.querySelectorAll('#contents > article');
-  //     document.getElementById('contents').append(...articles);
-  //     masonry.layout();
-  //   });
-
+  const sentinel = document.createElement('div');
+  sentinel.id = 'sentinel';
+  document.body.append(sentinel);
+  observer.observe(sentinel);
   //masonry.layout();
   //twttr.events.bind('rendered',masonry.layout.bind(masonry));
 

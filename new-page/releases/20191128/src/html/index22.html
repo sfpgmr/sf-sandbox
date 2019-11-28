@@ -1,0 +1,3508 @@
+<!DOCTYPE html>
+<html lang="ja" prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb# article: http://ogp.me/ns/article#">
+
+<head>
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-15457703-9"></script>
+  <script>
+    if (!location.hostname.match(/localhost/)) {
+      window.dataLayer = window.dataLayer || [];
+      function gtag() { dataLayer.push(arguments); }
+      gtag('js', new Date());
+      gtag('config', 'UA-15457703-9');
+    }
+  </script>
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>トップページをリニューアルする</title>
+  <meta name="description" content="リニューアル用のトップページデザインを考えて実装する" />
+  <meta name="keywords" content="Programming,Music,HTML5,WebGL,javascript,WebAudio" /> 	
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <meta itemprop="image" content="https://www.sfpgmr.net/img/sfweb.png" />
+  <meta itemprop="name" content="S.F. Web" />
+  
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:site" content="S.F. Web" />
+  <meta name="twitter:url" content="./index22.html" />
+  <meta name="twitter:title" content="リニューアル用のトップページデザイン" />
+  <meta name="twitter:description" content="リニューアル用のトップページデザインを考えて実装する" />
+  <meta name="twitter:image" content="https://www.sfpgmr.net/img/sfweb.png" />
+  
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="./index22.html" />
+  <meta property="og:title" content="リニューアル用のトップページデザイン"/>
+  <meta property="og:site_name" content="S.F. Web" />
+  <meta property="og:description" content="Programming,Music,HTML5,WebGL,javascript,WebAudio">
+  <meta property="og:image" content="https://www.sfpgmr.net/img/sfweb.png">
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    html {
+      margin: 0;
+      padding: 0;
+      font-size:10px;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      background: black;
+      color: white;
+    }
+
+    #sentinel {
+      width:1px;
+      height:1px;
+    }
+    .contents {
+      width: 100%;
+      position: relative;
+      content: strict;
+    }
+
+    @keyframes blinking {
+      0% {
+        color: black;
+      }
+
+      50% {
+        color: white;
+      }
+
+      100% {
+        color: black;
+      }
+    }
+
+    .loading {
+      font-family: monospace;
+      font-size: 24px;
+      position: fixed;
+      width: 100vw;
+      height: 100vh;
+      text-align: center;
+      padding-top: 50vh;
+      z-index: 32768;
+      background: black;
+      animation: blinking 2s infinite;
+      content: strict;
+    }
+
+
+    .contents>article {
+      background: #f0f0f0;
+      color: #202020;
+      position: absolute;
+      max-height: 960px;
+      overflow: auto;
+      border-radius: 3px;
+    }
+
+    .tweet-header {
+      display: grid;
+      align-items: end;
+      grid-template-columns: 40px 2fr 1fr;
+      grid-template-rows: 1fr;
+      font-size: 12px;
+      font-weight: bold;
+    }
+
+
+    .tweet-img {
+      width: 100%;
+      object-fit: cover;
+    }
+
+    .youtube {
+      position: relative;
+      cursor: pointer;
+    }
+
+    .youtube > img {
+      width: 100%;
+      object-fit: cover;
+    }
+
+    .youtube > svg.player-play {
+      width:64px;
+      height:64px;
+      left:calc(50% - 32px);
+      top:calc(50% - 32px);
+      position:absolute;
+      z-index: 1000;
+      opacity: 0.5;
+    }
+    
+    .youtube:hover > svg.player-play {
+      opacity: 1.0;
+    }
+
+    .youtube:hover .player-play-1 {
+      stroke:#80808080;
+    }
+
+    
+    .youtube > div.yt-title {
+      /*text-shadow: #fff 1px 1px 0;*/
+      font-size: 1.2rem;
+      color:white;
+      background:rgba(0, 0,0,0.5);
+      position:absolute;
+      left:0;
+      top:0;
+      overflow: auto;
+      z-index:998;
+    }
+
+
+    .tweet-profile-img {
+      grid-column: 1/2;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+    }
+
+    .tweet-user-name {
+      grid-column: 2/3;
+    }
+
+    .tweet-date {
+      font-size: 8px;
+      text-align: right;
+      grid-column: 3/4;
+    }
+
+    .contents>twitter-widget {
+      overflow: auto;
+      max-height: 960px;
+      position: absolute;
+    }
+
+    .contents>article>section>.tweet-text {
+      display: block;
+      padding: 4px;
+      word-break: break-all;
+      font-size: 12px;
+    }
+
+    .contents>article>h3 {
+      font-size: 12px;
+    }
+
+    blockquote.card {
+      margin:4px;
+      padding:4px;
+      font-size:12px;
+      background:white;
+      border-radius: 4px;
+    }
+
+    blockquote.card > header {
+      display:grid;
+      grid-gap:4px;
+      gap:4px;
+    }
+
+    blockquote.card-default > header {
+      grid-template-columns:64px 1fr;
+    }
+
+    blockquote.card-large > header {
+      grid-template-columns:1fr;
+    }
+
+    blockquote.card > header > img {
+      width:100%;
+    }
+
+
+    div.no-image {
+      display: block;
+      width:64px;
+      height:64px;
+      background:gray;
+      color:white;
+      text-align: center;
+      line-height: 64px;
+    }
+
+  </style>
+</head>
+
+<body>
+  <div class="loading" id="loading">Loading</div>
+  <header class="top-nav">
+    <h1>S.F. Info.</h1>
+  </header>
+  <div class="contents" id="contents" rendersubtree="invisible skip-activation"> 
+    
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1084740938105217024"
+            target="_blank">2019/1/14 18:16:07</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">@tenpoku1000 ああ。。トライグラフですか。なるほど。。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1084235749476556800"
+            target="_blank">2019/1/13 8:48:41</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ちょっとブログへの投稿を再開しようかなと思ったらシステムが動かなくなってた。mdファイルの先頭にjson-ldでメタデータを置くヘンテコなフォーマットで記事を書くと、静的にページをレンダリング(amp-htmlと普通のhtml)してサーバにアップするというやつなのだが。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1084235750231560193"
+            target="_blank">2019/1/13 8:48:41</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">去年の5月ころからブログへの投稿をやめてTwitterのみにしたのだが、簡便でいいかなと思ったのだが後で見直したりするときにちょっと面倒だなと思ったりしたのである。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1084236339187408897"
+            target="_blank">2019/1/13 8:51:02</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">去年ちょっと見直そうと思って手を付けたのだけれども、オレオレ言語つくりのほうがおもしろいので改造半ばで放り出していたようだ。オレオレ言語のログもTogetterでまとめとけばいいかなと思ったけどやっぱりつぶやきをまとめただけではやっぱり整理しずらいというか。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1084237306574254081"
+            target="_blank">2019/1/13 8:54:52</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">なのでちょっとnodeで書いたその仕組みを手直しして、ブログを復活しようかなと思ったわけである。ただその仕組みもampへの対応がちょっと甘くて、エラーが出てたりするのでそこも手直しが必要ではある。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1084237307387961344"
+            target="_blank">2019/1/13 8:54:52</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">でまあコードを見直すともののの見事に忘れているわけである。なんだこのヘンテコな仕組みは？なにこの変なコード？みたいに今なってる。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1084238155786547200"
+            target="_blank">2019/1/13 8:58:15</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">なのでちょっとオレオレ言語つくりの研究をお休みしてブログシステムの手直しをしようと思う。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1084238584184360961"
+            target="_blank">2019/1/13 8:59:57</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">この仕組みについてはこのあたりにまとめてはあるようだ。<br/><blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="https://www.sfpgmr.net/blog/archive/category/%E9%9D%99%E7%9A%84%E3%83%96%E3%83%AD%E3%82%B0%E3%82%B8%E3%82%A7%E3%83%8D%E3%83%AC%E3%83%BC%E3%82%BF.html" target="_blank"></a></header><div></div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1084239259584741376"
+            target="_blank">2019/1/13 9:02:38</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">この仕組みに引っ越したのって2017年7月だったのか。もっと前かと思ってたが。それでも1年半くらいは経ってるのか。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1084240270168711168"
+            target="_blank">2019/1/13 9:06:39</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">仕組みとしてはこの絵の通りである。DBレスでコンテンツを作る。 https://t.co/yegXDo4R0P</p>
+        
+        <img loading="lazy" class="tweet-img" src="https://pbs.twimg.com/media/Dwv-l1kVYAAQlRd.jpg" />
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1084241010287243264"
+            target="_blank">2019/1/13 9:09:35</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">たしか「コンテンツは可能な限り静的に作成する」というポリシーで作ってたと思うんだよな。例えばシンタックス・ハイライトなんかも、動的にではなく静的にレンダリングしてる。AMPに対応しやすくするためでもあるんだけど。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1084250170441617408"
+            target="_blank">2019/1/13 9:45:59</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">それとgitやパッケージシステム(npm)についてももう少し勉強いかんような気も。ほんと表面的なことしか知らないし、深く知ればもうちょっとスマートに作れそうな気がするんだよねえ。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1084250723200552960"
+            target="_blank">2019/1/13 9:48:11</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">npmって最近セキュリティ強化されて、インストール時とかにsecurity警告が出るようになってたりするし、auditしてfixすることも可能なようになってる。古いパッケージの見直しとかもしないといけないかなあと思ったりも。。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1083853307204972550"
+            target="_blank">2019/1/12 7:29:00</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ザクソンは見た目のインパクトがすごかったよな。当時。3Dだ！と思ったなあ。 <blockquote class="card card-default"><header><img loading="lazy" src="https://pbs.twimg.com/profile_images/842279400267632640/Y-LB9vF9_400x400.jpg" /><a href="https://twitter.com/igcc_jp/status/1083704846589485056" target="_blank">ゲーム文化保存研究所さんのツイート: "『ザクソン』を通じて考えるクォータービューシューティングの世界 https://t.co/FbfzlAyO1Q"</a></header><div></div></blockquote></p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1076974459829944326"
+            target="_blank">2018/12/24 7:54:55</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">GLSL ES 3.0の仕様書の「3.1 Logical Phases of Compilation」を昨日から読んでるわけなのですが。<br/><a href="https://www.khronos.org/registry/OpenGL/specs/es/3.0/GLSL_ES_Specification_3.00.pdf" target="_blank">khronos.org/registry/OpenG…</a></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1076998194263863297"
+            target="_blank">2018/12/24 9:29:13</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">文法をPEGで書き直すために「9 Shading Language Grammar」のBNFをベースに始めたんだけど、ここだけの情報ではパーサを作ることはできないんだよね。<br/>たとえばフィールドセレクタはBNFで書かれていない。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1077000355630637056"
+            target="_blank">2018/12/24 9:37:49</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">structの正確な構文も書かれていない。プリプロセッサについても書かれていない。これは別の仕様書の項にあってそれを参照するわけですな。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1077000356624650240"
+            target="_blank">2018/12/24 9:37:49</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">当初文字解析・トークン分割・プリプロセス・構文解析・AST作成を一気に一つのPEGで書ききることを考えてたんだけど、ちょっとそれって無理があるなあ、無駄が多いなあ。。と「3.1Logical Phases of Compilation」を読んで思い始めたわけである。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1077001897385517056"
+            target="_blank">2018/12/24 9:43:56</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">もともとオレオレ言語はオリジナルな構文を目指していた。そうなると文法を文書化したほうがいいだろうから、それならPEGでパーサを書いて文法書の代わりにしようかと考えた。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1077001898530562049"
+            target="_blank">2018/12/24 9:43:56</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">でいまいまの状態は一旦全部捨ててGLSLにできる限り忠実に実装しなおそうと思ってる。そうすると仕様はきっちりしたものがあるから、構文をPEGで書く意義は薄れてしまったわけですな。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1077002558156099585"
+            target="_blank">2018/12/24 9:46:34</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">だがまあ過去にGLSLのパーサをPEG.jsで書いてる人がかなりいたりして、まあこの路線でもいいかなあと思ってたのだが、３．１を読むとそれもどうかなあと思い始めた。最初にここを読むべしであった。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1077008671928811520"
+            target="_blank">2018/12/24 10:10:51</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">3.1 はコンパイルのフェーズが書いてあるんだけど、要点をまとめるこんな感じ<br/><br/>１．ソース文字列はバイト列。「0」は終端と解釈<br/>2.ソース文字列は1つの入力として連結される<br/>3.文字列はUTF-8<br/>4.{CR,LF},{LF,CR}は1つの「new-line」文字に置換<br/><br/>(続く)</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1077008674013425665"
+            target="_blank">2018/12/24 10:10:52</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">5.行番号はnew-lineの数+1。行番号は#lineディレクティブよってのみ変えることができ、6.の影響は受けない。<br/>6.バックスラッシュ+new-lineは除去される。これによって改行をまたぐトークンの記述ができる。<br/>7.コメントは1つのスペースに置換<br/>（続く）</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1077010526029307904"
+            target="_blank">2018/12/24 10:18:13</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">8.ソース文字列は「プリプロセス・トークン列」に変換される。トークン列は数字・識別子・プリプロセス操作（ディレクティブ?<br/>）などが含まれる。行番号はトークンの先頭文字の行番号がコピーされる。<br/>9.プリプロセッサが実行される。ディレクティブ は実行され、マクロ置換が実行される。<br/>（続く）</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1077010527254003712"
+            target="_blank">2018/12/24 10:18:14</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">10.空白とnew-lineは除去される。<br/>11.前処理トークン列はトークン列に変換される<br/>12.構文はGLSL ES 文法によって解析される<br/>13.結果は言語のセマンティック規則によってチェックされる<br/>(続く)</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1077011385395994624"
+            target="_blank">2018/12/24 10:21:38</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">14.頂点およびフラグメントシェーダーは互いにリンクされる。頂点およびフラグメントシェーダーの両方で使用されない頂点出力および対応するフラグメント入力は破棄される。<br/>15.バイナリが生成される。<br/><br/>３．１はコンパイル手順が簡潔に書いてあるわけなんですな。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1077011718876721153"
+            target="_blank">2018/12/24 10:22:58</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">それでまあ「なるほど！」と思うと同時に、やっぱりなあ。。とも思ったんですな。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1077011925060378624"
+            target="_blank">2018/12/24 10:23:47</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">コンパイラを書いてるときにおぼろげながら思っていたことが、ここに簡潔に書いてあったというわけなのですよ。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1077014897509056512"
+            target="_blank">2018/12/24 10:35:36</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">さらに3.1の冒頭にはこんなことも書いてあったんですな。<br/><br/>「コンパイルプロセスはC++標準のサブセットを基本としている。」<br/><br/>ベースとしてるのはCではなくC++なんですな。。確かに変数宣言とかはCというよりはC++だもんな。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1077018149365592069"
+            target="_blank">2018/12/24 10:48:31</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">プリプロセスっちゅうのはAST作る前に処理を終えておくのが基本なんだろうね。プリプロセス→AST生成を同時にPEGで書くって無理があるような。プリプロセスも含めたASTツリーを作ってASTベースでプリプロセスをやる感じにすればできそうだけど、なんかそれって無駄が多い感じがする。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1077018150389014529"
+            target="_blank">2018/12/24 10:48:31</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">バックスラッシュ＋改行の処理などはプリプロセスの前に終えとかなくてはいかんしな。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1077018309457920000"
+            target="_blank">2018/12/24 10:49:09</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">プリプロセスの前処理だからプリプリプロセスですな。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1077019199380180993"
+            target="_blank">2018/12/24 10:52:41</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">コメントの除去とかトークン分割とかまではできそうだから、PEG.jsでそこだけを処理するコードを書いたんですな。<br/><blockquote class="card card-default"><header><img loading="lazy" src="https://avatars0.githubusercontent.com/u/3806814?s=400&v=4" /><a href="https://github.com/sfpgmr/sgl2/blob/0904f71ee9997ba496f0c1e120793a548d205908/sgl2-0.pegjs" target="_blank">sgl2/sgl2-0.pegjs at 0904f71ee9997ba496f0c1e120793a548d205908 · sfpgmr/sgl2 · GitHub</a></header><div>TDOPパーサをベースとした言語を作っていく. Contribute to sfpgmr/sgl2 development by creating an account on GitHub.</div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1077022052639559681"
+            target="_blank">2018/12/24 11:04:02</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">でこれ使うとトークンの配列が出力となって出てくる。コメントとかは3.1のルールに沿って置換される。でこれをプリプロセスしてまた文字列にしてPEGで作ったGLSLのパーサにまた食わせるというのもなんだかなあ。。と今思ってるわけ。PEGは入力が文字列だからね。なんか無駄だなあと。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1077022525681364992"
+            target="_blank">2018/12/24 11:05:54</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ここから先はpratt parserの出番かなと。さらにPEGを使ってきて、デバッグの面倒さに嫌気も指してきているという。まさにTDOPの論文の冒頭に書いてあったことが今まさに起こっているのだ。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1077023798279364608"
+            target="_blank">2018/12/24 11:10:58</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">この辺かな。。<br/><blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="https://tdop.github.io/#1-survey-of-the-problem-domain" target="_blank">TDOP Pratt</a></header><div></div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1077025992961474560"
+            target="_blank">2018/12/24 11:19:41</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">PEG.jsでアクションを書いてくと、バックトラックによってそれまでのアクションが全部破棄されてしまうところもちょっとなあ。。と思ったんだよね。解析のトレースを見てると「うわーここまで作ったものが全部捨てられる。。」。それが特徴でいいところでもあるんだけど。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1077025994257489920"
+            target="_blank">2018/12/24 11:19:41</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">そしてまた別の構文をトライするところで破棄された構文のアクションで作成されたのと同じようなオブジェクトがまた作られて、それがマッチしなかったら破棄されて。。が、構文がマッチするまで繰り返されるわけだ。無駄なガベージ・コレクトが多発しそうな感じがしてなんともね。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1077025995138359296"
+            target="_blank">2018/12/24 11:19:42</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">この辺の動きについてはPEGはそもそもリソースの潤沢な現代の環境での利用を想定してるようだから、まあいいっちゃあいいんだけどね。処理のムダはかなり発生してるのは事実っちゃあ事実だわな。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1077026918040449025"
+            target="_blank">2018/12/24 11:23:22</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">これは解析速度の低下にもつながるんだろうけど、これを改善するために「メモ化」というアプローチも取られるらしいね。。Packrat Parserとかいうらしい。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1077029042581164032"
+            target="_blank">2018/12/24 11:31:48</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">あとパーサのソースコードが巨大になってしまうというのちょっと。。PEGは私の好みには合わないなあというのが今のところの感想。字句解析も一緒に書けるというのがメリットなんだけど、今回はそこだけ使わせてもらってあとは手書きパーサ（pratt parser）で書こうかなと思ってるのがいまいまの状況。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1077029333405855744"
+            target="_blank">2018/12/24 11:32:57</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">とはいえ私の好みに合わないというだけでPEG.jsがすごいライブラリであるというのは疑いのないところ。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1077117274182410241"
+            target="_blank">2018/12/24 17:22:24</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">と思ったら、pratt parserの内容すっかり忘れとる。。もう一回「ビューティフル・コード」読むかあ。。これがおっさんプログラマの悲しいところ。。物忘れの激しさは20代の2倍以上であると思われる。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1077312014404378624"
+            target="_blank">2018/12/25 6:16:14</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ちょっと考えて、以下のアプローチでいくことにしようかなといまいまはいこうと思ってる。<br/><br/>１．back slash(/) + new-line ('\n' or '\n\r' or '\r\n')を除去する<br/>2.トークン分割<br/>3.プリプロセス<br/>4.パース<br/>5.コード生成<br/><br/>１．をまずやってしまえば、2.以降はpegでやってしまえそうなこともないなあ。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1077707999769051136"
+            target="_blank">2018/12/26 8:29:44</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">とりあえず1.,2.をpeg.jsで書いてみた。これを食わせるプリプロセッサをこれから書いてみようかなと思ってる。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1077708282116984832"
+            target="_blank">2018/12/26 8:30:51</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">プリプロセッサも結構面倒な感じ。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1078777795424137216"
+            target="_blank">2018/12/29 7:20:43</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">仕様の3.5 Preprocessor を実装しようとしてるが、改めて気づくことが多いなあ。。<br/><a href="https://www.khronos.org/registry/OpenGL/specs/es/3.0/GLSL_ES_Specification_3.00.pdf" target="_blank">khronos.org/registry/OpenG…</a></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1078779842038878209"
+            target="_blank">2018/12/29 7:28:51</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">まず、バージョン定義はプリプロセッサには含まれない。<br/>#version number es</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1078779843137818624"
+            target="_blank">2018/12/29 7:28:52</a></p>
+      </header>
+      <section>
+        <p class="tweet-text"># の前にはスペースとタブのみ含むことができる。ディレクティブの終端は改行（New Line）である。プリプロセスはソース文字列の改行の相対位置・行番号を変更してはいけない。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1078780263021174784"
+            target="_blank">2018/12/29 7:30:32</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">プリプロセッサディレクティブは以下の通り<br/>#<br/>#define<br/>#undef<br/>#if<br/>#ifdef<br/>#ifndef<br/>#else<br/>#elif<br/>#endif<br/>#error<br/>#pragma<br/>#extension<br/>#line</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1078780478180581376"
+            target="_blank">2018/12/29 7:31:23</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">プリプロセッサ・オペレータは以下である<br/>defined</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1078781717840769025"
+            target="_blank">2018/12/29 7:36:18</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">#define と #undef 機能はパラメータあり・なしのマクロ定義については標準C++と同じである。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1078781942869311488"
+            target="_blank">2018/12/29 7:37:12</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">事前定義されているマクロは以下である。<br/>__LINE__<br/>__FILE__<br/>__VERSION__<br/>GL_ES</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1078783343313866752"
+            target="_blank">2018/12/29 7:42:46</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">２つの連続したアンダースコアを含むマクロ名および、「GL_」がつく名前は予約されている。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1078783509798371328"
+            target="_blank">2018/12/29 7:43:26</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">マクロ名の長さは１０２４文字までである。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1078787349289418753"
+            target="_blank">2018/12/29 7:58:41</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">#if, #ifdef, #ifndef, #else, #elif,  #endif  は次を除いてC++と同じ。<br/>１． #if , #elif に続く式はpp-constant-expressions のみに制限される<br/>2.define オペレータで評価されない未定義の識別子は既定の'0'とみなされない。そのような識別子はエラーとなる。<br/>3.文字定数は未サポート</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1078790546334855169"
+            target="_blank">2018/12/29 8:11:23</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">pp-constant-expressionは、プリプロセス中に評価され、整数定数リテラルと以下の演算子から形成される整数式である。<br/><br/>( )<br/>+ <br/>-<br/>~<br/>!<br/>*<br/>/<br/>%<br/>&lt;&lt;<br/>&gt;&gt;<br/>&lt;<br/>&lt;=<br/>&gt;<br/>&gt;=<br/>==<br/>!=<br/>&amp;<br/>^<br/>|<br/>&amp;&amp;<br/>||<br/>defined</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1079511725890650113"
+            target="_blank">2018/12/31 7:57:06</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">GLSLのプリプロセッサはC++のサブセットなので、C++のプリプロセッサの仕様も読み始めた。ドラフトだと規格書が読めるからね。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1079512185196269568"
+            target="_blank">2018/12/31 7:58:55</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">プリプロセッサ自体もJSずっといじってるから忘れかけてるんだよなあ。なのでcodepadとかでコード書いて試してみたりしてる。<br/><blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="http://codepad.org/GxqrxGRi" target="_blank">C++ code - 10 lines - codepad</a></header><div></div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1079552777137774592"
+            target="_blank">2018/12/31 10:40:13</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">文字関係のマクロって面白いなあ。。GLSLのマクロでは使えんけど。。<br/><br/>#include "iostream"<br/><br/>#define join(a,c) # a # c<br/>char p[] = join(x y z,c);<br/><br/>int main(){<br/>std::cout &lt;&lt; p &lt;&lt; std::endl;<br/>// x y zc<br/>}</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1079552948252753920"
+            target="_blank">2018/12/31 10:40:54</a></p>
+      </header>
+      <section>
+        <p class="tweet-text"><blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="http://codepad.org/uZ7H3JeF" target="_blank">C++ code - 9 lines - codepad</a></header><div></div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1079557490608459776"
+            target="_blank">2018/12/31 10:58:57</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">マクロを展開するとまたマクロが含まれる可能性があるから、マクロがなくなるまで再帰的に展開する必要があるんだよな。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1080669548360040448"
+            target="_blank">2019/1/3 12:37:52</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">C++の規格（案）のプリプロセッサのところを年末の大掃除の合間に読んでた。プリプロセッサというのはなかなかおもろしいものだけど、実装するとなるとちょっと面倒なものだなあと思っていて。プリプロセッサの前処理用のトークナイザを書いてみたところでちょっと手が止まってしまってる。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1080720005291958273"
+            target="_blank">2019/1/3 15:58:22</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">プリプロセッサでこんなのできるんだなあ。。<br/><br/>#if VERSION == 1<br/>    #define INCFILE "vers1.h"<br/>#elif VERSION == 2<br/>    #define INCFILE "vers2.h"<br/>#else<br/>    #define INCFILE "versN.h"<br/>#endif<br/>    #include INCFILE</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1080720571346776065"
+            target="_blank">2019/1/3 16:00:37</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">同じケースだと、なんかこう書いてた気がするな。昔。。<br/><br/>#if VERSION == 1<br/>    #include "vers1.h"<br/>#elif VERSION == 2<br/>    #include  "vers2.h"<br/>#else<br/>    #include  "versN.h"<br/>#endif</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1080803908719497216"
+            target="_blank">2019/1/3 21:31:46</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">5.2 Phases of translation もよく読んどかんといかんわ。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1080958346331447298"
+            target="_blank">2019/1/4 7:45:27</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">結局C++の「5 Lexical conventions」全体をよく読んどかんといかんな。。<br/><a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2017/n4713.pdf" target="_blank">open-std.org/jtc1/sc22/wg21…</a></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1080966790992224259"
+            target="_blank">2019/1/4 8:19:01</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">バックスラッシュ+改行を除く処理がどのフェーズで行われるか知りたかったんだけど、やっぱりプリプロセス処理（フェーズ４）の前（フェーズ２）でしたな。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1080966792103620609"
+            target="_blank">2019/1/4 8:19:01</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ちなみにC++の翻訳フェーズ（5.2 Phases of translation）は９段階あるそうだ。<br/><br/>１.物理ソース文字セットを基本文字セットに置き換える（基本文字に含まれない拡張文字をuniversal-character-nameに置き換える）<br/>２．バックスラッシュ＋改行を削除する（物理行→論理行への変換）<br/>（続く）</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1080966793013784576"
+            target="_blank">2019/1/4 8:19:01</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">３．プリプロセス・トークンと空白文字に分ける。コメントは１つの空白文字に置き換えられる。改行文字は維持される。<br/>４．プリプロセスを実行する。プリプロセッサ・ディレクティブは削除される。<br/>（続く）</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1080966793907253248"
+            target="_blank">2019/1/4 8:19:01</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">５．文字リテラルと文字列リテラル中のエスケープシーケンスやuniversal-character-nameをexecution character setに変換する。<br/>６．隣接文字列リテラルを連結する。<br/>７．プリプロセス・トークンをトークンに変換する。空白文字は除去される。トークンは構文的・意味的に解析される。<br/>（続く）</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1080966794855165953"
+            target="_blank">2019/1/4 8:19:01</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">８．テンプレートのインスタンス化<br/>９．外部参照の解決</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1080969852733407233"
+            target="_blank">2019/1/4 8:31:10</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">プリプロセス・トークンに分割する前にバックスラッシュ＋改行を削除するんだな。やっぱり。そうせんと分割する処理がややこしくなっちゃうもんね。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1080970181516480513"
+            target="_blank">2019/1/4 8:32:29</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">続いて「5.3 Character sets」を読むとするか。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1080971160521601024"
+            target="_blank">2019/1/4 8:36:22</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">「universal-character-name」のBNFは以下の通り。<br/>hex-quad:<br/>　hexadecimal-digit hexadecimal-digit hexadecimal-digit hexadecimal-digit<br/>universal-character-name:<br/>　\u hex-quad<br/>　\U hex-quad hex-quad</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1080971350741635073"
+            target="_blank">2019/1/4 8:37:08</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">utf-16 utf-32に対応してるのですな。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1080972074225623040"
+            target="_blank">2019/1/4 8:40:00</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">いやいや、そういうことではないんだよなあ。。間違っとるわ。。文字コードと符号化方式をごちゃまぜにしてはいかんのですよ。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1080972268958670848"
+            target="_blank">2019/1/4 8:40:47</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">Unicodeの闇にまた立ち入らんといかんな。。ああ、いやだ。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1080973584065953792"
+            target="_blank">2019/1/4 8:46:00</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">\UNNNNNNNNはUCSのNNNNNNNNに対応する。Nは/0-9a-f/iですわ。。で\uNNNNはUCSの0000NNNNに対応するんですな。。ちなみに\Uは３２ビット長あるけど実際は0 - 10FFFFの範囲に収まるということだよね。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1080974500043214849"
+            target="_blank">2019/1/4 8:49:39</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ん。ちょっと気になる一文が。。<br/><br/>If the hexadecimal value for a universal-character-name corresponds to a surrogate code point (in the range 0xD800–0xDFFF, inclusive),the program is ill-formed.<br/><br/>サロゲートコードポイントはill-formedなの？？</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1080975964249632768"
+            target="_blank">2019/1/4 8:55:28</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">そうするとサロゲート文字は使えんということか？？と思ったが、ここでまた符号化方式と文字コードを混濁してしまう罠が。。そもそもサロゲートコードポイントってなんだ？？</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1080976308434128896"
+            target="_blank">2019/1/4 8:56:50</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">Unicodeってなんでこんなに罠だらけなんだろうな。。このコードにまつわる歴史がこのようなものにしてしまったんだよな。。<br/><blockquote class="card card-default"><header><img loading="lazy" src="https://cdn.qiita.com/assets/qiita-fb-2887e7b4aad86fd8c25cea84846f2236.png" /><a href="https://qiita.com/yumetodo/items/54e1a8230dbf513ea85b" target="_blank">C++標準化委員会、ついに文字とは何かを理解する: char8_t - Qiita</a></header><div></div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1080978454659489792"
+            target="_blank">2019/1/4 9:05:21</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">サロゲート・コードポイントというのは、UTF-16という符号化方式で使われる。16ビットなので0xffff以上の文字コードはサロゲート・ペアで表すんだけど、それ用の接頭辞（プリフィクス）のようなものなのですな。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1080978455607431168"
+            target="_blank">2019/1/4 9:05:22</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">C++はコードポイントを直接\Uで指定できるから、サロゲート・コードポイントはいらんわけですわな。なのでサロゲート・コードポイントはill-formedにしてるということですわ。たぶん。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1080980126144200704"
+            target="_blank">2019/1/4 9:12:00</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ちなみに\uは0000NNNNということで、上位16ビットが0で埋められるということで、UTF-16符号化方式であらわされる文字コードというわけではない。NNNNを超える場合は\Uにせいということなんだろうな。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1080982198914756608"
+            target="_blank">2019/1/4 9:20:14</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">「basic execution (wide-)character set」は基本ソース文字・制御文字（alert/バックススペース・CR・null文字(値は0)を含むのですな。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1080983481574776832"
+            target="_blank">2019/1/4 9:25:20</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">とここまで読んで、ソースコードの符号化方式に関する決め事がないことに気づいたような。。ここにきて「5.2 Phases of translation」の１.に書かれてあることが分かってきたような気がしないでもないという。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1080983935004291073"
+            target="_blank">2019/1/4 9:27:08</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">最初に読んだときなんのこっちゃよくわからんかったんだよね。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1080984781750296577"
+            target="_blank">2019/1/4 9:30:30</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">GLSLだとソースコードの符号化方式を定めていたような気もしないでもないな。。GLSLの仕様を読み返すか。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1080984782614327296"
+            target="_blank">2019/1/4 9:30:30</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">「3.2 Character Set」にばっちり「UTF-8」だと書いてあるわ。。<br/><br/>The source character set used for the OpenGL ES shading languages is Unicode in the UTF-8 encoding scheme.</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1080986948720685056"
+            target="_blank">2019/1/4 9:39:06</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ECMAScriptは「ソースキャラクタはUnicodeコードポイントである」ことだけが仕様で、符号化方式についての決まりごとはないようですな。。<br/><br/><blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="https://tc39.github.io/ecma262/#sec-ecmascript-language-source-code" target="_blank">ECMAScript® 2020 Language Specification</a></header><div></div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1080989183760453632"
+            target="_blank">2019/1/4 9:47:59</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">C++の仕様（N4713）に戻り改めて読み返すと、実装で定義された作法で物理ソースファイルの文字を基本ソース文字セットにマッピングされると書いてある。物理ソースファイルとは「何らかの符号化方式でエンコードされたソースコードファイル」ということなんだろうな。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1080989391483334656"
+            target="_blank">2019/1/4 9:48:49</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">それを実装依存で解釈し、基本ソース文字セットに変換すると。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1081116069761142784"
+            target="_blank">2019/1/4 18:12:11</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">文字セットというのが色々あってですな。。<br/>・basic source character set<br/>・basic execution character set<br/>・execution character set</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1081116407675248640"
+            target="_blank">2019/1/4 18:13:32</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">さらにワイド文字？ちゅうのもあるそうな。。<br/><br/>・basic source wide-character set<br/>・basic execution wide-character set<br/>・execution wide-character set</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1081142861679054848"
+            target="_blank">2019/1/4 19:58:39</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ようやく「5.4 Preprocessing tokens」に到達したな。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1081342182533939200"
+            target="_blank">2019/1/5 9:10:41</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">C++ではトークン<br/><br/>１．プリプロセッシング・トークン<br/>↓プリプロセス<br/>２．トークン<br/><br/>の2種類あるんですな。ソースコードはプリプロセッシング・トークンに分割されたのちにプリプロセッサに投入され、プリプロセスでディレクティブやホワイトスペースが除去されてトークンとなるようである。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1081461066754736128"
+            target="_blank">2019/1/5 17:03:05</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">BNFはこうなってますな。。<br/>preprocessing-token:<br/> header-name<br/> identifier<br/> pp-number<br/> character-literal<br/> user-defined-character-literal<br/> string-literal<br/> user-defined-string-literal<br/> preprocessing-op-or-punc<br/> each non-white-space character that cannot be one of the above</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1081462036603711489"
+            target="_blank">2019/1/5 17:06:56</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">BNFの項それぞれがpreprocessing-tokenのカテゴリでもあるわけだけども。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1081468121976778752"
+            target="_blank">2019/1/5 17:31:07</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">preprocessing-tokenはwhite-spaceもしくはcommentで区切ることができるんだな。white-spaceは「スペース・水平タブ・改行・垂直タブ・フォームフィード」文字のことですな。翻訳フェーズ4においてはトークンを分割する以上の意味を持つとのこと（これは改行文字のことかな。。）</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1081468122924691456"
+            target="_blank">2019/1/5 17:31:07</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">preprocessing-tokenは翻訳フェーズの3から6における字句の最小単位である。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1081469473876393985"
+            target="_blank">2019/1/5 17:36:29</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">改行はプリプロセッサ・ディレクティブの文脈においてはディレクティブの終端をあらわす。ステートメントにおけるセミコロンのような役割ですな。なのでバックスラッシュ＋改行というのがプリプロセスにおける改行のエスケープシーケンスとして効力を発揮するというわけ。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1081469474706866177"
+            target="_blank">2019/1/5 17:36:30</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">複数行のマクロ定義などがこれで可能になってるというわけですな。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1081469861753020417"
+            target="_blank">2019/1/5 17:38:02</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ちょっとふつふつと疑問として湧き上がってることがあって。そもそもなぜプリプロセッサなるものが必要なのかなあ？という疑問。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1081470140649070593"
+            target="_blank">2019/1/5 17:39:08</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ちょっとその疑問は置いておいて、「5.4 Preprocessing tokens」を読み進めますわ。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1081470543193227264"
+            target="_blank">2019/1/5 17:40:44</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">GLSLから横道にそれてしまったが、GLSLのプリプロセッサがC++のサブセットであるということで仕様上の説明が簡略化されている以上、これを理解しないで前に進むことはできないのだ。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1081471500933226496"
+            target="_blank">2019/1/5 17:44:33</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">5.4の段落3を読んでてraw string literalなるものを発見？C++98の知識で止まってる私は知らないことだらけですな。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1081473833708613635"
+            target="_blank">2019/1/5 17:53:49</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ははあ。こういうやつかあ。。例を見て理解したわ。。<br/><br/>R"a(<br/>)\<br/>a"<br/>)a"<br/>は　 "\n)\\\na\"\n"という文字リテラルと等価とのこと。<br/>JSでいうところのテンプレートリテラルみたいなものだなあ。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1081473982014971904"
+            target="_blank">2019/1/5 17:54:24</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">C++11ってすげえなあ。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1081477938225135617"
+            target="_blank">2019/1/5 18:10:08</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">raw string literalのBNF見るとこうなっとるな。。<br/>raw-string:<br/>  " d-char-sequenceopt ( r-char-sequenceopt ) d-char-sequenceopt "<br/><br/>こういうことか。。<br/><br/>R "デリミタ名(オプション)(文字列)デリミタ名"<br/><br/>const char * c = R "(<br/>"aaaaaa"<br/>)";</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1081477939147857921"
+            target="_blank">2019/1/5 18:10:08</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">試してみた。。<br/><blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="https://wandbox.org/permlink/1av92zGU8RhDov3D" target="_blank">[Wandbox]三へ( へ՞ਊ ՞)へ ﾊｯﾊｯ</a></header><div>Wandbox is Online Compiler</div></blockquote><br/>おお、すごい。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1081478535632449536"
+            target="_blank">2019/1/5 18:12:30</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">文字列リテラルのBNFはこうなっとる。。<br/><br/>string-literal:<br/>  encoding-prefixopt " s-char-sequenceopt "<br/>  encoding-prefixopt R raw-string<br/><br/>raw-sring-literalなんちゅうBNF上のキーワードがあるかと思ったがなかったな。。<br/>「R」のprefixとダブルクォーテーションの間はスペース不可ですな。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1081479064160858112"
+            target="_blank">2019/1/5 18:14:36</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">なるほどお。<br/><br/>#include &lt;iostream&gt;<br/>#include &lt;cstdlib&gt;<br/>const char * a = R"cpp-beginner(<br/>"aaaaaa"<br/>)cpp-beginner";<br/><br/>int main()<br/>{<br/>    std::cout &lt;&lt; a &lt;&lt; std::endl;<br/>}<br/><br/><blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="https://wandbox.org/permlink/1av92zGU8RhDov3D" target="_blank">[Wandbox]三へ( へ՞ਊ ՞)へ ﾊｯﾊｯ</a></header><div>Wandbox is Online Compiler</div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1081482410242404352"
+            target="_blank">2019/1/5 18:27:54</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">5.4.の3.1はraw string literalに関することが書いてあって<br/>・preprocessing tokenに分割後、「R」にすぐ次に「"」がある場合はraw string literalとして処理する<br/>・raw stringとみなされる部分の、翻訳フェーズ1および2において実施された変換は元に戻す<br/>とのこと。もとに戻すんだ。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1081483291289481216"
+            target="_blank">2019/1/5 18:31:24</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">raw string literalに対応するために、preprocessing tokenで追加の処理が発生するわけですな。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1081483292090675201"
+            target="_blank">2019/1/5 18:31:24</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">GLSLは文字列リテラルないから理解する必要はないんだけど、オレオレ言語はGLSLのスーパーセットにするつもりで文字列に関する処理を追加しようと思ってるから、この辺の理解はきちんとしておこう。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1081483787391754240"
+            target="_blank">2019/1/5 18:33:22</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">プリプロッサの字句関連の処理って私のレベルだとちょっと難しそうなんで、実装できるかどうかは未知数だし、そもそも必要？というのはあるんだけど。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1081678976827850752"
+            target="_blank">2019/1/6 7:28:59</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">5.4.3.2は代替トークンのエスケープ表現のようですな。。トークンに続く3文字が&lt;::かつ後に続く文字が：や&gt;でもない場合は、最初の&lt;は代替トークン「&lt;:」としては扱われず、「&lt;」として取り扱われるとのこと。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1081683110176030722"
+            target="_blank">2019/1/6 7:45:24</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">#define R "x"<br/>const char* s = R"y";<br/>// ill-formed raw string, not "x" "y"<br/>// これは5.4.3のルールによってraw stringが先に検出されるので不正となる<br/><br/><blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="https://wandbox.org/permlink/2iR0qcCQ02vyd4Rx" target="_blank">[Wandbox]三へ( へ՞ਊ ՞)へ ﾊｯﾊｯ</a></header><div>Wandbox is Online Compiler</div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1081684612575748096"
+            target="_blank">2019/1/6 7:51:23</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">#define R "x"<br/>const char* s = R "y";<br/>// Rと"の間にスペースを入れることによってRはマクロとして認識される。<br/><br/><blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="https://wandbox.org/permlink/4iQ3uymFXoPNYX1w" target="_blank">[Wandbox]三へ( へ՞ਊ ՞)へ ﾊｯﾊｯ</a></header><div>Wandbox is Online Compiler</div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1081696472624619522"
+            target="_blank">2019/1/6 8:38:30</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">5.4.4.はpreprocessing number tokenに関しての例<br/><br/>0xe+foo<br/><br/>は<br/>0xe,+, fooとしてトークン分割可能だが、実際にはpreprocessing numberとして扱われる。結果このケースではエラーとなる。<br/><blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="https://wandbox.org/permlink/iV6VG8mzZWXcjbjR" target="_blank">[Wandbox]三へ( へ՞ਊ ՞)へ ﾊｯﾊｯ</a></header><div>Wandbox is Online Compiler</div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1081696474189127680"
+            target="_blank">2019/1/6 8:38:31</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">0xe,+, fooとしてトークン分割したければスペースを挟む。<br/><br/>0xe +foo<br/><br/><blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="https://wandbox.org/permlink/PpURDi6Bbt7BxSpp" target="_blank">[Wandbox]三へ( へ՞ਊ ՞)へ ﾊｯﾊｯ</a></header><div>Wandbox is Online Compiler</div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1081696475342467072"
+            target="_blank">2019/1/6 8:38:31</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">同じように<br/><br/>1E1<br/><br/>はEがマクロ定義されてもされていなくても、preprocessing numberとして取り扱われる。結果数値として正しく取り扱われる。<br/><br/><blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="https://wandbox.org/permlink/NujUH3YO8ZghHuzx" target="_blank">[Wandbox]三へ( へ՞ਊ ՞)へ ﾊｯﾊｯ</a></header><div>Wandbox is Online Compiler</div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1081710708834807809"
+            target="_blank">2019/1/6 9:35:04</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">5.4.5  は最長のtokenで分割されることの例<br/><br/>x+++++y<br/><br/>は<br/><br/>（１）x, ++, ++, +y<br/><br/>に分割される。これはエラーとなる<br/><br/>（２）x, ++, +, ++, y<br/><br/>こう分割されるとエラーとはならない。<br/>が、5.4.3によりマッチする最長のpreprocessing tokenで分割されるので結果は(1)となる</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1081712587681685504"
+            target="_blank">2019/1/6 9:42:32</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">次は「5.5 Alternative tokens」ですな。これはまあ斜め読みでいいかなあ。普通使わないし。。古いCソースとかコンパイルするために必要なんだろうな。。今でも「{」とか使えない環境があるのだろうか。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1081713667379359744"
+            target="_blank">2019/1/6 9:46:50</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ちなみにC++のドラフトってここにおいてあるみたいなんだよね。。<br/><blockquote class="card card-default"><header><img loading="lazy" src="https://avatars3.githubusercontent.com/u/59276?s=400&v=4" /><a href="https://github.com/cplusplus/draft/tree/master/papers" target="_blank">draft/papers at master · cplusplus/draft · GitHub</a></header><div>C++ standards drafts. Contribute to cplusplus/draft development by creating an account on GitHub.</div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1081715617705512960"
+            target="_blank">2019/1/6 9:54:35</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">まあこれくらいの理解OKかと。。 https://t.co/t9O8O8Hsdd</p>
+        
+        <img loading="lazy" class="tweet-img" src="https://pbs.twimg.com/media/DwMGdYuUYAAV6Cq.jpg" />
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1081716379605037056"
+            target="_blank">2019/1/6 9:57:36</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">int main()<br/>{<br/>    bool a = true,b = true;<br/>    if(a and b){// &amp;&amp;の代替表現。この方が直感的？<br/>        std::cout &lt;&lt; "True" &lt;&lt; std::endl;<br/>    }<br/>}<br/><br/><blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="https://wandbox.org/permlink/ujzqMjvRfkMztuTj" target="_blank">[Wandbox]三へ( へ՞ਊ ՞)へ ﾊｯﾊｯ</a></header><div>Wandbox is Online Compiler</div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1081820253863071744"
+            target="_blank">2019/1/6 16:50:22</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">「5.6 Tokens」はまあこれはわかるかあ。。<br/><br/>token:<br/>  identifier 識別子<br/>  keyword キーワード<br/>  literal リテラル<br/>  operator 演算子<br/>  punctuator 区切子<br/><br/>トークンは5種類あるということね。。ホワイトスペースはトークンの区切りを表す以外は無視される。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1081820255440142336"
+            target="_blank">2019/1/6 16:50:22</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">「5.7 Comment」  はスキップするかあ。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1081837418490191874"
+            target="_blank">2019/1/6 17:58:34</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">次は「5.8 Header names」か。。<br/>BNFは以下の通りですな。。<br/>header-name:<br/>    &lt; h-char-sequence &gt;<br/>    " q-char-sequence "</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1081837419425492993"
+            target="_blank">2019/1/6 17:58:35</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">h-char-sequenceのBNFは<br/><br/>h-char-sequence:<br/>  h-char<br/>  h-char-sequence h-char<br/><br/>h-char:<br/>  new-lineと&gt;を除くソース・キャラクタ・セット<br/><br/>まあそりゃそうか。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1081837420289519616"
+            target="_blank">2019/1/6 17:58:35</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">q-char-sequenceのBNFは<br/><br/>q-char-sequence:<br/>    q-char<br/>    q-char-sequence q-char<br/><br/>q-char:<br/>    new-lineと"を除くソース・キャラクタ・セット<br/><br/>これも別段理解に支障はないですな。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1081838764169748480"
+            target="_blank">2019/1/6 18:03:55</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">さて、「5.9 Preprocessing numbers」ですな。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1082378826800189440"
+            target="_blank">2019/1/8 5:49:56</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">数値リテラルはプリプロセスの前にトークン分割される。ただしプリプロセスの段階では型と値は持たないとのこと。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1082381630755336192"
+            target="_blank">2019/1/8 6:01:05</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ただBNFの1行で気になるものが。。<br/><br/>pp-number identifier-nondigit<br/><br/>と思ったらこれはユーザー定義リテラルですな。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1082381870208212993"
+            target="_blank">2019/1/8 6:02:02</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">さて次は「5.10 Identifiers」ですかな。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1082382667268599808"
+            target="_blank">2019/1/8 6:05:12</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">C++では識別子の長さは任意となっているな。GLSLでは1024文字と規定されてる。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1082384019180814336"
+            target="_blank">2019/1/8 6:10:34</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">universal-character-nameで変数名も定義できるんですな。<br/><br/>#include &lt;iostream&gt;<br/>#include &lt;cstdlib&gt;<br/><br/>int main()<br/>{<br/>    int \u3042 = 1;//「あ」<br/>    std::cout &lt;&lt; "\u3042:" &lt;&lt;  \u3042 &lt;&lt; std::endl;<br/>}<br/><br/><blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="https://wandbox.org/permlink/4tDcnhMPvWjRQtRY" target="_blank">[Wandbox]三へ( へ՞ਊ ՞)へ ﾊｯﾊｯ</a></header><div>Wandbox is Online Compiler</div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1082386572786331648"
+            target="_blank">2019/1/8 6:20:43</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ただし識別子の最初に1文字目に次の範囲の文字（結合文字）は使用できないとのこと。<br/>0300-036F 1DC0-1DFF 20D0-20FF FE20-FE2F</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1082744357315178496"
+            target="_blank">2019/1/9 6:02:25</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">5.10.2のところが理解できないなあ。。<br/>特定の文脈において次の4つの識別子は特別な意味を持つとのこと。<br/>audit axiom final override<br/>この後の文章がうまく訳せない。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1082744358137286656"
+            target="_blank">2019/1/9 6:02:26</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">When referred to in the grammar, these identifiers are used explicity rather than using the identifier grammar production.<br/><br/>文法中で参照されるとき、これらの識別子は文法生成の識別子を使用するのではなく明示的に使用されます？？<br/>ここですわ。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1082744359190024192"
+            target="_blank">2019/1/9 6:02:26</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">Unless otherwise specified, any ambiguity as to whether a given identifier has a special meaning is resolved to interpret the token as a regular identifier.<br/><br/>特に明記しない限り、与えられた識別子が特別の意味を持つかどうかのあいまいさは、通常の識別子解析で解決される。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1082744769497821184"
+            target="_blank">2019/1/9 6:04:04</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">この4つの識別子「audit・axiom・final・ override」はいわゆる「キーワード」ではないということなのかな。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1082746877206921216"
+            target="_blank">2019/1/9 6:12:26</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">overrideを例にとると、このメンバ関数はオーバーライドですよということを明確に示すためにあるということか。指定しなれば解析時に判定されるということかな。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1082746877999628288"
+            target="_blank">2019/1/9 6:12:26</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">GLSLのプリプロセスを実装するためにC++の規格案を読んでるだけなのでまああいまいな理解でもいうのだが。<br/>override/finalとか使えるようになってるんですな。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1082747302882664448"
+            target="_blank">2019/1/9 6:14:08</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">違うか。。記述次第では意味を持たないケースもあるということかな。。文脈によって意味を持つということなので、キーワードとは別にしてるということかな。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1082747939758297089"
+            target="_blank">2019/1/9 6:16:39</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">5.10.3.1は2つのアンダースコアを含む識別子と1つのアンダースコアで始まり、続く文字が大文字の識別子は実装のために予約されているとのこと。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1082748169119625217"
+            target="_blank">2019/1/9 6:17:34</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">5.10.3.2 さらに1つのアンダースコアで始まる識別子はグローバル名前空間のために予約されているのかあ。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1082748315131736064"
+            target="_blank">2019/1/9 6:18:09</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">そしてようやく「5.11 Keywords」ですな。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1082774737539878917"
+            target="_blank">2019/1/9 8:03:09</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">キーワードはとりあえず飛ばすか。識別子として予約されていると。後はアトリビュート中は除くと書いてあるな。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1082775636605685760"
+            target="_blank">2019/1/9 8:06:43</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">「5.12 Operators and punctuators」もまあいいかな。注目すべきはプリプロセス前にトークン分割されるということですわな。#ifディレクティブとかでは定数式中で評価されるものもあるからな。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1082775936976580609"
+            target="_blank">2019/1/9 8:07:55</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">さて次は「5.13Literals」かあ。ここはボリュームあるな。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1082776587064434688"
+            target="_blank">2019/1/9 8:10:30</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">リテラルは７種類あるのですな。。<br/><br/>integer-literal<br/>character-literal<br/>floating-literal<br/>string-literal<br/>boolean-literal<br/>pointer-literal<br/>user-defined-literal</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1083100687683092480"
+            target="_blank">2019/1/10 5:38:21</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">「5.13.2 Integer literals」もまあ理解できる。<br/>こういう記法も可能なのですな。位取りか。。すごい。。<br/><br/>int \u3042 = 1'000'000;//位取り<br/>int い = 0b0000'0001;//4ビット単位で区切ってみる<br/><br/><blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="https://wandbox.org/permlink/NWN38rpkamMnJwEx" target="_blank">[Wandbox]三へ( へ՞ਊ ՞)へ ﾊｯﾊｯ</a></header><div>Wandbox is Online Compiler</div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1083102071836930048"
+            target="_blank">2019/1/10 5:43:51</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">Table 7を見ると「l/L」サフィックスはlong以上の長さを表すということなんだなあ。「ll/LL」はlong longを表すようだけど。サフィックスなしはint/long int/long long intのいずれかであるということ。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1083103038540111874"
+            target="_blank">2019/1/10 5:47:42</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">あれだなあ。オレオレ言語は<br/><br/>・GLSLのスーパーセット<br/>・C++のサブセット<br/><br/>みたいなものにしたいなあ。リテラルはC++のでいいわ。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1083103764175716353"
+            target="_blank">2019/1/10 5:50:35</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ただビルトイン型のビット長はrustのように仕様できちっと決めておきたいな。文字のエンコードはUTF-8を標準としたいね。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1083104766417195008"
+            target="_blank">2019/1/10 5:54:34</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">C++の規格書（仕様書）はESの仕様書に比べてかなり読みやすい気がする。あくまで「気がする」レベルだけど。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1083105108953427968"
+            target="_blank">2019/1/10 5:55:55</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">サフィックスのあいまいさは歴史的な経緯でこうなってるような気もするな。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1083105109876375553"
+            target="_blank">2019/1/10 5:55:55</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">さて「5.13.3 Character literals」を読むか。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1083109293606371328"
+            target="_blank">2019/1/10 6:12:33</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">文字リテラルというのはこうなってる。<br/>character-literal:<br/>  encoding-prefixopt ’ c-char-sequence ’<br/>  encoding-prefix: one of<br/>    u8 u U L<br/><br/>「u8」プリフィクスが光っとりますな。。文字リテラルは1文字をあらわすんだけど、結合文字のためにシーケンスになってるのかな？</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1083126247427719168"
+            target="_blank">2019/1/10 7:19:55</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">あ、そうか。マルチバイト文字か。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1083127839690436610"
+            target="_blank">2019/1/10 7:26:15</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">u8に関してはちょっと残念なことがかいてあるな。。<br/><br/>The value of a UTF-8 character literal is equal to its ISO/IEC 10646 code point value, provided that the code point value is representable with a single UTF-8 code unit .</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1083127842341179392"
+            target="_blank">2019/1/10 7:26:15</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">うむむ。。<br/><br/>If the value is not representable with a single UTF-8 code unit, the program is ill-formed. A UTF-8 character literal containing multiple c-chars is ill-formed.</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1083128326753906688"
+            target="_blank">2019/1/10 7:28:11</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">コードポイントが1バイトで表現できる文字に限ると。マルチバイト文字は不正だと。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1083292550834774016"
+            target="_blank">2019/1/10 18:20:45</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">C++にはmulticharacter literalなるものがあるとのこと。<br/><blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="https://cpplover.blogspot.com/2009/04/multicharacter-literal.html" target="_blank">本の虫: multicharacter literalについて</a></header><div></div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1083293207503360000"
+            target="_blank">2019/1/10 18:23:21</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">規格案に書いてあった。<br/><br/>A multicharacter literal, or an ordinary character literal containing a single c-char not representable in the execution character set, is conditionally-supported, has type int, and has an implementation-defined value.</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1083293772153143297"
+            target="_blank">2019/1/10 18:25:36</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">@cpp_akira さん。教えていただきありがとうございました。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1083294555280035840"
+            target="_blank">2019/1/10 18:28:43</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">この<br/>character-literal:<br/>　 encoding-prefixopt ’ c-char-sequence ’ <br/>encoding-prefix: <br/>　one of <br/>　　u8 u U L <br/>c-char-sequence: <br/>　c-char c-char-sequence c-char<br/><br/>このc-char-sequenceのところが不思議なのであった。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1083320738537328641"
+            target="_blank">2019/1/10 20:12:45</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">基本的なところだけど、文字リテラルがシングルクォート、文字列リテラルがダブルクォートとC++では明確に定義されている。JSはどっちでもというか、文字リテラルにあたるものがないよな。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1083323817382965253"
+            target="_blank">2019/1/10 20:24:59</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">エスケープシーケンスは3種類かあ。。<br/>escape-sequence:<br/>    simple-escape-sequence<br/>    octal-escape-sequence<br/>    hexadecimal-escape-sequence</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1083324178768351233"
+            target="_blank">2019/1/10 20:26:26</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">まあこれは知っとるなあ。というか\?ってなんだ？？？<br/>simple-escape-sequence: one of<br/>  \’ \" \? \\<br/>  \a \b \f \n \r \t \v</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1083324815610601472"
+            target="_blank">2019/1/10 20:28:57</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">これはほとんど使ったことないよなあ。。<br/><br/>octal-escape-sequence:<br/>    \ octal-digit<br/>    \ octal-digit octal-digit<br/>    \ octal-digit octal-digit octal-digit</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1083324816554258432"
+            target="_blank">2019/1/10 20:28:58</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">これはまあ使ったことあるかな。。<br/>hexadecimal-escape-sequence:<br/>    \x hexadecimal-digit<br/>    hexadecimal-escape-sequence hexadecimal-digit<br/><br/>ただこれ左再帰ということは任意の長さなんだなあ。<br/><br/>\x001111fddfffffffffffffffffffffffffffffffffffffffffeeee<br/><br/>とかも一応OKなんだろうか。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1083471911055646720"
+            target="_blank">2019/1/11 6:13:28</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">5.13.3.8に書いてあるな。\xは任意の長さであると。<br/><br/>There is no limit to the number of digits in a hexadecimal sequence.</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1083471911852503040"
+            target="_blank">2019/1/11 6:13:28</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">対して8進のほうはmax3桁までであると。<br/><br/>The escape \ooo consists of the backslash followed by one, two, or three octal digits that are taken to specify the value of the desired character.</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1083473301664522240"
+            target="_blank">2019/1/11 6:18:59</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">前後するけど、5.13.3.2 には普通の文字リテラル「ordinary character literal」の定義とmulticharacter literalの定義が書いてある。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1083473302515929089"
+            target="_blank">2019/1/11 6:18:59</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">「ordinary character literal」はchar型を持つ「execution character set」で表現される一文字もc-charを含む文字リテラルということである。'0'はchar型で0x30の値を持ってるということですわな。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1083473966381985793"
+            target="_blank">2019/1/11 6:21:38</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">でまあ1文字より多くの「ordinary character literal」含むリテラルを「multicharacter literal」であると定義している。型はintで実装定義であることは教えてもらった通り。なぜこれが規格案に入ってるのかちょっとググってみようかな。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1083474425251389440"
+            target="_blank">2019/1/11 6:23:27</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">あ、ordinary character literalはプリフィクスはつかないんだな。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1083494713255112704"
+            target="_blank">2019/1/11 7:44:04</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">5.13.3.3はu8プリフィクスの説明。ここがちょっと使用上気になるところ。u8プリフィクスをつけるとこの文字リテラルはutf-8である。ただしバイト長が１byteのものに限定されてるんだなあ。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1083495569337679872"
+            target="_blank">2019/1/11 7:47:28</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">再掲になるけどこの部分ですよ。<br/>The value of a UTF-8 character literal is equal to its ISO/IEC 10646 code point value, provided that the code point value is representable with a single UTF-8 code unit (that is, provided it is in the C0 Controls and Basic Latin Unicode block).</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1083496907752726529"
+            target="_blank">2019/1/11 7:52:47</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ん、ここはちょっと私読み違えてる?code pointとcode unit の違いってなんだったっけ?</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1083499164753743872"
+            target="_blank">2019/1/11 8:01:45</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">code point ... 文字につけられた番号<br/>code unit ... code pointを符号化するときに使う一単位。utf-8だと1バイトになるよな。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1083499598713245696"
+            target="_blank">2019/1/11 8:03:29</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">utf-32だと１コードポイント＝１コードユニットになるのですな。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1083499819102945280"
+            target="_blank">2019/1/11 8:04:21</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">あかん。またUNICODEの沼に入ろうとしている。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1083500591232348160"
+            target="_blank">2019/1/11 8:07:26</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">コードポイントは結合文字も含むので、コードポイントがかならずしも１文字を表すわけではないんですな。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1083654166516445184"
+            target="_blank">2019/1/11 18:17:41</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">multicharacter literalを見て思い出すのはFourCCコードですな。チャンクですわ。。<br/><br/><blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="https://ja.m.wikipedia.org/wiki/FourCC" target="_blank">FourCC - Wikipedia</a></header><div></div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1083654519009898498"
+            target="_blank">2019/1/11 18:19:05</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">IFFか。。懐かしいな。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1083655881563156480"
+            target="_blank">2019/1/11 18:24:30</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">なにげにFourCC ググったら、MSのページで使ってるじゃないの。multicharacter literal。。<br/><br/>DWORD fccYUY2 = '2YUY';<br/><br/><blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="https://msdn.microsoft.com/ja-jp/library/cc354745.aspx" target="_blank">FOURCC コード | Microsoft Docs</a></header><div></div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1083656203790471168"
+            target="_blank">2019/1/11 18:25:46</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">このマクロが懐かしい。。<br/>DWORD fccYUY2 = MAKEFOURCC('Y','U','Y','2');</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1083667079012573185"
+            target="_blank">2019/1/11 19:08:59</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">5.13.3.3に戻るけど、u8文字リテラルはutf-8だがコードユニットが１、つまりサイズが1バイトのものしか入れることができないということですわな。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1083667556471234561"
+            target="_blank">2019/1/11 19:10:53</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">そしてmulticharacter literalはFourCCの記述用として使えるという。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1083674261586243584"
+            target="_blank">2019/1/11 19:37:32</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">今のところは文字リテラルというのは1文字が入る器であってほしいなあと思うなあ。。無印リテラルや過去の互換性を維持するものはしょうがないにしても、u8リテラルはマルチバイトで1文字を表す仕様のほうがいいのではないかと。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1083688002017058816"
+            target="_blank">2019/1/11 20:32:08</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">しかし文字リテラルってなんなんだろう。不思議なやつだ。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1083688466230128640"
+            target="_blank">2019/1/11 20:33:58</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">1文字を表すという意味では不足しているし、かといって文字リテラルが文字の1文字を表すと明確に定義されているわけでもないしなあ。それが確実に保証されてるのはASCIIの部分だけだということか。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1083689030380806144"
+            target="_blank">2019/1/11 20:36:13</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">5.13.3.3を読むとASCII文字だけで生活できる国はお得だなあと思うな。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1083689651330703361"
+            target="_blank">2019/1/11 20:38:41</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">さて、5.13.3.4は「u」プリフィクスである。これはchar16_tの型を持つ文字リテラルであることを示す。<br/><br/>u’x’</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1083690523905282048"
+            target="_blank">2019/1/11 20:42:09</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">日本語は「ローマ字」というものもあるから、これのみで生活すればASCII優位の恩恵にあずかることも可能かもとちょっと思ったが。ありえないか。それは。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1083848439119507456"
+            target="_blank">2019/1/12 7:09:39</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">5.13.3.4はUNICODEコードポイントの16ビットコードユニットを格納するための文字リテラルである。コードポイントをすべてカバーするにはサロゲート・ペアも使わないといけないんだけど、残念ながらこれも1文字で表すものに限られる。それ以外はill-formedである。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1083848439933239297"
+            target="_blank">2019/1/12 7:09:39</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">5.13.3.5は「U」プリフィクスである。これはchar32_tの型を持つ。コードユニットは32ビットである。つまりこのプリフィクスはすべてのUNICODEコードポイントを表すことができる。しかしながら結合文字というのがあり、複数のコードポイントで表す文字はこのリテラルに格納することは不正となる。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/980284251458301952/IAHOpSUs_normal.jpg" />
+        <p class="tweet-user-name">ななき@nanaki14</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/nanaki14/status/1083013840898449408"
+            target="_blank">2019/1/9 23:53:15</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">さっくり自分で書いたGLSL置くとこ作りました<br/>とりあえず作って出そうって気持ちだったのでデザインとかアニメーション皆無ですが気が向いたらがんばります。<br/><a href="https://shader-practice.netlify.com/" target="_blank">shader-practice.netlify.com</a> https://t.co/NWG79cnnbj</p>
+        
+        <video class="tweet-img" controls src="https://video.twimg.com/ext_tw_video/1083013666868346881/pu/vid/486x360/R0m_PoJnkLTVyUVi.mp4?tag=8" />
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1083291307512983553"
+            target="_blank">2019/1/10 18:15:48</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">@cpp_akira ありがとうございます。そのような仕様があるのですね。文字１つ分の仕様なのにBNFではシーケンスになってて謎でした。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/603918430639521792/zZNtUnXN_normal.png" />
+        <p class="tweet-user-name">Hideyuki Tanaka@tanakh</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/tanakh/status/1083049117343838208"
+            target="_blank">2019/1/10 2:13:26</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">Intelは4004が50周年だったっけ？</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1082924844138651648"
+            target="_blank">2019/1/9 17:59:37</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">二重思考か。。 <blockquote class="card card-default"><header><img loading="lazy" src="https://pbs.twimg.com/profile_images/1148860451549147137/pvcubB43_400x400.png" /><a href="https://twitter.com/EzoeRyou/status/1082822166255611904" target="_blank">Ryou Ezoe(江添 亮)さんのツイート: "奨学金と謳いつつ実態は借金であることを理解するにはダブルシンクを理解する必要がある。ダブルシンクとは2つの矛盾する事実が同時に存在しうるという概念である。ダブルシンクの理解にはダブルシンクが必要だ。党は常に正しい。"</a></header><div></div></blockquote></p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/1046987301874741249/uTQ7cmCC_normal.jpg" />
+        <p class="tweet-user-name">中国最新情報(xChina)@xChina4</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/xChina4/status/1082094737371217920"
+            target="_blank">2019/1/7 11:01:04</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">豆腐をめっちゃ細かく切るプロ https://t.co/CBj2wnAfAY</p>
+        
+        <video class="tweet-img" controls src="https://video.twimg.com/ext_tw_video/1082094637823668224/pu/vid/320x568/IDGghioJu276v5jP.mp4?tag=6" />
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1082377521973190661"
+            target="_blank">2019/1/8 5:44:45</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">休み明けの初日の出勤はさすがに疲れたなあ。電車もなぜか混雑するし。。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1081839855951216640"
+            target="_blank">2019/1/6 18:08:15</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">さて私がすでに1000回は聴いてるであろう「BEHIND THE MASK」ですが。<br/><br/><div class="youtube" data-type="yt" id="u4VMLYnH_Dc"><div class="yt-title">Youtube - Yellow Magic Orchestra - Behind the Mask (1979)</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/u4VMLYnH_Dc" class="youtube" src="https://i.ytimg.com/vi/u4VMLYnH_Dc/hqdefault.jpg" /></div>   <br/><br/><br/>この曲はキックがMoog III-Cで作られてるらしい。スネアは生とシンセのノイズ、ハイハットは生という構成だと思われる。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1081840487663775744"
+            target="_blank">2019/1/6 18:10:46</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">この曲はSEIKOのCM用に作られた坂本さんの曲がベースとなっているとのこと。この曲を聴きたいがためにUC-YMOも買いました。。<br/><br/><div class="youtube" data-type="yt" id="mEm8_Xzwlvs"><div class="yt-title">Youtube - Behind The Mask (SEIKO Quartz CM Version) / Yellow Magic Orchestra</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/mEm8_Xzwlvs" class="youtube" src="https://i.ytimg.com/vi/mEm8_Xzwlvs/hqdefault.jpg" /></div>   <br/><br/><br/>アレンジは「千のナイフ」のアルバムっぽいよね。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1081841661976563713"
+            target="_blank">2019/1/6 18:15:26</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">この曲ってマイケルジャクソンがカバーしようとしたことでも有名だよなあ。こういのあるところからするとレコーディングまでしたのかな。。<br/><br/><div class="youtube" data-type="yt" id="5bOkWTprifg"><div class="yt-title">Youtube - Michael Jackson - Behind the Mask</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/5bOkWTprifg" class="youtube" src="https://i.ytimg.com/vi/5bOkWTprifg/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1081841662945517569"
+            target="_blank">2019/1/6 18:15:26</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">このアレンジで最初に出たのは以下の方のようなんだよな。。<br/><br/><div class="youtube" data-type="yt" id="4SreNsrMu7k"><div class="yt-title">Youtube - 1985 Greg Phillinganes :: Behind the Mask @ 432 Hz</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/4SreNsrMu7k" class="youtube" src="https://i.ytimg.com/vi/4SreNsrMu7k/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1081842241474183173"
+            target="_blank">2019/1/6 18:17:44</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">さらにこれをエリック・クラプトンがカバーしたりとか。<br/>ちなみにこれも買ってしまいました。。<br/><br/><div class="youtube" data-type="yt" id="d_xMJscsw7w"><div class="yt-title">Youtube - Eric Clapton - Behind The Mask</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/d_xMJscsw7w" class="youtube" src="https://i.ytimg.com/vi/d_xMJscsw7w/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1081842242430464000"
+            target="_blank">2019/1/6 18:17:44</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">これをさらに坂本さんがセルフカバーするという。面白いよね。<br/><br/><div class="youtube" data-type="yt" id="hZpB2rBe7uQ"><div class="yt-title">Youtube - BEHIND THE MASK　坂本龍一 RYUICHI SAKAMOTO</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/hZpB2rBe7uQ" class="youtube" src="https://i.ytimg.com/vi/hZpB2rBe7uQ/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1081842611248193537"
+            target="_blank">2019/1/6 18:19:12</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">このアレンジを聴いたのは確かメディア・バーン・ライブの時のやつだったと思うんだよな。やっぱりロックなんだなあ。この曲は。。と思った。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1081844448718278656"
+            target="_blank">2019/1/6 18:26:30</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">この曲は好きすぎて、自分でソフトシンセでコピーして再現しようと頑張ったが、このレベルで力尽きました。。<br/><br/><div class="youtube" data-type="yt" id="8yRyV6AXcOM"><div class="yt-title">Youtube - YMO - BEHIND THE MASK (7)</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/8yRyV6AXcOM" class="youtube" src="https://i.ytimg.com/vi/8yRyV6AXcOM/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1081845655033675776"
+            target="_blank">2019/1/6 18:31:18</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">まだ道半ばの出来といったところで力尽きるという、いつもの私のパターンですが。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1081849641266601984"
+            target="_blank">2019/1/6 18:47:08</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">トラックごとに音が聴けるというので2-3年前にGIGA CAPSULEも中古で買ったりもしたなあ。。 https://t.co/Qc4DzLjC5O</p>
+        
+        <img loading="lazy" class="tweet-img" src="https://pbs.twimg.com/media/DwOAgKjVYAA6sc3.jpg" />
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1081849801946279936"
+            target="_blank">2019/1/6 18:47:47</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">これは私が死ぬまで保有し続けるつもりの実物でございます。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1081850398611189760"
+            target="_blank">2019/1/6 18:50:09</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ただ残念なことにトラックの音声ファイルは音質がかなり悪い。さらに悪いことに私のWin10環境では再生できない。というかShockwaveのアプリが動かんだけですけどね。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1081851650245939200"
+            target="_blank">2019/1/6 18:55:07</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ただライディーンのコード弾きの部分のスコアを拾うのにはとても役に立ったけどね。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1081852126865682432"
+            target="_blank">2019/1/6 18:57:01</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">YMOマニアとしては「ソリッド・ステイト・サバイバー」のマルチトラックデータが欲しいところではありますが。。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1081660838623072256"
+            target="_blank">2019/1/6 6:16:54</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">スマフォに触れた時点で数学の恩恵を受けているんだけどなあ。電化製品もそうだよねえ。。それ以外にもある。今日の文明生活の一端を数学が支えているというリスペクトは忘れないでほしいなあ。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1081660839352950785"
+            target="_blank">2019/1/6 6:16:55</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">という私も数学は幼少期で理解不能になったクチなのですが。三角関数やベクトルは必要性が社会人になってわかってあわてて勉強したクチなのですが。すべての仕事において必要だというわけではないのですが。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1081662475416756224"
+            target="_blank">2019/1/6 6:23:25</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">成人になるまでの学習というのは、初期の段階では幅広くいろいろなものを学ぶのがよいのかなあと思う。成人になった時の自分のイメージを明確化できてる人はいるけど、そういうひとは少数派だと思うからね。それぞれの可能性を知る上でも幅広く学ぶことは必要なんじゃないかなと。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1081663243146260480"
+            target="_blank">2019/1/6 6:26:28</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ある学問が苦手かどうかで方向性が見えてくるものもあるし。とはいえ学問も導く人の出来・不出来や性格の一致・不一致など純粋な学問以外のことで苦手意識が芽生えてしまう可能性もあるよなあ。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1081664148876881920"
+            target="_blank">2019/1/6 6:30:04</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">そういう雑音みたいなものを排除して純粋に学問の良さを知ること自体、現代社会では難しいことなのかもしれないなあ。。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1081659103305359362"
+            target="_blank">2019/1/6 6:10:01</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">その通りですね。。 <blockquote class="card card-default"><header><img loading="lazy" src="https://pbs.twimg.com/profile_images/603918430639521792/zZNtUnXN_400x400.png" /><a href="https://twitter.com/tanakh/status/1081387769304240128" target="_blank">Hideyuki Tanakaさんのツイート: "てか数学だけｸｯｿ初歩的なやつを逐一不要だ不要だと攻撃する勢力あるんだけどなんで数学だけ目の敵にされるんだ？数学は敵じゃないよ(´･_･`)"</a></header><div></div></blockquote></p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1081486657008717824"
+            target="_blank">2019/1/5 18:44:46</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">TELEXで一番最初に聴いたのがこの曲なのですが。<br/>「Dance To The Music」<br/><div class="youtube" data-type="yt" id="FS2WjoH2VsI"><div class="yt-title">Youtube - Telex - Dance To The Music (extended version)</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/FS2WjoH2VsI" class="youtube" src="https://i.ytimg.com/vi/FS2WjoH2VsI/hqdefault.jpg" /></div>   <br/><br/><br/>これぞテクノ・ポップというような曲ですわ。8分打ちのベースラインといい。。ハットとシンバルとスネアが生なのかな。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1081487242659475456"
+            target="_blank">2019/1/5 18:47:06</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">で後になってこの曲はSly &amp; The Family Stoneのカバーだということを知るのですが。<br/><div class="youtube" data-type="yt" id="Jn2PNlhvy8E"><div class="yt-title">Youtube - Sly & The Family Stone - Dance To The Music (Audio)</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/Jn2PNlhvy8E" class="youtube" src="https://i.ytimg.com/vi/Jn2PNlhvy8E/hqdefault.jpg" /></div>   <br/><br/><br/>こういう古い曲のテクノ・アレンジしたカバーをTELEXって結構やってるんだよなあ。・</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1081488089845882880"
+            target="_blank">2019/1/5 18:50:28</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">アナログシンセではどうしてもドラムの音が貧弱になってしまう。まああのような複雑なノイズ（複雑なノイズって。。）を作るのって無理があるんだよね。なので初期のYMOなんかもドラムは生なんだよね。高橋ユキヒロさんも確か生ドラムが一番って言ってたしな。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1081488686833754112"
+            target="_blank">2019/1/5 18:52:50</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">だけどその貧弱な音に深めのリバーブとかゲートエコーとかけて厚み（というのかな）を出すテクで頑張ってた方々も一方でいるわけで。KRAFTWERKなどはわざとその貧弱な音を前面に出して特徴的なサウンドとしてた。ような気がする。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1081489227420905473"
+            target="_blank">2019/1/5 18:54:59</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">TELEXはアナログ・シンセのドラムで頑張ってるんだよな。。<br/><br/><div class="youtube" data-type="yt" id="6USa0zUMmqI"><div class="yt-title">Youtube - Telex at Eurovision 1980</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/6USa0zUMmqI" class="youtube" src="https://i.ytimg.com/vi/6USa0zUMmqI/hqdefault.jpg" /></div>   <br/><br/><br/>いい音（いい低域とでもいうのだろうか）してると思うんだよね。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1081489470531108864"
+            target="_blank">2019/1/5 18:55:57</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ああ。「いい音圧」といったほうがいいのかも。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1081490980841213953"
+            target="_blank">2019/1/5 19:01:57</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">YMOの「ソリッド・ステイト・サバイバー」も生ドラム全開なのだが、生ドラム臭さを消すためのエフェクトをあえてかけて音をテクノっぽくしてるところがまたいいのですな。コンプかけたりと、極端なイコライジングとかノイズ・ゲートでリリースをカットしたりとか。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1081491596133097472"
+            target="_blank">2019/1/5 19:04:24</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ただキックだけはかなり近い音がシンセで作れるから、キャスタリアとかビハインド・ザ・マスクはキックがシンセなんですな。これがまた他の曲と毛色が異なる音になってて興味ぶかいのですが。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1081492320023789568"
+            target="_blank">2019/1/5 19:07:16</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">Linnドラムの登場でドラムもまたリアルな音で自動演奏できるようになるわけですが。後期のYMOはいたるところで使いまくってるよね。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1081493084205047808"
+            target="_blank">2019/1/5 19:10:19</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">このBrainwashっていう曲もドラムがいい音してると思うんだよね。。<br/><div class="youtube" data-type="yt" id="RbuVPR65ThA"><div class="yt-title">Youtube - Telex - Brainwash</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/RbuVPR65ThA" class="youtube" src="https://i.ytimg.com/vi/RbuVPR65ThA/hqdefault.jpg" /></div>   <br/><br/><br/>ただこの曲TR909も使ってるんじゃないかと思うんだけど。。特にハイハットやクラップが怪しい。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1081497505488003072"
+            target="_blank">2019/1/5 19:27:53</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ジョルジオ・モロダーの初期ものはキックが生で、スネアがシンセという組み合わせだったりする。面白いなあ。。<br/><div class="youtube" data-type="yt" id="0OU7Hka_--U"><div class="yt-title">Youtube - Giorgio Moroder - From Here To Eternity</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/0OU7Hka_--U" class="youtube" src="https://i.ytimg.com/vi/0OU7Hka_--U/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1081497903414165505"
+            target="_blank">2019/1/5 19:29:28</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">一聴してわかるジョルジオ・モロダーの特徴的な音づくりとアレンジ。。<br/><div class="youtube" data-type="yt" id="Nm-ISatLDG0"><div class="yt-title">Youtube - Donna Summer - I Feel Love [Studio Version]</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/Nm-ISatLDG0" class="youtube" src="https://i.ytimg.com/vi/Nm-ISatLDG0/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1081498650658783233"
+            target="_blank">2019/1/5 19:32:26</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">そのジョルジオ・モロダーものちには生ドラムに戻るのですが。。<br/><br/><div class="youtube" data-type="yt" id="Wf2yuBi4zoc"><div class="yt-title">Youtube - Giorgio Moroder - Baby Blue (1979 Electro Disco) (Remastered).</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/Wf2yuBi4zoc" class="youtube" src="https://i.ytimg.com/vi/Wf2yuBi4zoc/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1081499326868684801"
+            target="_blank">2019/1/5 19:35:07</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">KRAFTWERKの初期のころはドラムの音作りはシンセなんだけど、自作っぽいパッドで生演奏してるんだよね。たしかに初期のアルバムとか聴くとリズムがちょっと揺れてたりしてるんだよな。<br/><blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="https://www.youtube.com/watch?v=UIbSkw4yvec" target="_blank">YouTube</a></header><div>YouTube でお気に入りの動画や音楽を楽しみ、オリジナルのコンテンツをアップロードして友だちや家族、世界中の人たちと共有しましょう。</div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1081500129687793664"
+            target="_blank">2019/1/5 19:38:18</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">KRAFTWERKのドラムの1つの極みに達したと勝手に思ってるアルバムが「Europe Express」だと思ってたりする。<br/><br/><blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="https://www.youtube.com/watch?v=cqGsi9k6ra0" target="_blank">YouTube</a></header><div>YouTube でお気に入りの動画や音楽を楽しみ、オリジナルのコンテンツをアップロードして友だちや家族、世界中の人たちと共有しましょう。</div></blockquote><br/><br/>この音結構いい線いってると思うんだよなあ。キックとスネアの演奏は手動だと思う。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1081500806254227458"
+            target="_blank">2019/1/5 19:41:00</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">そして次のアルバムではスネアがパーカッシブになってたりする。これはアルバムのコンセプトに音色を寄せたんだと思ってるんだよね。<br/><div class="youtube" data-type="yt" id="rbARvOyyjUI"><div class="yt-title">Youtube - Kraftwerk - Neon Lights</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/rbARvOyyjUI" class="youtube" src="https://i.ytimg.com/vi/rbARvOyyjUI/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1081501358673473536"
+            target="_blank">2019/1/5 19:43:11</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">「コンピュータ・ワールド」では「ナンバーズ」という曲でさらにドラムがおかしな音になったりする。当時としては相当えげつない音だと思うんだけどね。。<br/><blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="https://www.youtube.com/watch?v=8QpXI2_YSkw" target="_blank">YouTube</a></header><div>YouTube でお気に入りの動画や音楽を楽しみ、オリジナルのコンテンツをアップロードして友だちや家族、世界中の人たちと共有しましょう。</div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1081502918014951425"
+            target="_blank">2019/1/5 19:49:23</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">Ultravoxも古くからリズムマシンを使ったりしてるよね。リズムマシンな曲も結構ある。<br/><div class="youtube" data-type="yt" id="VUnWqHv8DOU"><div class="yt-title">Youtube - Stranger Within (2008 Remaster)</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/VUnWqHv8DOU" class="youtube" src="https://i.ytimg.com/vi/VUnWqHv8DOU/hqdefault.jpg" /></div>   <br/><br/><br/>この曲のリズムはおそらくYMOの「体操」に多大な影響を与えてると思われる。。<br/><blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="https://www.youtube.com/watch?v=4-XUTTqMs48" target="_blank">YouTube</a></header><div>YouTube でお気に入りの動画や音楽を楽しみ、オリジナルのコンテンツをアップロードして友だちや家族、世界中の人たちと共有しましょう。</div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1081503737007374336"
+            target="_blank">2019/1/5 19:52:38</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">「thin wall」もそうだよな。。<br/><br/><div class="youtube" data-type="yt" id="X2zG7D2DqXs"><div class="yt-title">Youtube - Ultravox. The Thin Wall.</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/X2zG7D2DqXs" class="youtube" src="https://i.ytimg.com/vi/X2zG7D2DqXs/hqdefault.jpg" /></div>   <br/><br/><br/>これもおそらくYMOの「Key」に影響を与えてると思われる。。<br/><br/><blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="https://www.youtube.com/watch?v=kMD7UUMZ0pQ" target="_blank">YouTube</a></header><div>YouTube でお気に入りの動画や音楽を楽しみ、オリジナルのコンテンツをアップロードして友だちや家族、世界中の人たちと共有しましょう。</div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1081504667383676928"
+            target="_blank">2019/1/5 19:56:20</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">UltravoxとYMOの類似性で一番有名なのは「Passionate Reply」だよな。<br/><br/><div class="youtube" data-type="yt" id="D6sVf-Grdws"><div class="yt-title">Youtube - Passionate Reply (2008 Remaster)</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/D6sVf-Grdws" class="youtube" src="https://i.ytimg.com/vi/D6sVf-Grdws/hqdefault.jpg" /></div>   <br/><br/><br/>これは「CUE」にモロに影響を与えている。。<br/><br/><blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="https://www.youtube.com/watch?v=U55HUfjwMKw" target="_blank">YouTube</a></header><div>YouTube でお気に入りの動画や音楽を楽しみ、オリジナルのコンテンツをアップロードして友だちや家族、世界中の人たちと共有しましょう。</div></blockquote><br/><br/>聴き比べると違うんだけどね。。影響を受けたのは当時本人たちも言ってるようだからそうだと思う。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1081506805681778688"
+            target="_blank">2019/1/5 20:04:50</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">Linnが登場するあたりの時代で、シンセ主体のポップ・ミュージックのリズム音がガラッと変わったのはほんとそうだよなあ。Yazooなんかもう全然違うもんな。1枚目と2枚目のリズムの音色が。1枚目は808で、2枚目はドラム・マシン（どこのメーカーかは不明）。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1081506806529060865"
+            target="_blank">2019/1/5 20:04:50</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">これが1枚目の曲「Don't Go」<br/><blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="https://www.youtube.com/watch?v=PPeQGWL7fok" target="_blank">YouTube</a></header><div>YouTube でお気に入りの動画や音楽を楽しみ、オリジナルのコンテンツをアップロードして友だちや家族、世界中の人たちと共有しましょう。</div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1081506807472828416"
+            target="_blank">2019/1/5 20:04:50</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">これが2枚目の曲「Nobody's diary」<br/><blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="https://www.youtube.com/watch?v=aTEZ9xT-6EI&list=PLa3HlKFsnLvbS1muKN_EtdcLcPcfc3RSu" target="_blank">YouTube</a></header><div>YouTube でお気に入りの動画や音楽を楽しみ、オリジナルのコンテンツをアップロードして友だちや家族、世界中の人たちと共有しましょう。</div></blockquote><br/><br/>なぜかこの音を聴いてちょっとがっかりしたりして。。それくらい1枚目のリズムの音がよかったんだよな。私の耳ではですが。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1081509517240619009"
+            target="_blank">2019/1/5 20:15:37</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ヴィンス・クラークがいたころのDepeche Modeもリズム・ボックス全開ですなあ。。<br/><div class="youtube" data-type="yt" id="ZFnEhwmpjXI"><div class="yt-title">Youtube - Depeche Mode - New Life (High Quality 1080p)</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/ZFnEhwmpjXI" class="youtube" src="https://i.ytimg.com/vi/ZFnEhwmpjXI/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1081510562826117122"
+            target="_blank">2019/1/5 20:19:46</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">アナログ・シンセベースのリズム・マシンは消滅するかと思ってたけど、その独特な音色ゆえにいまだに使われることになるとは夢にも思わなかったなあ。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1081511544448372736"
+            target="_blank">2019/1/5 20:23:40</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">現代にまで残ることに関しては、日本のシンセメーカーの果たした役割もまた大きいよな。特にローランドですわ。808と909がなかったらどうなっていたことか。。ああ、909はハイブリッドですが。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1081511984732860416"
+            target="_blank">2019/1/5 20:25:25</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">アナログ・リズムマシン→サンプリング・ドラム→アナログ・リズムマシンの再評価→共存という進み方をしたんだよな。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1081524979252916224"
+            target="_blank">2019/1/5 21:17:03</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ちょっと話を戻すと、坂本龍一さんの初期アルバムもシンセによるリズム音作りにこだわった感じがするんだな。例えば「plastic bamboo」とか。。<br/><blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="https://www.youtube.com/watch?v=imuT6HAWLDY" target="_blank">YouTube</a></header><div>YouTube でお気に入りの動画や音楽を楽しみ、オリジナルのコンテンツをアップロードして友だちや家族、世界中の人たちと共有しましょう。</div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1081525072412606464"
+            target="_blank">2019/1/5 21:17:25</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">このスネアの音ですよ。これ。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1081525861851922432"
+            target="_blank">2019/1/5 21:20:33</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">Riot In Lagosのリズムもすごい音色だと思う。これが初期坂本サウンドで最高のリズムではないだろうか。。<br/><div class="youtube" data-type="yt" id="x1NCb2sOXeg"><div class="yt-title">Youtube - Ryuichi Sakamoto - Riot In Lagos</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/x1NCb2sOXeg" class="youtube" src="https://i.ytimg.com/vi/x1NCb2sOXeg/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1081526167373438976"
+            target="_blank">2019/1/5 21:21:46</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">「War Head」もリズムはシンセですわな。<br/><div class="youtube" data-type="yt" id="t2a-JKiCw0c"><div class="yt-title">Youtube - 坂本龍一 「War Head （ウォーヘッド）」</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/t2a-JKiCw0c" class="youtube" src="https://i.ytimg.com/vi/t2a-JKiCw0c/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1081529251814227979"
+            target="_blank">2019/1/5 21:34:02</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">まあしかしYMOのお三方ですとやっぱり細野さんのリズムマシンのアレンジが最高はないかと。。<br/><br/><div class="youtube" data-type="yt" id="LMb5DFVPzc0"><div class="yt-title">Youtube - YMO - Gradated Grey (1981)</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/LMb5DFVPzc0" class="youtube" src="https://i.ytimg.com/vi/LMb5DFVPzc0/hqdefault.jpg" /></div>   <br/><br/><br/>808の音が生音のように聞こえてくるから不思議だ。生ドラムも入ってるからかもですけど。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1081529252825096193"
+            target="_blank">2019/1/5 21:34:02</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">生音のキックと808のキックのタイミングがぴったり合ってるところがさらに良くて。初期のYMOだとシンセのキックと生ドラムのキックはちょっと頭がずれてたりするよな。東風とかね。<br/><blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="https://www.youtube.com/watch?v=2T7TXVtGGFc" target="_blank">YouTube</a></header><div>YouTube でお気に入りの動画や音楽を楽しみ、オリジナルのコンテンツをアップロードして友だちや家族、世界中の人たちと共有しましょう。</div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1081529791268847616"
+            target="_blank">2019/1/5 21:36:10</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">技術の進歩ですわな。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1081530470494396426"
+            target="_blank">2019/1/5 21:38:52</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">Pure Jamの808のハットもいいよねえ。。なんか生っぽい。。<br/><div class="youtube" data-type="yt" id="STPpnnfJ-GM"><div class="yt-title">Youtube - Pure Jam - YMO</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/STPpnnfJ-GM" class="youtube" src="https://i.ytimg.com/vi/STPpnnfJ-GM/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1081531087581413376"
+            target="_blank">2019/1/5 21:41:19</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">この細野さんの曲のリズムとか当時ちょっととびぬけてた気もするのですよ。。<br/><div class="youtube" data-type="yt" id="EWdo78lckoI"><div class="yt-title">Youtube - Haruomi Hosono - Living Dining Kitchen</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/EWdo78lckoI" class="youtube" src="https://i.ytimg.com/vi/EWdo78lckoI/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1081531330783895553"
+            target="_blank">2019/1/5 21:42:17</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">当時日本のミュージシャンでこんな音作りしている人はたぶんいなかったと思う。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1081532515972608000"
+            target="_blank">2019/1/5 21:47:00</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ハービーハンコックあたりにも通じるところがあるよなあ。。<br/><div class="youtube" data-type="yt" id="GHhD4PD75zY"><div class="yt-title">Youtube - Herbie Hancock - Rockit</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/GHhD4PD75zY" class="youtube" src="https://i.ytimg.com/vi/GHhD4PD75zY/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/877328413157081089/XHcc8iCg_normal.jpg" />
+        <p class="tweet-user-name">アタリショック（ハメコミ合成研究中ｗ@goegoezzz</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/goegoezzz/status/1081307260599451650"
+            target="_blank">2019/1/5 6:51:55</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ソフトベンダーTAKERU 　<br/><br/>ブラザー工業 https://t.co/QrzCGhH07t</p>
+        
+        <video class="tweet-img" controls src="https://video.twimg.com/ext_tw_video/1081307161899130880/pu/vid/240x180/cHzkILsfjX4AOgBC.mp4?tag=6" />
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1081318605612969984"
+            target="_blank">2019/1/5 7:37:00</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">Windows + VC++で遊んでた時はUnicode = wchar_t使うという感じだったよな。確かに。wchar_tは２バイトで、１単位でUnicodeの任意の一文字を表すことができると。でもサロゲート・ペアを知るとそれは無理筋なんだよな。<br/><br/><blockquote class="card card-default"><header><img loading="lazy" src="https://cdn.qiita.com/assets/qiita-fb-2887e7b4aad86fd8c25cea84846f2236.png" /><a href="https://qiita.com/yumetodo/items/54e1a8230dbf513ea85b#%E5%B4%A9%E5%A3%8A%E3%81%97%E3%81%9Fwchar_t%E5%9E%8B" target="_blank">C++標準化委員会、ついに文字とは何かを理解する: char8_t - Qiita</a></header><div></div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1081320757060284416"
+            target="_blank">2019/1/5 7:45:33</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">wchar_t自体UTF-16だと言えるのはWindowsの世界だけなんだなあ。。そもそもwchar_tはエンコードや文字コードが規定されてないということか。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1081321260494147584"
+            target="_blank">2019/1/5 7:47:33</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">UTF-32であっても、結合文字だったっけ？があるからもはや固定長で文字を表すということ自体が幻想であるのですな。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1081323700769574912"
+            target="_blank">2019/1/5 7:57:14</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">そういえばWindowsではTCHARなるマクロがあったよなあ。。Unicodeビルド/マルチバイトビルドを切り替えできるように文字列はすべてこのマクロで指定しておくと。_T("ABCDEF")なんちゅうリテラル用のマクロもあったなあ。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1081324319739760640"
+            target="_blank">2019/1/5 7:59:42</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">C++11には、char16_t/char32_tなる型があるのか。バイト長は決めたけど、相変わらずエンコード方式の規定はないのですな。<br/><br/><blockquote class="card card-default"><header><img loading="lazy" src="https://cdn.qiita.com/assets/qiita-fb-2887e7b4aad86fd8c25cea84846f2236.png" /><a href="https://qiita.com/yumetodo/items/54e1a8230dbf513ea85b#char16_tchar32_t%E5%9E%8B%E3%81%AE%E8%BF%BD%E5%8A%A0" target="_blank">C++標準化委員会、ついに文字とは何かを理解する: char8_t - Qiita</a></header><div></div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1081325472158343168"
+            target="_blank">2019/1/5 8:04:17</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">と思ったらUTF-8だけはエンコードが保証されてるのかいな。。<br/><br/>・UTF-8文字列リテラル<br/><br/>u8"このリテラルはUTF-8でエンコードされることが保証される";<br/><br/><blockquote class="card card-default"><header><img loading="lazy" src="https://cdn.qiita.com/assets/qiita-fb-2887e7b4aad86fd8c25cea84846f2236.png" /><a href="https://qiita.com/yumetodo/items/54e1a8230dbf513ea85b#utf-8%E6%96%87%E5%AD%97%E5%88%97%E3%83%AA%E3%83%86%E3%83%A9%E3%83%AB" target="_blank">C++標準化委員会、ついに文字とは何かを理解する: char8_t - Qiita</a></header><div></div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1081328946925322240"
+            target="_blank">2019/1/5 8:18:05</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">UTF-8文字を表す型であるchar8_tはC++20で採用なのですな。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1081329272856297472"
+            target="_blank">2019/1/5 8:19:23</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">「ワイド文字はなぜいけてないか」がよくわかるなあ。。<br/><br/>・「char8_tによせて」<br/><blockquote class="card card-large"><header><img loading="lazy" src="https://ogimage.blog.st-hatena.com/12704346814673878668/10257846132689255924/1545582886" /><a href="https://naruse.hateblo.jp/entry/2018/12/24/013446" target="_blank">char8_tによせて - なるせにっき</a></header><div>C++標準化委員会、ついに文字とは何かを理解する: char8_tという記事が話題だってので、つらつらと書いてみました。 「グリフ」について グリフ（glyph）という言葉の定義をめぐって でも触れられていますが、「グリフ」という言葉が「字体」を指すのか「字形」を指すのかってのは議論がありますね。文字コードの文脈では普通「字形」の意味だとして話を進めることが多いように思います。 CJK統合漢字について Wikipediaの記事にまとまっていますが、実際に推進していたのは中国みたいですね。うまくやればあんまり問題なかったんでしょうが、あんまりうまく行かなかったんですが、それでも国ごとにその国の過…</div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1081329969769242625"
+            target="_blank">2019/1/5 8:22:09</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">char8_tはUTF-8であることが保証されるから、まあライブラリも作りやすくなるんだろうな。文字列を長さを求めるやつとかね。。長さ＝コードポイント数であってほしいからね。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1081332019794079744"
+            target="_blank">2019/1/5 8:30:18</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">Unicodeの複雑さの１つに合成済み文字というのがあってですな。<br/><blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="https://ja.wikipedia.org/wiki/%E5%90%88%E6%88%90%E6%B8%88%E3%81%BF%E6%96%87%E5%AD%97" target="_blank">合成済み文字 - Wikipedia</a></header><div></div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1081335076774805504"
+            target="_blank">2019/1/5 8:42:27</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">これに対して結合文字ちゅうのもあってですな。。<br/><blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="https://ja.wikipedia.org/wiki/%E7%B5%90%E5%90%88%E6%96%87%E5%AD%97" target="_blank">結合文字 - Wikipedia</a></header><div></div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1081336729305370624"
+            target="_blank">2019/1/5 8:49:01</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">例えば「ぱ」という文字はUnicodeでは2通りあるんですな<br/><br/>結合文字を使う：「は」＋「゜」...  "\u306F\u309A"<br/>合成済み文字を使う：「ぱ」 ... "\u3071"<br/><br/>実際に実行してみるとこんな感じ。。<br/><blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="https://wandbox.org/permlink/gdlVR71EJQITsmA8" target="_blank">[Wandbox]三へ( へ՞ਊ ՞)へ ﾊｯﾊｯ</a></header><div>Wandbox is Online Compiler</div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1081337283972784128"
+            target="_blank">2019/1/5 8:51:13</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">なので同じ文字だけど比較すると偽と出る場合があるので、比較する場合は正規化を行わないといけないんだよなあ。。<br/><blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="https://ja.wikipedia.org/wiki/Unicode%E6%AD%A3%E8%A6%8F%E5%8C%96" target="_blank">Unicode正規化 - Wikipedia</a></header><div></div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1081337915525844992"
+            target="_blank">2019/1/5 8:53:44</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">でこの正規化にはUnicodeで定められた形式（NFD/NFC/NFKD/NFKC）があるんだよな。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1081338438480146433"
+            target="_blank">2019/1/5 8:55:48</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">もうUnicodeに触れるのはやめておこう。。肩凝ってきたわ。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1081339883900157952"
+            target="_blank">2019/1/5 9:01:33</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ああ、正準等価と互換等価ちゅうのもあるんだよなあ。。等価性だけとってみても面倒なんですわ。。<br/><a href="http://tech.albert2005.co.jp/501/" target="_blank">tech.albert2005.co.jp/501/</a></p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1080967306333700097"
+            target="_blank">2019/1/4 8:21:03</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">@syntaxerrors72 よろしくお願いいたします。<br/>ゲイラカイトはまだ現役なのですね！しかし思い返すと勉強はほぼせず、外で遊びまくった小学生時代だったような気がします。。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1080945750605889536"
+            target="_blank">2019/1/4 6:55:24</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">小学生のころこれ買ってもらってほぼ毎日遊んでたな。。冬の遊びの定番でしたわ。。 <blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="https://twitter.com/Showa__Shojo/status/1080790793139281920" target="_blank">Twitter / アカウント凍結</a></header><div>ニュース速報、エンタメ情報、スポーツ、政治まで、リアルタイムでフォローできます。</div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1080946730466570241"
+            target="_blank">2019/1/4 6:59:18</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">これ用のタコ糸ってのがあった。ナイロンかなんかでできてて、それ以前の凧用とは明らかに違うしろもので、それ自体珍しかった。これを２-３本繋いで上げたりしたんだな。でまあ途中で切れたりするんだけど回収が大変だった。電柱にこれがよく引っかかってたりもしたよな。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1080947744917794816"
+            target="_blank">2019/1/4 7:03:20</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">そのタコ糸ってのが棒にきれいに巻かれていて、幾何学模様のような感じなんだけど、飛ばすとそれが紐解かれていく様を見てちょっと感動したりとか。凧もそうだけど紐に興味をそそられるという。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1080948275027468289"
+            target="_blank">2019/1/4 7:05:26</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">風が弱くても上がるんだけど、逆に風が強いとちょっとコントロールが難しいし、落ちるときの衝撃が強くて道路に激突して壊れたりもした記憶もあるなあ。何回か買いなおしたような記憶も。。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/917625215043194880/DB-47z5l_normal.jpg" />
+        <p class="tweet-user-name">WebAssemblyWeekly@WasmWeekly</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/WasmWeekly/status/1080839619602714625"
+            target="_blank">2019/1/3 23:53:40</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">Doom 3 running in the browser using Emscripten / WebAssembly <a href="http://continuation-labs.com/d3wasm/" target="_blank">continuation-labs.com/d3wasm/</a> https://t.co/1HtX6OgJ2w</p>
+        
+        <img loading="lazy" class="tweet-img" src="https://pbs.twimg.com/media/Dv_p3klWkAAn4Gq.jpg" />
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1080661190647246848"
+            target="_blank">2019/1/3 12:04:40</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">1/1-2は熱海・伊豆にいた。<br/>これは1/2の日の出。。 https://t.co/OfUwtbPqTg</p>
+        
+        <img loading="lazy" class="tweet-img" src="https://pbs.twimg.com/media/Dv9Hke8UcAEwvnt.jpg" />
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1080662578794180609"
+            target="_blank">2019/1/3 12:10:11</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">大室山はちょっとすごかったんだよなあ。これは下からとったんだけど、すり鉢を伏せたような形をしててね。。山焼きをしてるから木が生えてないんだよな。なので山の形がはっきりわかるんだよね。。 https://t.co/uM8F6QL7uF</p>
+        
+        <img loading="lazy" class="tweet-img" src="https://pbs.twimg.com/media/Dv9ISwEUYAIojth.jpg" />
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1080663524093747200"
+            target="_blank">2019/1/3 12:13:56</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">頂上まではリフトで登るんだけど、周りに高い山がないので見晴らしが最高に良い。 https://t.co/kos55ECnSQ</p>
+        
+        <img loading="lazy" class="tweet-img" src="https://pbs.twimg.com/media/Dv9JuTAV4AAmmy9.jpg" />
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1080664261737631744"
+            target="_blank">2019/1/3 12:16:52</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">火口の周りをぐるっと１周できる。周囲は1キロくらいあるみたい。 https://t.co/BhEJZGEVQ8</p>
+        
+        <img loading="lazy" class="tweet-img" src="https://pbs.twimg.com/media/Dv9KMUIV4AE9Bcs.jpg" />
+        
+        <img loading="lazy" class="tweet-img" src="https://pbs.twimg.com/media/Dv9KaLOUYAAm8Go.jpg" />
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1080664844158754816"
+            target="_blank">2019/1/3 12:19:11</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">遠くから見るとこんな形をしてるらしいね。。この写真はWikipediaのものですが。。<br/><blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="https://upload.wikimedia.org/wikipedia/commons/9/94/Mount_Omuro_%28Izu_Peninsula%29_20100426_%28B%29.jpg" target="_blank">Mount_Omuro_(Izu_Peninsula)_20100426_(B).jpg (1024×768)</a></header><div></div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1080665331020877824"
+            target="_blank">2019/1/3 12:21:07</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">これは元旦の初日の「入り」でございます。。それでは今年もよろしくお願いします。。 https://t.co/gGE9O6ZMDR</p>
+        
+        <img loading="lazy" class="tweet-img" src="https://pbs.twimg.com/media/Dv9LYbOUYAAa8RL.jpg" />
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1080666183567736835"
+            target="_blank">2019/1/3 12:24:30</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">しかし謎なのは大室山の火口にあるアーチェリー場なんだよな。。どういういきさつであそこでアーチェリーをすることになったのか。。 https://t.co/EOU8tlXUAm</p>
+        
+        <img loading="lazy" class="tweet-img" src="https://pbs.twimg.com/media/Dv9MFWKUUAA-KNF.jpg" />
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1080657857647849472"
+            target="_blank">2019/1/3 11:51:25</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">何故か風船が！！！！と思って調べたら、誕生日だと風船が飛ぶらしい。。 https://t.co/OmXFNqxuUq</p>
+        
+        <img loading="lazy" class="tweet-img" src="https://pbs.twimg.com/media/Dv9EldxVsAA6t1k.jpg" />
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1080647443241263105"
+            target="_blank">2019/1/3 11:10:02</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">今年こそオレオレ言語が完成するだろうか。。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1078975527371689985"
+            target="_blank">2018/12/29 20:26:26</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">このベースの音とベースラインですわなあ。。ハウス。。<br/><div class="youtube" data-type="yt" id="3tQDiSbhV0s"><div class="yt-title">Youtube - Adeva, Respect - 1989</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/3tQDiSbhV0s" class="youtube" src="https://i.ytimg.com/vi/3tQDiSbhV0s/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1078975913511940096"
+            target="_blank">2018/12/29 20:27:58</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ベースメント・ボーイズが絡んだやつも好んで聴きましたわ。このバスドラとベースが特徴的ですわな。。<br/><div class="youtube" data-type="yt" id="_KztNIg4cvE"><div class="yt-title">Youtube - Crystal Waters - Gypsy Woman (She's Homeless) [Official Video]</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/_KztNIg4cvE" class="youtube" src="https://i.ytimg.com/vi/_KztNIg4cvE/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1078765280057118720"
+            target="_blank">2018/12/29 6:30:59</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">Observableというサービスがなかなか興味深い。。<br/><blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="https://beta.observablehq.com/" target="_blank">The magic notebook for exploring data / Observable</a></header><div>Discover insights faster and collaborate seamlessly with interactive Observable notebooks built for data analysis, visualization, and exploration.</div></blockquote></p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1077894115331694593"
+            target="_blank">2018/12/26 20:49:18</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">まじか。。この時代にカセットテープでソフトウェアの新製品が販売されるとは。。 <blockquote class="card card-default"><header><img loading="lazy" src="https://pbs.twimg.com/media/DvVUz_mUwAEECml.jpg:large" /><a href="https://twitter.com/BEEP_SHOP/status/1077860946503028736" target="_blank">BEEPさんのツイート: "第1回BEEPレトロホビーゲームプログラムコンテストの8ビット部門金賞作品が遂に販売開始です〜！P6ユーザーの方は要チェックですね。作品はこちらでご紹介しておりますhttps://t.co/FhywtahHjY… "</a></header><div></div></blockquote></p>
+        
+      </section>
+      
+    </article>
+    
+  </div>
+  <footer>
+    CopyLight 2019 Satoshi Fujiwara
+  </footer>
+  <script async src="https://platform.twitter.com/widgets.js"></script>
+
+  <script async src="./index.js"></script>
+
+</body>
+
+</html>

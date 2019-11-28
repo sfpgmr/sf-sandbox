@@ -58,6 +58,10 @@
       color: white;
     }
 
+    #sentinel {
+      width:0px;
+      height:0px;
+    }
     .contents {
       width: 100%;
       position: relative;
@@ -271,7 +275,8 @@
                   // const image = (meta.twitter && meta.twitter.image)  
                   //   || (meta.json_lds && ((meta.json_lds[0].image instanceof Array) ? meta.json_lds[0].image[0] : meta.json_lds[0].image));
                   // const desc = meta.description || (meta.twitter && meta.twitter.description) || (meta.json_lds && meta.json_lds[0].description);
-                  const desc = meta.description || '';
+                  const desc = meta.description || (meta.og && meta.og.description) || '';
+                  console.log(desc);
                   let img = (meta.twitter && meta.twitter.image && (meta.twitter.image.src || meta.twitter.image)) || (meta.og && meta.og.image);
                   img = img ? `<img loading="lazy" src="${img}" />`:'<div class="no-image" >No Image</div>';  
                   

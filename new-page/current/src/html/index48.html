@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="ja" prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb# article: http://ogp.me/ns/article#">
+
+<head>
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-15457703-9"></script>
+  <script>
+    if (!location.hostname.match(/localhost/)) {
+      window.dataLayer = window.dataLayer || [];
+      function gtag() { dataLayer.push(arguments); }
+      gtag('js', new Date());
+      gtag('config', 'UA-15457703-9');
+    }
+  </script>
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>トップページをリニューアルする</title>
+  <meta name="description" content="リニューアル用のトップページデザインを考えて実装する" />
+  <meta name="keywords" content="Programming,Music,HTML5,WebGL,javascript,WebAudio" /> 	
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <meta itemprop="image" content="https://www.sfpgmr.net/img/sfweb.png" />
+  <meta itemprop="name" content="S.F. Web" />
+  
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:site" content="S.F. Web" />
+  <meta name="twitter:url" content="./index48.html" />
+  <meta name="twitter:title" content="リニューアル用のトップページデザイン" />
+  <meta name="twitter:description" content="リニューアル用のトップページデザインを考えて実装する" />
+  <meta name="twitter:image" content="https://www.sfpgmr.net/img/sfweb.png" />
+  
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="./index48.html" />
+  <meta property="og:title" content="リニューアル用のトップページデザイン"/>
+  <meta property="og:site_name" content="S.F. Web" />
+  <meta property="og:description" content="Programming,Music,HTML5,WebGL,javascript,WebAudio">
+  <meta property="og:image" content="https://www.sfpgmr.net/img/sfweb.png">
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    html {
+      margin: 0;
+      padding: 0;
+      font-size:10px;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      background: black;
+      color: white;
+    }
+
+    #sentinel {
+      width:0px;
+      height:0px;
+    }
+    .contents {
+      width: 100%;
+      position: relative;
+      content: strict;
+    }
+
+    @keyframes blinking {
+      0% {
+        color: black;
+      }
+
+      50% {
+        color: white;
+      }
+
+      100% {
+        color: black;
+      }
+    }
+
+    .loading {
+      font-family: monospace;
+      font-size: 24px;
+      position: fixed;
+      width: 100vw;
+      height: 100vh;
+      text-align: center;
+      padding-top: 50vh;
+      z-index: 32768;
+      background: black;
+      animation: blinking 2s infinite;
+      content: strict;
+    }
+
+
+    .contents>article {
+      background: #f0f0f0;
+      color: #202020;
+      position: absolute;
+      max-height: 960px;
+      overflow: auto;
+      border-radius: 3px;
+    }
+
+    .tweet-header {
+      display: grid;
+      align-items: end;
+      grid-template-columns: 40px 2fr 1fr;
+      grid-template-rows: 1fr;
+      font-size: 12px;
+      font-weight: bold;
+    }
+
+
+    .tweet-img {
+      width: 100%;
+      object-fit: cover;
+    }
+
+    .youtube {
+      position: relative;
+      cursor: pointer;
+    }
+
+    .youtube > img {
+      width: 100%;
+      object-fit: cover;
+    }
+
+    .youtube > svg.player-play {
+      width:64px;
+      height:64px;
+      left:calc(50% - 32px);
+      top:calc(50% - 32px);
+      position:absolute;
+      z-index: 1000;
+      opacity: 0.5;
+    }
+    
+    .youtube:hover > svg.player-play {
+      opacity: 1.0;
+    }
+
+    .youtube:hover .player-play-1 {
+      stroke:#80808080;
+    }
+
+    
+    .youtube > div.yt-title {
+      /*text-shadow: #fff 1px 1px 0;*/
+      font-size: 1.2rem;
+      color:white;
+      background:rgba(0, 0,0,0.5);
+      position:absolute;
+      left:0;
+      top:0;
+      overflow: auto;
+      z-index:998;
+    }
+
+
+    .tweet-profile-img {
+      grid-column: 1/2;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+    }
+
+    .tweet-user-name {
+      grid-column: 2/3;
+    }
+
+    .tweet-date {
+      font-size: 8px;
+      text-align: right;
+      grid-column: 3/4;
+    }
+
+    .contents>twitter-widget {
+      overflow: auto;
+      max-height: 960px;
+      position: absolute;
+    }
+
+    .contents>article>section>.tweet-text {
+      display: block;
+      padding: 4px;
+      word-break: break-all;
+      font-size: 12px;
+    }
+
+    .contents>article>h3 {
+      font-size: 12px;
+    }
+
+    blockquote.card {
+      margin:4px;
+      padding:4px;
+      font-size:12px;
+      background:white;
+      border-radius: 4px;
+    }
+
+    blockquote.card > header {
+      display:grid;
+      grid-gap:4px;
+      gap:4px;
+    }
+
+    blockquote.card-default > header {
+      grid-template-columns:64px 1fr;
+    }
+
+    blockquote.card-large > header {
+      grid-template-columns:1fr;
+    }
+
+    blockquote.card > header > img {
+      width:100%;
+    }
+
+
+    div.no-image {
+      display: block;
+      width:64px;
+      height:64px;
+      background:gray;
+      color:white;
+      text-align: center;
+      line-height: 64px;
+    }
+
+  </style>
+</head>
+
+<body>
+  <div class="loading" id="loading">Loading</div>
+  <header class="top-nav">
+    <h1>S.F. Info.</h1>
+  </header>
+  <div class="contents" id="contents" rendersubtree="invisible skip-activation"> 
+    
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1094548086938955776"
+            target="_blank">2019/2/10 19:46:14</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">確かにこれは言える。カセット側にカスタムチップが入ってたことを割り引いてもね。。 <blockquote class="card card-default"><header><img loading="lazy" src="https://pbs.twimg.com/profile_images/1549995796/110919-210443_400x400.JPG" /><a href="https://twitter.com/kmoroboshi/status/1094513629414645761" target="_blank">Kei Moroboshi(諸星圭)さんのツイート: "ある程度ファミコンっていうハードウエアを理解した段階でグラディウスIIみると頭おかしいと思うわ。私的究極トンチレベルだわさ"</a></header><div>“ある程度ファミコンっていうハードウエアを理解した段階でグラディウスIIみると頭おかしいと思うわ。私的究極トンチレベルだわさ”</div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1094554942734458880"
+            target="_blank">2019/2/10 20:13:28</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">あれだけのキャラ動かして、その上サンプリングドラム鳴ってるので、当時「ファミコンハードでこんなことできるなんてちょっとおかしい。」と思ったな。。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/1050411381369929728/BtqZX2ZX_normal.jpg" />
+        <p class="tweet-user-name">特殊映画研究室@クリマ・セントレア11/30〜12/1 M-541@tokuken20091</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/tokuken20091/status/1094212821686968323"
+            target="_blank">2019/2/9 21:34:00</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ビル破壊シーンのメイキングです。ビルの裏側にはガレキが積まれていて、破壊した時に飛び散って効果を上げてくれました！やり直しの効かない一発勝負の撮影だったので、撮影終了後はほっと一息…<br/><br/>#特殊映画研究室<br/>#HADZILLAvsKINGDEATHRA https://t.co/RVLpjxulmT</p>
+        
+        <img loading="lazy" class="tweet-img" src="https://pbs.twimg.com/media/Dy9sfx0VAAAYt5T.jpg" />
+        
+        <img loading="lazy" class="tweet-img" src="https://pbs.twimg.com/media/Dy9sjeWV4AAWrGb.jpg" />
+        
+        <img loading="lazy" class="tweet-img" src="https://pbs.twimg.com/media/Dy9snmsU0AAPWpY.jpg" />
+        
+        <img loading="lazy" class="tweet-img" src="https://pbs.twimg.com/media/Dy9ssBzVAAEvFsO.jpg" />
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1094553273028079617"
+            target="_blank">2019/2/10 20:06:50</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">阪堺線が。。あべのかな。。 <blockquote class="card card-default"><header><img loading="lazy" src="https://pbs.twimg.com/ext_tw_video_thumb/1093862376909156358/pu/img/lutQ9BdCL45C8LDx.jpg" /><a href="https://twitter.com/tokuken20091/status/1093863154113699841" target="_blank">特殊映画研究室@クリマ・セントレア11/30〜12/1 M-541さんのツイート: "ハジラvsキングデスラよりビル破壊のカットです。 ビルは石膏製でフラッシュはビルの破壊と同じタイミングでカメラのストロボを焚いたものです。 #特殊映画研究室 #HADZILLAvsKINGDEATHRA… "</a></header><div>“ハジラvsキングデスラよりビル破壊のカットです。<br/>ビルは石膏製でフラッシュはビルの破壊と同じタイミングでカメラのストロボを焚いたものです。<br/>#特殊映画研究室<br/>#HADZILLAvsKINGDEATHRA https://t.co/pzWgRUxYAK”</div></blockquote></p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/1191705344818335749/4_UDObui_normal.jpg" />
+        <p class="tweet-user-name">upusen@upusen</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/upusen/status/1094046334124883968"
+            target="_blank">2019/2/9 10:32:27</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">各地で雪が降ってるそうなので、セクシーなビルゲイツ貼っておきます https://t.co/nUl35pGcgJ</p>
+        
+        <img loading="lazy" class="tweet-img" src="https://pbs.twimg.com/media/Dy7VV02VYAAgxBb.jpg" />
+        
+        <img loading="lazy" class="tweet-img" src="https://pbs.twimg.com/media/Dy7VV03UUAA3_d-.jpg" />
+        
+        <img loading="lazy" class="tweet-img" src="https://pbs.twimg.com/media/Dy7VV05UcAA-9fm.jpg" />
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1094540256710254593"
+            target="_blank">2019/2/10 19:15:07</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">「カッ」て鳴るバスドラの処理が当時珍しい感じがしたんだな。。それとこのベースのフレーズ。それとまあ日本人でこんな本格的なラップ・ミュージックやってたのってこれくらいしかなかったと思う。。<br/><br/><div class="youtube" data-type="yt" id="FTNRMngrDS0"><div class="yt-title">Youtube - Friends of Earth - Dance Hall</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/FTNRMngrDS0" class="youtube" src="https://i.ytimg.com/vi/FTNRMngrDS0/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1094541132799733760"
+            target="_blank">2019/2/10 19:18:36</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">さかのぼると細野さんはこの「ラップ現象」という曲を作ったところからすると1980年ころにはラップも聴いてたのかなと思うんだけど。でもストレートないかにも「ラップ」らしいアレンジではまるでないわな。。<br/><br/><div class="youtube" data-type="yt" id="MHZ1GWEoiP0"><div class="yt-title">Youtube - Rap Phenomena - Yellow Magic Orchestra</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/MHZ1GWEoiP0" class="youtube" src="https://i.ytimg.com/vi/MHZ1GWEoiP0/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1094542522905292800"
+            target="_blank">2019/2/10 19:24:07</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">BGMでどれが一番好きかというと「BALLET」。生のバスドラと808のバスドラのミックスした音。大音量でヘッドフォンで聴くとよくわかりますわ。「ズーン」って耳に圧迫するところがなんともいえずよい。それとコードのシンセの音色も変な音なんだよなあ。。<br/><br/><div class="youtube" data-type="yt" id="IwHmOuAMJi4"><div class="yt-title">Youtube - YMO - Ballet HD</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/IwHmOuAMJi4" class="youtube" src="https://i.ytimg.com/vi/IwHmOuAMJi4/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1094543451046129665"
+            target="_blank">2019/2/10 19:27:49</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">スネアの音の処理も変わってるわ。試行錯誤のたまものかもしれんけど。いわゆるゲートリバーブっちゅうのではないですわな。。もちろんこのアルバムの他の曲ではもろにそういう音も入ってるんだけど。なんかフェイザーかけてるような音だよなあ。ノイズの質が違うというかなんというか。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1094543847336534016"
+            target="_blank">2019/2/10 19:29:23</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ベースのシーケンス・パターンもなんか凝った感じなんだよなあ。この曲。。いやあ。何度聴いてもいい曲だ。。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1094537497256681472"
+            target="_blank">2019/2/10 19:04:09</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">⚡️ "YMO RYDEENをカバーする"<br/><br/><blockquote class="card card-default"><header><img loading="lazy" src="[object Object]" /><a href="https://twitter.com/i/moments/1094535687775252481" target="_blank">YMO RYDEENをカバーする</a></header><div>YMOのカバー曲作成に関するツィートをまとめたものでございます。</div></blockquote></p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1094493457941295104"
+            target="_blank">2019/2/10 16:09:09</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">tmuxも使うと便利だなあ。どんどん分割してしまう。。 https://t.co/NwEaToFXpT</p>
+        
+        <img loading="lazy" class="tweet-img" src="https://pbs.twimg.com/media/DzBr_iCUUAAmoVf.jpg" />
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1094470576830242817"
+            target="_blank">2019/2/10 14:38:14</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">こういう制度のある会社が日本にもあるんだな。。すごいな。。 <blockquote class="card card-default"><header><img loading="lazy" src="https://pbs.twimg.com/profile_images/415663191658467328/S6Nr1RSi_400x400.jpeg" /><a href="https://twitter.com/koizuka/status/1094453633570156549" target="_blank">KOIZUKA, Akihikoさんのツイート: "うちもマネジメントに向かわずに給与グレードが上がる制度があって、私もそれでやってる… "</a></header><div>“うちもマネジメントに向かわずに給与グレードが上がる制度があって、私もそれでやってる https://t.co/Cb121vyF1X”</div></blockquote></p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1094423505557286913"
+            target="_blank">2019/2/10 11:31:11</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">⚡️ "node/expressでpushで受け取るデータが大きい場合の対応"<br/><br/><blockquote class="card card-default"><header><img loading="lazy" src="[object Object]" /><a href="https://twitter.com/i/moments/1094421344341581824" target="_blank">node/expressでpushで受け取るデータが大きい場合の対応</a></header><div>結論：4.16バージョンでは app.use(express.json({limit:'10mb'})); する。 </div></blockquote></p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1094379857545375744"
+            target="_blank">2019/2/10 8:37:45</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">⚡️ "11.x以降のバージョンでspdyモジュールが対応してない件"<br/><br/><blockquote class="card card-default"><header><img loading="lazy" src="[object Object]" /><a href="https://twitter.com/i/moments/1094377903851106304" target="_blank">node 11.x以降のバージョンでspdyモジュールが対応してない件</a></header><div>node 11.x以降のバージョンでspdyモジュールが対応してない件。結論からいうと、LTSバージョンに落とすことでこの問題を回避した。。</div></blockquote></p>
+        
+      </section>
+      
+    </article>
+    
+  </div>
+  <footer>
+    CopyLight 2019 Satoshi Fujiwara
+  </footer>
+  <script async src="https://platform.twitter.com/widgets.js"></script>
+
+  <script async src="./index.js"></script>
+
+</body>
+
+</html>

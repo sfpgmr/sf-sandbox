@@ -53,13 +53,16 @@ const youtube = {
                 return (o instanceof Object && !(o instanceof Array)) ? true : false;
               }
               // meta description
-              let description = document.querySelector('meta[name = "description"]') ||  document.querySelector('meta[name = "Description"]')  || undefined;
+              let description = document.querySelector('meta[name = "description"]') || document.querySelector('meta[name = "Description"]');
+              description = description ? description.textContent : undefined;
 
               // meta keywords
-              let keywords = document.querySelector('meta[name="keywords"]') || document.querySelector('meta[name="Keywords"]')  || undefined;
+              let keywords = document.querySelector('meta[name="keywords"]') || document.querySelector('meta[name="Keywords"]');
+              keywords = keywords ? keywords.textContent : undefined;
 
               // meta author
               let author = document.querySelector('meta[name="author"]') || document.querySelector('meta[name="Author"]') || undefined;
+              author = author ? author.textContent : undefined;
 
 
               let twitterMeta = document.querySelectorAll('meta[name ^= "twitter:"]'),twitter;
@@ -133,7 +136,7 @@ const youtube = {
               }
   
               } else {
-                ogps = undefined;
+                og = undefined;
               }
 
               // json-ld
@@ -150,7 +153,7 @@ const youtube = {
                   }
                 }
               } else {
-                json_ld_tags = undefined;
+                json_lds = undefined;
               }
 
               // icon image
@@ -198,8 +201,9 @@ const youtube = {
               }
               return  {
                 title:document.title ? document.title : undefined,
-                description:description ? description : undefined,
-                keywords:keywords ? keywords : undefined,
+                description:description,
+                keywords:keywords,
+                author:author,
                 twitter:twitter,
                 og:og,
                 json_lds:json_lds,

@@ -65,7 +65,7 @@ import ejs from 'ejs';
 
   let page = 0;
   while (tweets.length > 0){
-    const tweetFragments = tweets.splice(0,25);
+    const tweetFragments = tweets.splice(0,10);
     const fname = `index${!page?'':page}.html`;
     const url = "./" + fname;
     const html = await ejs.renderFile('./current/src/ejs/index.ejs', 
