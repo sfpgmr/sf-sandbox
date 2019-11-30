@@ -58,11 +58,21 @@
       color: white;
     }
 
+    .top-nav {
+      position:fixed;
+      z-index:99999;
+      background: rgba(0,0,0,0.5);
+      display: block;
+      width:100%;
+      height:32px;
+      color:white;
+    }
     #sentinel {
       width:0px;
       height:0px;
     }
     .contents {
+      padding-top:32px;
       width: 100%;
       position: relative;
       content: strict;
@@ -97,13 +107,15 @@
     }
 
 
-    .contents>article {
+    .contents > article {
       background: #f0f0f0;
       color: #202020;
       position: absolute;
       max-height: 960px;
       overflow: auto;
       border-radius: 3px;
+      transition: opacity 1s linear;
+      opacity: 0.0;
     }
 
     .tweet-header {
