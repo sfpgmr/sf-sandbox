@@ -126,17 +126,6 @@ async function fetchArticles(){
 
 let cacheArticles = fetchArticles();
 
-function ObserverTest(){
-  const resizeObserver = new ResizeObserver(entries => {
-    for (let entry of entries) {
-      console.log(entry.contentRect);
-    }
-  });
-  resizeObserver.observe(document.querySelector('#contents'));
-}
-// 後ほど、監視を中止
-//observer.disconnect();
-
 window.addEventListener('load', () => {
   const tag = document.createElement('script');
   tag.src = "//www.youtube.com/iframe_api";
@@ -189,7 +178,6 @@ window.addEventListener('load', () => {
   sentinel.id = 'sentinel';
   document.body.append(sentinel);
   observer.observe(sentinel);
-  ObserverTest();
   //masonry.layout();
   //twttr.events.bind('rendered',masonry.layout.bind(masonry));
 

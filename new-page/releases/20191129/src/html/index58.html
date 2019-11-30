@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="ja" prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb# article: http://ogp.me/ns/article#">
+
+<head>
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-15457703-9"></script>
+  <script>
+    if (!location.hostname.match(/localhost/)) {
+      window.dataLayer = window.dataLayer || [];
+      function gtag() { dataLayer.push(arguments); }
+      gtag('js', new Date());
+      gtag('config', 'UA-15457703-9');
+    }
+  </script>
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>トップページをリニューアルする</title>
+  <meta name="description" content="リニューアル用のトップページデザインを考えて実装する" />
+  <meta name="keywords" content="Programming,Music,HTML5,WebGL,javascript,WebAudio" /> 	
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <meta itemprop="image" content="https://www.sfpgmr.net/img/sfweb.png" />
+  <meta itemprop="name" content="S.F. Web" />
+  
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:site" content="S.F. Web" />
+  <meta name="twitter:url" content="./index58.html" />
+  <meta name="twitter:title" content="リニューアル用のトップページデザイン" />
+  <meta name="twitter:description" content="リニューアル用のトップページデザインを考えて実装する" />
+  <meta name="twitter:image" content="https://www.sfpgmr.net/img/sfweb.png" />
+  
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="./index58.html" />
+  <meta property="og:title" content="リニューアル用のトップページデザイン"/>
+  <meta property="og:site_name" content="S.F. Web" />
+  <meta property="og:description" content="Programming,Music,HTML5,WebGL,javascript,WebAudio">
+  <meta property="og:image" content="https://www.sfpgmr.net/img/sfweb.png">
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    html {
+      margin: 0;
+      padding: 0;
+      font-size:10px;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      background: black;
+      color: white;
+    }
+
+    #sentinel {
+      width:0px;
+      height:0px;
+    }
+    .contents {
+      width: 100%;
+      position: relative;
+      content: strict;
+    }
+
+    @keyframes blinking {
+      0% {
+        color: black;
+      }
+
+      50% {
+        color: white;
+      }
+
+      100% {
+        color: black;
+      }
+    }
+
+    .loading {
+      font-family: monospace;
+      font-size: 24px;
+      position: fixed;
+      width: 100vw;
+      height: 100vh;
+      text-align: center;
+      padding-top: 50vh;
+      z-index: 32768;
+      background: black;
+      animation: blinking 2s infinite;
+      content: strict;
+    }
+
+
+    .contents>article {
+      background: #f0f0f0;
+      color: #202020;
+      position: absolute;
+      max-height: 960px;
+      overflow: auto;
+      border-radius: 3px;
+    }
+
+    .tweet-header {
+      display: grid;
+      align-items: end;
+      grid-template-columns: 40px 2fr 1fr;
+      grid-template-rows: 1fr;
+      font-size: 12px;
+      font-weight: bold;
+    }
+
+
+    .tweet-img {
+      width: 100%;
+      object-fit: cover;
+    }
+
+    .youtube {
+      position: relative;
+      cursor: pointer;
+    }
+
+    .youtube > img {
+      width: 100%;
+      object-fit: cover;
+    }
+
+    .youtube > svg.player-play {
+      width:64px;
+      height:64px;
+      left:calc(50% - 32px);
+      top:calc(50% - 32px);
+      position:absolute;
+      z-index: 1000;
+      opacity: 0.5;
+    }
+    
+    .youtube:hover > svg.player-play {
+      opacity: 1.0;
+    }
+
+    .youtube:hover .player-play-1 {
+      stroke:#80808080;
+    }
+
+    
+    .youtube > div.yt-title {
+      /*text-shadow: #fff 1px 1px 0;*/
+      font-size: 1.2rem;
+      color:white;
+      background:rgba(0, 0,0,0.5);
+      position:absolute;
+      left:0;
+      top:0;
+      overflow: auto;
+      z-index:998;
+    }
+
+
+    .tweet-profile-img {
+      grid-column: 1/2;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+    }
+
+    .tweet-user-name {
+      grid-column: 2/3;
+    }
+
+    .tweet-date {
+      font-size: 8px;
+      text-align: right;
+      grid-column: 3/4;
+    }
+
+    .contents>twitter-widget {
+      overflow: auto;
+      max-height: 960px;
+      position: absolute;
+    }
+
+    .contents>article>section>.tweet-text {
+      display: block;
+      padding: 4px;
+      word-break: break-all;
+      font-size: 12px;
+    }
+
+    .contents>article>h3 {
+      font-size: 12px;
+    }
+
+    blockquote.card {
+      margin:4px;
+      padding:4px;
+      font-size:12px;
+      background:white;
+      border-radius: 4px;
+    }
+
+    blockquote.card > header {
+      display:grid;
+      grid-gap:4px;
+      gap:4px;
+    }
+
+    blockquote.card-default > header {
+      grid-template-columns:64px 1fr;
+    }
+
+    blockquote.card-large > header {
+      grid-template-columns:1fr;
+    }
+
+    blockquote.card > header > img {
+      width:100%;
+    }
+
+
+    div.no-image {
+      display: block;
+      width:64px;
+      height:64px;
+      background:gray;
+      color:white;
+      text-align: center;
+      line-height: 64px;
+    }
+
+  </style>
+</head>
+
+<body>
+  <div class="loading" id="loading">Loading</div>
+  <header class="top-nav">
+    <h1>S.F. Info.</h1>
+  </header>
+  <div class="contents" id="contents" rendersubtree="invisible skip-activation"> 
+    
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/960092455486996480/cRvvhRUO_normal.jpg" />
+        <p class="tweet-user-name">herumi@herumi</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/herumi/status/1073559495458996224"
+            target="_blank">2018/12/14 21:45:04</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">C++(clang)でWASMライブラリ開発してるけど、メモリ管理自前、多倍長演算自前、例外なし、stringなし、vectorなどのコンテナなし、標準ライブラリなし縛りなので他の言語のWASMバインディングが夢のようだ。#emsn</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/1149881385458364417/7eq63lE8_normal.jpg" />
+        <p class="tweet-user-name">🍵柏のひと🍣@KashiwaOwner</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/KashiwaOwner/status/1074102077301780480"
+            target="_blank">2018/12/16 9:41:05</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">観衆数百人の目線が自分に集まるなか、何度かシュートを外して恥ずかしさのあまり立ち去ろうとする女の子。<br/><br/>そんなときにNBAのスター、ステフィン・カリーが「入らないのは全然問題じゃない。大事なのは入るまで打ち続けること」と説く姿がイケメン過ぎるので是非見て欲しい。https://t.co/zY6FQsW10B</p>
+        
+        <video class="tweet-img" controls src="https://video.twimg.com/ext_tw_video/1040205012733898754/pu/vid/360x450/6tPjtHYu4vaBoW5Q.mp4?tag=5" />
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/745868591191437314/GhuPkl5O_normal.jpg" />
+        <p class="tweet-user-name">noguo@noguo_</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/noguo_/status/1074159481548730369"
+            target="_blank">2018/12/16 13:29:11</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">大体出来た！<br/>デスクトップエレメカゲーム"Secrets of the Deep" https://t.co/AnhKqHhGCi</p>
+        
+        <video class="tweet-img" controls src="https://video.twimg.com/ext_tw_video/1074158994657239040/pu/vid/360x640/L-7YFEAShAM-pjFt.mp4?tag=6" />
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/1198163460493733894/vFfAbouU_normal.png" />
+        <p class="tweet-user-name">シャポコ🌵@shapoco</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/shapoco/status/1073355744248905728"
+            target="_blank">2018/12/14 8:15:26</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">linuxにtrexというコマンドが追加され、実行すると暴れまわるティラノサウルスがコンソールを横切るようになる回</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/1199348747714482177/3iuYIDYI_normal.jpg" />
+        <p class="tweet-user-name">マクシム (経世済民)@thksngy</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/thksngy/status/1073216503242059777"
+            target="_blank">2018/12/13 23:02:08</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">世の中はこういった考え方が多数派なんだろうな。<br/>でも僕は大学に入って衝撃を受けた、我々の生活の根底を支える電気や電波を扱う製品というのは、「社会では役に立たない｣と思っていた複素数平面や行列式、微分方程式、ベクトルや数列といった高等数学を余すことなく知らなければ全く理解できないと https://t.co/O5MmMoitXn</p>
+        
+        <img loading="lazy" class="tweet-img" src="https://pbs.twimg.com/media/DuTUtuiU8AIRln4.jpg" />
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/901301264406896640/Eis46gPG_normal.jpg" />
+        <p class="tweet-user-name">Rita Panahi@RitaPanahi</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/RitaPanahi/status/1072763227337977861"
+            target="_blank">2018/12/12 17:00:59</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">Fascinating.  https://t.co/MPV12RFdLb</p>
+        
+        <video class="tweet-img" controls src="https://video.twimg.com/ext_tw_video/1058034490293940224/pu/vid/320x180/VGDww05uQZDudXLL.mp4?tag=5" />
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1072958100607401984"
+            target="_blank">2018/12/13 5:55:20</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">寒いこともあってコタツに入りがち。コタツに入るとすべてのやる気を奪われてしまう。。ああ、やばい。コタツは。。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1072955058105409538"
+            target="_blank">2018/12/13 5:43:15</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">気が付くと、webサーバーが死んでいた。<br/>原因はこれだった。<br/><br/><blockquote class="card card-default"><header><img loading="lazy" src="https://avatars1.githubusercontent.com/u/9950313?s=400&v=4" /><a href="https://github.com/nodejs/node/issues/24097" target="_blank">RangeError: Invalid typed array length · Issue #24097 · nodejs/node · GitHub</a></header><div>Version: v11.1.0 Platform: Linux xxx 4.18.16-1-ck #1 SMP PREEMPT Mon Oct 22 08:00:13 CEST 2018 x86_64 GNU/Linux After upgrading to node 11.1 webpack-dev-server (i assume) can&#39;t serve angular 5 ...</div></blockquote><br/><br/>とりあえずダウングレードして対応。<br/><br/>sudo npm cache clean -f<br/>sudo npm install -g n<br/>sudo n &lt;version&gt; &lt;- I downgraded to 10.6.0<br/><br/>とりあえず復旧。<br/><blockquote class="card card-default"><header><img loading="lazy" src="https://www.sfpgmr.net/img/sfweb.png" /><a href="https://www.sfpgmr.net/" target="_blank">S.F. Web</a></header><div>Programming,Music,Game,etc..</div></blockquote></p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1072823775027052545"
+            target="_blank">2018/12/12 21:01:34</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">amazon fire 8でtermuxを動かしてみてこれは使えるということで純正 androidタブレットが欲しくなった。しかしボーナス小遣いは２０ｋしかない。アマゾンで探しまくって見つけたのがchuwiというメーカーのタブレット。タイムセールで１７Kだったので思わず購入してしまった。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1072825540950745088"
+            target="_blank">2018/12/12 21:08:35</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">今どきのスマフォやタブレットのCPUは、クロック周波数の異なるコアでマルチコアを構成していて、負荷の高い処理は高クロックのコア、そうでもないのは低クロックのコアに仕事させることで、無駄な消費電力を抑えてるらしい。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1072825542297051140"
+            target="_blank">2018/12/12 21:08:36</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">でマルチコア化が進んで、ハイエンドモデルではオクタコアとか１０コアなんていうのが２−３年前のトレンドだったとか。今はクアッドコアぐらいでコアあたりの性能向上を図る方向にあるらしい。iphoneのCPUはコアあたりの性能がすごいとか。たしかにもたつくことはあんまりないもんなあ。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1072826403362488321"
+            target="_blank">2018/12/12 21:12:01</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">というわけで私のタブレットは２−３年前の１０コアCPUが載っている。Fire8よりは動きは軽快だが、まあ普通くらいのパフォーマンスらしい。だけどパーサのテストコード走らせたらやっぱりすごく速かった。あくまでFire8と比べてだけどね。</p>
+        
+      </section>
+      
+    </article>
+    
+  </div>
+  <footer>
+    CopyLight 2019 Satoshi Fujiwara
+  </footer>
+  <script async src="https://platform.twitter.com/widgets.js"></script>
+
+  <script async src="./index.js"></script>
+
+</body>
+
+</html>

@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="ja" prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb# article: http://ogp.me/ns/article#">
+
+<head>
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-15457703-9"></script>
+  <script>
+    if (!location.hostname.match(/localhost/)) {
+      window.dataLayer = window.dataLayer || [];
+      function gtag() { dataLayer.push(arguments); }
+      gtag('js', new Date());
+      gtag('config', 'UA-15457703-9');
+    }
+  </script>
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>トップページをリニューアルする</title>
+  <meta name="description" content="リニューアル用のトップページデザインを考えて実装する" />
+  <meta name="keywords" content="Programming,Music,HTML5,WebGL,javascript,WebAudio" /> 	
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <meta itemprop="image" content="https://www.sfpgmr.net/img/sfweb.png" />
+  <meta itemprop="name" content="S.F. Web" />
+  
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:site" content="S.F. Web" />
+  <meta name="twitter:url" content="./index20.html" />
+  <meta name="twitter:title" content="リニューアル用のトップページデザイン" />
+  <meta name="twitter:description" content="リニューアル用のトップページデザインを考えて実装する" />
+  <meta name="twitter:image" content="https://www.sfpgmr.net/img/sfweb.png" />
+  
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="./index20.html" />
+  <meta property="og:title" content="リニューアル用のトップページデザイン"/>
+  <meta property="og:site_name" content="S.F. Web" />
+  <meta property="og:description" content="Programming,Music,HTML5,WebGL,javascript,WebAudio">
+  <meta property="og:image" content="https://www.sfpgmr.net/img/sfweb.png">
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    html {
+      margin: 0;
+      padding: 0;
+      font-size:10px;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      background: black;
+      color: white;
+    }
+
+    #sentinel {
+      width:0px;
+      height:0px;
+    }
+    .contents {
+      width: 100%;
+      position: relative;
+      content: strict;
+    }
+
+    @keyframes blinking {
+      0% {
+        color: black;
+      }
+
+      50% {
+        color: white;
+      }
+
+      100% {
+        color: black;
+      }
+    }
+
+    .loading {
+      font-family: monospace;
+      font-size: 24px;
+      position: fixed;
+      width: 100vw;
+      height: 100vh;
+      text-align: center;
+      padding-top: 50vh;
+      z-index: 32768;
+      background: black;
+      animation: blinking 2s infinite;
+      content: strict;
+    }
+
+
+    .contents>article {
+      background: #f0f0f0;
+      color: #202020;
+      position: absolute;
+      max-height: 960px;
+      overflow: auto;
+      border-radius: 3px;
+    }
+
+    .tweet-header {
+      display: grid;
+      align-items: end;
+      grid-template-columns: 40px 2fr 1fr;
+      grid-template-rows: 1fr;
+      font-size: 12px;
+      font-weight: bold;
+    }
+
+
+    .tweet-img {
+      width: 100%;
+      object-fit: cover;
+    }
+
+    .youtube {
+      position: relative;
+      cursor: pointer;
+    }
+
+    .youtube > img {
+      width: 100%;
+      object-fit: cover;
+    }
+
+    .youtube > svg.player-play {
+      width:64px;
+      height:64px;
+      left:calc(50% - 32px);
+      top:calc(50% - 32px);
+      position:absolute;
+      z-index: 1000;
+      opacity: 0.5;
+    }
+    
+    .youtube:hover > svg.player-play {
+      opacity: 1.0;
+    }
+
+    .youtube:hover .player-play-1 {
+      stroke:#80808080;
+    }
+
+    
+    .youtube > div.yt-title {
+      /*text-shadow: #fff 1px 1px 0;*/
+      font-size: 1.2rem;
+      color:white;
+      background:rgba(0, 0,0,0.5);
+      position:absolute;
+      left:0;
+      top:0;
+      overflow: auto;
+      z-index:998;
+    }
+
+
+    .tweet-profile-img {
+      grid-column: 1/2;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+    }
+
+    .tweet-user-name {
+      grid-column: 2/3;
+    }
+
+    .tweet-date {
+      font-size: 8px;
+      text-align: right;
+      grid-column: 3/4;
+    }
+
+    .contents>twitter-widget {
+      overflow: auto;
+      max-height: 960px;
+      position: absolute;
+    }
+
+    .contents>article>section>.tweet-text {
+      display: block;
+      padding: 4px;
+      word-break: break-all;
+      font-size: 12px;
+    }
+
+    .contents>article>h3 {
+      font-size: 12px;
+    }
+
+    blockquote.card {
+      margin:4px;
+      padding:4px;
+      font-size:12px;
+      background:white;
+      border-radius: 4px;
+    }
+
+    blockquote.card > header {
+      display:grid;
+      grid-gap:4px;
+      gap:4px;
+    }
+
+    blockquote.card-default > header {
+      grid-template-columns:64px 1fr;
+    }
+
+    blockquote.card-large > header {
+      grid-template-columns:1fr;
+    }
+
+    blockquote.card > header > img {
+      width:100%;
+    }
+
+
+    div.no-image {
+      display: block;
+      width:64px;
+      height:64px;
+      background:gray;
+      color:white;
+      text-align: center;
+      line-height: 64px;
+    }
+
+  </style>
+</head>
+
+<body>
+  <div class="loading" id="loading">Loading</div>
+  <header class="top-nav">
+    <h1>S.F. Info.</h1>
+  </header>
+  <div class="contents" id="contents" rendersubtree="invisible skip-activation"> 
+    
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1149954723883016192"
+            target="_blank">2019/7/13 17:12:25</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">まじか。。 <br/>センバツ優勝の東邦がコールド負け 愛知大会2回戦敗退: <blockquote class="card card-default"><header><img loading="lazy" src="[object Object]" /><a href="https://twitter.com/i/events/1149901207311278080" target="_blank">センバツ優勝の東邦がコールド負け 愛知大会2回戦敗退</a></header><div>高校野球愛知大会は13日、センバツ優勝校の東邦が星城に3-10でコールド負けとなりました。2回戦敗退となり、春夏甲子園連覇を絶たれました。</div></blockquote></p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1149951448580415488"
+            target="_blank">2019/7/13 16:59:25</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">八千代東がCシードの千葉敬愛に勝った。すごいね。夏の甲子園に出てはや１０年か。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1149954455950856193"
+            target="_blank">2019/7/13 17:11:22</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">銚子商・専大松戸のAシードは順当勝ち。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1149855495500361728"
+            target="_blank">2019/7/13 10:38:08</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">@syntaxerrors72 USBメモリで外部ファイルも読めるみたいですね。BASIC経由で。エミュで作った自作ソフトを動かすのもできそうな感じですね。まだそこまではやってませんが。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1149856914441793536"
+            target="_blank">2019/7/13 10:43:46</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">@syntaxerrors72 性懲りもなくWebブラウザで動くゲーム作ろうとしていて、ゲームに必要な要素をひとつひとつ作っていってるところなんですよね。ものすごく遅いペースですけど。。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1149829699465383936"
+            target="_blank">2019/7/13 8:55:37</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">@syntaxerrors72 若い頃雑誌でC64の記事読んで衝撃を受けたんですよね。kawasaki シンセサイザーの紹介だったのではないかと思います。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1149829860480520192"
+            target="_blank">2019/7/13 8:56:16</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">@syntaxerrors72 完全なシンセのスペックでしたからね。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1149830281454448641"
+            target="_blank">2019/7/13 8:57:56</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">@syntaxerrors72 VICやマックスマシーンのメモリの少なさにちょっとな。。と思ってたらC64が出て。当時ウォーってなりました。。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1149822028926423040"
+            target="_blank">2019/7/13 8:25:09</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">PCエンジンミニにはF1サーカスを入れてほしかったな。。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1147481369678716930"
+            target="_blank">2019/7/6 21:24:12</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">wsl2を試したくてWin10をアップデートしたら途中エラーでコケてしまう。何回か試してダメなのでクリーンインストールしてwsl2をインストール中。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1147577877149339648"
+            target="_blank">2019/7/7 3:47:41</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">とりあえず動いたね。確かにパッチのダウンロードやインストールが速いや。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1147583126891196416"
+            target="_blank">2019/7/7 4:08:33</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">VS Codeの「Remote Development」拡張を入れた。<br/>なんかよさそうですな。。 https://t.co/sGsO7lbKyI</p>
+        
+        <img loading="lazy" class="tweet-img" src="https://pbs.twimg.com/media/D-0IxOQUYAIqy48.jpg" />
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1147583650885562368"
+            target="_blank">2019/7/7 4:10:38</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">最近はwslの閉じた中でしかコードを書いてないから、win10そのものはあんまりいじってないね。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1147584021926273024"
+            target="_blank">2019/7/7 4:12:06</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">wsl2は仮想マシンだから、確かに別IP振られとるな。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1147802057245487105"
+            target="_blank">2019/7/7 18:38:30</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">この土日はwsl2のアップデートとブログ書きで終わってしまったなあ。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1147956412716220416"
+            target="_blank">2019/7/8 4:51:51</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">しかしものすごく不安定だ。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1147999149108822016"
+            target="_blank">2019/7/8 7:41:40</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">sfc /scannow で37%でコケるので、dism /online /cleanup-image /restorehealth を実行。sfc再実行で100%終了。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1147999255174381568"
+            target="_blank">2019/7/8 7:42:05</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">これで様子見よう。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1148335661675503616"
+            target="_blank">2019/7/9 5:58:51</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">wsl2はわりと普通に使えてる。が、そもそも大した使い方をしてるわけではないので差がわからん。。ただvs codeのリモート機能は便利ですわ。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1148335746173919232"
+            target="_blank">2019/7/9 5:59:11</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">Remote Development機能か</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1148676665330900992"
+            target="_blank">2019/7/10 4:33:53</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">あかん。スリープから復帰するとマウスが認識しなくなり、再起動するとハングアップするわ。リセットボタンを押さないと復帰できなくなる。USBセレクティブ・サスペンドを「無効」にしてもダメ。なんだこれ。しばらくはシャットダウンするか。。休止も試してみるかな。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1148678405023342592"
+            target="_blank">2019/7/10 4:40:47</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">「休止」だといけるな。。とするとスリープ周りに何かあるんだな。。まあFast Ringだからこういうリスクは受容してるのでしょうがないが。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1148674271662600193"
+            target="_blank">2019/7/10 4:24:22</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ビジネスとITは今や密着してて切っても切れないものとなっているのに、それに気づかず社内IT要員は不要コストだとしてアウトソースし排除しようとする経営者がまだ多いような気がするね。確かに要員コストはカットできるかもしれないが、それによって失われるものも大きいかと。。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/715297085/_________normal.jpg" />
+        <p class="tweet-user-name">ISHIBASHIH@1484h</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/1484h/status/1148047315858362368"
+            target="_blank">2019/7/8 10:53:04</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">使うほど富士山になる消しゴム　学生時代に発案、入社4年目で商品化 - withnews（ウィズニュース） <a href="https://withnews.jp/article/f0190708001qq000000000000000W00o10101qq000019434A" target="_blank">withnews.jp/article/f01907…</a> #withnews</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1147794478670856193"
+            target="_blank">2019/7/7 18:08:23</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">古墳の思い出｜sfpgmr @SFPGMR｜note（ノート） <blockquote class="card card-default"><header><img loading="lazy" src="https://d2l930y2yx77uc.cloudfront.net/production/uploads/images/12799368/rectangle_large_type_2_94c6b78e8b2f89c6e3ab216e11a2c381.jpeg" /><a href="https://note.mu/sfpgmr/n/n9306baf19bf7" target="_blank">古墳の思い出｜sfpgmr｜note</a></header><div> 地元、堺市の百舌鳥・古市古墳群が世界遺産登録が決定した。やったあ！ 関東に越してきてもう２０年以上になるけどやっぱり地元でこういうことがあるとうれしいね。          私は中学生のころまで古墳にハマっていた。私の頃はまだ大仙古墳とは呼ばれてなくて、教科書には通称仁徳天皇陵、正式名百舌鳥耳原中陵(もずみみはらなかみのささぎ）と書かれてあった。なぜ古墳に惹かれたのかだけど、ごく身近にその存在があるのと、神秘的な形とかかなあと思う。天皇の墓っていうだけで畏れ多い感じだしね。  堺には古墳が市域に点在している。海に近いほうが大きな古墳が多い。私は小学生までは堺市の東南のほう、中学生～社</div></blockquote></p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1147668898885459970"
+            target="_blank">2019/7/7 9:49:22</a></p>
+      </header>
+      <section>
+        <p class="tweet-text"><div class="youtube" data-type="yt" id="fKJR5NQkakI"><div class="yt-title">Youtube - overpass apiとthree.jsで地図を3d表示</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/fKJR5NQkakI" class="youtube" src="https://i.ytimg.com/vi/fKJR5NQkakI/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+    </article>
+    
+  </div>
+  <footer>
+    CopyLight 2019 Satoshi Fujiwara
+  </footer>
+  <script async src="https://platform.twitter.com/widgets.js"></script>
+
+  <script async src="./index.js"></script>
+
+</body>
+
+</html>
