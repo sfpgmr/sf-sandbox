@@ -20,9 +20,12 @@
           minify: true
         };
 
-      this.init(conf);
+        this.resizeObserver = new ResizeObserver(entries => {
+          this.resizeThrottler(entries);
+        });
+        this.init(conf);
+    
 
-      return this;
     }
 
     init(conf) {
@@ -35,8 +38,17 @@
       if (!this._container) {
         throw new Error('Container not found or missing');
       }
-      window.addEventListener("resize", this.resizeThrottler.bind(this));
 
+      const children = this._container.querySelectorAll(this.conf.container + ' > *');
+      children.forEach(c=>{
+        this.resizeObserver.observe(c);
+      });
+
+      //this._container.
+      //window.addEventListener("resize", this.resizeThrottler.bind(this));
+
+
+      //this._resizeObserver.observe(this._container);
       //this.layout();
     };
 
@@ -127,16 +139,23 @@
       return longest;
     };
 
-    resizeThrottler() {
+    resizeThrottler(e) {
+      //console.log(e);
+      // e.forEach(ec=>{
+      //   this.resizeObserver.unobserve(ec.target);
+      // })
+      //const contentRect =  e[0].contentRect;
       // ignore resize events as long as an actualResizeHandler execution is in the queue
-      if (!this._resizeTimeout) {
+      if (!this._resizeTimeout /*&& (!this.contentRect) ||  
+          (this.contentRect && ((this.contentRect.width != contentRect.width) || (this.contentRect.height != contentRect.height)))
+          */) {
 
         this._resizeTimeout = setTimeout(function () {
           this._resizeTimeout = null;
           //IOS Safari throw random resize event on scroll, call layout only if size has changed
-          if (this._container.clientWidth != this._width) {
+          //if (this._container.clientWidth != this._width) {
             this.layout();
-          }
+          //}
           // The actualResizeHandler will execute at a rate of 15fps
         }.bind(this), 66);
       }
@@ -245,39 +264,43 @@
       if (c.isIntersecting) {
         isIntersecting = true;
         (async () => {
-          if (cacheContentNo <= MaxContents) {
             while (isIntersecting) {
-              let { articles, yts } = await cacheArticles;
+              let { articles ,yts } = await cacheArticles;
               //
-              if (articles && articles.length && (cacheContentNo <= MaxContents)) {
+              if (articles && articles.length) {
                 yts && yts.length && yts.forEach(setYTPlayer);
                 document.getElementById('contents').append(...articles);
+                articles.forEach(a=>{
+                  masonry.resizeObserver.observe(a);
+                });
+  //              articles.forEach(a => { a.getBoundingClientRect(); a.style.opacity = 1.0; });
+              } 
 
-                articles.forEach(a => { a.getBoundingClientRect(); a.style.opacity = 1.0; });
-                masonry.layout();
-              } else {
-                masonry.layout();
+              if(cacheContentNo > MaxContents){
+                //masonry.layout();
                 observer.unobserve(sentinel);
                 isIntersecting = false;
                 return;
+              } else {
+                //masonry.layout();
+                cacheArticles = fetchArticles();
               }
-              cacheArticles = fetchArticles();
-              // 少しスリープする
+              //少しスリープする
               await new Promise((resolve, reject) => {
                 setTimeout(() => {
                   resolve();
                 }, 0);
               });
             }
-          }
         })();
       } else {
+        //masonry.layout();
         isIntersecting = false;
       }
-      console.log(c.boundingClientRect.height, c.intersectionRect.height, c.rootBounds.height, c.intersectionRatio, c.isIntersecting, c.isVisible);
+     // console.log(c.boundingClientRect.height, c.intersectionRect.height, c.rootBounds.height, c.intersectionRatio, c.isIntersecting, c.isVisible);
     }, {
       root: null,
-      rootMargin: Math.round(window.innerHeight * 0.5) + 'px'/*,threshold:[0.0,0.5,1.0]*/
+      rootMargin: Math.round(window.innerHeight * 1.2) + 'px'/*,threshold:[0.0,0.5,1.0]*/
     });
 
     const sentinel = document.createElement('div');
@@ -287,6 +310,10 @@
     document.querySelectorAll('.contents > article').forEach(s=>{
       s.style.opacity = 1;
     });
+
+    document.querySelector('body > header').addEventListener('click',()=>{
+      masonry.layout();
+     });
     //ObserverTest();
     //masonry.layout();
     //twttr.events.bind('rendered',masonry.layout.bind(masonry));

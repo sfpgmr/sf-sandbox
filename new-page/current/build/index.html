@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+
 <html lang="ja" prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb# article: http://ogp.me/ns/article#">
 
 <head>
@@ -114,8 +115,8 @@
       max-height: 960px;
       overflow: auto;
       border-radius: 3px;
-      transition: opacity 1s linear;
-      opacity: 0.0;
+     /* transition: opacity 1s linear;*/
+      opacity: 1.0;
     }
 
     .tweet-header {
@@ -262,14 +263,14 @@
       
       <header class="tweet-header">
         
-        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
         <p class="tweet-user-name">S.F.@SFPGMR</p>
         
         <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1191460382616903681"
             target="_blank">2019/11/5 6:01:06</a></p>
       </header>
       <section>
-        <p class="tweet-text">Shadow DOMというのもすでにブラウザでは実装されているのか。。<br/><br/><blockquote class="card card-default"><header><img loading="lazy" src="https://developer.mozilla.org/static/img/opengraph-logo.72382e605ce3.png" /><a href="https://developer.mozilla.org/ja/docs/Web/Web_Components/Using_shadow_DOM" target="_blank">shadow DOM の使い方 - Web Components | MDN</a></header><div>Web コンポーネントにおいてカプセル化 (構造やスタイル、挙動を隠し、同じページの他のコードと分離すること) は重要です。これにより他の場所でのクラッシュを防ぎ、またコードが綺麗になります。Shadow DOM API はこの隠され分離された DOM を付加するための方法を提供しています。この記事では Shadow DOM を使う基本を記述しています。</div></blockquote></p>
+        <p class="tweet-text">Shadow DOMというのもすでにブラウザでは実装されているのか。。<br/><br/><blockquote class="card card-default"><header><img  src="https://developer.mozilla.org/static/img/opengraph-logo.72382e605ce3.png" /><a href="https://developer.mozilla.org/ja/docs/Web/Web_Components/Using_shadow_DOM" target="_blank">shadow DOM の使い方 - Web Components | MDN</a></header><div>Web コンポーネントにおいてカプセル化 (構造やスタイル、挙動を隠し、同じページの他のコードと分離すること) は重要です。これにより他の場所でのクラッシュを防ぎ、またコードが綺麗になります。Shadow DOM API はこの隠され分離された DOM を付加するための方法を提供しています。この記事では Shadow DOM を使う基本を記述しています。</div></blockquote></p>
         
       </section>
       
@@ -281,7 +282,7 @@
       <section>
         <p class="tweet-text">twitter apiのwidget.jsの動きをchrome developper toolで見ていて、「#shadow-root」なるものを見つけたので「これ何？」と思ったんだよね。まあしかし、ちょっと見ぬ間にいろいろ変わっとるなあ、Webの技術は。。 https://t.co/McrHnAjmio</p>
         
-        <img loading="lazy" class="tweet-img" src="https://pbs.twimg.com/media/EIjrkSiU0AAXaAW.png" />
+        <img  class="tweet-img" src="https://pbs.twimg.com/media/EIjrkSiU0AAXaAW.png" />
         
       </section>
       
@@ -291,7 +292,7 @@
             target="_blank">2019/11/6 20:20:20</a></p>
       </header>
       <section>
-        <p class="tweet-text">「Display Locking」なるものもあるしな。。<br/><blockquote class="card card-default"><header><img loading="lazy" src="https://jxck.io/assets/img/jxck.png" /><a href="https://blog.jxck.io/entries/2019-06-16/display-locking.html" target="_blank">Display Locking によるレンダリングの最適化と Async DOM | blog.jxck.io</a></header><div>React や lit-html などにより、 DOM 操作の抽象化に加えて最適化が提供されることが一般的となった。見方を変えれば、本来ブラウザがやるような最適化を、ライブラリが肩代わりしていると捉えることもできる。これは、現在の標準 API には、規模が大きく処理が複雑な...</div></blockquote></p>
+        <p class="tweet-text">「Display Locking」なるものもあるしな。。<br/><blockquote class="card card-default"><header><img  src="https://jxck.io/assets/img/jxck.png" /><a href="https://blog.jxck.io/entries/2019-06-16/display-locking.html" target="_blank">Display Locking によるレンダリングの最適化と Async DOM | blog.jxck.io</a></header><div>React や lit-html などにより、 DOM 操作の抽象化に加えて最適化が提供されることが一般的となった。見方を変えれば、本来ブラウザがやるような最適化を、ライブラリが肩代わりしていると捉えることもできる。これは、現在の標準 API には、規模が大きく処理が複雑な...</div></blockquote></p>
         
       </section>
       
@@ -301,7 +302,7 @@
             target="_blank">2019/11/7 6:03:24</a></p>
       </header>
       <section>
-        <p class="tweet-text">仕様的には今こうなっているようだ。試してみたところ、jxckさんの方法ではできなくなってるようだ。<br/><br/><blockquote class="card card-default"><header><img loading="lazy" src="https://avatars3.githubusercontent.com/u/13145324?s=400&v=4" /><a href="https://github.com/WICG/display-locking" target="_blank">GitHub - WICG/display-locking: A repository for the Display Locking spec</a></header><div>A repository for the Display Locking spec. Contribute to WICG/display-locking development by creating an account on GitHub.</div></blockquote></p>
+        <p class="tweet-text">仕様的には今こうなっているようだ。試してみたところ、jxckさんの方法ではできなくなってるようだ。<br/><br/><blockquote class="card card-default"><header><img  src="https://avatars3.githubusercontent.com/u/13145324?s=400&v=4" /><a href="https://github.com/WICG/display-locking" target="_blank">GitHub - WICG/display-locking: A repository for the Display Locking spec</a></header><div>A repository for the Display Locking spec. Contribute to WICG/display-locking development by creating an account on GitHub.</div></blockquote></p>
         
       </section>
       
@@ -343,7 +344,7 @@
       <section>
         <p class="tweet-text">今の状況。ちょっとずつ進めている。。 https://t.co/OACvnEz28i</p>
         
-        <img loading="lazy" class="tweet-img" src="https://pbs.twimg.com/media/EJCnOSgVAAASGL8.jpg" />
+        <img  class="tweet-img" src="https://pbs.twimg.com/media/EJCnOSgVAAASGL8.jpg" />
         
       </section>
       
@@ -353,7 +354,7 @@
             target="_blank">2019/11/11 18:08:17</a></p>
       </header>
       <section>
-        <p class="tweet-text">css grid + jsでやるのが、一番モダンなmasonryの実装方法かもね。。<br/><blockquote class="card card-large"><header><img loading="lazy" src="https://w3bits.com/wp-content/uploads/css-grid-masonry.jpg" /><a href="https://www.google.com/amp/s/w3bits.com/css-grid-masonry/amp/" target="_blank">Create Horizontal Masonry layouts with CSS Grid Layout</a></header><div>A tutorial to create a left-to-right masonry layout using CSS Grid Layout properties. Practical and dynamic use case involves a tiny bit of JavaScript.</div></blockquote></p>
+        <p class="tweet-text">css grid + jsでやるのが、一番モダンなmasonryの実装方法かもね。。<br/><blockquote class="card card-large"><header><img  src="https://w3bits.com/wp-content/uploads/css-grid-masonry.jpg" /><a href="https://www.google.com/amp/s/w3bits.com/css-grid-masonry/amp/" target="_blank">Create Horizontal Masonry layouts with CSS Grid Layout</a></header><div>A tutorial to create a left-to-right masonry layout using CSS Grid Layout properties. Practical and dynamic use case involves a tiny bit of JavaScript.</div></blockquote></p>
         
       </section>
       
@@ -363,7 +364,7 @@
             target="_blank">2019/11/12 20:28:28</a></p>
       </header>
       <section>
-        <p class="tweet-text">tweetを独自描画するのもいいんだけど、puppeteerを使ってプリレンダリングしたものを静的HTMLとして保存するのはどうだろうか。ちょっと試してみようかなと。<br/><blockquote class="card card-default"><header><img loading="lazy" src="https://avatars2.githubusercontent.com/u/6906516?s=400&v=4" /><a href="https://github.com/GoogleChrome/puppeteer" target="_blank">GitHub - puppeteer/puppeteer: Headless Chrome Node.js API</a></header><div>Headless Chrome Node.js API. Contribute to puppeteer/puppeteer development by creating an account on GitHub.</div></blockquote></p>
+        <p class="tweet-text">tweetを独自描画するのもいいんだけど、puppeteerを使ってプリレンダリングしたものを静的HTMLとして保存するのはどうだろうか。ちょっと試してみようかなと。<br/><blockquote class="card card-default"><header><img  src="https://avatars2.githubusercontent.com/u/6906516?s=400&v=4" /><a href="https://github.com/GoogleChrome/puppeteer" target="_blank">GitHub - puppeteer/puppeteer: Headless Chrome Node.js API</a></header><div>Headless Chrome Node.js API. Contribute to puppeteer/puppeteer development by creating an account on GitHub.</div></blockquote></p>
         
       </section>
       
@@ -385,7 +386,7 @@
       <section>
         <p class="tweet-text">そして今の成果物。Youtube Playerを埋め込んでみた。なんかちょっともたつくわな。。<br/><blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="https://www.sfpgmr.net/sandbox/new-page/releases/20191115/" target="_blank">Twitter APIを試す</a></header><div></div></blockquote> https://t.co/Dx68nOG3N8</p>
         
-        <img loading="lazy" class="tweet-img" src="https://pbs.twimg.com/media/EJXN3ooUcAAy31-.jpg" />
+        <img  class="tweet-img" src="https://pbs.twimg.com/media/EJXN3ooUcAAy31-.jpg" />
         
       </section>
       
@@ -437,7 +438,7 @@
       <section>
         <p class="tweet-text">といいつつogpあたりのところはほとんどいじらず、twitter videoのところをvideoタグで再生できるようにしたに留まる。。土日はほとんどコード書かずに終わる。。<br/><blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="https://www.sfpgmr.net/sandbox/new-page/releases/20191118/" target="_blank">トップページをリニューアルする</a></header><div></div></blockquote> https://t.co/nWwZ8f0JL9</p>
         
-        <img loading="lazy" class="tweet-img" src="https://pbs.twimg.com/media/EJmpjW9UwAAqaxm.jpg" />
+        <img  class="tweet-img" src="https://pbs.twimg.com/media/EJmpjW9UwAAqaxm.jpg" />
         
       </section>
       
@@ -477,7 +478,7 @@
             target="_blank">2019/11/20 6:22:26</a></p>
       </header>
       <section>
-        <p class="tweet-text">今日書いたのはこのコード。。<br/><blockquote class="card card-default"><header><img loading="lazy" src="https://avatars0.githubusercontent.com/u/3806814?s=400&v=4" /><a href="https://github.com/sfpgmr/sandbox/blob/238f8f4b2c38082dcf5f944e364f2adcc10a5e80/new-page/tools/make-embeded.mjs#L40-L114" target="_blank">sandbox/make-embeded.mjs at 238f8f4b2c38082dcf5f944e364f2adcc10a5e80 · sfpgmr/sandbox · GitHub</a></header><div>JS,WebGL,three.jsをいじるためのレポジトリ. Contribute to sfpgmr/sandbox development by creating an account on GitHub.</div></blockquote></p>
+        <p class="tweet-text">今日書いたのはこのコード。。<br/><blockquote class="card card-default"><header><img  src="https://avatars0.githubusercontent.com/u/3806814?s=400&v=4" /><a href="https://github.com/sfpgmr/sandbox/blob/238f8f4b2c38082dcf5f944e364f2adcc10a5e80/new-page/tools/make-embeded.mjs#L40-L114" target="_blank">sandbox/make-embeded.mjs at 238f8f4b2c38082dcf5f944e364f2adcc10a5e80 · sfpgmr/sandbox · GitHub</a></header><div>JS,WebGL,three.jsをいじるためのレポジトリ. Contribute to sfpgmr/sandbox development by creating an account on GitHub.</div></blockquote></p>
         
       </section>
       
@@ -497,7 +498,7 @@
             target="_blank">2019/11/21 5:10:47</a></p>
       </header>
       <section>
-        <p class="tweet-text">puppeteerのevaluate()中でconsole.logの内容をホストに転送する方法。<br/><br/><blockquote class="card card-default"><header><img loading="lazy" src="https://avatars2.githubusercontent.com/u/6906516?s=400&v=4" /><a href="https://github.com/GoogleChrome/puppeteer/issues/1944" target="_blank">Console.log() from page.evaluate() not working · Issue #1944 · puppeteer/puppeteer · GitHub</a></header><div>Hello, I'm trying to console.log() in a page.evaluate() function and it's not working... Any solutions ? Thank you !</div></blockquote><br/><br/>しかし以下のIssueが発生。<br/><blockquote class="card card-default"><header><img loading="lazy" src="https://avatars2.githubusercontent.com/u/6906516?s=400&v=4" /><a href="https://github.com/GoogleChrome/puppeteer/issues/594" target="_blank">EventEmitter memory leak detected. 11 exit listeners added · Issue #594 · puppeteer/puppeteer · GitHub</a></header><div>This is the full error message: MaxListenersExceededWarning: Possible EventEmitter memory leak detected. 11 exit listeners added. Use emitter.setMaxListeners() to increase limit I run Node v8.1.2 w...</div></blockquote></p>
+        <p class="tweet-text">puppeteerのevaluate()中でconsole.logの内容をホストに転送する方法。<br/><br/><blockquote class="card card-default"><header><img  src="https://avatars2.githubusercontent.com/u/6906516?s=400&v=4" /><a href="https://github.com/GoogleChrome/puppeteer/issues/1944" target="_blank">Console.log() from page.evaluate() not working · Issue #1944 · puppeteer/puppeteer · GitHub</a></header><div>Hello, I'm trying to console.log() in a page.evaluate() function and it's not working... Any solutions ? Thank you !</div></blockquote><br/><br/>しかし以下のIssueが発生。<br/><blockquote class="card card-default"><header><img  src="https://avatars2.githubusercontent.com/u/6906516?s=400&v=4" /><a href="https://github.com/GoogleChrome/puppeteer/issues/594" target="_blank">EventEmitter memory leak detected. 11 exit listeners added · Issue #594 · puppeteer/puppeteer · GitHub</a></header><div>This is the full error message: MaxListenersExceededWarning: Possible EventEmitter memory leak detected. 11 exit listeners added. Use emitter.setMaxListeners() to increase limit I run Node v8.1.2 w...</div></blockquote></p>
         
       </section>
       
@@ -527,7 +528,7 @@
             target="_blank">2019/11/21 5:36:35</a></p>
       </header>
       <section>
-        <p class="tweet-text">さらにいかによれば<br/><br/>「Note: you don't need to launch browser just to create a page. Instead, you can open multiple pages in the same browser:」<br/><br/>らしい<br/><br/><blockquote class="card card-default"><header><img loading="lazy" src="https://avatars2.githubusercontent.com/u/6906516?s=400&v=4" /><a href="https://github.com/GoogleChrome/puppeteer/issues/594#issuecomment-325919885" target="_blank">EventEmitter memory leak detected. 11 exit listeners added · Issue #594 · puppeteer/puppeteer · GitHub</a></header><div>This is the full error message: MaxListenersExceededWarning: Possible EventEmitter memory leak detected. 11 exit listeners added. Use emitter.setMaxListeners() to increase limit I run Node v8.1.2 w...</div></blockquote></p>
+        <p class="tweet-text">さらにいかによれば<br/><br/>「Note: you don't need to launch browser just to create a page. Instead, you can open multiple pages in the same browser:」<br/><br/>らしい<br/><br/><blockquote class="card card-default"><header><img  src="https://avatars2.githubusercontent.com/u/6906516?s=400&v=4" /><a href="https://github.com/GoogleChrome/puppeteer/issues/594#issuecomment-325919885" target="_blank">EventEmitter memory leak detected. 11 exit listeners added · Issue #594 · puppeteer/puppeteer · GitHub</a></header><div>This is the full error message: MaxListenersExceededWarning: Possible EventEmitter memory leak detected. 11 exit listeners added. Use emitter.setMaxListeners() to increase limit I run Node v8.1.2 w...</div></blockquote></p>
         
       </section>
       
@@ -539,7 +540,7 @@
       <section>
         <p class="tweet-text">たしかにこれも考慮せんと同じエラーが出ますな。。 https://t.co/2Gd3AoW7YF</p>
         
-        <img loading="lazy" class="tweet-img" src="https://pbs.twimg.com/media/EJ2BLtVWkAUZYoT.png" />
+        <img  class="tweet-img" src="https://pbs.twimg.com/media/EJ2BLtVWkAUZYoT.png" />
         
       </section>
       
@@ -561,7 +562,7 @@
       <section>
         <p class="tweet-text">ページのメタデータ(ogp/twitter card/json-ld/html meta)を取り出してカード形式で表示する部分は少し進捗。イメージの取り出しはもうちょっとちゃんとしないとなあ。。json-ldをもうちょっとちゃんとパースするとか、faviconも対象にするとか、アバターのイメージも含めるとか。。 https://t.co/KJpoZfGQ07</p>
         
-        <img loading="lazy" class="tweet-img" src="https://pbs.twimg.com/media/EKFgsHJU4AAqH_p.jpg" />
+        <img  class="tweet-img" src="https://pbs.twimg.com/media/EKFgsHJU4AAqH_p.jpg" />
         
       </section>
       
@@ -601,7 +602,7 @@
             target="_blank">2019/11/25 6:19:26</a></p>
       </header>
       <section>
-        <p class="tweet-text">metaデータのパーサはnode moduleであったのですな。<br/><blockquote class="card card-default"><header><img loading="lazy" src="https://avatars2.githubusercontent.com/u/1088987?s=400&v=4" /><a href="https://github.com/blakeembrey/node-htmlmetaparser" target="_blank">GitHub - blakeembrey/node-htmlmetaparser: A `htmlparser2` handler for parsing rich metadata from HTML. Includes HTML metadata, JSON-LD, RDFa, microdata, OEmbed, Twitter cards and AppLinks.</a></header><div>A `htmlparser2` handler for parsing rich metadata from HTML. Includes HTML metadata, JSON-LD, RDFa, microdata, OEmbed, Twitter cards and AppLinks. - blakeembrey/node-htmlmetaparser</div></blockquote></p>
+        <p class="tweet-text">metaデータのパーサはnode moduleであったのですな。<br/><blockquote class="card card-default"><header><img  src="https://avatars2.githubusercontent.com/u/1088987?s=400&v=4" /><a href="https://github.com/blakeembrey/node-htmlmetaparser" target="_blank">GitHub - blakeembrey/node-htmlmetaparser: A `htmlparser2` handler for parsing rich metadata from HTML. Includes HTML metadata, JSON-LD, RDFa, microdata, OEmbed, Twitter cards and AppLinks.</a></header><div>A `htmlparser2` handler for parsing rich metadata from HTML. Includes HTML metadata, JSON-LD, RDFa, microdata, OEmbed, Twitter cards and AppLinks. - blakeembrey/node-htmlmetaparser</div></blockquote></p>
         
       </section>
       
@@ -651,7 +652,7 @@
             target="_blank">2019/11/26 21:05:17</a></p>
       </header>
       <section>
-        <p class="tweet-text">Mutation/Intersection/Resize Observerはなかなか強力である。。<br/><br/><blockquote class="card card-default"><header><img loading="lazy" src="https://developer.mozilla.org/static/img/opengraph-logo.72382e605ce3.png" /><a href="https://developer.mozilla.org/ja/docs/Web/API/MutationObserver" target="_blank">MutationObserver - Web API | MDN</a></header><div>MutationObserver とは、指定したコールバック関数を DOM の変更時に実行させる API です。この API は、DOM3 Events の仕様で定義されていた Mutation Events を新しく設計し直したものです。</div></blockquote><br/><blockquote class="card card-default"><header><img loading="lazy" src="https://developer.mozilla.org/static/img/opengraph-logo.72382e605ce3.png" /><a href="https://developer.mozilla.org/ja/docs/Web/API/Intersection_Observer_API" target="_blank">Intersection Observer API - Web API | MDN</a></header><div>Intersection Observer API (交差監視 API) は、ターゲットとなる要素が、祖先要素もしくは文書の最上位のビューポートと交差する変更を非同期的に監視する方法を提供します。</div></blockquote><br/><blockquote class="card card-default"><header><img loading="lazy" src="https://developer.mozilla.org/static/img/opengraph-logo.72382e605ce3.png" /><a href="https://developer.mozilla.org/ja/docs/Web/API/ResizeObserver" target="_blank">ResizeObserver - Web API | MDN</a></header><div>ResizeObserver インターフェイスは、Element のコンテンツ矩形または SVGElement のバウンディングボックスへの変更を監視します。コンテンツ矩形は、コンテンツを配置できるボックスです。つまり、ボーダーボックスからパディングを引いたものです。(ボーダーとパディングの説明はボックスモデルを見てください。)</div></blockquote></p>
+        <p class="tweet-text">Mutation/Intersection/Resize Observerはなかなか強力である。。<br/><br/><blockquote class="card card-default"><header><img  src="https://developer.mozilla.org/static/img/opengraph-logo.72382e605ce3.png" /><a href="https://developer.mozilla.org/ja/docs/Web/API/MutationObserver" target="_blank">MutationObserver - Web API | MDN</a></header><div>MutationObserver とは、指定したコールバック関数を DOM の変更時に実行させる API です。この API は、DOM3 Events の仕様で定義されていた Mutation Events を新しく設計し直したものです。</div></blockquote><br/><blockquote class="card card-default"><header><img  src="https://developer.mozilla.org/static/img/opengraph-logo.72382e605ce3.png" /><a href="https://developer.mozilla.org/ja/docs/Web/API/Intersection_Observer_API" target="_blank">Intersection Observer API - Web API | MDN</a></header><div>Intersection Observer API (交差監視 API) は、ターゲットとなる要素が、祖先要素もしくは文書の最上位のビューポートと交差する変更を非同期的に監視する方法を提供します。</div></blockquote><br/><blockquote class="card card-default"><header><img  src="https://developer.mozilla.org/static/img/opengraph-logo.72382e605ce3.png" /><a href="https://developer.mozilla.org/ja/docs/Web/API/ResizeObserver" target="_blank">ResizeObserver - Web API | MDN</a></header><div>ResizeObserver インターフェイスは、Element のコンテンツ矩形または SVGElement のバウンディングボックスへの変更を監視します。コンテンツ矩形は、コンテンツを配置できるボックスです。つまり、ボーダーボックスからパディングを引いたものです。(ボーダーとパディングの説明はボックスモデルを見てください。)</div></blockquote></p>
         
       </section>
       
@@ -661,9 +662,9 @@
             target="_blank">2019/11/28 6:09:51</a></p>
       </header>
       <section>
-        <p class="tweet-text">Intersection Observerを使用してInfinite Scrollを実装してみた。<br/><blockquote class="card card-default"><header><img loading="lazy" src="https://www.sfpgmr.net/img/sfweb.png" /><a href="https://www.sfpgmr.net/sandbox/new-page/releases/20191128/" target="_blank">トップページをリニューアルする</a></header><div>Programming,Music,HTML5,WebGL,javascript,WebAudio</div></blockquote> https://t.co/4lwJBO1fIB</p>
+        <p class="tweet-text">Intersection Observerを使用してInfinite Scrollを実装してみた。<br/><blockquote class="card card-default"><header><img  src="https://www.sfpgmr.net/img/sfweb.png" /><a href="https://www.sfpgmr.net/sandbox/new-page/releases/20191128/" target="_blank">トップページをリニューアルする</a></header><div>Programming,Music,HTML5,WebGL,javascript,WebAudio</div></blockquote> https://t.co/4lwJBO1fIB</p>
         
-        <img loading="lazy" class="tweet-img" src="https://pbs.twimg.com/media/EKaJeLcUYAA08Bp.jpg" />
+        <img  class="tweet-img" src="https://pbs.twimg.com/media/EKaJeLcUYAA08Bp.jpg" />
         
       </section>
       
@@ -714,7 +715,7 @@
       
       <header class="tweet-header">
         
-        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/1131382440/MixiIcon_normal.jpg" />
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1131382440/MixiIcon_normal.jpg" />
         <p class="tweet-user-name">後藤寿庵@juangotoh</p>
         
         <p class="tweet-date"><a href="https://twitter.com/juangotoh/status/1198910634923970560"
@@ -723,7 +724,7 @@
       <section>
         <p class="tweet-text">1981年のI/O表紙。「パーコン」は「パーソナルコンピューター」の略語。このころI/Oは「パーコン」、ASCIIは「パソコン」と記述していた。最終的に残ったのは「パソコン」だけど、当時表記がぶれていた歴史的事実を知ってほしい。 https://t.co/Dfg9xIcDlf</p>
         
-        <img loading="lazy" class="tweet-img" src="https://pbs.twimg.com/media/EKNi3bJU0AAVLw7.png" />
+        <img  class="tweet-img" src="https://pbs.twimg.com/media/EKNi3bJU0AAVLw7.png" />
         
       </section>
       
@@ -734,7 +735,7 @@
       
       <header class="tweet-header">
         
-        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/731335621789147137/bWURa4wY_normal.jpg" />
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/731335621789147137/bWURa4wY_normal.jpg" />
         <p class="tweet-user-name">トモカズ@tomo0354</p>
         
         <p class="tweet-date"><a href="https://twitter.com/tomo0354/status/1198384152535433216"
@@ -743,9 +744,9 @@
       <section>
         <p class="tweet-text">ベッドの脇に(PCと)ディスプレイを設置<br/>当時のラジカセを置いてあるかのような感じになり、サイズもほぼ同じ。<br/>中学生の頃に戻ったみたい。（懐古趣味） https://t.co/R0Lbzv6qA9</p>
         
-        <img loading="lazy" class="tweet-img" src="https://pbs.twimg.com/media/EKGECEEUcAA3Ri1.jpg" />
+        <img  class="tweet-img" src="https://pbs.twimg.com/media/EKGECEEUcAA3Ri1.jpg" />
         
-        <img loading="lazy" class="tweet-img" src="https://pbs.twimg.com/media/EKGECEKUEAEZmWH.jpg" />
+        <img  class="tweet-img" src="https://pbs.twimg.com/media/EKGECEKUEAEZmWH.jpg" />
         
       </section>
       
@@ -756,7 +757,7 @@
       
       <header class="tweet-header">
         
-        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/1127133983949459457/I28Iptpn_normal.jpg" />
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1127133983949459457/I28Iptpn_normal.jpg" />
         <p class="tweet-user-name">葛飾出身@ahtamaraneze</p>
         
         <p class="tweet-date"><a href="https://twitter.com/ahtamaraneze/status/1197951328611291136"
@@ -776,7 +777,7 @@
       
       <header class="tweet-header">
         
-        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
         <p class="tweet-user-name">S.F.@SFPGMR</p>
         
         <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1196518963649208320"
@@ -794,7 +795,7 @@
       
       <header class="tweet-header">
         
-        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/951224654957502465/4z36RIbq_normal.jpg" />
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/951224654957502465/4z36RIbq_normal.jpg" />
         <p class="tweet-user-name">カヂロ♨️原稿@kadikadisake</p>
         
         <p class="tweet-date"><a href="https://twitter.com/kadikadisake/status/1196047294505684992"
@@ -803,7 +804,7 @@
       <section>
         <p class="tweet-text">にんげんってなんだ https://t.co/05XcMpqjAi</p>
         
-        <img loading="lazy" class="tweet-img" src="https://pbs.twimg.com/media/EJk2q89U0AMOelB.png" />
+        <img  class="tweet-img" src="https://pbs.twimg.com/media/EJk2q89U0AMOelB.png" />
         
       </section>
       
@@ -814,14 +815,14 @@
       
       <header class="tweet-header">
         
-        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
         <p class="tweet-user-name">S.F.@SFPGMR</p>
         
         <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1195843115136864256"
             target="_blank">2019/11/17 8:16:30</a></p>
       </header>
       <section>
-        <p class="tweet-text">最近この「ろっか・ばい・まい・べいびい」がとても気に入っていて、よく聴く。ギターとベースのシンプルなバッキング。ギターの音が心の琴線に触れているような感じ。デモをそのままミックスしたらしいね。。<br/><br/><div class="youtube" data-type="yt" id="I8ms09u55Mk"><div class="yt-title">Youtube - 細野晴臣 - ろっか・ばい・まい・べいびい</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/I8ms09u55Mk" class="youtube" src="https://i.ytimg.com/vi/I8ms09u55Mk/hqdefault.jpg" /></div>   <br/></p>
+        <p class="tweet-text">最近この「ろっか・ばい・まい・べいびい」がとても気に入っていて、よく聴く。ギターとベースのシンプルなバッキング。ギターの音が心の琴線に触れているような感じ。デモをそのままミックスしたらしいね。。<br/><br/><div class="youtube" data-type="yt" id="I8ms09u55Mk"><div class="yt-title">Youtube - 細野晴臣 - ろっか・ばい・まい・べいびい</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img  data-href="https://youtu.be/I8ms09u55Mk" class="youtube" src="https://i.ytimg.com/vi/I8ms09u55Mk/hqdefault.jpg" /></div>   <br/></p>
         
       </section>
       
@@ -831,7 +832,7 @@
             target="_blank">2019/11/17 8:19:25</a></p>
       </header>
       <section>
-        <p class="tweet-text">細野さんの曲で一番好きなのは「夏なんです」だ。これもアコギの音が耳に心地よいし、凝ってるなあという印象。。<br/><br/><div class="youtube" data-type="yt" id="DpnSNRvG6rw"><div class="yt-title">Youtube - Happy End - 風街ろまん - 07. 夏なんです</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/DpnSNRvG6rw" class="youtube" src="https://i.ytimg.com/vi/DpnSNRvG6rw/hqdefault.jpg" /></div>   <br/></p>
+        <p class="tweet-text">細野さんの曲で一番好きなのは「夏なんです」だ。これもアコギの音が耳に心地よいし、凝ってるなあという印象。。<br/><br/><div class="youtube" data-type="yt" id="DpnSNRvG6rw"><div class="yt-title">Youtube - Happy End - 風街ろまん - 07. 夏なんです</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img  data-href="https://youtu.be/DpnSNRvG6rw" class="youtube" src="https://i.ytimg.com/vi/DpnSNRvG6rw/hqdefault.jpg" /></div>   <br/></p>
         
       </section>
       
@@ -841,7 +842,7 @@
             target="_blank">2019/11/17 8:21:03</a></p>
       </header>
       <section>
-        <p class="tweet-text">「夏なんです」に匹敵するくらい好きなのが「L.D.K.」なんですわ。これが。<br/><br/><div class="youtube" data-type="yt" id="EWdo78lckoI"><div class="yt-title">Youtube - Haruomi Hosono - Living Dining Kitchen</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/EWdo78lckoI" class="youtube" src="https://i.ytimg.com/vi/EWdo78lckoI/hqdefault.jpg" /></div>   <br/></p>
+        <p class="tweet-text">「夏なんです」に匹敵するくらい好きなのが「L.D.K.」なんですわ。これが。<br/><br/><div class="youtube" data-type="yt" id="EWdo78lckoI"><div class="yt-title">Youtube - Haruomi Hosono - Living Dining Kitchen</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img  data-href="https://youtu.be/EWdo78lckoI" class="youtube" src="https://i.ytimg.com/vi/EWdo78lckoI/hqdefault.jpg" /></div>   <br/></p>
         
       </section>
       
@@ -851,7 +852,7 @@
             target="_blank">2019/11/17 8:23:15</a></p>
       </header>
       <section>
-        <p class="tweet-text">「灰色の段階」。いっときこればかり聴いてたときもある。ヤオヤのリズムってほんといいなあと思わせる一曲。<br/><br/><div class="youtube" data-type="yt" id="0PtYGJhrXZo"><div class="yt-title">Youtube - Gradated Grey - YMO</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/0PtYGJhrXZo" class="youtube" src="https://i.ytimg.com/vi/0PtYGJhrXZo/hqdefault.jpg" /></div>   <br/></p>
+        <p class="tweet-text">「灰色の段階」。いっときこればかり聴いてたときもある。ヤオヤのリズムってほんといいなあと思わせる一曲。<br/><br/><div class="youtube" data-type="yt" id="0PtYGJhrXZo"><div class="yt-title">Youtube - Gradated Grey - YMO</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img  data-href="https://youtu.be/0PtYGJhrXZo" class="youtube" src="https://i.ytimg.com/vi/0PtYGJhrXZo/hqdefault.jpg" /></div>   <br/></p>
         
       </section>
       
@@ -862,7 +863,7 @@
       
       <header class="tweet-header">
         
-        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
         <p class="tweet-user-name">S.F.@SFPGMR</p>
         
         <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1195826306761408512"
@@ -890,7 +891,7 @@
       
       <header class="tweet-header">
         
-        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
         <p class="tweet-user-name">S.F.@SFPGMR</p>
         
         <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1192411182251954181"
@@ -918,7 +919,7 @@
       
       <header class="tweet-header">
         
-        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
         <p class="tweet-user-name">S.F.@SFPGMR</p>
         
         <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1193742211126452224"
@@ -945,7 +946,7 @@
             target="_blank">2019/11/11 19:56:13</a></p>
       </header>
       <section>
-        <p class="tweet-text">今年買ったゲームは（全部STEAM）、<br/><br/>・Shadow Of The Tomb Raider<br/><div class="youtube" data-type="yt" id="Dr4PWgh5FXI"><div class="yt-title">Youtube - シャドウ オブ ザ トゥームレイダー ”Launch"トレーラー 日本語吹き替え版</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/Dr4PWgh5FXI" class="youtube" src="https://i.ytimg.com/vi/Dr4PWgh5FXI/hqdefault.jpg" /></div>   <br/></p>
+        <p class="tweet-text">今年買ったゲームは（全部STEAM）、<br/><br/>・Shadow Of The Tomb Raider<br/><div class="youtube" data-type="yt" id="Dr4PWgh5FXI"><div class="yt-title">Youtube - シャドウ オブ ザ トゥームレイダー ”Launch"トレーラー 日本語吹き替え版</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img  data-href="https://youtu.be/Dr4PWgh5FXI" class="youtube" src="https://i.ytimg.com/vi/Dr4PWgh5FXI/hqdefault.jpg" /></div>   <br/></p>
         
       </section>
       
@@ -955,7 +956,7 @@
             target="_blank">2019/11/11 20:06:51</a></p>
       </header>
       <section>
-        <p class="tweet-text">・コナミ アーケード・クラシックス<br/><br/>これはサンダークロスやりたさに衝動買い。。<br/><br/><div class="youtube" data-type="yt" id="yiYPZHOtteI"><div class="yt-title">Youtube - 「アーケードクラシックス アニバーサリーコレクション」ローンチトレーラー</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/yiYPZHOtteI" class="youtube" src="https://i.ytimg.com/vi/yiYPZHOtteI/hqdefault.jpg" /></div>   <br/></p>
+        <p class="tweet-text">・コナミ アーケード・クラシックス<br/><br/>これはサンダークロスやりたさに衝動買い。。<br/><br/><div class="youtube" data-type="yt" id="yiYPZHOtteI"><div class="yt-title">Youtube - 「アーケードクラシックス アニバーサリーコレクション」ローンチトレーラー</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img  data-href="https://youtu.be/yiYPZHOtteI" class="youtube" src="https://i.ytimg.com/vi/yiYPZHOtteI/hqdefault.jpg" /></div>   <br/></p>
         
       </section>
       
@@ -965,7 +966,7 @@
             target="_blank">2019/11/11 20:06:51</a></p>
       </header>
       <section>
-        <p class="tweet-text">・Cities Skylines<br/>以外にシム・シティみたいなやつ好きなんだよね。。<br/><br/><div class="youtube" data-type="yt" id="0gI2N10QyRA"><div class="yt-title">Youtube - Cities: Skylines - Release Trailer</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/0gI2N10QyRA" class="youtube" src="https://i.ytimg.com/vi/0gI2N10QyRA/hqdefault.jpg" /></div>   <br/></p>
+        <p class="tweet-text">・Cities Skylines<br/>以外にシム・シティみたいなやつ好きなんだよね。。<br/><br/><div class="youtube" data-type="yt" id="0gI2N10QyRA"><div class="yt-title">Youtube - Cities: Skylines - Release Trailer</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img  data-href="https://youtu.be/0gI2N10QyRA" class="youtube" src="https://i.ytimg.com/vi/0gI2N10QyRA/hqdefault.jpg" /></div>   <br/></p>
         
       </section>
       
@@ -975,7 +976,7 @@
             target="_blank">2019/11/11 20:06:51</a></p>
       </header>
       <section>
-        <p class="tweet-text">・Call Of Duty WW2<br/>まあこれは昔好きだったFPSが、WW2に回帰したバージョンである。。<br/><br/><div class="youtube" data-type="yt" id="D4Q_XYVescc"><div class="yt-title">Youtube - Official Call of Duty®: WWII Reveal Trailer</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/D4Q_XYVescc" class="youtube" src="https://i.ytimg.com/vi/D4Q_XYVescc/hqdefault.jpg" /></div>   <br/></p>
+        <p class="tweet-text">・Call Of Duty WW2<br/>まあこれは昔好きだったFPSが、WW2に回帰したバージョンである。。<br/><br/><div class="youtube" data-type="yt" id="D4Q_XYVescc"><div class="yt-title">Youtube - Official Call of Duty®: WWII Reveal Trailer</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img  data-href="https://youtu.be/D4Q_XYVescc" class="youtube" src="https://i.ytimg.com/vi/D4Q_XYVescc/hqdefault.jpg" /></div>   <br/></p>
         
       </section>
       
@@ -985,7 +986,7 @@
             target="_blank">2019/11/11 20:09:22</a></p>
       </header>
       <section>
-        <p class="tweet-text">そしてこれ。。R-TYPE Dimensions。これもちょっとやりたくてね。。3D &lt;--&gt; 2Dがシームレスに切り替わるのがちょっとすごいですわ。。<br/><br/><div class="youtube" data-type="yt" id="g0K-4f6KNlw"><div class="yt-title">Youtube - R-Type Dimensions　プロモーションムービー</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/g0K-4f6KNlw" class="youtube" src="https://i.ytimg.com/vi/g0K-4f6KNlw/hqdefault.jpg" /></div>   <br/></p>
+        <p class="tweet-text">そしてこれ。。R-TYPE Dimensions。これもちょっとやりたくてね。。3D &lt;--&gt; 2Dがシームレスに切り替わるのがちょっとすごいですわ。。<br/><br/><div class="youtube" data-type="yt" id="g0K-4f6KNlw"><div class="yt-title">Youtube - R-Type Dimensions　プロモーションムービー</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img  data-href="https://youtu.be/g0K-4f6KNlw" class="youtube" src="https://i.ytimg.com/vi/g0K-4f6KNlw/hqdefault.jpg" /></div>   <br/></p>
         
       </section>
       
@@ -1025,7 +1026,7 @@
             target="_blank">2019/11/11 20:59:17</a></p>
       </header>
       <section>
-        <p class="tweet-text">FPSはWolfenstein 3Dからだけなんだけど、あんまり面白いとは思わんかったんだよね。<br/><br/><div class="youtube" data-type="yt" id="x8o0a5ntxfc"><div class="yt-title">Youtube - PC Longplay [563] Wolfenstein 3D</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/x8o0a5ntxfc" class="youtube" src="https://i.ytimg.com/vi/x8o0a5ntxfc/hqdefault.jpg" /></div>   <br/></p>
+        <p class="tweet-text">FPSはWolfenstein 3Dからだけなんだけど、あんまり面白いとは思わんかったんだよね。<br/><br/><div class="youtube" data-type="yt" id="x8o0a5ntxfc"><div class="yt-title">Youtube - PC Longplay [563] Wolfenstein 3D</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img  data-href="https://youtu.be/x8o0a5ntxfc" class="youtube" src="https://i.ytimg.com/vi/x8o0a5ntxfc/hqdefault.jpg" /></div>   <br/></p>
         
       </section>
       
@@ -1035,7 +1036,7 @@
             target="_blank">2019/11/11 21:00:27</a></p>
       </header>
       <section>
-        <p class="tweet-text">DOOMが出てそのグラフィックに「すげえ。」とは思ったものの、これもそんなに面白いとは思わんかった。。<br/><div class="youtube" data-type="yt" id="iFnOLFd_ByQ"><div class="yt-title">Youtube - [60FPS] DOOM (1993) LONGPLAY</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/iFnOLFd_ByQ" class="youtube" src="https://i.ytimg.com/vi/iFnOLFd_ByQ/hqdefault.jpg" /></div>   <br/></p>
+        <p class="tweet-text">DOOMが出てそのグラフィックに「すげえ。」とは思ったものの、これもそんなに面白いとは思わんかった。。<br/><div class="youtube" data-type="yt" id="iFnOLFd_ByQ"><div class="yt-title">Youtube - [60FPS] DOOM (1993) LONGPLAY</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img  data-href="https://youtu.be/iFnOLFd_ByQ" class="youtube" src="https://i.ytimg.com/vi/iFnOLFd_ByQ/hqdefault.jpg" /></div>   <br/></p>
         
       </section>
       
@@ -1045,7 +1046,7 @@
             target="_blank">2019/11/11 21:01:30</a></p>
       </header>
       <section>
-        <p class="tweet-text">FPSにハマったのは「Half-Life」からであろう。やはり。<br/><div class="youtube" data-type="yt" id="JoV9o6b91Sc"><div class="yt-title">Youtube - Half-Life:  Full Game Walkthrough</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/JoV9o6b91Sc" class="youtube" src="https://i.ytimg.com/vi/JoV9o6b91Sc/hqdefault.jpg" /></div>   <br/></p>
+        <p class="tweet-text">FPSにハマったのは「Half-Life」からであろう。やはり。<br/><div class="youtube" data-type="yt" id="JoV9o6b91Sc"><div class="yt-title">Youtube - Half-Life:  Full Game Walkthrough</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img  data-href="https://youtu.be/JoV9o6b91Sc" class="youtube" src="https://i.ytimg.com/vi/JoV9o6b91Sc/hqdefault.jpg" /></div>   <br/></p>
         
       </section>
       
@@ -1077,7 +1078,7 @@
       <section>
         <p class="tweet-text">EPISODE 2がなんか尻切れなというか、続編を匂わすようなエンディングだったような気がするんだな。なんか忘れてるなあ。。もう一回やるか。。 https://t.co/6CwQC0rwrQ</p>
         
-        <img loading="lazy" class="tweet-img" src="https://pbs.twimg.com/media/EJF0JhuU8AAvZeN.jpg" />
+        <img  class="tweet-img" src="https://pbs.twimg.com/media/EJF0JhuU8AAvZeN.jpg" />
         
       </section>
       
@@ -1087,7 +1088,7 @@
             target="_blank">2019/11/11 21:11:13</a></p>
       </header>
       <section>
-        <p class="tweet-text">なんかファン・メイドのEpisode 3とかあったりして。<br/><div class="youtube" data-type="yt" id="DAQucLUFOm4"><div class="yt-title">Youtube - Boreal Alyph Mini Update: October 2019</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/DAQucLUFOm4" class="youtube" src="https://i.ytimg.com/vi/DAQucLUFOm4/hqdefault.jpg" /></div>   <br/></p>
+        <p class="tweet-text">なんかファン・メイドのEpisode 3とかあったりして。<br/><div class="youtube" data-type="yt" id="DAQucLUFOm4"><div class="yt-title">Youtube - Boreal Alyph Mini Update: October 2019</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img  data-href="https://youtu.be/DAQucLUFOm4" class="youtube" src="https://i.ytimg.com/vi/DAQucLUFOm4/hqdefault.jpg" /></div>   <br/></p>
         
       </section>
       
@@ -1097,7 +1098,7 @@
             target="_blank">2019/11/11 21:15:49</a></p>
       </header>
       <section>
-        <p class="tweet-text">Half-Lifeをリメイクした「Black Mesa」もXenまでできとるということは完成が近いのかいな。。<br/><div class="youtube" data-type="yt" id="IzR3vllw6O0"><div class="yt-title">Youtube - Black Mesa: Xen - Opening Minutes (HALF-LIFE 1 REMAKE)</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/IzR3vllw6O0" class="youtube" src="https://i.ytimg.com/vi/IzR3vllw6O0/hqdefault.jpg" /></div>   <br/></p>
+        <p class="tweet-text">Half-Lifeをリメイクした「Black Mesa」もXenまでできとるということは完成が近いのかいな。。<br/><div class="youtube" data-type="yt" id="IzR3vllw6O0"><div class="yt-title">Youtube - Black Mesa: Xen - Opening Minutes (HALF-LIFE 1 REMAKE)</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img  data-href="https://youtu.be/IzR3vllw6O0" class="youtube" src="https://i.ytimg.com/vi/IzR3vllw6O0/hqdefault.jpg" /></div>   <br/></p>
         
       </section>
       

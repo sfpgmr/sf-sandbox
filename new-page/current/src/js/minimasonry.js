@@ -17,9 +17,12 @@ export default class MiniMasonry {
         minify: true
       };
 
-    this.init(conf);
+      this.resizeObserver = new ResizeObserver(entries => {
+        this.resizeThrottler(entries);
+      });
+      this.init(conf);
+  
 
-    return this;
   }
 
   init(conf) {
@@ -32,8 +35,17 @@ export default class MiniMasonry {
     if (!this._container) {
       throw new Error('Container not found or missing');
     }
-    window.addEventListener("resize", this.resizeThrottler.bind(this));
 
+    const children = this._container.querySelectorAll(this.conf.container + ' > *');
+    children.forEach(c=>{
+      this.resizeObserver.observe(c);
+    })
+
+    //this._container.
+    //window.addEventListener("resize", this.resizeThrottler.bind(this));
+
+
+    //this._resizeObserver.observe(this._container);
     //this.layout();
   };
 
@@ -124,16 +136,23 @@ export default class MiniMasonry {
     return longest;
   };
 
-  resizeThrottler() {
+  resizeThrottler(e) {
+    //console.log(e);
+    // e.forEach(ec=>{
+    //   this.resizeObserver.unobserve(ec.target);
+    // })
+    //const contentRect =  e[0].contentRect;
     // ignore resize events as long as an actualResizeHandler execution is in the queue
-    if (!this._resizeTimeout) {
+    if (!this._resizeTimeout /*&& (!this.contentRect) ||  
+        (this.contentRect && ((this.contentRect.width != contentRect.width) || (this.contentRect.height != contentRect.height)))
+        */) {
 
       this._resizeTimeout = setTimeout(function () {
         this._resizeTimeout = null;
         //IOS Safari throw random resize event on scroll, call layout only if size has changed
-        if (this._container.clientWidth != this._width) {
+        //if (this._container.clientWidth != this._width) {
           this.layout();
-        }
+        //}
         // The actualResizeHandler will execute at a rate of 15fps
       }.bind(this), 66);
     }
