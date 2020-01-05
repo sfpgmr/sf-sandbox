@@ -1,8 +1,5 @@
 <!DOCTYPE html>
-<%
-//const lazyLoading = 'loading="lazy"';
-const lazyLoading = '';
-%>
+
 <html lang="ja" prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb# article: http://ogp.me/ns/article#">
 
 <head>
@@ -21,60 +18,97 @@ const lazyLoading = '';
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <title>トップページをリニューアルする</title>
-  <meta name="description" content="<%=meta.description%>" />
-  <meta name="keywords" content="<%=meta.keywords%>" /> 	
+  <meta name="description" content="リニューアル用のトップページデザインを考えて実装する" />
+  <meta name="keywords" content="Programming,Music,HTML5,WebGL,javascript,WebAudio" /> 	
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <meta itemprop="image" content="<%-meta.imageUrl%>" />
-  <meta itemprop="name" content="<%=meta.siteName%>" />
+  <meta itemprop="image" content="https://www.sfpgmr.net/img/sfweb.png" />
+  <meta itemprop="name" content="S.F. Web" />
   
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:site" content="<%=meta.siteName%>" />
-  <meta name="twitter:url" content="<%-meta.url%>" />
-  <meta name="twitter:title" content="<%=meta.title%>" />
-  <meta name="twitter:description" content="<%=meta.description%>" />
-  <meta name="twitter:image" content="<%-meta.imageUrl%>" />
+  <meta name="twitter:site" content="S.F. Web" />
+  <meta name="twitter:url" content="./index.html" />
+  <meta name="twitter:title" content="リニューアル用のトップページデザイン" />
+  <meta name="twitter:description" content="リニューアル用のトップページデザインを考えて実装する" />
+  <meta name="twitter:image" content="https://www.sfpgmr.net/img/sfweb.png" />
   
   <meta property="og:type" content="article">
-  <meta property="og:url" content="<%-meta.url%>" />
-  <meta property="og:title" content="<%=meta.title%>"/>
-  <meta property="og:site_name" content="<%=meta.siteName%>" />
-  <meta property="og:description" content="<%=meta.keywords%>">
-  <meta property="og:image" content="<%-meta.imageUrl%>">
+  <meta property="og:url" content="./index.html" />
+  <meta property="og:title" content="リニューアル用のトップページデザイン"/>
+  <meta property="og:site_name" content="S.F. Web" />
+  <meta property="og:description" content="Programming,Music,HTML5,WebGL,javascript,WebAudio">
+  <meta property="og:image" content="https://www.sfpgmr.net/img/sfweb.png">
 
-  <script type="application/json" id="sfweb">{
-    '@context': {
-      '@vocab': 'http://schema.org/',
-      '@base': 'https://sfpgmr.net/',
-      'sf':'https://www.sfpgmr.net/'
+  <script type="application/ld+json">
+  {
+    "@context": {
+      "@vocab": "http://schema.org/",
+      "@base": "https://www.sfpgmr.net/"
     },
-    '@type': 'WebPage',
-    '@id': '',
-    "keywords": "<%=meta.keywords%>",
-    'about': '',
-    "datePublished": "2019-05-26T15:06:10+09:00",
-    "dateModified": "2019-05-26T15:06:10+09:00",
-    "url": "https://www.sfpgmr.net/blog/entry/2019/05/c3efe70758c1e9355135c9d0cd00ceaa",
-    'author': {
-      '@id': 'https://www.sfpgmr.net/profile.html#sfpgmr'
-    },
-    'image': {
-      '@type': 'ImageObject',
-      'url': 'https://www.sfpgmr.net/img/sf.png',
-      'width':'128',
-      'height':'128'
-    },
-    'publisher': {
-      '@type': 'Organization',
-      'name': 'SFPGMR',
-      'logo':{
-        '@type': 'ImageObject',
-        'url': 'https://www.sfpgmr.net/img/sfblog.png',
-        'width':'640',
-        'height':'640'
-      }
+    "@type": "WebSite",
+    "url": "https://www.sfpgmr.net/",
+    "headline": "S.F. Web",
+    "name": "S.F. Web",
+    "about": "IT技術・音楽・ゲームに関する制作物の公開、情報発信を行っています。",
+    "keywords": "Programming,Music,Game,C++,DirectX,HTML5,WebGL,javascript,WebAudio",
+    "author": {
+      "@type": "Person",
+      "@id": "./profile.html#sfpgmr",
+      "name": "Satoshi Fujiwara",
+      "image": "https://sfpgmr.net/img/sfpgmr.png",
+      "alternateName": "SFPGMR"
     }
-   }</script>
+  }
+  </script>
+  <script type="application/ld+json">
+    {
+     "@type": "WebPage",
+     "@id": "./webpages/web.html",
+     "url": "./webpages/web.html",
+     "datePublished": "2017-01-10T08:00:00+08:00",
+     "dateModified": "2017-01-12T08:00:00+08:00",
+     "headline": "Web関連",
+     "image": {
+      "@type": "ImageObject",
+      "url": "./img/sfweb.png",
+      "width": "640",
+      "height": "640"
+     },
+     "name": "Web関連",
+     "about": "HTML5,JS,WebGL,WebAudio,SNS API",
+     "author": {
+      "@type": "Person",
+      "@id": "./profile.html#sfpgmr",
+      "name": "Satoshi Fujiwara",
+      "image": "https://sfpgmr.net/img/sfpgmr.png",
+      "alternateName": "SFPGMR"
+     },
+     "keywords": "Programming,Music,HTML5,WebGL,javascript,WebAudio",
+     "description": "HTML5,JS,WebGL,WebAudio,SNS API等のコンテンツ",
+     "relatedLink": [
+      "http://github.sfpgmr.net",
+      "http://blog.sfgpmr.net/"
+     ],
+     "breadcrumb": {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+       {
+        "@type": "ListItem",
+        "position": 1,
+        "item": {
+         "url": "./webpages/web.html",
+         "name": "Web関連"
+        }
+       }
+      ]
+     },
+     "@context": {
+      "@vocab": "http://schema.org/",
+      "@base": "https://www.sfpgmr.net/",
+      "sf": "https://www.sfpgmr.net/"
+     }
+    }
+    </script>
 
   <style>
     * {
@@ -291,7 +325,7 @@ const lazyLoading = '';
   <header class="top-nav">
     <h1>S.F. Page.</h1>
   </header>
-  <div class="contents" id="contents" rendersubtree="invisible skip-activation"> %>
+  <div class="contents" id="contents" rendersubtree="invisible skip-activation"> 
   </div>
   <footer>
     CopyLight 2019 Satoshi Fujiwara
