@@ -1,10 +1,7 @@
 #!/bin/sh
 ":" //# ; exec /usr/bin/env node --experimental-modules "$0" "$@"
 import fse from 'fs-extra';
-import fs, { access } from 'fs';
-import nodeResolve from 'rollup-plugin-node-resolve';
-import commonjs from 'rollup-plugin-commonjs';
-import rollup from 'rollup';
+import fs from 'fs';
 import resolveHome from './resolveHome.js';
 import path from 'path';
 import { exec as exec_ } from 'child_process';

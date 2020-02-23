@@ -1,0 +1,66 @@
+{
+  "@context": {
+    "@vocab": "http://schema.org/",
+    "@base": "https://sfpgmr.net/",
+    "sf": "https://www.sfpgmr.net/"
+  },
+  "article": {
+    "@type": "Article",
+    "@id": null,
+    "url": null,
+    "keywords": null,
+    "about": "",
+    "author": {
+      "@type": "./profile.html#sfpgmr"
+    },
+    "image": [
+      "https://sfpgmr.net/img/sfblog.1x1.png",
+      "https://sfpgmr.net/img/sfblog.4x3.png",
+      "https://sfpgmr.net/img/sfblog.16x9.png"
+    ],
+    "publisher": {
+      "@type": "Organization",
+      "@id": "/#organization",
+      "name": "SFPGMR",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://sfpgmr.net/img/sfpgmr.png",
+        "width": "1200",
+        "height": "1200"
+      }
+    },
+    "isPartOf": {
+      "@id": "/#website"
+    },
+    "datePublished": null,
+    "dateModified": null,
+    "headline": "markdownパーサ・レンダラを作る。",
+    "description": "markdownパーサ・レンダラを作る。"
+  },
+  "webSite": {
+    "@type": "WebSite",
+    "url": "https://sfpgmr.net/",
+    "@id": "/#website",
+    "headline": "S.F. Web",
+    "name": "S.F. Web",
+    "about": "IT技術・音楽・ゲームに関する制作物の公開、情報発信を行っています。",
+    "keywords": "Programming,Music,Game,C++,DirectX,HTML5,WebGL,javascript,WebAudio",
+    "author": {
+      "@id": "/profile.html#sfpgmr"
+    }
+  },
+  "person": {
+    "@type": "Person",
+    "@id": "./profile.html#sfpgmr",
+    "name": "Satoshi Fujiwara",
+    "image": {
+      "url": "https://sfpgmr.net/img/sfpgmr.png",
+      "width": "1200",
+      "height": "1200"
+    },
+    "alternateName": [
+      "SFPGMR",
+      "SFPG"
+    ]
+  }
+}

@@ -54,7 +54,7 @@ try {
       params.max_id = last.id;
       console.log(tweets.length,last.id,last.created_at);
     }
-    await fs.promises.writeFile('./data/tweets.json', JSON.stringify(tweetData, null, 2), 'utf8');
+    await fs.promises.writeFile('../data/tweets.json', JSON.stringify(tweetData, null, 2), 'utf8');
   })();
 } catch (error){
   console.error(error);

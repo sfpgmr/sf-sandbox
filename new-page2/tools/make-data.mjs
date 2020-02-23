@@ -50,7 +50,7 @@ async function listFile(rootDir, dir, files, dirs) {
       keywords = keywords ? keywords.content : undefined;
 
       //let about = document.querySelector('body');
-      //about = about ? about.textContent.substr(0,128):undefined;
+      //about = about ? about.textContent.replace(/\s+/g,' ').substr(0,128):undefined;
       files.push({
         path: relativePath,
         url: wwwconfig.baseUrl + '/' + relativePath,
