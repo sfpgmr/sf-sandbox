@@ -1,33 +1,87 @@
 ﻿<!DOCTYPE html>
 <html vocab="http://schema.org" lang="ja">
 <head>
-<!-- Global site tag (gtag.js) - Google Analytics -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=UA-15457703-9"></script>
-<script>
-  if (!window.location.hostname.match(/localhost/)) {
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-  gtag('config', 'UA-15457703-9');
-  }
-</script>
-  <title></title>
+ <title></title>
 
   <meta charset="utf-8" />
   <meta name="description" content="" />
   <meta name="keywords" content="" />
   <meta name="author" content="sfpgmr" />
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/siimple@3.3.1/dist/siimple.min.css">
   <style>
+
+
     body {
+      font-size:14px;
+      line-height:1.25rem;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       margin: 0;
       padding: 0;
       overflow: hidden;
     }
+
+    input,textarea,button,.info,pre {
+      border-radius: 3px;
+      padding:4px;
+      margin:auto;
+      width:95%;
+    }
+
+    pre {
+      border:1px solid gray;
+    }
+
+    textarea,pre {
+      display: block;
+      min-height:200px;
+      overflow-y: auto;
+      overflow-x: hidden;
+    }
+
+    .info {
+      min-height:100px;
+    }
+
+
+    .normal {
+      background-color: lightgreen;
+      color:green;
+    }
+
+    .error {
+      background-color:lightpink;
+      color:red;
+    }
+
+    label {
+      text-align: left;
+      color:black;
+      font-weight: bold;
+    }
+
   </style>
   </head>
-<body >
+<body>
+  <article>
+      <div>
+        <label>Input Markdown Source</label>
+        <div>
+          <textarea placeholder="input markdown source code" rows="5" id="input" ></textarea> 
+        </div>
+      </div>
+      <div>
+        <label class="label">Info</label>
+        <div>
+          <div class="info normal" id="info"></div>
+        </div>
+      </div>
+      <div>
+        <label>Output</label>
+        <div>
+          <pre id="output" ></textarea> 
+        </div>
+      </div>
+  </article>
   <script src="./index.js"></script>
 </body>
 </html>

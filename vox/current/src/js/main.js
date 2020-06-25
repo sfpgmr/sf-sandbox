@@ -2,6 +2,7 @@
 
 import {Console} from './console.js';
 import {Vox,VoxelModel} from './voxscreen.js';
+//import { voronoi } from 'd3';
 
 // let display = true;
 let play = false;
@@ -21,7 +22,7 @@ window.addEventListener('load',()=>{
 
 async function start(){
   try {
-  const con = new Console(160,100);
+  const con = new Console(192,256);
 
   const textBitmap = new Uint8Array(
     await fetch('./font.bin')
@@ -37,6 +38,7 @@ async function start(){
 
   //const voxmodel = new Vox({gl2:gl2,data:await loadVox('myship.bin')});
   const voxelModels = await VoxelModel.loadFromUrls([
+    'cube.bin',
     'myship.bin',
     'q.bin',
     'q1.bin',
@@ -44,6 +46,20 @@ async function start(){
   ]);
 
   const vox = new Vox({gl2:gl2,voxelModels:voxelModels,memory:memory,offset:offset});
+  let count = 1;
+
+  for(let y = 8,offset = 0;y < con.VIRTUAL_HEIGHT;y+=16){
+    for(let x = 8;x < con.VIRTUAL_WIDTH;x+=16){
+      const vmem = vox.voxScreenMemory;
+      vmem.setUint32(offset + vox.VOX_OBJ_ATTRIB,0x8003fc00 | count++ | (0),vox.endian);
+      vmem.setFloat32(offset + vox.VOX_OBJ_SCALE,0.7,vox.endian);
+      vmem.setFloat32(offset + vox.VOX_OBJ_POS,x - con.VIRTUAL_WIDTH / 2,vox.endian);
+      vmem.setFloat32(offset + vox.VOX_OBJ_POS + vox.SIZE_PARAM,y - con.VIRTUAL_HEIGHT / 2,vox.endian);
+      vmem.setFloat32(offset + vox.VOX_OBJ_POS + vox.SIZE_PARAM * 2,0,vox.endian);
+      vmem.setFloat32(offset + vox.VOX_OBJ_ANGLE,count,vox.endian);
+      offset += vox.VOX_MEMORY_STRIDE;
+    }
+  }
 
   //const myship = new SceneNode(model);
   con.vscreen.appendScene(vox);

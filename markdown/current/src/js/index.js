@@ -27,16 +27,19 @@ import parser from './doc-syntax.mjs';
 
 // メイン
 window.addEventListener('load', async ()=>{
-  parser;
 
-  var WIDTH = window.innerWidth , HEIGHT = window.innerHeight;
+  const input = document.getElementById("input");
+  const output = document.getElementById("output");
+  const info = document.getElementById("info");
 
-  window.addEventListener( 'resize', ()=>{
-        WIDTH = window.innerWidth;
-        HEIGHT = window.innerHeight;
-				renderer.setSize(WIDTH,HEIGHT);
-        composer.setSize(WIDTH,HEIGHT)
-  }
-  , false );
-  
+  input.addEventListener('input',()=>{
+    try {
+      output.textContent = JSON.stringify(parser.parse(input.value),null,1);
+      info.textContent = 'エラーなし';
+      info.setAttribute('class','info normal');     
+    } catch (e) {
+      info.textContent = e;
+      info.setAttribute('class','info error');     
+    }
+  });
 });

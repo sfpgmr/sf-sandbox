@@ -1,18 +1,25 @@
 
 VPATH = ./current:./current/src
-PAGE_JSON := ./page.json
-PAGE_SRC_FILE := ./current/src/ejs/index.ejs ejs/head.ejs ejs/main.ejs ejs/navbar.ejs ejs/scripts.ejs ejs/sidebar.ejs ejs/meta.ejs
 NODE := node --no-warnings --experimental-modules
-RENDER_PAGE = $(NODE) ./tools/render-page.mjs 
 ROLLUP = rollup -c
+BUILD_PATH = ./current/build
+SITE_BASE = ~/www/html/contents/sandbox/markdown
+RELEASE_BASE = ./releases/
+MD_BASE = ./current/src/md
+
+RENDER_INDEX = $(NODE) ./tools/render-index.mjs 
+RENDER_ARTICLE = $(NODE) ./tools/render-article.mjs 
 
 # index page
-TARGET_PAGE := ./current/build/index.html
+TARGET_INDEX := ./releases/index.html
+INDEX_JSON := ./page.json
+INDEX_SRC_FILE := ./current/src/ejs/index.ejs ejs/head.ejs ejs/article-list.ejs ejs/navbar.ejs ejs/scripts.ejs ejs/sidebar.ejs ejs/meta.ejs ejs/footer.ejs ejs/article-list.ejs 
+INDEX_DATA := ./article-list.json
 
 # article page
-TARGET_ARTICLE := ./current/build/article.html
-MD_SRC = ./current/src/md/default.md
-ARTICLE_SRC = ./current/src/ejs/article.ejs
+TARGET_ARTICLE := ./current/build/index.html
+MD_SRC = $(MD_BASE)/default.md
+ARTICLE_SRC = ./current/src/ejs/article.ejs ejs/head.ejs ejs/article-list.ejs ejs/navbar.ejs ejs/scripts.ejs ejs/sidebar.ejs ejs/meta.ejs ejs/footer.ejs ejs/main.ejs
 
 # script
 TARGET_SCRIPT := ./current/build/index.js
@@ -20,7 +27,7 @@ SCRIPT_SRC := src/js/index.js
 
 # iframe
 TARGET_IFRAME := ./current/build/iframe.html
-TARGET_IFRAME_SRC := ./current/src/html/iframe.html
+TARGET_IFRAME_SRC := ./current/src/html/iframe.html 
 
 #css
 TARGET_CSS := ./current/build/page.css
@@ -33,22 +40,29 @@ DOC_PARSER := ./current/src/js/doc-syntax.mjs
 TRACE = 
 PEG = pegjs $(TRACE) --cache --format es --optimize speed --output $@ $<
 
-RELEASE_NAME = $(shell date "+%Y%m%d")
+# RELEASE_NAME = $(shell date "+%Y%m%d")
 
 .PHONY:all
-all:$(TARGET_PAGE) $(TARGET_IFRAME) $(TARGET_IFRAME) $(TARGET_ARTICLE) $(TARGET_SCRIPT)
+all:$(TARGET_INDEX) $(TARGET_IFRAME) $(TARGET_IFRAME) $(TARGET_SCRIPT)
 
 .PHONY: page
-page:$(TARGET_PAGE)
+page:$(TARGET_INDEX)
 
-$(TARGET_PAGE):  $(PAGE_JSON) $(PAGE_SRC_FILE) $(TARGET_CSS)
-	@$(RENDER_PAGE) $(PAGE_JSON) $< $@
+.PHONY: article
+article:$(TARGET_ARTICLE)
+
+$(TARGET_INDEX):  $(INDEX_SRC_FILE) $(TARGET_CSS) $(INDEX_JSON) $(INDEX_DATA)
+	@$(RENDER_INDEX) $(BUILD_PATH) $(RELEASE_BASE) $(MD_BASE) $(INDEX_JSON) $< $@
 
 $(TARGET_SCRIPT): $(SCRIPT_SRC) $(DOC_PARSER)
 	@$(ROLLUP)
 
-$(TARGET_ARTICLE): $(PAGE_JSON) $(ARTICLE_SRC) $(MD_SRC) 
-	@$(RENDER_PAGE) $(PAGE_JSON) $(ARTICLE_SRC) $@
+$(TARGET_ARTICLE): $(ARTICLE_SRC) $(INDEX_JSON) $(MD_SRC) $(TARGET_CSS) 
+ifdef RELEASE_NAME
+	@$(RENDER_INDEX) $(BUILD_PATH) $(RELEASE_BASE) $(MD_BASE) $(INDEX_JSON) $< $@ $(RELEASE_NAME)
+else
+	@echo ArticleのビルドにはRelease Nameが必要です。
+endif
 
 $(DOC_PARSER): $(DOC_PARSER_SRC)
 	@$(PEG)
@@ -56,22 +70,20 @@ $(DOC_PARSER): $(DOC_PARSER_SRC)
 $(TARGET_CSS): $(SRC_CSS)
 	@$(CSS)
 
-$(TARGET_IFRAME): 
-	@cp $(TARGET_IFRAME_SRC) $(TARGET_IFRAME)
-
-.PHONY: release
-release: ;@$(NODE) ./tools/release.mjs $(RELEASE_NAME)
+$(TARGET_IFRAME): $(TARGET_IFRAME_SRC) css/bulma.min.css
+	cp $(TARGET_IFRAME_SRC) $(TARGET_IFRAME)
+	cp ./current/src/css/bulma.min.css $(BUILD_PATH)
 
 .PHONY: deploy
-deploy-server: release $(TARGET_PAGE) 
-	@$(NODE) ./tools/deploy.mjs $(RELEASE_NAME)
+deploy-server: release
+	@$(NODE) ./tools/deploy.mjs $(SITE_BASE) $(RELEASE_BASE) $(RELEASE_NAME)
 
 .PHONY:rebuild
-rebuild: clean page
+rebuild: clean all
 
 .PHONY: clean
 clean:
-	@rm $(TARGET_PAGE) $(TARGET_SCRIPT) $(TARGET_CSS) $(TARGET_ARTICLE)
+	-rm -r $(BUILD_PATH)/*
 
 .PHONY:doc-parser
 doc-parser: $(DOC_PARSER)

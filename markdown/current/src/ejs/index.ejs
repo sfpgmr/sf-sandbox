@@ -15,29 +15,15 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 -->
-<%
-const data = {page:page};  
-%> 
-<html ⚡="">
-
-
+<% const data = {page:page};  -%> 
+<html ⚡>
 <head>
   <%- include('./head.ejs',data); %>
 </head>
-
 <body>
-
-  <!-- Navbar -->
-  <%-include('./navbar.ejs',data); %>
-
-  <!-- Sidebar -->
+  <%- include('./navbar.ejs',data); %>
   <%- include('./sidebar.ejs',data); %>
-  <!-- End Navbar -->
-
-  <%- include('./main.ejs',data); %>
-
-   <!-- Footer -->
-  <%-include('./footer.ejs',data);%>
+  <%- include('./article-list.ejs',data); %>
+  <%- include('./footer.ejs',data);%>
 </body>
-
 </html>

@@ -22,6 +22,11 @@
     }
   };
   $.SEQUENCE = {
+    STATUS: {
+      PLAY:1,
+      STOP:0,
+      PAUSE:2
+    },
     TRACK:{
       KEY: {
         ON:0x1,
@@ -3288,8 +3293,8 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
       )
       )
       (then
-        (f32.const +1.0
-      )
+        (local.tee $temp (f32.const +1.0
+      ))
       )
       (else 
         (local.get $temp)
@@ -3298,7 +3303,7 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
     (f32.const +0.0)
   )
   (then
-    (f32.const +0.0)
+    (local.tee $temp (f32.const +0.0))
   )
   (else
     (local.get $temp)
@@ -3668,8 +3673,8 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
       )
       )
       (then
-        (f32.const +1.0
-      )
+        (local.tee $temp (f32.const +1.0
+      ))
       )
       (else 
         (local.get $temp)
@@ -3678,7 +3683,7 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
     (f32.const +0.0)
   )
   (then
-    (f32.const +0.0)
+    (local.tee $temp (f32.const +0.0))
   )
   (else
     (local.get $temp)
@@ -3699,6 +3704,7 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
 )
 
 )
+
 
 (func $initTimbre
   (param $timbre i32)
@@ -4346,7 +4352,7 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
         (f32.const +1.0 )
       )
       (then
-        (f32.const +1.0 )
+        (local.tee $temp (f32.const +1.0 ))
       )
       (else 
         (local.get $temp)
@@ -4355,7 +4361,7 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
     (f32.const -1.0)
   )
   (then
-    (f32.const -1.0)
+    (local.tee $temp (f32.const -1.0))
   )
   (else
     (local.get $temp)

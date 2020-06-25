@@ -6,7 +6,8 @@ class PSGWorker {
 		const instance = new WebAssembly.Instance(module, { env: { memory: memory },imports : {sin:Math.sin,cos:Math.cos,exp:Math.exp,sinh:Math.sinh,pow:Math.pow} });
 		this.memory = memory;
 		this.module = instance.exports;
-		this.timbre = this.module.initTestTimbre();
+		this.module.initSynth();
+		this.timbre = this.module.assignTimbre();
 		this.enable = true;
 		this.endian = endian;
 		this.dv = new DataView(memory.buffer);

@@ -8,7 +8,7 @@ export default {
   "./current/src/js/wpsg.js",
   "./current/src/js/wpsg-worker.js",
   "./current/build/wpsg.wasm",
-  "./current/src/wasm/wpsg.context.json"
+  "./current/src/wasm/wpsg.defs.json"
   ],
   "symlinkFiles":[],
   "schema":{

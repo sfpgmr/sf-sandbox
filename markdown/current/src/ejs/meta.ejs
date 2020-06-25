@@ -19,6 +19,12 @@
 
 <link rel="icon" href="/img/sfblog-icon.png" />
 <link rel="apple-touch-icon" sizes="64x64" href="/img/sfblog-icon.png">
-
+<% let graph = JSON.stringify({
+  "@context":page["@context"],
+  "@graph":[
+    page.article,page.webSite,page.person
+  ]
+},null,1);-%>
 <script type="application/ld+json">
+<%-graph%>
 </script>

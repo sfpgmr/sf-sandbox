@@ -664,22 +664,14 @@ window.addEventListener('load', async () => {
 
     if (!play) {
       play = true;
-      // psgWorker.writeReg(8, 0b10000);
-      // psgWorker.writeReg(9, 0b10000);
-      // psgWorker.writeReg(10, 0b10000);
-      // psgWorker.writeReg(12, 0xe);
-      // psgWorker.writeReg(13, 0b1000);
-      //wasmFuncs.writeReg(7, enable);
       psgWorker.postMessage({ message: 'play' });
       psg.port.postMessage({ message: 'play' });
-      // psg.writeReg(6, 0b10000);
       vol.gain.value = 1.0;
       startButton.innerText = 'PSG-OFF';
     } else {
       disableInputs(true);
       play = false;
       psg.port.postMessage({ message: 'stop' });
-      //psgWorker.writeReg(7, 0x3f);
       psgWorker.postMessage({ message: 'stop' });
       vol.gain.value = 0.0;
       startButton.innerText = 'PSG-ON';

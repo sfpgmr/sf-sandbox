@@ -71,7 +71,7 @@
         (f32.const max)
       )
       (then
-        (f32.const max)
+        (local.tee work (f32.const max))
       )
       (else 
         (local.get work)
@@ -80,7 +80,7 @@
     (f32.const min)
   )
   (then
-    (f32.const min)
+    (local.tee work (f32.const min))
   )
   (else
     (local.get work)
@@ -3461,6 +3461,7 @@ EnvelopeWork .... エンベロープのインスタンス制御用ワーク
   ;; output 
   {@@ldo f32,&TimbreWork.value;,$timbre_work}
 )
+
 
 (func $initTimbre
   (param $timbre i32)

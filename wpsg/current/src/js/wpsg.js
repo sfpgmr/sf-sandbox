@@ -50,7 +50,10 @@ class PSG extends AudioWorkletProcessor {
         for (let channel = 0; channel < output.length; ++channel) {
           const o = output[channel];
           for (let i = 0; i < e; ++i) {
+//            o[i] = (i & 1) ? 1.0 : -1.0;
+
             o[i] = dv.getFloat32(offset + (i << 2),endian);
+            console.log(dv.getFloat32(offset + (i << 2),endian));
           }
         }
         Atomics.store(this.readOffset,0,(offset + e * 4 - this.bufferStart) & this.bufferMask);

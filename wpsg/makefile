@@ -18,4 +18,4 @@ run: $(TARGET) $(MWASM_LIB)
 
 .PHONY: clean
 clean:
-	rm $(TARGET) $(MWASM_LIB)
+	rm -f $(TARGET) $(MWASM_LIB)

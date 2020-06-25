@@ -6,14 +6,25 @@
   "configurations": [
     {
       "type": "node",
+      "request": "attach",
+      "name": "Attach by Process ID",
+      "processId": "${command:PickProcess}",
+      "skipFiles": [
+        "<node_internals>/**"
+      ]
+    },
+    {
+      "type": "node",
       "request": "launch",
-      "name": "プログラムの起動",
+      "name": "wpsg-test.js 起動",
       "skipFiles": [
         "<node_internals>/**"
       ],
-      "program": "${workspaceFolder}/new-page/tools/make-embeded.mjs",
-      "cwd": "${workspaceFolder}/new-page/",
-      "runtimeArgs": ["--experimental-modules"]  
+      "program": "${workspaceFolder}/wpsg/current/src/js/wpsg-test.mjs",
+      "cwd": "${workspaceFolder}/wpsg/current/src/js/",
+      "runtimeArgs": [
+        "--experimental-wasm-threads","--experimental-modules"
+      ]
     }
   ]
 }

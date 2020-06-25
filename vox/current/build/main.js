@@ -292,8 +292,6 @@
   const EPSILON = 0.000001;
   let ARRAY_TYPE = (typeof Float32Array !== 'undefined') ? Float32Array : Array;
 
-  const degree = Math.PI / 180;
-
   /* Copyright (c) 2015, Brandon Jones, Colin MacKenzie IV.
 
   Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -3117,8 +3115,6 @@ void main(){
           case "MATL":
               contentsOfMaterialExChunk(dataHolder);
               break;
-          default:
-              break;
           }
 
           dataHolder.pop();
@@ -4073,7 +4069,7 @@ flat out float v_diffuse;//
 flat out vec3 v_ambient;
 flat out float v_alpha;
 
-#define root2 1.414213562
+#define root2 1.414213562373095
 
 uniform uint u_attrib;
 uniform float u_scale;
@@ -4104,7 +4100,7 @@ void main() {
   d(0x10u,0.,0.,-1.);
   d(0x20u,0.,0.,1.);
 
-  v_diffuse = clamp(diffuse * ((256. - pos.z) / 256.0), 0.0, 1.0);
+  v_diffuse = clamp(diffuse * ((512. - pos.z) / 256.0), 0.0, 1.0);
  
   v_color_index  = point_attrib & 0xffu;
   v_pallete_index = u_attrib & 0x1ffu;
@@ -4114,7 +4110,7 @@ void main() {
 
   gl_Position = pos;
   // セルサイズの計算（今のところかなりいい加減。。）
-  gl_PointSize = clamp((160.0 / pos.z) * u_scale * root2,0.0,128.0);
+  gl_PointSize = clamp((256.0 / pos.z) * u_scale * root2,0.0,128.0);
 }
 `;
 
@@ -4311,7 +4307,7 @@ void main() {
   // c: color pallet index (0-511)
   // d: use default pallet;
   const VOX_MEMORY_STRIDE =  (VOX_OBJ_POS_SIZE + VOX_OBJ_SCALE_SIZE + VOX_OBJ_AXIS_SIZE + VOX_OBJ_ANGLE_SIZE + VOX_OBJ_ATTRIB_SIZE);
-  const VOX_OBJ_MAX = 64;
+  const VOX_OBJ_MAX = 256;
 
   const parser = new vox.Parser();
 
@@ -4440,16 +4436,20 @@ void main() {
 
       this.count = 0;
       const vmemory = this.voxScreenMemory;
-      let count=1;
+  //    let px = -70,count=1;
 
-      for(let offset = 0,eo = vmemory.byteLength;offset < eo;offset += VOX_MEMORY_STRIDE){
-        vmemory.setUint32(offset + VOX_OBJ_ATTRIB,0x8003fc00 | count++ | ((count & 0x3) << 20),this.endian);
-        vmemory.setFloat32(offset + VOX_OBJ_SCALE,Math.random() * 1.5,this.endian);
-        vmemory.setFloat32(offset + VOX_OBJ_POS,Math.random() * 160 - 80,this.endian);
-        vmemory.setFloat32(offset + VOX_OBJ_POS + SIZE_PARAM,Math.random() * 100 - 50,this.endian);
-        vmemory.setFloat32(offset + VOX_OBJ_POS + SIZE_PARAM * 2,Math.random() * 192 - 128,this.endian);
-        vmemory.setFloat32(offset + VOX_OBJ_ANGLE,count,this.endian);
-      }
+  //     for(let offset = 0,eo = vmemory.byteLength;offset < eo;offset += VOX_MEMORY_STRIDE){
+  // //      vmemory.setUint32(offset + VOX_OBJ_ATTRIB,0x8003fc00 | count++ | ((count & 0x3) << 20),this.endian);
+  //       vmemory.setUint32(offset + VOX_OBJ_ATTRIB,0x8003fc00 | count++ | (0),this.endian);
+  //       vmemory.setFloat32(offset + VOX_OBJ_SCALE,Math.random() * 1.5,this.endian);
+  //       vmemory.setFloat32(offset + VOX_OBJ_POS,Math.random() * 192 - 192 / 2,this.endian);
+  //       vmemory.setFloat32(offset + VOX_OBJ_POS + SIZE_PARAM,Math.random() * 256 - 128,this.endian);
+  //       vmemory.setFloat32(offset + VOX_OBJ_POS + SIZE_PARAM * 2,Math.random() * 192 ,this.endian);
+  //       vmemory.setFloat32(offset + VOX_OBJ_ANGLE,count,this.endian);
+  //     }
+
+   
+        
     }
 
     // スプライトを描画
@@ -4526,6 +4526,28 @@ void main() {
   }
 
   Vox.prototype.MEMORY_SIZE_NEEDED = VOX_MEMORY_STRIDE * VOX_OBJ_MAX;
+  Vox.prototype.SIZE_PARAM = SIZE_PARAM;
+  Vox.prototype.VOX_OBJ_POS = VOX_OBJ_POS;
+  Vox.prototype.VOX_OBJ_POS_SIZE = VOX_OBJ_POS_SIZE; // vec3
+  Vox.prototype.VOX_OBJ_SCALE = VOX_OBJ_SCALE;
+  Vox.prototype.VOX_OBJ_SCALE_SIZE = VOX_OBJ_SCALE_SIZE; // float
+  Vox.prototype.VOX_OBJ_AXIS = VOX_OBJ_AXIS;
+  Vox.prototype.VOX_OBJ_AXIS_SIZE = VOX_OBJ_AXIS_SIZE; // vec3
+  Vox.prototype.VOX_OBJ_ANGLE = VOX_OBJ_ANGLE;
+  Vox.prototype.VOX_OBJ_ANGLE_SIZE = VOX_OBJ_ANGLE_SIZE; // float
+  Vox.prototype.VOX_OBJ_ATTRIB = VOX_OBJ_ATTRIB;
+  Vox.prototype.VOX_OBJ_ATTRIB_SIZE = VOX_OBJ_ATTRIB_SIZE; // uint
+  // アトリビュートのビット構成
+  // v00n nnnn nnnn 00aa aaaa aadc cccc cccc
+  // v: 1 ... 表示 0 ... 非表示
+  // n: object No (0-511)
+  // a: alpha (0-255)
+  // c: color pallet index (0-511)
+  // d: use default pallet;
+  Vox.prototype.VOX_MEMORY_STRIDE =  VOX_MEMORY_STRIDE;
+  Vox.prototype.VOX_OBJ_MAX = VOX_OBJ_MAX;
+
+  //import { voronoi } from 'd3';
 
   // let display = true;
   let play = false;
@@ -4545,7 +4567,7 @@ void main() {
 
   async function start(){
     try {
-    const con = new Console(160,100);
+    const con = new Console(192,256);
 
     const textBitmap = new Uint8Array(
       await fetch('./font.bin')
@@ -4561,6 +4583,7 @@ void main() {
 
     //const voxmodel = new Vox({gl2:gl2,data:await loadVox('myship.bin')});
     const voxelModels = await VoxelModel.loadFromUrls([
+      'cube.bin',
       'myship.bin',
       'q.bin',
       'q1.bin',
@@ -4568,6 +4591,20 @@ void main() {
     ]);
 
     const vox = new Vox({gl2:gl2,voxelModels:voxelModels,memory:memory,offset:offset});
+    let count = 1;
+
+    for(let y = 8,offset = 0;y < con.VIRTUAL_HEIGHT;y+=16){
+      for(let x = 8;x < con.VIRTUAL_WIDTH;x+=16){
+        const vmem = vox.voxScreenMemory;
+        vmem.setUint32(offset + vox.VOX_OBJ_ATTRIB,0x8003fc00 | count++ | (0),vox.endian);
+        vmem.setFloat32(offset + vox.VOX_OBJ_SCALE,0.7,vox.endian);
+        vmem.setFloat32(offset + vox.VOX_OBJ_POS,x - con.VIRTUAL_WIDTH / 2,vox.endian);
+        vmem.setFloat32(offset + vox.VOX_OBJ_POS + vox.SIZE_PARAM,y - con.VIRTUAL_HEIGHT / 2,vox.endian);
+        vmem.setFloat32(offset + vox.VOX_OBJ_POS + vox.SIZE_PARAM * 2,0,vox.endian);
+        vmem.setFloat32(offset + vox.VOX_OBJ_ANGLE,count,vox.endian);
+        offset += vox.VOX_MEMORY_STRIDE;
+      }
+    }
 
     //const myship = new SceneNode(model);
     con.vscreen.appendScene(vox);

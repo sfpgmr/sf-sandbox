@@ -17,7 +17,8 @@ export default {
     './common/q.bin',
     './common/nature.bin',
     './common/ephtracy.bin',
-    './common/chr.bin'
+    './common/chr.bin',
+    './common/cube.bin'
   ],
   "schema":{
   }
