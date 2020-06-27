@@ -68,7 +68,6 @@ export class Console extends EventEmitter {
     this.vscreen = new VScreen(this);
     this.text = new TextPlane({gl2:gl2,vwidth:this.VIRTUAL_WIDTH,vheight:this.VIRTUAL_HEIGHT,textBitmap:textBitmap,memory:memory,offset:offset});
     this.screen = new Screen(this,this.texture);
-
     window.addEventListener('resize', this.resize.bind(this));
 
     // コンソールのセットアップ
@@ -124,6 +123,7 @@ export class Console extends EventEmitter {
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
     this.vscreen.render();
+//    this.map.render();
     this.text.render();
 
     gl.bindFramebuffer(gl.DRAW_FRAMEBUFFER,null);

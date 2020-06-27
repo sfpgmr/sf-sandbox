@@ -2,6 +2,10 @@
 
 import {Console} from './console.js';
 import {Vox,VoxelModel} from './voxscreen.js';
+import {Map,MapModel} from './mapScreen.js';
+import {mat4, mat3,vec3,vec2, vec4 } from './gl-matrix/gl-matrix.js';
+
+
 //import { voronoi } from 'd3';
 
 // let display = true;
@@ -62,7 +66,49 @@ async function start(){
   }
 
   //const myship = new SceneNode(model);
-  con.vscreen.appendScene(vox);
+
+  const map = new Map({gl2:gl2,mapModels:await MapModel.load()});
+  con.vscreen.appendScene(map);
+  const pathWay = (await ( await fetch('./map.json')).json()).features[0].geometry.coordinates.map(d=>vec2.fromValues(d[0],d[1]));
+  const pathVector = [];
+  
+  pathWay.reduce((prev,curr,i)=>{
+    const pathVec = {};
+    pathVec.start = prev;
+    pathVec.end = curr;
+    console.log(prev,curr,i);
+    pathVec.dist = vec2.sub(vec2.create(),curr,prev);
+    pathVec.dir = vec2.normalize(vec2.create(),pathVec.dist);
+    pathVec.angle = Math.atan2(pathVec.dir[1],pathVec.dir[0]); 
+    pathVec.dir[0] *= 0.00004; 
+    pathVec.dir[1] *= 0.00004;
+    pathVec.count = (((pathVec.dist[0] / pathVec.dir[0])) + 0.5) | 0;
+    pathVector.push(pathVec);
+    return curr;
+  });
+
+  function* ScrollPosIterator() {
+    for(const path of pathVector){
+      let x = path.start[0];
+      let y = path.start[1];
+      for(let i = 0;i < path.count;++i){
+        yield {x:x,y:y};
+        x += path.dir[0];
+        y += path.dir[1];
+      }
+    }
+  }
+
+  let scrollPos = ScrollPosIterator();
+
+
+
+  // const scrollManager = {
+  //   current:pathVector[0]
+
+  // };
+  
+  //con.vscreen.appendScene(vox);
 
   // cube.source.translation[2] = 0;
   // //m4.scale(cube.localMatrix,[20,20,20],cube.localMatrix);
@@ -143,6 +189,11 @@ async function start(){
 
   let time = 0;
   function main(){
+      let v = scrollPos.next();
+      if(!v.done){
+        map.x = v.value.x;
+        map.y = v.value.y;
+      }
       time += 0.02;
       // cube.source.rotation[1] = time;
       // cube2.source.rotation[2] = time;
@@ -150,7 +201,6 @@ async function start(){
       // sprite.source.translation[2] = 60.0;
       // sprite.source.rotation[1] = time/2;
       //con.text.print(0,0,'WebGL2 Point Sprite ｦﾂｶｯﾀ Spriteﾋｮｳｼﾞ TEST',true,7,1);
-
       con.render(time);
       // const spriteBuffer = sprite.spriteBuffer;
       // for(let i = 0;i < 512;++i){
@@ -161,7 +211,8 @@ async function start(){
   }
   main();
   } catch (e) {
-  alert(e.stack);
+    throw e;
+    //alert(e.stack);
   }
 }
 

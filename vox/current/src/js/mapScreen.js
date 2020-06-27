@@ -12,13 +12,14 @@ layout(location = 0) in vec2 position;
 
 uniform vec2 u_offset;
 uniform float u_scale;
-uniform mat2 u_rotate;
+uniform mat3 u_rotate;
 
 void main() {
   
   // 表示位置の計算
-  vec4 pos = vec4( u_rotate * position * u_scale + u_offset ,0.0,1.0) ;
-  
+  vec4 pos = vec4( u_rotate * vec3(vec2((position.x + u_offset.x) * u_scale,1.0 - (u_offset.y + position.y)* u_scale),0.0),1.0) ;
+  pos.z = 1.0;
+
   gl_Position = pos;
   gl_PointSize = 1.0;
 }
@@ -28,7 +29,6 @@ const fragmentShader = `#version 300 es
 precision highp float;
 precision highp int;
 
-
 // 頂点シェーダーからの情報
 // 出力色
 out vec4 fcolor;
@@ -37,6 +37,10 @@ void main() {
   fcolor = vec4(1.0,1.0,1.0,1.0);
 }
 `;
+
+
+const tileWidth = 0.0013724960300966176;
+const tileHeight = 0.0011260210872360474;
 
 // プログラムを使いまわすためのキャッシュ
 let programCache;
@@ -64,22 +68,37 @@ function checkEndian(buffer = new ArrayBuffer(2)) {
 const points = [];
 export class MapModel {
   constructor(pointList){
-    this.pointList = pointList;
+    this.offset = MapModel.offset_;
+    this.size = pointList.length;
+    pointList.forEach(d=>{
+      MapModel.points.push(...d);
+    });
+    MapModel.offset_ += pointList.length;
   }
 
-  static async load(url = './temp/merged.json'){
-    const features = (await ( await fetch(url)).json()).features.filter(f=>f.properties.class == 'BldL');
-    return features.map(f => {
-      return f.geometry.coordinates;
-    }).map(pointList=>{
-      return new MapModel(pointList);
+  static async load(url = './merged.json'){
+    let mapModels = await (await fetch(url)).json();
+    mapModels = mapModels.map((featureCollestion)=>{
+      let features = featureCollestion.features.filter(f=>(f.properties.class == 'BldL' || f.properties.class.match(/Rd/)));
+      features = features.map(f =>{
+        return f.geometry.coordinates;
+      })
+      .map(pointList=>{
+        return new MapModel(pointList);
+      });
+      return {
+        attributes:featureCollestion.attributes,
+        features:features
+      };
     });
+    return mapModels;
   }
+
 }
 
-Map.prototype.POINT_DATA_SIZE = 4 * 2;
-Map.prototype.points = [];
-Map.prototype.offset = 0;
+MapModel.POINT_DATA_SIZE = 4 * 2;
+MapModel.points = [];
+MapModel.offset_ = 0;
 
 const SIZE_PARAM = 4;
 
@@ -109,105 +128,50 @@ export class Map extends Node {
     const gl = this.gl = gl2.gl;
     this.gl2 = gl2;
 
-    //let points = new DataView(new ArrayBuffer(4 * 4 * data.voxels.length));
     this.endian = checkEndian();
-    this.voxScreenMemory = new DataView(memory,offset,this.MEMORY_SIZE_NEEDED);
-    //his.voxScreenBuffer = new Uint8Array(memory,offset,this.MEMORY_SIZE_NEEDED);
-    this.voxelModels = voxelModels;
-    this.voxelBuffer = this.voxelModels.buffer;
+    this.bufferData = new Float32Array(MapModel.points);
+    this.mapModels = mapModels;
       
     // スプライト面の表示・非表示
     this.visible = visible;
-
 
     // プログラムの生成
     if (!programCache) {
       programCache = gl2.createProgram(vertexShader, fragmentShader);
     }
+
     const program = this.program = programCache;
 
     // アトリビュート
     // VAOの生成とバインド
     this.vao = gl.createVertexArray();
     gl.bindVertexArray(this.vao);
+
     // VBOの生成
     this.buffer = gl.createBuffer();
-
     gl.bindBuffer(gl.ARRAY_BUFFER, this.buffer);
-    // VBOにスプライトバッファの内容を転送
-    gl.bufferData(gl.ARRAY_BUFFER, this.voxelBuffer, gl.DYNAMIC_DRAW);
+    gl.bufferData(gl.ARRAY_BUFFER, this.bufferData.buffer, gl.DYNAMIC_DRAW);
 
     // 属性ロケーションIDの取得と保存
     this.positionLocation = 0;
-    this.pointAttribLocation = 1;
-
-    this.stride = 16;
+    this.stride = 8;
 
     // 属性の有効化とシェーダー属性とバッファ位置の結び付け
     // 位置
     gl.enableVertexAttribArray(this.positionLocation);
-    gl.vertexAttribPointer(this.positionLocation, 3, gl.FLOAT, true, this.stride, 0);
-    
-    // 属性
-    gl.enableVertexAttribArray(this.pointAttribLocation);
-    gl.vertexAttribIPointer(this.pointAttribLocation, 1, gl.UNSIGNED_INT, this.stride, 12);
+    gl.vertexAttribPointer(this.positionLocation, 2, gl.FLOAT, true, this.stride, 0);
 
     gl.bindVertexArray(null);
 
     // uniform変数の位置の取得と保存
-
-    // UBO
-    // this.objAttrLocation = gl.getUniformBlockIndex(program,'obj_attributes');
-    // gl.uniformBlockBinding(program,this.objAttrLocation,0);
-    // this.objAttrBuffer = gl.createBuffer();
-    // gl.bindBuffer(gl.UNIFORM_BUFFER, this.objAttrBuffer);
-    // gl.bufferData(gl.UNIFORM_BUFFER,VOX_MEMORY_STRIDE,gl.DYNAMIC_DRAW);
-    // //gl.bufferData(gl.UNIFORM_BUFFER, this.voxScreenMemory.buffer, gl.DYNAMIC_DRAW,0,VOX_MEMORY_STRIDE);
-    // gl.bindBuffer(gl.UNIFORM_BUFFER, null);
-    // gl.bindBufferBase(gl.UNIFORM_BUFFER,0,this.objAttrBuffer);
-
     // 
-    this.attribLocation = gl.getUniformLocation(program,'u_attrib');
+    this.offsetLocation = gl.getUniformLocation(program,'u_offset');
     this.scaleLocation = gl.getUniformLocation(program,'u_scale');
     this.rotateLocation = gl.getUniformLocation(program,'u_rotate');
     this.rotate = mat3.create();
-    this.objPositionLocation = gl.getUniformLocation(program,'u_obj_position');
-
-
-    // ワールド・ビュー変換行列
-    this.viewProjectionLocation = gl.getUniformLocation(program,'u_worldViewProjection');
-    this.viewProjection = mat4.create();
-    this.eyeLocation = gl.getUniformLocation(program,'u_eye');
-    this.eye = vec3.create();
-    vec3.set(this.eye,0,0,1);
     
-
-    // 平行光源の方向ベクトル
-    
-    this.lightLocation = gl.getUniformLocation(program,'u_light');
-    this.lightDirection = vec3.create();
-    vec3.set(this.lightDirection,0,0,1);
-
-    // 環境光
-    this.ambient = vec3.create();
-    this.ambientLocation = gl.getUniformLocation(program,'u_ambient');
-    vec3.set(this.ambient,0.2,0.2,0.2);
-
-    // カラーパレット
-    this.palleteTexture = gl.createTexture();
-    this.palleteLocation = gl.getUniformLocation(program,'u_pallete');
-    
-    //gl.pixelStorei(gl.UNPACK_ALIGNMENT, 1);
-    gl.bindTexture(gl.TEXTURE_2D, this.palleteTexture);
-    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 256, this.voxelModels.modelInfos.length, 0, gl.RGBA, gl.UNSIGNED_BYTE, this.voxelModels.palletes);
-    gl.bindTexture(gl.TEXTURE_2D, null);
-
-    this.sampler = gl.createSampler();
-    gl.samplerParameteri(this.sampler, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
-    gl.samplerParameteri(this.sampler, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
-
-    this.count = 0;
-      
+    this.y = -34.666;
+    this.x = -135.50055;
   }
 
   // スプライトを描画
@@ -217,70 +181,28 @@ export class Map extends Node {
     // プログラムの指定
     gl.useProgram(this.program);
 
-    // VoxBufferの内容を更新
-    //gl.bindBuffer(gl.ARRAY_BUFFER,this.buffer);
-    //gl.bufferSubData(gl.ARRAY_BUFFER, 0, this.voxBuffer);
-
     // VAOをバインド
     gl.bindVertexArray(this.vao);
-    const memory = this.voxScreenMemory;
-    const endian = this.endian;
-
+    const hw = (tileWidth / 256.0 * screen.console.VIRTUAL_WIDTH) / 2;
+    const hh = (tileHeight / 256.0 * screen.console.VIRTUAL_HEIGHT) / 2;
+    let ox = this.x;
+    let oy = this.y - hh;
+    const left = ox - hw * 2,right = ox + hw * 2,top = oy,bottom = oy + hh*3;
     // カラーパレットをバインド
-    gl.activeTexture(this.gl.TEXTURE0);
-    gl.bindTexture(this.gl.TEXTURE_2D,this.palleteTexture);
-    gl.bindSampler(0,this.sampler);
-    gl.uniform1i(this.palleteLocation,0);
-
-    mat4.multiply(this.viewProjection, screen.uniforms.viewProjection, this.worldMatrix);
-    gl.uniformMatrix4fv(this.viewProjectionLocation, false,this.viewProjection);
-    gl.uniform3fv(this.eyeLocation, this.eye);
-    gl.uniform3fv(this.lightLocation, this.lightDirection);
-    gl.uniform3fv(this.ambientLocation, this.ambient);
-    
-
-    for(let offset = 0,eo = memory.byteLength;offset < eo;offset += VOX_MEMORY_STRIDE){
-
-      // 表示ビットが立っていたら表示    
-      let attribute = memory.getUint32(offset + VOX_OBJ_ATTRIB,this.endian);  
-      if( attribute & 0x80000000){
-
-        // uniform変数を更新
-        let axis = new Float32Array(memory.buffer,memory.byteOffset + offset + VOX_OBJ_AXIS,3);
-        vec3.set(axis,1,-1,-1);
-        vec3.normalize(axis,axis);
-        let c = memory.getFloat32(offset + VOX_OBJ_ANGLE,endian) + 0.04;
-        memory.setFloat32(offset + VOX_OBJ_ANGLE,c,endian);
-        setRotate(this.rotate,memory.getFloat32(offset + VOX_OBJ_ANGLE,endian),axis);
-
-        gl.uniform1f(this.scaleLocation,memory.getFloat32(offset + VOX_OBJ_SCALE,endian));
-        gl.uniformMatrix3fv(this.rotateLocation,false,this.rotate);
-        gl.uniform3fv(this.objPositionLocation,new Float32Array(memory.buffer,memory.byteOffset + offset + VOX_OBJ_POS,3));
-
-        // UBO
-        // gl.bindBuffer(gl.UNIFORM_BUFFER,this.objAttrBuffer);
-        // gl.bufferSubData(gl.UNIFORM_BUFFER,0,this.voxScreenBuffer,offset,VOX_MEMORY_STRIDE);
-        // gl.bindBuffer(gl.UNIFORM_BUFFER,null);
-
-        const objInfo = this.voxelModels.modelInfos[(attribute & 0x1ff00000) >> 20];
-        if(attribute & 0x20000){
-          // use default pallet
-          attribute = (attribute & 0b11111111111111111111111000000000) | objInfo.index;
-          memory.setUint32(offset + VOX_OBJ_ATTRIB,attribute,endian);
+    for(const featureCollection of this.mapModels){
+      const attr = featureCollection.attributes;
+      if(left <= attr.xmax && attr.xmin <= right && top <= attr.ymax && attr.ymin <= bottom){
+        for(const obj of featureCollection.features){
+          gl.uniform1f(this.scaleLocation,1490);
+          gl.uniformMatrix3fv(this.rotateLocation,false,this.rotate);
+    //      gl.uniform2f(this.offsetLocation,-135.50055,this.y);
+          gl.uniform2f(this.offsetLocation,-ox,-oy);
+          gl.drawArrays(gl.LINE_STRIP, obj.offset,obj.size);
         }
-
-        gl.uniform1ui(this.attribLocation,memory.getUint32(offset + VOX_OBJ_ATTRIB,endian));
-
-    
-        // 描画命令の発行
-        gl.drawArrays(gl.POINTS, objInfo.vindex,objInfo.count);
-
       }
-
     }
-    this.count += 0.04;
+//    this.y -= 0.0000015; 
   }
-
 }
 
 

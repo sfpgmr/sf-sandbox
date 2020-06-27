@@ -1458,6 +1458,59 @@
   }
 
   /**
+   * Creates a new vec2 initialized with the given values
+   *
+   * @param {Number} x X component
+   * @param {Number} y Y component
+   * @returns {vec2} a new 2D vector
+   */
+  function fromValues$2(x, y) {
+    let out = new ARRAY_TYPE(2);
+    out[0] = x;
+    out[1] = y;
+    return out;
+  }
+
+  /**
+   * Subtracts vector b from vector a
+   *
+   * @param {vec2} out the receiving vector
+   * @param {vec2} a the first operand
+   * @param {vec2} b the second operand
+   * @returns {vec2} out
+   */
+  function subtract(out, a, b) {
+    out[0] = a[0] - b[0];
+    out[1] = a[1] - b[1];
+    return out;
+  }
+
+  /**
+   * Normalize a vec2
+   *
+   * @param {vec2} out the receiving vector
+   * @param {vec2} a vector to normalize
+   * @returns {vec2} out
+   */
+  function normalize$3(out, a) {
+    var x = a[0],
+      y = a[1];
+    var len = x*x + y*y;
+    if (len > 0) {
+      //TODO: evaluate use of glm_invsqrt here?
+      len = 1 / Math.sqrt(len);
+      out[0] = a[0] * len;
+      out[1] = a[1] * len;
+    }
+    return out;
+  }
+  /**
+   * Alias for {@link vec2.subtract}
+   * @function
+   */
+  const sub = subtract;
+
+  /**
    * Perform some operation over an array of vec2s.
    *
    * @param {Array} a the array of vectors to iterate over
@@ -2663,7 +2716,6 @@ void main(){
       this.vscreen = new VScreen(this);
       this.text = new TextPlane({gl2:gl2,vwidth:this.VIRTUAL_WIDTH,vheight:this.VIRTUAL_HEIGHT,textBitmap:textBitmap,memory:memory,offset:offset});
       this.screen = new Screen(this,this.texture);
-
       window.addEventListener('resize', this.resize.bind(this));
 
       // コンソールのセットアップ
@@ -2719,6 +2771,7 @@ void main(){
       gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
       this.vscreen.render();
+  //    this.map.render();
       this.text.render();
 
       gl.bindFramebuffer(gl.DRAW_FRAMEBUFFER,null);
@@ -4547,6 +4600,185 @@ void main() {
   Vox.prototype.VOX_MEMORY_STRIDE =  VOX_MEMORY_STRIDE;
   Vox.prototype.VOX_OBJ_MAX = VOX_OBJ_MAX;
 
+  const vertexShader$1 = `#version 300 es
+precision highp float;
+precision highp int;
+
+
+// 座標 X,Y,Z
+layout(location = 0) in vec2 position;
+
+uniform vec2 u_offset;
+uniform float u_scale;
+uniform mat3 u_rotate;
+
+void main() {
+  
+  // 表示位置の計算
+  vec4 pos = vec4( u_rotate * vec3(vec2((position.x + u_offset.x) * u_scale,1.0 - (u_offset.y + position.y)* u_scale),0.0),1.0) ;
+  pos.z = 1.0;
+
+  gl_Position = pos;
+  gl_PointSize = 1.0;
+}
+`;
+
+  const fragmentShader$1 = `#version 300 es
+precision highp float;
+precision highp int;
+
+// 頂点シェーダーからの情報
+// 出力色
+out vec4 fcolor;
+
+void main() {
+  fcolor = vec4(1.0,1.0,1.0,1.0);
+}
+`;
+
+
+  const tileWidth = 0.0013724960300966176;
+  const tileHeight = 0.0011260210872360474;
+
+  // プログラムを使いまわすためのキャッシュ
+  let programCache$1;
+
+  // エンディアンを調べる関数
+  function checkEndian$1(buffer = new ArrayBuffer(2)) {
+
+    if (buffer.byteLength == 1) return false;
+
+    const ua = new Uint16Array(buffer);
+    const v = new DataView(buffer);
+    v.setUint16(0, 1);
+    // ArrayBufferとDataViewの読み出し結果が異なればリトル・エンディアンである
+    if (ua[0] != v.getUint16()) {
+      ua[0] = 0;
+      return true;
+    }
+    ua[0] = 0;
+    // ビッグ・エンディアン
+    return false;
+  }
+  class MapModel {
+    constructor(pointList){
+      this.offset = MapModel.offset_;
+      this.size = pointList.length;
+      pointList.forEach(d=>{
+        MapModel.points.push(...d);
+      });
+      MapModel.offset_ += pointList.length;
+    }
+
+    static async load(url = './merged.json'){
+      let mapModels = await (await fetch(url)).json();
+      mapModels = mapModels.map((featureCollestion)=>{
+        let features = featureCollestion.features.filter(f=>(f.properties.class == 'BldL' || f.properties.class.match(/Rd/)));
+        features = features.map(f =>{
+          return f.geometry.coordinates;
+        })
+        .map(pointList=>{
+          return new MapModel(pointList);
+        });
+        return {
+          attributes:featureCollestion.attributes,
+          features:features
+        };
+      });
+      return mapModels;
+    }
+
+  }
+
+  MapModel.POINT_DATA_SIZE = 4 * 2;
+  MapModel.points = [];
+  MapModel.offset_ = 0;
+
+
+  class Map$1 extends Node {
+    constructor({ gl2, mapModels,visible = true}) {
+      super();
+      // webgl コンテキストの保存
+      const gl = this.gl = gl2.gl;
+      this.gl2 = gl2;
+
+      this.endian = checkEndian$1();
+      this.bufferData = new Float32Array(MapModel.points);
+      this.mapModels = mapModels;
+        
+      // スプライト面の表示・非表示
+      this.visible = visible;
+
+      // プログラムの生成
+      if (!programCache$1) {
+        programCache$1 = gl2.createProgram(vertexShader$1, fragmentShader$1);
+      }
+
+      const program = this.program = programCache$1;
+
+      // アトリビュート
+      // VAOの生成とバインド
+      this.vao = gl.createVertexArray();
+      gl.bindVertexArray(this.vao);
+
+      // VBOの生成
+      this.buffer = gl.createBuffer();
+      gl.bindBuffer(gl.ARRAY_BUFFER, this.buffer);
+      gl.bufferData(gl.ARRAY_BUFFER, this.bufferData.buffer, gl.DYNAMIC_DRAW);
+
+      // 属性ロケーションIDの取得と保存
+      this.positionLocation = 0;
+      this.stride = 8;
+
+      // 属性の有効化とシェーダー属性とバッファ位置の結び付け
+      // 位置
+      gl.enableVertexAttribArray(this.positionLocation);
+      gl.vertexAttribPointer(this.positionLocation, 2, gl.FLOAT, true, this.stride, 0);
+
+      gl.bindVertexArray(null);
+
+      // uniform変数の位置の取得と保存
+      // 
+      this.offsetLocation = gl.getUniformLocation(program,'u_offset');
+      this.scaleLocation = gl.getUniformLocation(program,'u_scale');
+      this.rotateLocation = gl.getUniformLocation(program,'u_rotate');
+      this.rotate = create();
+      
+      this.y = -34.666;
+      this.x = -135.50055;
+    }
+
+    // スプライトを描画
+    render(screen) {
+      const gl = this.gl;
+
+      // プログラムの指定
+      gl.useProgram(this.program);
+
+      // VAOをバインド
+      gl.bindVertexArray(this.vao);
+      const hw = (tileWidth / 256.0 * screen.console.VIRTUAL_WIDTH) / 2;
+      const hh = (tileHeight / 256.0 * screen.console.VIRTUAL_HEIGHT) / 2;
+      let ox = this.x;
+      let oy = this.y - hh;
+      const left = ox - hw * 2,right = ox + hw * 2,top = oy,bottom = oy + hh*3;
+      // カラーパレットをバインド
+      for(const featureCollection of this.mapModels){
+        const attr = featureCollection.attributes;
+        if(left <= attr.xmax && attr.xmin <= right && top <= attr.ymax && attr.ymin <= bottom){
+          for(const obj of featureCollection.features){
+            gl.uniform1f(this.scaleLocation,1490);
+            gl.uniformMatrix3fv(this.rotateLocation,false,this.rotate);
+      //      gl.uniform2f(this.offsetLocation,-135.50055,this.y);
+            gl.uniform2f(this.offsetLocation,-ox,-oy);
+            gl.drawArrays(gl.LINE_STRIP, obj.offset,obj.size);
+          }
+        }
+      }
+  //    this.y -= 0.0000015; 
+    }
+  }
+
   //import { voronoi } from 'd3';
 
   // let display = true;
@@ -4607,7 +4839,49 @@ void main() {
     }
 
     //const myship = new SceneNode(model);
-    con.vscreen.appendScene(vox);
+
+    const map = new Map$1({gl2:gl2,mapModels:await MapModel.load()});
+    con.vscreen.appendScene(map);
+    const pathWay = (await ( await fetch('./map.json')).json()).features[0].geometry.coordinates.map(d=>fromValues$2(d[0],d[1]));
+    const pathVector = [];
+    
+    pathWay.reduce((prev,curr,i)=>{
+      const pathVec = {};
+      pathVec.start = prev;
+      pathVec.end = curr;
+      console.log(prev,curr,i);
+      pathVec.dist = sub(create$5(),curr,prev);
+      pathVec.dir = normalize$3(create$5(),pathVec.dist);
+      pathVec.angle = Math.atan2(pathVec.dir[1],pathVec.dir[0]); 
+      pathVec.dir[0] *= 0.00004; 
+      pathVec.dir[1] *= 0.00004;
+      pathVec.count = (((pathVec.dist[0] / pathVec.dir[0])) + 0.5) | 0;
+      pathVector.push(pathVec);
+      return curr;
+    });
+
+    function* ScrollPosIterator() {
+      for(const path of pathVector){
+        let x = path.start[0];
+        let y = path.start[1];
+        for(let i = 0;i < path.count;++i){
+          yield {x:x,y:y};
+          x += path.dir[0];
+          y += path.dir[1];
+        }
+      }
+    }
+
+    let scrollPos = ScrollPosIterator();
+
+
+
+    // const scrollManager = {
+    //   current:pathVector[0]
+
+    // };
+    
+    //con.vscreen.appendScene(vox);
 
     // cube.source.translation[2] = 0;
     // //m4.scale(cube.localMatrix,[20,20,20],cube.localMatrix);
@@ -4688,6 +4962,11 @@ void main() {
 
     let time = 0;
     function main(){
+        let v = scrollPos.next();
+        if(!v.done){
+          map.x = v.value.x;
+          map.y = v.value.y;
+        }
         time += 0.02;
         // cube.source.rotation[1] = time;
         // cube2.source.rotation[2] = time;
@@ -4695,7 +4974,6 @@ void main() {
         // sprite.source.translation[2] = 60.0;
         // sprite.source.rotation[1] = time/2;
         //con.text.print(0,0,'WebGL2 Point Sprite ｦﾂｶｯﾀ Spriteﾋｮｳｼﾞ TEST',true,7,1);
-
         con.render(time);
         // const spriteBuffer = sprite.spriteBuffer;
         // for(let i = 0;i < 512;++i){
@@ -4706,7 +4984,8 @@ void main() {
     }
     main();
     } catch (e) {
-    alert(e.stack);
+      throw e;
+      //alert(e.stack);
     }
   }
 

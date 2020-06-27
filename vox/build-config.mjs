@@ -6,7 +6,10 @@ export default {
   "./current/src/html/index.html",
   "./current/build/main.js",
   "./current/src/js/vox.js",
-  "./current/build/tvram.wasm"
+  "./current/build/tvram.wasm",
+  "./current/build/tvram.wasm",
+  "./current/src/temp/merged.json",
+  "./current/src/temp/map.json"
   ],
   "symlinkFiles":[
     './common/enemy.png',
