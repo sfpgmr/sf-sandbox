@@ -9,7 +9,7 @@ export default {
   "./current/build/tvram.wasm",
   "./current/build/tvram.wasm",
   "./current/src/temp/merged.json",
-  "./current/src/temp/map.json"
+  "./current/src/temp/scrollMap.json"
   ],
   "symlinkFiles":[
     './common/enemy.png',

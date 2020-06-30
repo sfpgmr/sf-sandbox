@@ -45,7 +45,7 @@ export class Console extends EventEmitter {
 
   initConsole({textBitmap,memory,offset}) {
 
-    this.gl = document.querySelector('#c').getContext('webgl2');
+    this.gl = document.querySelector('#c').getContext('webgl2',{antialias:false});
     const gl = this.gl;
     const gl2 = this.gl2 = new GL2(this.gl);
     gl.enable(gl.BLEND);

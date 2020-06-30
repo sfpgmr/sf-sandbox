@@ -13,15 +13,23 @@ layout(location = 0) in vec2 position;
 uniform vec2 u_offset;
 uniform float u_scale;
 uniform mat3 u_rotate;
+uniform float u_pointsize;
 
 void main() {
   
   // 表示位置の計算
-  vec4 pos = vec4( u_rotate * vec3(vec2((position.x + u_offset.x) * u_scale,1.0 - (u_offset.y + position.y)* u_scale),0.0),1.0) ;
-  pos.z = 1.0;
+  vec4 pos = vec4( u_rotate * vec3(
+        vec2(
+          (position.x + u_offset.x) ,
+           1.0 / u_scale - (position.y + u_offset.y) 
+          ) 
+      ,1.0)   
+    ,1.0) ;
+    pos.xy *= u_scale;
+  //pos.z = 1.0;
 
   gl_Position = pos;
-  gl_PointSize = 1.0;
+  gl_PointSize = u_pointsize;
 }
 `;
 
@@ -29,18 +37,21 @@ const fragmentShader = `#version 300 es
 precision highp float;
 precision highp int;
 
+uniform vec4 u_color;
+
 // 頂点シェーダーからの情報
+
 // 出力色
 out vec4 fcolor;
 
 void main() {
-  fcolor = vec4(1.0,1.0,1.0,1.0);
+  fcolor = u_color;
 }
 `;
 
 
-const tileWidth = 0.0013724960300966176;
-const tileHeight = 0.0011260210872360474;
+let tileWidth = 0.0013724960300966176 ;
+let tileHeight = 0.0011260210872360474;
 
 // プログラムを使いまわすためのキャッシュ
 let programCache;
@@ -67,25 +78,87 @@ function checkEndian(buffer = new ArrayBuffer(2)) {
 
 const points = [];
 export class MapModel {
-  constructor(pointList){
+  constructor(feature){
+
+
+    switch(feature.properties.class){
+      case 'RdEdg':
+        this.color = vec4.fromValues(1,1,1,0.5);
+        this.pointSize = 1.0;
+        this.drawType = 0;
+        break;
+      case 'BldL':
+        this.color = vec4.fromValues(1,0.5,0,1.0);
+        this.pointSize = 1.0;
+        this.drawType = 0;
+        break;
+      case 'WL':
+        this.color = vec4.fromValues(0,0,1,1.0);
+        this.pointSize = 1.0;
+        this.drawType = 0;
+        break;
+      case 'RdCompt':
+        this.color = vec4.fromValues(1,1,1,0.8);
+        this.pointSize = 1.0;
+        this.drawType = 0;
+        break;
+      case 'RailCL':
+        this.color = vec4.fromValues(0,1,0,0.7);
+        this.pointSize = 1.0;
+        this.drawType = 0;
+        break;
+      case 'ElevPt':
+        this.color = vec4.fromValues(1,0,1,1);
+        this.pointSize = 4.0;
+        this.drawType = 1;
+        break;
+      case 'Cntr':
+        this.color = vec4.fromValues(1,0,0,0.5);
+        this.pointSize = 1.0;
+        this.drawType = 0;
+        break;
+      case 'GCP':
+        this.color = vec4.fromValues(1,0,0,1);
+        this.pointSize = 4.0;
+        this.drawType = 1;
+        break;
+      default:
+        this.color = vec4.fromValues(1,1,1,0.3);
+        this.pointSize = 1.0;
+        this.drawType = 0;
+        break;
+    }
+
     this.offset = MapModel.offset_;
-    this.size = pointList.length;
-    pointList.forEach(d=>{
-      MapModel.points.push(...d);
-    });
-    MapModel.offset_ += pointList.length;
+    const pointList = feature.geometry.coordinates;
+    switch(feature.geometry.type){
+      case 'LineString':
+        this.size = pointList.length;
+        pointList.forEach(d=>{
+          MapModel.points.push(...d);
+        });
+        MapModel.offset_ += pointList.length;
+        break;
+      case 'Point':
+        this.size = 1;
+        MapModel.points.push(...pointList);
+        MapModel.offset_ += 1;
+        break;
+    }
+
   }
 
   static async load(url = './merged.json'){
     let mapModels = await (await fetch(url)).json();
-    mapModels = mapModels.map((featureCollestion)=>{
-      let features = featureCollestion.features.filter(f=>(f.properties.class == 'BldL' || f.properties.class.match(/Rd/)));
-      features = features.map(f =>{
-        return f.geometry.coordinates;
-      })
-      .map(pointList=>{
-        return new MapModel(pointList);
+    tileWidth = mapModels.attributes.avgWidth;
+    tileHeight = mapModels.attributes.avgHeight;
+    mapModels = mapModels.maps.map((featureCollestion)=>{
+//      let features = featureCollestion.features.filter(f=>(f.properties.class == 'BldL' || f.properties.class.match(/Rd/)));
+      let features = featureCollestion.features;//.filter(f=>(f.properties.class == "ElevPt"));
+      features = features.map(feature=>{
+        return new MapModel(feature);
       });
+
       return {
         attributes:featureCollestion.attributes,
         features:features
@@ -169,9 +242,15 @@ export class Map extends Node {
     this.scaleLocation = gl.getUniformLocation(program,'u_scale');
     this.rotateLocation = gl.getUniformLocation(program,'u_rotate');
     this.rotate = mat3.create();
+    this.axis = vec3.fromValues(0,0,1);
     
     this.y = -34.666;
     this.x = -135.50055;
+
+    this.colorLocation = gl.getUniformLocation(program,'u_color');
+    this.pointSizeLocation = gl.getUniformLocation(program,'u_pointsize');
+    //gl.uniformMatrix3fv(this.rotateLocation,false,this.rotate);
+
   }
 
   // スプライトを描画
@@ -183,21 +262,25 @@ export class Map extends Node {
 
     // VAOをバインド
     gl.bindVertexArray(this.vao);
-    const hw = (tileWidth / 256.0 * screen.console.VIRTUAL_WIDTH) / 2;
+    const hw = (tileWidth / 256.0 * screen.console.VIRTUAL_WIDTH) / 2 ;
     const hh = (tileHeight / 256.0 * screen.console.VIRTUAL_HEIGHT) / 2;
-    let ox = this.x;
-    let oy = this.y - hh;
-    const left = ox - hw * 2,right = ox + hw * 2,top = oy,bottom = oy + hh*3;
+    let ox = this.x - hw / 10 ;
+    let oy = this.y - hh / 2;
+    const left = ox - hw * 1,right = ox + hw * 1,top = oy - hh * 2,bottom = oy + hh * 2 ;
+    setRotate(this.rotate,this.angle - Math.PI / 2,this.axis);
+
     // カラーパレットをバインド
     for(const featureCollection of this.mapModels){
       const attr = featureCollection.attributes;
       if(left <= attr.xmax && attr.xmin <= right && top <= attr.ymax && attr.ymin <= bottom){
         for(const obj of featureCollection.features){
-          gl.uniform1f(this.scaleLocation,1490);
+          gl.uniform1f(this.scaleLocation,3000);
           gl.uniformMatrix3fv(this.rotateLocation,false,this.rotate);
-    //      gl.uniform2f(this.offsetLocation,-135.50055,this.y);
+          gl.uniform4fv(this.colorLocation,obj.color);
+          gl.uniform1f(this.pointSizeLocation,obj.pointSize || 1.0);
           gl.uniform2f(this.offsetLocation,-ox,-oy);
-          gl.drawArrays(gl.LINE_STRIP, obj.offset,obj.size);
+          
+          gl.drawArrays(obj.drawType == 0 ? gl.LINE_STRIP : gl.POINTS, obj.offset,obj.size);
         }
       }
     }

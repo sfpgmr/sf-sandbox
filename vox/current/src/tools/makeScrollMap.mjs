@@ -11,7 +11,8 @@ const fsp = fs.promises;
   } catch (e) {
 
   }
-  const scrollMapData = JSON.parse(await fsp.readFile('../temp/map.json', 'utf8'));
+  //const scrollMapData = JSON.parse(await fsp.readFile('../temp/tokyo.json', 'utf8'));
+  const scrollMapData = JSON.parse(await fsp.readFile('../temp/osaka.json', 'utf8'));
   const mappos = scrollMapData.features[0].geometry.coordinates
     .map(d => {
       let p = latlon2tile(d[1], d[0], 18);
@@ -40,6 +41,36 @@ const fsp = fs.promises;
   // ++ymax;
 
   const maps = new Map();
+  const classMap = new Map();
+  const typeMap = new Map();
+
+  const extrudeTypes = [
+//   '一般等高線',
+//   '真幅道路',
+//    '庭園路等',
+//    '普通建物',
+//    '堅ろう建物',
+//    '普通無壁舎',
+//    '水涯線（河川）',
+//    '歩道',
+//    '普通鉄道',
+//    '分離帯',
+    'トンネル内の鉄道',
+    '大字・町・丁目界',
+    '町村・指定都市の区界',
+    '市区町村界',
+//    '堅ろう無壁舎',
+    '大字・町・丁目',
+//    '標高点（測点）',
+//    '水準点',
+//    '特殊軌道',
+    '町村・指定都市の区',
+//    'その他',
+    '郡市・東京都の区',
+//    '電子基準点',
+    'トンネル内の道路',
+//    '三角点'
+  ];
 
   for (let i = 0, e = mappos.length - 1; i < e; i += 1) {
     const p1 = mappos[i];
@@ -71,26 +102,38 @@ const fsp = fs.promises;
               return data;
             }
           })();
-          let lonMin,lonMax,latMin,latMax;
-          lonMin = lonMax = data.features[0].geometry.coordinates[0][0]; 
-          latMin = latMax = data.features[0].geometry.coordinates[0][1]; 
+          data.features = data.features.filter(f=>{
+            return extrudeTypes.indexOf(f.properties.type,0) == -1;
+          });
+          let lonMin, lonMax, latMin, latMax;
+          lonMin = lonMax = data.features[0].geometry.coordinates[0][0];
+          latMin = latMax = data.features[0].geometry.coordinates[0][1];
 
-          for(const feature of data.features){
+          for (const feature of data.features) {
             const coords = feature.geometry.coordinates;
-            for(const coord of coords){
-              (lonMin > coord[0]) && (lonMin = coord[0]);
-              (lonMax < coord[0]) && (lonMax = coord[0]);
-              (latMin > coord[1]) && (latMin = coord[1]);
-              (latMax < coord[1]) && (latMax = coord[1]);
+            if (feature.geometry.type == 'LineString') {
+              for (const coord of coords) {
+                (lonMin > coord[0]) && (lonMin = coord[0]);
+                (lonMax < coord[0]) && (lonMax = coord[0]);
+                (latMin > coord[1]) && (latMin = coord[1]);
+                (latMax < coord[1]) && (latMax = coord[1]);
+              }
+            } else if (feature.geometry.type == 'Point') {
+              (lonMin > coords[0]) && (lonMin = coords[0]);
+              (lonMax < coords[0]) && (lonMax = coords[0]);
+              (latMin > coords[1]) && (latMin = coords[1]);
+              (latMax < coords[1]) && (latMax = coords[1]);
             }
+            classMap.set(feature.properties.class, true);
+            typeMap.set(feature.properties.type, true);
           }
           data.attributes = {
-            xmin:lonMin,
-            xmax:lonMax,
-            ymin:latMin,
-            ymax:latMax,
-            width:lonMax-lonMin,
-            height:latMax-latMin
+            xmin: lonMin,
+            xmax: lonMax,
+            ymin: latMin,
+            ymax: latMax,
+            width: lonMax - lonMin,
+            height: latMax - latMin
           };
           maps.set(`${x}_${y}`, data);
         }
@@ -98,14 +141,17 @@ const fsp = fs.promises;
     }
   }
   const mapsArray = Array.from(maps.values());
-  let a = mapsArray.reduce((p,curr)=>{
+  let a = mapsArray.reduce((p, curr) => {
     p.width += curr.attributes.width;
     p.height += curr.attributes.height;
     return p;
-  },{width:0,height:0});
-  a.width = a.width / mapsArray.length;
-  a.height = a.height / mapsArray.length;
-  console.log(a);
+  }, { width: 0, height: 0 });
+  a.avgWidth = a.width / mapsArray.length;
+  a.avgHeight = a.height / mapsArray.length;
+  console.log(a, mapsArray.length);
+  console.log(Array.from(classMap.keys()));
+  console.log(Array.from(typeMap.keys()));
   //let merged = geojsonMerge.merge(Array.from(maps.values()));
-  await fsp.writeFile(`../temp/merged.json`, JSON.stringify(mapsArray, null, 1), 'utf8');
+  await fsp.writeFile(`../temp/merged.json`, JSON.stringify({ maps: mapsArray, attributes: a }, null, 1), 'utf8');
+  await fsp.writeFile(`../temp/scrollMap.json`, JSON.stringify(scrollMapData, null, 1), 'utf8');
 })();
