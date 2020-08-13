@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="ja" prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb# article: http://ogp.me/ns/article#">
+
+<head>
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-15457703-9"></script>
+  <script>
+    if (!location.hostname.match(/localhost/)) {
+      window.dataLayer = window.dataLayer || [];
+      function gtag() { dataLayer.push(arguments); }
+      gtag('js', new Date());
+      gtag('config', 'UA-15457703-9');
+    }
+  </script>
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>トップページをリニューアルする</title>
+  <meta name="description" content="リニューアル用のトップページデザインを考えて実装する" />
+  <meta name="keywords" content="Programming,Music,HTML5,WebGL,javascript,WebAudio" /> 	
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <meta itemprop="image" content="https://www.sfpgmr.net/img/sfweb.png" />
+  <meta itemprop="name" content="S.F. Web" />
+  
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:site" content="S.F. Web" />
+  <meta name="twitter:url" content="./index27.html" />
+  <meta name="twitter:title" content="リニューアル用のトップページデザイン" />
+  <meta name="twitter:description" content="リニューアル用のトップページデザインを考えて実装する" />
+  <meta name="twitter:image" content="https://www.sfpgmr.net/img/sfweb.png" />
+  
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="./index27.html" />
+  <meta property="og:title" content="リニューアル用のトップページデザイン"/>
+  <meta property="og:site_name" content="S.F. Web" />
+  <meta property="og:description" content="Programming,Music,HTML5,WebGL,javascript,WebAudio">
+  <meta property="og:image" content="https://www.sfpgmr.net/img/sfweb.png">
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    html {
+      margin: 0;
+      padding: 0;
+      font-size:10px;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      background: black;
+      color: white;
+    }
+
+    .top-nav {
+      position:fixed;
+      z-index:99999;
+      background: rgba(0,0,0,0.5);
+      display: block;
+      width:100%;
+      height:32px;
+      color:white;
+    }
+    #sentinel {
+      width:0px;
+      height:0px;
+    }
+    .contents {
+      padding-top:32px;
+      width: 100%;
+      position: relative;
+      content: strict;
+    }
+
+    @keyframes blinking {
+      0% {
+        color: black;
+      }
+
+      50% {
+        color: white;
+      }
+
+      100% {
+        color: black;
+      }
+    }
+
+    .loading {
+      font-family: monospace;
+      font-size: 24px;
+      position: fixed;
+      width: 100vw;
+      height: 100vh;
+      text-align: center;
+      padding-top: 50vh;
+      z-index: 32768;
+      background: black;
+      animation: blinking 2s infinite;
+      content: strict;
+    }
+
+
+    .contents > article {
+      background: #f0f0f0;
+      color: #202020;
+      position: absolute;
+      max-height: 960px;
+      overflow: auto;
+      border-radius: 3px;
+      transition: opacity 1s linear;
+      opacity: 0.0;
+    }
+
+    .tweet-header {
+      display: grid;
+      align-items: end;
+      grid-template-columns: 40px 2fr 1fr;
+      grid-template-rows: 1fr;
+      font-size: 12px;
+      font-weight: bold;
+    }
+
+
+    .tweet-img {
+      width: 100%;
+      object-fit: cover;
+    }
+
+    .youtube {
+      position: relative;
+      cursor: pointer;
+    }
+
+    .youtube > img {
+      width: 100%;
+      object-fit: cover;
+    }
+
+    .youtube > svg.player-play {
+      width:64px;
+      height:64px;
+      left:calc(50% - 32px);
+      top:calc(50% - 32px);
+      position:absolute;
+      z-index: 1000;
+      opacity: 0.5;
+    }
+    
+    .youtube:hover > svg.player-play {
+      opacity: 1.0;
+    }
+
+    .youtube:hover .player-play-1 {
+      stroke:#80808080;
+    }
+
+    
+    .youtube > div.yt-title {
+      /*text-shadow: #fff 1px 1px 0;*/
+      font-size: 1.2rem;
+      color:white;
+      background:rgba(0, 0,0,0.5);
+      position:absolute;
+      left:0;
+      top:0;
+      overflow: auto;
+      z-index:998;
+    }
+
+
+    .tweet-profile-img {
+      grid-column: 1/2;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+    }
+
+    .tweet-user-name {
+      grid-column: 2/3;
+    }
+
+    .tweet-date {
+      font-size: 8px;
+      text-align: right;
+      grid-column: 3/4;
+    }
+
+    .contents>twitter-widget {
+      overflow: auto;
+      max-height: 960px;
+      position: absolute;
+    }
+
+    .contents>article>section>.tweet-text {
+      display: block;
+      padding: 4px;
+      word-break: break-all;
+      font-size: 12px;
+    }
+
+    .contents>article>h3 {
+      font-size: 12px;
+    }
+
+    blockquote.card {
+      margin:4px;
+      padding:4px;
+      font-size:12px;
+      background:white;
+      border-radius: 4px;
+    }
+
+    blockquote.card > header {
+      display:grid;
+      grid-gap:4px;
+      gap:4px;
+    }
+
+    blockquote.card-default > header {
+      grid-template-columns:64px 1fr;
+    }
+
+    blockquote.card-large > header {
+      grid-template-columns:1fr;
+    }
+
+    blockquote.card > header > img {
+      width:100%;
+    }
+
+
+    div.no-image {
+      display: block;
+      width:64px;
+      height:64px;
+      background:gray;
+      color:white;
+      text-align: center;
+      line-height: 64px;
+    }
+
+  </style>
+</head>
+
+<body>
+  <div class="loading" id="loading">Loading</div>
+  <header class="top-nav">
+    <h1>S.F. Info.</h1>
+  </header>
+  <div class="contents" id="contents" rendersubtree="invisible skip-activation"> 
+    
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1128264565215465472"
+            target="_blank">2019/5/14 20:43:29</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ああ、これだ。。アクティブタイプか。。 <blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="https://twitter.com/togemet2/status/1128086814466592768" target="_blank">Twitter / ?</a></header><div></div></blockquote></p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/1131873606663790592/tb1XuMol_normal.jpg" />
+        <p class="tweet-user-name">redcamel@redcamel15</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/redcamel15/status/1128252155457036288"
+            target="_blank">2019/5/14 19:54:10</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">RedGL - add Demo <br/>1. AutoProgram Test : <a href="https://redcamel.github.io/RedGL2/example/program/testAutoProgram.html" target="_blank">redcamel.github.io/RedGL2/example…</a><br/>2. GLTF MultiMorph Animation performance Test : <br/><a href="https://redcamel.github.io/RedGL2/example/loader/gltf/RedGLTFLoader_Multi_morphTarget_performance.html" target="_blank">redcamel.github.io/RedGL2/example…</a><br/><br/>#RedGL #webgl #GLTF #redcamel https://t.co/KV8FQ7ND6l</p>
+        
+        <img loading="lazy" class="tweet-img" src="https://pbs.twimg.com/media/D6hbQ2VUYAAi3sD.jpg" />
+        
+        <img loading="lazy" class="tweet-img" src="https://pbs.twimg.com/media/D6hbVPlUIAA3ij5.jpg" />
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/561193472095297538/geSfl2cn_normal.jpeg" />
+        <p class="tweet-user-name">たかトン@JNR@Takaton_JNR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/Takaton_JNR/status/1127511204463702017"
+            target="_blank">2019/5/12 18:49:53</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">MZ-700に不可能はないんだな<br/>…(ﾟдﾟ) https://t.co/3WIzhdvqXW</p>
+        
+        <video class="tweet-img" controls src="https://video.twimg.com/ext_tw_video/1127511003283972096/pu/vid/360x640/gqMtqZ5GQPsKekWT.mp4?tag=9" />
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/1567578351/chikoski_handwritten_lightened_normal.jpg" />
+        <p class="tweet-user-name">chikoski@chikoski</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/chikoski/status/1127747616928755712"
+            target="_blank">2019/5/13 10:29:19</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">これは大変なことやと思うよ。 <a href="https://twitter.com/about_hiroppy/status/1127740491783499777" target="_blank">twitter.com/about_hiroppy/…</a></p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/778946041416605696/TnrttgMm_normal.jpg" />
+        <p class="tweet-user-name">D.S.A.@ym2413</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/ym2413/status/1126644637555290117"
+            target="_blank">2019/5/10 9:26:28</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">OSX + node.js での SPFM + Re:Birth 制御の続き。YM2203も普通に鳴るように。タイマー精度の問題はCPU1個潰す覚悟で一旦ビジーループに。 https://t.co/ri39uZYnGc</p>
+        
+        <video class="tweet-img" controls src="https://video.twimg.com/ext_tw_video/1126644423087943680/pu/vid/576x360/_VA1uqbDNL8neXc8.mp4?tag=9" />
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/1115702832705892352/ZLChmKyI_normal.jpg" />
+        <p class="tweet-user-name">Futo Horio@Futo_Horio</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/Futo_Horio/status/1126175336444522498"
+            target="_blank">2019/5/9 2:21:38</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ターミナル画面だけで、こんなにカッコ良く展示できるの凄い。燃え滾ってる。#MSBuild https://t.co/Y4XxjA9jTn</p>
+        
+        <video class="tweet-img" controls src="https://video.twimg.com/ext_tw_video/1126175263300018182/pu/vid/640x360/NckuH8HmkiPe1hVE.mp4?tag=9" />
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/625942356894748672/4uBWrxZ2_normal.png" />
+        <p class="tweet-user-name">すーぱーたーぼ@SuperturboZ</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SuperturboZ/status/1126667175316475904"
+            target="_blank">2019/5/10 10:56:01</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">とあるファイルをしていたら、一番最初に見つけたPSGのノイズ発生回路のロシア文書が出てきた。<br/>AY_YM_NoiseGenerator.7z で検索すれば今でも見つかるみたい。readmeに経緯のようなものが書いてあるけど当時はロシア語が翻訳できなくて読めなかった。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/1567578351/chikoski_handwritten_lightened_normal.jpg" />
+        <p class="tweet-user-name">chikoski@chikoski</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/chikoski/status/1126243166862995456"
+            target="_blank">2019/5/9 6:51:10</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">V8のJITについて。WASMの最適化は必ず起こる。それが、JSとの違い #io19jp https://t.co/E6tXdcOebw</p>
+        
+        <img loading="lazy" class="tweet-img" src="https://pbs.twimg.com/media/D6E4L94UYAA08tb.jpg" />
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/736944193059229697/cjVzDlPe_normal.jpg" />
+        <p class="tweet-user-name">ドッグ@Linda_pp</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/Linda_pp/status/1125586623700164608"
+            target="_blank">2019/5/7 11:22:18</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">Windows API をより安全かつ簡単に使うためのヘッダオンリーな汎用 C++ ライブラリ WIL というのがあるのか．現時点でエラーハンドリングとか RAII によるリソース管理などが実装されてる | 'microsoft/wil: Windows Implementation Library' <a href="https://github.com/microsoft/wil" target="_blank">github.com/microsoft/wil</a></p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1125359997519446016"
+            target="_blank">2019/5/6 20:21:46</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">さらば、梅田の「泉の広場」　愛されて半世紀、最終日に惜別する人たち <blockquote class="card card-large"><header><img loading="lazy" src="https://www.j-cast.com/images/2019/05/news_20190506161810.jpg" /><a href="https://www.j-cast.com/2019/05/06356759.html" target="_blank">さらば、梅田の「泉の広場」　愛されて半世紀、最終日に惜別する人たち : J-CASTニュース</a></header><div>大阪・梅田の地下街「ホワイティうめだ」の名物噴水「泉の広場」が、2019年5月6日限りで見納めとなる。すでに6日朝から多くの人が泉の広場を訪れている。泉の広場は1970年に開設され、噴水の建て替えを経ながらも49年間親しまれて、梅田周辺の有名なスポットだった。梅田ダンジョンの「セーブポイント」現在の噴水は3代目。</div></blockquote> @jcast_newsさんから</p>
+        
+      </section>
+      
+    </article>
+    
+  </div>
+  <footer>
+    CopyLight 2019 Satoshi Fujiwara
+  </footer>
+  <script async src="https://platform.twitter.com/widgets.js"></script>
+
+  <script async src="./index.js"></script>
+
+</body>
+
+</html>

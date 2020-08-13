@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="ja" prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb# article: http://ogp.me/ns/article#">
+
+<head>
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-15457703-9"></script>
+  <script>
+    if (!location.hostname.match(/localhost/)) {
+      window.dataLayer = window.dataLayer || [];
+      function gtag() { dataLayer.push(arguments); }
+      gtag('js', new Date());
+      gtag('config', 'UA-15457703-9');
+    }
+  </script>
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>トップページをリニューアルする</title>
+  <meta name="description" content="リニューアル用のトップページデザインを考えて実装する" />
+  <meta name="keywords" content="Programming,Music,HTML5,WebGL,javascript,WebAudio" /> 	
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <meta itemprop="image" content="https://www.sfpgmr.net/img/sfweb.png" />
+  <meta itemprop="name" content="S.F. Web" />
+  
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:site" content="S.F. Web" />
+  <meta name="twitter:url" content="./index23.html" />
+  <meta name="twitter:title" content="リニューアル用のトップページデザイン" />
+  <meta name="twitter:description" content="リニューアル用のトップページデザインを考えて実装する" />
+  <meta name="twitter:image" content="https://www.sfpgmr.net/img/sfweb.png" />
+  
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="./index23.html" />
+  <meta property="og:title" content="リニューアル用のトップページデザイン"/>
+  <meta property="og:site_name" content="S.F. Web" />
+  <meta property="og:description" content="Programming,Music,HTML5,WebGL,javascript,WebAudio">
+  <meta property="og:image" content="https://www.sfpgmr.net/img/sfweb.png">
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    html {
+      margin: 0;
+      padding: 0;
+      font-size:10px;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      background: black;
+      color: white;
+    }
+
+    .top-nav {
+      position:fixed;
+      z-index:99999;
+      background: rgba(0,0,0,0.5);
+      display: block;
+      width:100%;
+      height:32px;
+      color:white;
+    }
+    #sentinel {
+      width:0px;
+      height:0px;
+    }
+    .contents {
+      padding-top:32px;
+      width: 100%;
+      position: relative;
+      content: strict;
+    }
+
+    @keyframes blinking {
+      0% {
+        color: black;
+      }
+
+      50% {
+        color: white;
+      }
+
+      100% {
+        color: black;
+      }
+    }
+
+    .loading {
+      font-family: monospace;
+      font-size: 24px;
+      position: fixed;
+      width: 100vw;
+      height: 100vh;
+      text-align: center;
+      padding-top: 50vh;
+      z-index: 32768;
+      background: black;
+      animation: blinking 2s infinite;
+      content: strict;
+    }
+
+
+    .contents > article {
+      background: #f0f0f0;
+      color: #202020;
+      position: absolute;
+      max-height: 960px;
+      overflow: auto;
+      border-radius: 3px;
+      transition: opacity 1s linear;
+      opacity: 0.0;
+    }
+
+    .tweet-header {
+      display: grid;
+      align-items: end;
+      grid-template-columns: 40px 2fr 1fr;
+      grid-template-rows: 1fr;
+      font-size: 12px;
+      font-weight: bold;
+    }
+
+
+    .tweet-img {
+      width: 100%;
+      object-fit: cover;
+    }
+
+    .youtube {
+      position: relative;
+      cursor: pointer;
+    }
+
+    .youtube > img {
+      width: 100%;
+      object-fit: cover;
+    }
+
+    .youtube > svg.player-play {
+      width:64px;
+      height:64px;
+      left:calc(50% - 32px);
+      top:calc(50% - 32px);
+      position:absolute;
+      z-index: 1000;
+      opacity: 0.5;
+    }
+    
+    .youtube:hover > svg.player-play {
+      opacity: 1.0;
+    }
+
+    .youtube:hover .player-play-1 {
+      stroke:#80808080;
+    }
+
+    
+    .youtube > div.yt-title {
+      /*text-shadow: #fff 1px 1px 0;*/
+      font-size: 1.2rem;
+      color:white;
+      background:rgba(0, 0,0,0.5);
+      position:absolute;
+      left:0;
+      top:0;
+      overflow: auto;
+      z-index:998;
+    }
+
+
+    .tweet-profile-img {
+      grid-column: 1/2;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+    }
+
+    .tweet-user-name {
+      grid-column: 2/3;
+    }
+
+    .tweet-date {
+      font-size: 8px;
+      text-align: right;
+      grid-column: 3/4;
+    }
+
+    .contents>twitter-widget {
+      overflow: auto;
+      max-height: 960px;
+      position: absolute;
+    }
+
+    .contents>article>section>.tweet-text {
+      display: block;
+      padding: 4px;
+      word-break: break-all;
+      font-size: 12px;
+    }
+
+    .contents>article>h3 {
+      font-size: 12px;
+    }
+
+    blockquote.card {
+      margin:4px;
+      padding:4px;
+      font-size:12px;
+      background:white;
+      border-radius: 4px;
+    }
+
+    blockquote.card > header {
+      display:grid;
+      grid-gap:4px;
+      gap:4px;
+    }
+
+    blockquote.card-default > header {
+      grid-template-columns:64px 1fr;
+    }
+
+    blockquote.card-large > header {
+      grid-template-columns:1fr;
+    }
+
+    blockquote.card > header > img {
+      width:100%;
+    }
+
+
+    div.no-image {
+      display: block;
+      width:64px;
+      height:64px;
+      background:gray;
+      color:white;
+      text-align: center;
+      line-height: 64px;
+    }
+
+  </style>
+</head>
+
+<body>
+  <div class="loading" id="loading">Loading</div>
+  <header class="top-nav">
+    <h1>S.F. Info.</h1>
+  </header>
+  <div class="contents" id="contents" rendersubtree="invisible skip-activation"> 
+    
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1142335969523167232"
+            target="_blank">2019/6/22 16:38:13</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">Shadow Of The Tomb RaiderがSteamで安くなってたのでつい購入してしまった。。<br/><br/><div class="youtube" data-type="yt" id="Dr4PWgh5FXI"><div class="yt-title">Youtube - シャドウ オブ ザ トゥームレイダー ”Launch"トレーラー 日本語吹き替え版</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/Dr4PWgh5FXI" class="youtube" src="https://i.ytimg.com/vi/Dr4PWgh5FXI/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/1156742054480736257/tGxMqEIT_normal.jpg" />
+        <p class="tweet-user-name">Ken Nishimura / 西村賢@knsmr</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/knsmr/status/1141860722571218944"
+            target="_blank">2019/6/21 9:09:45</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">全ての球は同じ色だそうです。しかも、その色というのは、、、茶色！ はあ？<br/><br/>そんなん分かるわけないやんw 拡大しても分からない。ならピクセル単位で確認だ。直感か計測か。両方大事に決まってるけど、これを見ると直感はアテにならんと思いますよね（というのも、たぶん一種の錯覚） https://t.co/ZXbxKO7DAG</p>
+        
+        <img loading="lazy" class="tweet-img" src="https://pbs.twimg.com/media/D9i0QrdUwAA3Po4.jpg" />
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1141834135800963072"
+            target="_blank">2019/6/21 7:24:06</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">夏の組み合わせ決まったか。。<br/><blockquote class="card card-large"><header><img loading="lazy" src="https://www.chibanippo.co.jp/sites/default/files/101_0.jpg" /><a href="https://www.chibanippo.co.jp/news/sports/603999" target="_blank">令和初の覇者へ　１６３チーム組み合わせ決定　７月１０日開幕　第１０１回全国高校野球　千葉大会 | 千葉日報オンライン</a></header><div>　第１０１回全国高校野球選手権千葉大会（７月１０日開幕）の組み合わせ抽選会が１９日、千葉市稲毛区の千葉県スポーツ科学センターで行われ、１７０校１６３チームの対戦カードが決まった。<br/>　今春の選抜大会準優</div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1141835070736486400"
+            target="_blank">2019/6/21 7:27:49</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">習志野は順当に勝てばベスト8で成田、ベスト4で木更津総合と対戦か。。やはり厳しい道のりですな。でもし決勝までいけばあの専松と再戦か。まあわからんけど。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1141836827432648705"
+            target="_blank">2019/6/21 7:34:48</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">専松、木総はエース級が２人いるからね。習志野は飯塚くん以外は今ひとつピリッとしないところがあるもんな。。打力においても２校に比べて劣る気もするしね。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1141836830569947136"
+            target="_blank">2019/6/21 7:34:49</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">専松、木総との夏の決勝の観戦結果は過去全敗なので、今年こそ行ってほしいところだけどね。。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1141154443234119680"
+            target="_blank">2019/6/19 10:23:15</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">自作のWASMプリプロセッサを使ってPSGエミュレータを作った。｜sfpgmr @SFPGMR｜note（ノート） <blockquote class="card card-default"><header><img loading="lazy" src="https://d2l930y2yx77uc.cloudfront.net/production/uploads/images/12421000/rectangle_large_type_2_74ba3045a4dbcf860f96869036b16775.png" /><a href="https://note.mu/sfpgmr/n/nde08ad5a1200" target="_blank">自作のWASMプリプロセッサを使ってPSGエミュレータを作った。｜sfpgmr｜note</a></header><div> mwasmという自作のプリプロセッサ拡張がわりと使えるようになったので何か書いてみようと思った。PSGが興味の対象となっていたので、Cで書かれたエミュレータ・ソースコードを移植してみることにした。  元のソースコードはem2149.cというもので、Cで書かれた短いものである。psgのエミュレータのソースコードはたくさんあって、おそらくmameのものが一番有名じゃないかなと思うんだけど、このコードは短くてすっきりしていたので、移植のターゲットにはもってこいだと考えた。これをwasmテキスト・フォーマットでハンドで移植することにした。以下がそのソースコードである。     sfpgmr/</div></blockquote></p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1139109777760382976"
+            target="_blank">2019/6/13 18:58:29</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">こんなに種類があったのですね。。魂斗羅って。。 <blockquote class="card card-default"><header><img loading="lazy" src="https://pbs.twimg.com/profile_images/3278079864/a2bbf72808271b9bc221cefa15ddbd29_400x400.jpeg" /><a href="https://twitter.com/syntaxerrors72/status/1138812159494721537" target="_blank">なるおさんのツイート: "KONAMI 50周年記念シリーズ「アニバーサリーコレクション」！往年のアーケード・家庭用ゲームが最新ハードで復活！ https://t.co/0gcyfeVp8C #レトロゲーム #KONAMI50th トレーラー映像で次々に紹介される作品名が「魂斗羅」「魂斗羅」「CONTORA」「コントラ」って冗談みたいに続く感じがエモ"</a></header><div>“KONAMI 50周年記念シリーズ「アニバーサリーコレクション」！往年のアーケード・家庭用ゲームが最新ハードで復活！ https://t.co/0gcyfeVp8C #レトロゲーム #KONAMI50th トレーラー映像で次々に紹介される作品名が「魂斗羅」「魂斗羅」「CONTORA」「コントラ」って冗談みたいに続く感じがエモ”</div></blockquote></p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/577475048245592064/3sN4WtYC_normal.jpeg" />
+        <p class="tweet-user-name">Takafumi Ikeda@ikeike443</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/ikeike443/status/1138578187087048704"
+            target="_blank">2019/6/12 7:46:08</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">まさにこれを日本企業の人にもお伝えしてるのですが、あまりピンとは来ないみたい。日本ではこういう変化はまだ起こってない。（起こってる現実をまだ認識できてない） / “米国企業のデジタルトランスフォメーションとはソフトウェア企業になること | On Off and Beyond” <a href="https://htn.to/2TR4GAdhUY" target="_blank">htn.to/2TR4GAdhUY</a></p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/1192497431075643397/RfpyPSh4_normal.jpg" />
+        <p class="tweet-user-name">Sushi on fire📛@Harage_Gohan</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/Harage_Gohan/status/1138275015986540544"
+            target="_blank">2019/6/11 11:41:26</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">俺は左のことをポン酢って呼んでるんだがよう、世間的には右がポン酢らしいじゃねえか…！<br/>ムカつくゼェ！右はポン酢醤油だろうが！お前らは左をなんて呼んでんだよ！<br/>「ポン酢買ってきて」で左買ってったら何これって言われるんだよあぁ！？自分の世間知らずを棚に上げやがってぇ！ムカつくゼェ！！！ https://t.co/S7qIdvvmQG</p>
+        
+        <img loading="lazy" class="tweet-img" src="https://pbs.twimg.com/media/D8v3F4XUwAAUfhw.jpg" />
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1138371325922201600"
+            target="_blank">2019/6/11 18:04:08</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">リアルタイムレイトレーシングがPCでできるようになるとはすごい時代になりましたな。。 <blockquote class="card card-default"><header><img loading="lazy" src="https://pbs.twimg.com/media/D8vTiKDU0AAt7P5.jpg:large" /><a href="https://twitter.com/pc_watch/status/1138235916269473792" target="_blank">PC Watchさんのツイート: "AMD、リアルタイムレイトレーシングを次世代RDNAでサポート～Windows 10 May 2019 UpdateでCPUが高クロックへ復帰する時間が20倍高速に https://t.co/SL4SoPtBEF… "</a></header><div>“AMD、リアルタイムレイトレーシングを次世代RDNAでサポート～Windows 10 May 2019 UpdateでCPUが高クロックへ復帰する時間が20倍高速に https://t.co/SL4SoPtBEF”</div></blockquote></p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/1344902311/profile_normal.png" />
+        <p class="tweet-user-name">えぬおう@enuou1000</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/enuou1000/status/1137739185668780032"
+            target="_blank">2019/6/10 0:12:14</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">テトリスとシューティングを混ぜたらどうなるか実験<br/> #petitcom #プチコン4 #NintendoSwitch https://t.co/uwTlCDrWoK</p>
+        
+        <video class="tweet-img" controls src="https://video.twimg.com/ext_tw_video/1137739149518168065/pu/vid/480x270/zbT1yE7aJULKMh1K.mp4?tag=10" />
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/960092455486996480/cRvvhRUO_normal.jpg" />
+        <p class="tweet-user-name">herumi@herumi</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/herumi/status/1137286475492384768"
+            target="_blank">2019/6/8 18:13:20</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">IntelがMKL-DNNの中でXbyakを独自拡張してAVX512_BF16に対応させてるけどバグってるぽいから、(既にサポート済みの)本家を使ってみてはと提案してみた。<br/><a href="https://github.com/intel/mkl-dnn/issues/485" target="_blank">github.com/intel/mkl-dnn/…</a><br/>... 結構貢献してるし、第二世代Xeon SPマシンとか寄付してもらえないかな(まだAVX-512マシンン持ってない 笑)。</p>
+        
+      </section>
+      
+    </article>
+    
+  </div>
+  <footer>
+    CopyLight 2019 Satoshi Fujiwara
+  </footer>
+  <script async src="https://platform.twitter.com/widgets.js"></script>
+
+  <script async src="./index.js"></script>
+
+</body>
+
+</html>

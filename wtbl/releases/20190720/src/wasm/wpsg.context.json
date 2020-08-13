@@ -1,0 +1,238 @@
+{
+  "POINT_BITS": 12,
+  "POINT_BITS_64": 32,
+  "SHIFT_BITS": 4096,
+  "SHIFT_BITS_MASK": 4095,
+  "DEFAULT_SAMPLE_RATE": 180633600,
+  "DEFAULT_PITCH": 1802240,
+  "DEFAULT_VOLUME": 4096,
+  "WAVE_LENGTH": 32,
+  "Voice": {
+    "_attributes_": {
+      "type": "StructDefinition",
+      "size": 64
+    },
+    "wave_table": {
+      "_attributes_": {
+        "type": "PrimitiveType",
+        "varType": "i32",
+        "size": 4,
+        "integer": true,
+        "unsigned": false,
+        "offset": 0,
+        "initData": null,
+        "num": 8,
+        "log2": 2
+      }
+    },
+    "delta": {
+      "_attributes_": {
+        "type": "PrimitiveType",
+        "varType": "i64",
+        "size": 8,
+        "integer": true,
+        "unsigned": false,
+        "offset": 32,
+        "initData": null,
+        "num": 1,
+        "log2": 3
+      }
+    },
+    "counter": {
+      "_attributes_": {
+        "type": "PrimitiveType",
+        "varType": "i64",
+        "size": 8,
+        "integer": true,
+        "unsigned": false,
+        "offset": 40,
+        "initData": null,
+        "num": 1,
+        "log2": 3
+      }
+    },
+    "volume": {
+      "_attributes_": {
+        "type": "PrimitiveType",
+        "varType": "i32",
+        "size": 4,
+        "integer": true,
+        "unsigned": false,
+        "offset": 48,
+        "initData": null,
+        "num": 1,
+        "log2": 2
+      }
+    },
+    "pitch": {
+      "_attributes_": {
+        "type": "PrimitiveType",
+        "varType": "i32",
+        "size": 4,
+        "integer": true,
+        "unsigned": false,
+        "offset": 52,
+        "initData": null,
+        "num": 1,
+        "log2": 2
+      }
+    },
+    "position": {
+      "_attributes_": {
+        "type": "PrimitiveType",
+        "varType": "i32",
+        "size": 4,
+        "integer": true,
+        "unsigned": false,
+        "offset": 56,
+        "initData": null,
+        "num": 1,
+        "log2": 2
+      }
+    },
+    "flag": {
+      "_attributes_": {
+        "type": "PrimitiveType",
+        "varType": "i32",
+        "size": 4,
+        "integer": true,
+        "unsigned": false,
+        "offset": 60,
+        "initData": null,
+        "num": 1,
+        "log2": 2
+      }
+    }
+  },
+  "_attributes_": {
+    "type": "MemoryMap",
+    "size": 840
+  },
+  "output_buffer": {
+    "_attributes_": {
+      "type": "PrimitiveType",
+      "varType": "f32",
+      "size": 4,
+      "integer": false,
+      "unsigned": false,
+      "offset": 0,
+      "initData": null,
+      "num": 128,
+      "log2": 2
+    }
+  },
+  "voice": {
+    "_attributes_": {
+      "type": "StructDefinition",
+      "size": 64,
+      "offset": 512,
+      "initData": null,
+      "num": 5,
+      "log2": 6
+    },
+    "wave_table": {
+      "_attributes_": {
+        "type": "PrimitiveType",
+        "varType": "i32",
+        "size": 4,
+        "integer": true,
+        "unsigned": false,
+        "offset": 512,
+        "initData": null,
+        "num": 8,
+        "log2": 2
+      }
+    },
+    "delta": {
+      "_attributes_": {
+        "type": "PrimitiveType",
+        "varType": "i64",
+        "size": 8,
+        "integer": true,
+        "unsigned": false,
+        "offset": 544,
+        "initData": null,
+        "num": 1,
+        "log2": 3
+      }
+    },
+    "counter": {
+      "_attributes_": {
+        "type": "PrimitiveType",
+        "varType": "i64",
+        "size": 8,
+        "integer": true,
+        "unsigned": false,
+        "offset": 552,
+        "initData": null,
+        "num": 1,
+        "log2": 3
+      }
+    },
+    "volume": {
+      "_attributes_": {
+        "type": "PrimitiveType",
+        "varType": "i32",
+        "size": 4,
+        "integer": true,
+        "unsigned": false,
+        "offset": 560,
+        "initData": null,
+        "num": 1,
+        "log2": 2
+      }
+    },
+    "pitch": {
+      "_attributes_": {
+        "type": "PrimitiveType",
+        "varType": "i32",
+        "size": 4,
+        "integer": true,
+        "unsigned": false,
+        "offset": 564,
+        "initData": null,
+        "num": 1,
+        "log2": 2
+      }
+    },
+    "position": {
+      "_attributes_": {
+        "type": "PrimitiveType",
+        "varType": "i32",
+        "size": 4,
+        "integer": true,
+        "unsigned": false,
+        "offset": 568,
+        "initData": null,
+        "num": 1,
+        "log2": 2
+      }
+    },
+    "flag": {
+      "_attributes_": {
+        "type": "PrimitiveType",
+        "varType": "i32",
+        "size": 4,
+        "integer": true,
+        "unsigned": false,
+        "offset": 572,
+        "initData": null,
+        "num": 1,
+        "log2": 2
+      }
+    }
+  },
+  "sample_rate": {
+    "_attributes_": {
+      "type": "PrimitiveType",
+      "varType": "i64",
+      "size": 8,
+      "integer": true,
+      "unsigned": false,
+      "offset": 832,
+      "initData": null,
+      "num": 1,
+      "log2": 3
+    }
+  }
+}

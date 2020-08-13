@@ -1,0 +1,42 @@
+{
+  // IntelliSense を使用して利用可能な属性を学べます。
+  // 既存の属性の説明をホバーして表示します。
+  // 詳細情報は次を確認してください: https://go.microsoft.com/fwlink/?linkid=830387
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Node - Attach",
+      "port": 9229,
+      "request": "attach",
+      "skipFiles": [
+        "<node_internals>/**"
+      ],
+      "type": "pwa-node"
+    },
+
+  {"name":"Python: Current File","type":"python","request":"launch","program":"${file}","console":"integratedTerminal",
+  "cwd": "${workspaceFolder}/vox/current/src/tools/python"},
+    {
+      "type": "node",
+      "request": "attach",
+      "name": "Attach by Process ID",
+      "processId": "${command:PickProcess}",
+      "skipFiles": [
+        "<node_internals>/**"
+      ]
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "wpsg-test.js 起動",
+      "skipFiles": [
+        "<node_internals>/**"
+      ],
+      "program": "${workspaceFolder}/wpsg/current/src/js/wpsg-test.mjs",
+      "cwd": "${workspaceFolder}/wpsg/current/src/js/",
+      "runtimeArgs": [
+        "--experimental-wasm-threads","--experimental-modules"
+      ]
+    }
+  ]
+}

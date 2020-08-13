@@ -1,0 +1,846 @@
+<!DOCTYPE html>
+<html lang="ja" prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb# article: http://ogp.me/ns/article#">
+
+<head>
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-15457703-9"></script>
+  <script>
+    if (!location.hostname.match(/localhost/)) {
+      window.dataLayer = window.dataLayer || [];
+      function gtag() { dataLayer.push(arguments); }
+      gtag('js', new Date());
+      gtag('config', 'UA-15457703-9');
+    }
+  </script>
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>トップページをリニューアルする</title>
+  <meta name="description" content="リニューアル用のトップページデザインを考えて実装する" />
+  <meta name="keywords" content="Programming,Music,HTML5,WebGL,javascript,WebAudio" /> 	
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <meta itemprop="image" content="https://www.sfpgmr.net/img/sfweb.png" />
+  <meta itemprop="name" content="S.F. Web" />
+  
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:site" content="S.F. Web" />
+  <meta name="twitter:url" content="./index38.html" />
+  <meta name="twitter:title" content="リニューアル用のトップページデザイン" />
+  <meta name="twitter:description" content="リニューアル用のトップページデザインを考えて実装する" />
+  <meta name="twitter:image" content="https://www.sfpgmr.net/img/sfweb.png" />
+  
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="./index38.html" />
+  <meta property="og:title" content="リニューアル用のトップページデザイン"/>
+  <meta property="og:site_name" content="S.F. Web" />
+  <meta property="og:description" content="Programming,Music,HTML5,WebGL,javascript,WebAudio">
+  <meta property="og:image" content="https://www.sfpgmr.net/img/sfweb.png">
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    html {
+      margin: 0;
+      padding: 0;
+      font-size:10px;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      background: black;
+      color: white;
+    }
+
+    .top-nav {
+      position:fixed;
+      z-index:99999;
+      background: rgba(0,0,0,0.5);
+      display: block;
+      width:100%;
+      height:32px;
+      color:white;
+    }
+    #sentinel {
+      width:0px;
+      height:0px;
+    }
+    .contents {
+      padding-top:32px;
+      width: 100%;
+      position: relative;
+      content: strict;
+    }
+
+    @keyframes blinking {
+      0% {
+        color: black;
+      }
+
+      50% {
+        color: white;
+      }
+
+      100% {
+        color: black;
+      }
+    }
+
+    .loading {
+      font-family: monospace;
+      font-size: 24px;
+      position: fixed;
+      width: 100vw;
+      height: 100vh;
+      text-align: center;
+      padding-top: 50vh;
+      z-index: 32768;
+      background: black;
+      animation: blinking 2s infinite;
+      content: strict;
+    }
+
+
+    .contents > article {
+      background: #f0f0f0;
+      color: #202020;
+      position: absolute;
+      max-height: 960px;
+      overflow: auto;
+      border-radius: 3px;
+      transition: opacity 1s linear;
+      opacity: 0.0;
+    }
+
+    .tweet-header {
+      display: grid;
+      align-items: end;
+      grid-template-columns: 40px 2fr 1fr;
+      grid-template-rows: 1fr;
+      font-size: 12px;
+      font-weight: bold;
+    }
+
+
+    .tweet-img {
+      width: 100%;
+      object-fit: cover;
+    }
+
+    .youtube {
+      position: relative;
+      cursor: pointer;
+    }
+
+    .youtube > img {
+      width: 100%;
+      object-fit: cover;
+    }
+
+    .youtube > svg.player-play {
+      width:64px;
+      height:64px;
+      left:calc(50% - 32px);
+      top:calc(50% - 32px);
+      position:absolute;
+      z-index: 1000;
+      opacity: 0.5;
+    }
+    
+    .youtube:hover > svg.player-play {
+      opacity: 1.0;
+    }
+
+    .youtube:hover .player-play-1 {
+      stroke:#80808080;
+    }
+
+    
+    .youtube > div.yt-title {
+      /*text-shadow: #fff 1px 1px 0;*/
+      font-size: 1.2rem;
+      color:white;
+      background:rgba(0, 0,0,0.5);
+      position:absolute;
+      left:0;
+      top:0;
+      overflow: auto;
+      z-index:998;
+    }
+
+
+    .tweet-profile-img {
+      grid-column: 1/2;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+    }
+
+    .tweet-user-name {
+      grid-column: 2/3;
+    }
+
+    .tweet-date {
+      font-size: 8px;
+      text-align: right;
+      grid-column: 3/4;
+    }
+
+    .contents>twitter-widget {
+      overflow: auto;
+      max-height: 960px;
+      position: absolute;
+    }
+
+    .contents>article>section>.tweet-text {
+      display: block;
+      padding: 4px;
+      word-break: break-all;
+      font-size: 12px;
+    }
+
+    .contents>article>h3 {
+      font-size: 12px;
+    }
+
+    blockquote.card {
+      margin:4px;
+      padding:4px;
+      font-size:12px;
+      background:white;
+      border-radius: 4px;
+    }
+
+    blockquote.card > header {
+      display:grid;
+      grid-gap:4px;
+      gap:4px;
+    }
+
+    blockquote.card-default > header {
+      grid-template-columns:64px 1fr;
+    }
+
+    blockquote.card-large > header {
+      grid-template-columns:1fr;
+    }
+
+    blockquote.card > header > img {
+      width:100%;
+    }
+
+
+    div.no-image {
+      display: block;
+      width:64px;
+      height:64px;
+      background:gray;
+      color:white;
+      text-align: center;
+      line-height: 64px;
+    }
+
+  </style>
+</head>
+
+<body>
+  <div class="loading" id="loading">Loading</div>
+  <header class="top-nav">
+    <h1>S.F. Info.</h1>
+  </header>
+  <div class="contents" id="contents" rendersubtree="invisible skip-activation"> 
+    
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1106480284751589381"
+            target="_blank">2019/3/15 18:00:31</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">わたしはslackwareです。。 <blockquote class="card card-default"><header><img loading="lazy" src="https://pbs.twimg.com/profile_images/1198153286433423360/zrZ-jX-L_400x400.jpg" /><a href="https://twitter.com/__snow_rabbit__/status/1106192364333228032" target="_blank">ゆきうさぎ＠フリーのシステム屋さんのツイート: "初めて触ったLinuxで世代がバレる わ、わたしはTurboLinux。"</a></header><div>“初めて触ったLinuxで世代がバレる<br/><br/>わ、わたしはTurboLinux。”</div></blockquote></p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1105215203774390272"
+            target="_blank">2019/3/12 6:13:33</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">オレオレ言語はその場その場の思いついた仕様で実装しているのでリテラルとかどうしてたっけかな？みたいな感じに自分がなってきてしまったので（笑）、GLSLのSpecの書き方を参考に仕様をいったん文書にまとめることにした。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1105215204567080960"
+            target="_blank">2019/3/12 6:13:33</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">まだヘッダしかないけどね。これに仕様を埋めていこうと思ってる。<br/><br/><blockquote class="card card-default"><header><img loading="lazy" src="https://avatars0.githubusercontent.com/u/3806814?s=400&v=4" /><a href="https://github.com/sfpgmr/sgl2/blob/type/sgl2-language-spec.md" target="_blank">sgl2/sgl2-language-spec.md at type · sfpgmr/sgl2 · GitHub</a></header><div>TDOPパーサをベースとした言語を作っていく. Contribute to sfpgmr/sgl2 development by creating an account on GitHub.</div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1105215470733410304"
+            target="_blank">2019/3/12 6:14:36</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">実装結果から仕様を埋めていくという。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1105926536383750144"
+            target="_blank">2019/3/14 5:20:08</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">でもそれも面倒だなあ。そしてpegで書いた文法ソースを見ると結構わかりやすいいなあと。あ、そうか。仕様書作るの面倒だから、pegで文法書いてそれを代わりにしようと思ったんだった。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1105926537205833728"
+            target="_blank">2019/3/14 5:20:08</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">だけどpegで書いたら文法と関係ない（ことはないけど）ヘルパJSコードが頻出してそっちのほうが大きくなってしまって、構文自体が一目で理解しずらくなってしまったような気がしたんだな。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1105926538027921408"
+            target="_blank">2019/3/14 5:20:08</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">でpegのソース自体文法書にするのはちょっと無理かなあと思ったし、peg.jsが吐くコードが巨大なのでちょっと嫌気がさしたんだな。手書きパーサーのほうが圧倒的にソースコード小さいしね。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1105926538833223680"
+            target="_blank">2019/3/14 5:20:08</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">そして手書きトークナイザ＆prattパーサから今度は手書きで仕様書作ろうとしてるんだけど、それも面倒くさいと。面倒くささ度は体調と相関があるので絶不調な今その判断はまるで信用できんけど。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1105927035791118337"
+            target="_blank">2019/3/14 5:22:07</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">面倒くささ度は体調が悪いときは、起きて活動するのもおっくうになってしまうレベルのため、当然ながらこのような作業を行いたいモチベーションはほぼ0である。しかしこのような時でもTweetするモチベーションは100に近いな。なんでだ？</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1105927843656032256"
+            target="_blank">2019/3/14 5:25:19</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">しかしこの面倒くささ度が高いときは、その面倒くささを解消するためのシステムつくりのモチベーションにもなりえるし、飛躍したアイデアが浮かんだりする確率が高いのは経験則的に感じてるので、捨てたものではないのだが。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1105929953831313409"
+            target="_blank">2019/3/14 5:33:42</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">話がそれた。今思っているのはpegソースから.mdファイルを生成するパーサーをpeg.jsで書くということである。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1105929954762448896"
+            target="_blank">2019/3/14 5:33:43</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">peg.jsのコメントにmdで構文の説明を書いて、pegのソースを&lt;pre&gt;で囲めばいいかなと。そしてディレクティブでソースを見せたり隠したりできるようにすれば構文ドキュメントに不要なヘルパコードの出現を抑制できるのではないかなと。こんなのだれか作ってそうだけどな。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1105931187820814336"
+            target="_blank">2019/3/14 5:38:37</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">今の心境としてはpeg.jsによるパーサ・コードの肥大よりも、「仕様書を書く面倒くささ」のほうが勝っているので、その方向で行くことにしよう。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1105931188697423872"
+            target="_blank">2019/3/14 5:38:37</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ただプリプロセスを入れるつもりなので、pegのソースは3つに分けようかなと思う。<br/><br/>・トークナイザ<br/>・プリプロセッサ<br/>・パーサ</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1105931313008107521"
+            target="_blank">2019/3/14 5:39:06</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">pegだと同時に全部実行することも可能なのかもしれんが、今回あえて分けようと思う。pegはトークン化とパーシングを同時に行うのが特徴なのにそれをあえて分けるのはどうかなとも思うが。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1105934031563051008"
+            target="_blank">2019/3/14 5:49:55</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">そういうわけでpegからmdドキュメントを作るpegソースを書こうかなと思う。そのモチベーションはどうやら高そうだ。。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1105916515826561024"
+            target="_blank">2019/3/14 4:40:18</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">花粉症で頭痛と下痢が交互にやってきてなかなかつらい。鼻炎は薬＋治療でなんとなかなってるんだけどそれでも夜は鼻の通りが悪いんだなあ。。通りが悪いと目が覚めるんだなこれが。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1105916516610924544"
+            target="_blank">2019/3/14 4:40:19</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">それと妙なだるさがこの時期ずっと続く。ぼーっとしてて脳の働きも悪い感じ。自分がいま何をしてたのか忘れたりする。なかなかの劣化具合。そういう状態になってたと自己認識できるだけまだましかもしれんが。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1105916517412036608"
+            target="_blank">2019/3/14 4:40:19</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">というわけでこの時期の私のパフォーマンスは最悪である。仕事において私生活においてもである。このぼーっとした感じは5月上旬まで続くので憂鬱でしょうがない。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1105917019721891840"
+            target="_blank">2019/3/14 4:42:19</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">とまあツイートを見返すといつも以上に誤字脱字が多くて、やべえなあとか思ったり。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1105917351969480704"
+            target="_blank">2019/3/14 4:43:38</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">スギ花粉のないところに移住したいわ。ほんと。。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1105915142858895362"
+            target="_blank">2019/3/14 4:34:51</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">よくできてるなあ。。 <blockquote class="card card-default"><header><img loading="lazy" src="https://pbs.twimg.com/ext_tw_video_thumb/1105230004437147648/pu/img/1DpAnYLx4j1w8XKB.jpg" /><a href="https://twitter.com/BalalBarrel/status/1105230153246892033" target="_blank">バラルバレルさんのツイート: "現在制作中のフリーゲームです。新しいステージが完成したので見てほしい。#gamedev #indiedev… "</a></header><div>“現在制作中のフリーゲームです。新しいステージが完成したので見てほしい。#gamedev #indiedev https://t.co/yIeYIdrbcd”</div></blockquote></p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1105227471207583744"
+            target="_blank">2019/3/12 7:02:17</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">確かにサーバーの実物を見る機会がほぼなくなったな。。 <blockquote class="card card-default"><header><img loading="lazy" src="https://pbs.twimg.com/media/D1WwTTPU0AAjLLU.png:large" /><a href="https://twitter.com/nfujita55a/status/1104983152122970113" target="_blank">ふじた_🐱♨💻雑用係さんのツイート: "インターネット老人会所属エンジニアが若者エンジニアを煽るスライドを作った。… "</a></header><div>“インターネット老人会所属エンジニアが若者エンジニアを煽るスライドを作った。”</div></blockquote></p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1097260651263647744"
+            target="_blank">2019/2/18 7:25:00</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">パーカッションがLRに目一杯振られててて、そしてコードパートが左右広め。リードはそれより狭い感じか。ベースとシーケンス、ドラムはど真ん中だよなあ。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1097260783451365376"
+            target="_blank">2019/2/18 7:25:31</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">これだから原曲を聴くのが怖い。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1097840331725230082"
+            target="_blank">2019/2/19 21:48:26</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ミックスをやり直した。今日はYMO結成記念日らしいので。。<br/><br/><div class="youtube" data-type="yt" id="9OkLS-MMJKY"><div class="yt-title">Youtube - YMO - RYDEEN (75)</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/9OkLS-MMJKY" class="youtube" src="https://i.ytimg.com/vi/9OkLS-MMJKY/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1097948308310388736"
+            target="_blank">2019/2/20 4:57:30</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">テクノポリスのAodixデータをREAPER移植中。。完全手作業。。 https://t.co/7lfthox6JR</p>
+        
+        <img loading="lazy" class="tweet-img" src="https://pbs.twimg.com/media/DzyyABJVYAAq9H3.jpg" />
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1097992709392850944"
+            target="_blank">2019/2/20 7:53:56</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">私にとって、ymoのprophet-5に相当するものはSynth1になるよなあ。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1097993844270845952"
+            target="_blank">2019/2/20 7:58:26</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">REAPERの使い方かなり忘れてるわ。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1098196939135365120"
+            target="_blank">2019/2/20 21:25:28</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ベースシーケンスを打ち込んでみた。。<br/><br/><blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="https://www.youtube.com/watch?v=EvATo-K-G-A&feature=youtu.be" target="_blank">YouTube</a></header><div></div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1099275108923760640"
+            target="_blank">2019/2/23 20:49:44</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">またちょっと改良。。<br/><br/><div class="youtube" data-type="yt" id="ehf2ywtkfiQ"><div class="yt-title">Youtube - YMO - RYDEEN (76)</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/ehf2ywtkfiQ" class="youtube" src="https://i.ytimg.com/vi/ehf2ywtkfiQ/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1099501555651231745"
+            target="_blank">2019/2/24 11:49:33</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">さらに全体の音量を見直してコンプを調整。。。<br/><br/><div class="youtube" data-type="yt" id="0RIsCKR8KQY"><div class="yt-title">Youtube - YMO - RYDEEN (77)</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/0RIsCKR8KQY" class="youtube" src="https://i.ytimg.com/vi/0RIsCKR8KQY/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1099545821463244800"
+            target="_blank">2019/2/24 14:45:27</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">うーむ。エンコード時の音質劣化はできるだけ防ぎたいけどなあ。。無理かなあ。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1099546112933818369"
+            target="_blank">2019/2/24 14:46:36</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">昔みたいにffmpegでエンコしてアップしてみたりしようかな。reaperも動画に関する機能があるのでちょっと調べてみようか。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1099633814463176704"
+            target="_blank">2019/2/24 20:35:06</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ffmpegでエンコードしてアップしてみた。<br/><br/><div class="youtube" data-type="yt" id="M3P3q8n9EyA"><div class="yt-title">Youtube - YMO - RYDEEN (78)</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/M3P3q8n9EyA" class="youtube" src="https://i.ytimg.com/vi/M3P3q8n9EyA/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1099642640172077058"
+            target="_blank">2019/2/24 21:10:10</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">あんまり変わらんような気もするな。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1099769222664605696"
+            target="_blank">2019/2/25 5:33:10</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ほんとヘッドフォンによって音が変わって聞こえるよなあ。。まあある程度はしょうがないよな。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1099769223612489728"
+            target="_blank">2019/2/25 5:33:10</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">しかし96KHz/24bitってこんなにアウトプットの品質が変わるのか。。もう44.1/48KHzには戻れんなあ。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1099771584670093313"
+            target="_blank">2019/2/25 5:42:33</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">今までの作成履歴をさかのぼると、音がかなり変わったのがわかりますわ。。<br/><br/><blockquote class="card card-default"><header><img loading="lazy" src="https://i.ytimg.com/vi/Fo1YzqRwDwQ/hqdefault.jpg?sqp=-oaymwEXCNACELwBSFryq4qpAwkIARUAAIhCGAE=&rs=AOn4CLCzlo-oaaYhYIy8wJs0QDk6xmoi9Q" /><a href="https://www.youtube.com/playlist?list=PLmZxXGcVDPAThOGr2p_5pi72Vgayu_Yx7" target="_blank">YMO - Rydeenをカバーする - YouTube</a></header><div>YMOのRydeen(JASRAC 作品コード 097-0258-0 ＲＹＤＥＥＮ)をカバーしています。 一番上が最新版です。修正のたびにアップしているのでこのプレイリストは更新履歴になっています。</div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1099772458372984832"
+            target="_blank">2019/2/25 5:46:01</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">最初はこれですからなあ。。Psycleというソフトでの紆余曲折があってようやくできたもので、さかのぼるとおそらく1年くらいかかってると思うんだけど。。これが2010年だからもうすぐ10年になりますわ。<br/><br/><div class="youtube" data-type="yt" id="ezjRM_a_Ha4"><div class="yt-title">Youtube - YMO - Rydeen 高画質版</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/ezjRM_a_Ha4" class="youtube" src="https://i.ytimg.com/vi/ezjRM_a_Ha4/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1099772661687771136"
+            target="_blank">2019/2/25 5:46:49</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">Youtubeに挙げる前はヤマハのプレ王やニコ動にもアップしてたから、おそらく10年以上は経ってると思う。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1104371629797212160"
+            target="_blank">2019/3/9 22:21:29</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ドラムの音色を変えてみた。ちょっとスネアの音が歪み過ぎてるというか、高域成分が多すぎる気がしたので。。<br/><br/><div class="youtube" data-type="yt" id="XwkKcQNWq4o"><div class="yt-title">Youtube - YMO - RYDEEN (79)</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/XwkKcQNWq4o" class="youtube" src="https://i.ytimg.com/vi/XwkKcQNWq4o/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1104383655055482880"
+            target="_blank">2019/3/9 23:09:16</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">なぜかベースのレベルが下がってしまってたのであわてて更新。。<br/><br/><div class="youtube" data-type="yt" id="NNAHx8IoJOk"><div class="yt-title">Youtube - YMO - RYDEEN (80)</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/NNAHx8IoJOk" class="youtube" src="https://i.ytimg.com/vi/NNAHx8IoJOk/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1104703105772318721"
+            target="_blank">2019/3/10 20:18:39</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">またちょっと調整を加える。うーむ。シーケンスのあの感じがなかなかうまくいかないんだよなあ。。<br/><br/><div class="youtube" data-type="yt" id="fkolUKmx7ho"><div class="yt-title">Youtube - YMO - RYDEEN (81)</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/fkolUKmx7ho" class="youtube" src="https://i.ytimg.com/vi/fkolUKmx7ho/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1105216041083265024"
+            target="_blank">2019/3/12 6:16:52</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">またちょっと調整を加えた。シーケンスって元曲はリバーブかかってないんだよなあ。。<br/><br/><div class="youtube" data-type="yt" id="jUx3rawtXJs"><div class="yt-title">Youtube - YMO - RYDEEN (82)</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/jUx3rawtXJs" class="youtube" src="https://i.ytimg.com/vi/jUx3rawtXJs/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/914888589670043654/KVvwjcWA_normal.jpg" />
+        <p class="tweet-user-name">Massimo@Rainmaker1973</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/Rainmaker1973/status/1105183843643023361"
+            target="_blank">2019/3/12 4:08:56</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">OpenDrop is an open source electronics and software platform for research and development in digital electro-wetting and digital biology [full video: <a href="https://buff.ly/2JCMQIN" target="_blank">buff.ly/2JCMQIN</a>] https://t.co/xYr4T26Xax</p>
+        
+        <video class="tweet-img" controls src="https://video.twimg.com/ext_tw_video/1105183815331430400/pu/vid/320x180/aEui9XSsAdkenctg.mp4?tag=8" />
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/771867233383436289/Wb5dfcZn_normal.jpg" />
+        <p class="tweet-user-name">アチク@_achiku</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/_achiku/status/1104744008213917696"
+            target="_blank">2019/3/10 23:01:11</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">はい https://t.co/m9Bo4JU0ao</p>
+        
+        <img loading="lazy" class="tweet-img" src="https://pbs.twimg.com/media/D1TW0NgU0AAUYgr.jpg" />
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1105183988069601281"
+            target="_blank">2019/3/12 4:09:30</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">あー鼻が痛い。。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/1032752481317646336/hiTbh4nv_normal.jpg" />
+        <p class="tweet-user-name">Orchestral Manoeuvres in the Dark@OfficialOMD</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/OfficialOMD/status/1104839580111552513"
+            target="_blank">2019/3/11 5:20:57</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">Tomorrow, 9am <br/><br/><a href="https://twitter.com/officialomd/status/1103988737409601536?s=21" target="_blank">twitter.com/officialomd/st…</a></p>
+        
+      </section>
+      
+    </article>
+    
+  </div>
+  <footer>
+    CopyLight 2019 Satoshi Fujiwara
+  </footer>
+  <script async src="https://platform.twitter.com/widgets.js"></script>
+
+  <script async src="./index.js"></script>
+
+</body>
+
+</html>

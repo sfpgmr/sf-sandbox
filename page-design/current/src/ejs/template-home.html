@@ -1,0 +1,189 @@
+<% 
+let icon = '';
+if(page.image && page.image.text && page.image.text.match(/^fa\,/))
+{
+  icon = page.image.text.split(',')[1];
+  page.image.text = '';
+}
+
+if(page.image && page.image.url){
+  icon = `<img class="icon-h1" src="${page.image.url}" alt="icon" />`;
+}
+-%>
+<!DOCTYPE html>
+<html lang="ja" prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb# article: http://ogp.me/ns/article#">
+<head>
+<meta charset="UTF-8" />
+<title><%=page.headline %></title>
+<%
+{
+  let canonical;
+  try {
+    // URLかどうか確認
+    canonical = new URL(page.url).href;
+  } catch (e){
+    canonical = new URL(site.url + page.url).href;
+  }
+%>
+<link rel="canonical" href="<%-canonical%>" />
+<%
+}
+%>
+<meta name="description" content="<%=page.about %>" />
+<meta name="keywords" content="<%=page.keywords %>" /> 	
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta itemprop="image" content="<%-relativeBase%>img/sfweb.png" />
+<meta itemprop="name" content="<%=page.headline%>" />
+
+<meta name="twitter:card" content="summary" />
+<meta name="twitter:site" content="@sfpgmr" />
+<meta name="twitter:url" content="<%-(new URL(page.url,baseUrl)).href%>" />
+<meta name="twitter:title" content="<%=page.headline%>" />
+<meta name="twitter:description" content="<%=page.about%>" />
+<meta name="twitter:image" content="<%-(new URL(page.image.url,baseUrl)).href%>" />
+
+<meta property="og:type" content="article">
+<meta property="og:url" content="<%-(new URL(page.url,baseUrl)).href%>" />
+<meta property="og:title" content="<%=page.headline%>" />
+<meta property="og:site_name" content="<%=site.headline%>" />
+<meta property="og:description" content="<%=page.about%>">
+<meta property="og:image" content="<%-(new URL(page.image.url,baseUrl)).href%>">
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/d3/4.4.1/d3.min.js"></script>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<link rel="stylesheet" type="text/css" media="all" href="<%-(relativeBase + stylesheet)%>" />
+<link rel="icon" href="<%-relativeBase%>img/sfweb-icon.png" />
+<link rel="apple-touch-icon" sizes="128x128" href="<%-relativeBase%>img/sfweb-icon.png">
+<script type="text/javascript">
+    if (!window.location.hostname.match(/localhost/)) {
+        var _gaq = _gaq || [];
+        _gaq.push(['_setAccount', 'UA-15457703-9']);
+        _gaq.push(['_trackPageview']);
+        (function () {
+            var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+            ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+            var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+        })();
+    }
+</script>
+<script type="application/ld+json">
+<%- JSON.stringify(site,null,1); %>
+</script>
+<script type="application/ld+json">
+<%- JSON.stringify(page,null,1); %>
+</script>
+</head>
+<body dir="ltr" style="text-align:left;">
+<nav class="main-nav" data-sf-name="main" >
+    <div class="nav-header">
+    <button class="nav-button" data-sf-target="main">
+      <svg width="32" height="32" viewbox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+      <g>
+        <line  id="svg_3" y2="8.750003" x2="26.249993" y1="8.750003" x1="5.750022" fill-opacity="null" stroke-opacity="null" stroke-width="4" stroke="#fff" fill="none"/>
+        <line  id="svg_4" y2="16.749992" x2="26.249993" y1="16.749992" x1="5.750022" fill-opacity="null" stroke-opacity="null" stroke-width="4" stroke="#fff" fill="none"/>
+        <line  id="svg_5" y2="24.749981" x2="26.249993" y1="24.749981" x1="5.750022" fill-opacity="null" stroke-opacity="null" stroke-width="4" stroke="#fff" fill="none"/>
+      </g>
+    </svg>
+    </button>
+    <div class="nav-title"><a  class="nav-item" href="/" ><%=site.headline%></a></div>
+    </div>
+<% // パンくずリスト%>
+    <ul class="nav-items nav-display-default">
+<% if(page.breadcrumb) {
+let len = page.breadcrumb.itemListElement.length - 1;
+let bc = '';
+page.breadcrumb.itemListElement.forEach((elm,i)=>{
+  if(len == i){
+    bc += `<li><span class="nav-item">${elm.item.name}</li>`;
+  } else {
+    bc += `<li><a class="nav-item" href="${relativeBase + elm.item.url}" >${elm.item.name}</a></li>`;
+  }
+});
+%>
+<%-bc%>
+<% } %>
+</ul>
+</nav>
+
+<header>
+<div class="header">
+<h1><%=page.headline%></h1>
+<% if(page.about) { %>
+<div class="about"><%- page.about %>
+</div>
+<% } %>
+</div>
+</header>
+<main>
+<h2>Contents</h2>
+<div class="contents">
+<% function renderElem(elms,str,level) {
+elms.forEach(function (elm,i){
+  var mention = "";
+  if(elm.mentions){
+   elm.mentions.forEach(function(m){
+      mention += `<a href="${m.url}"  class="mention" >${m.name}</a>`;
+    });
+  }
+    let imgstr = '';
+    elm.thumbnailUrl && (imgstr = `\r\n<a href="${elm.url}"  ><img src="${elm.thumbnailUrl}"  alt="${elm.headline}" /></a>`);
+if(i == 0){
+    str += `
+<aside class="item ad">
+<h3>広告</h3>
+<!-- sfpg -->
+<ins class="adsbygoogle ad"
+     style="display:block"
+     data-ad-client="ca-pub-4402137407996189"
+     data-ad-slot="8395972920"
+     data-ad-format="auto"></ins>
+
+</aside>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+`;
+}
+
+    str += `
+<article class="item">
+<h${level + 3}><a href="${elm.url}" >${elm.headline}</a></h${level + 3}>
+${imgstr}
+<div>${elm.about} ${mention}</div>
+</article>
+`;
+  }); 
+  return str;
+};
+  var article = renderElem(contents,"",0);
+%> 
+<%-article%>
+</div>
+<aside style="height:120px;">
+<!-- S.F.Page Footer ad -->
+<ins class="adsbygoogle ad"
+     style="display:block;min-height:100px"
+     data-ad-client="ca-pub-4402137407996189"
+     data-ad-slot="6180865322"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+</aside>
+</main>
+<footer style="text-align:center;">
+<small>Copylight &copy; 2017 Satoshi Fujiwara. </small>
+<button id="scroll-top">
+<svg width="12px" height="16px" viewBox="0 0 12 16" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <g id="Octicons" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="triangle-up" fill="#fff">
+            <polygon id="Shape" points="12 11 6 5 0 11"></polygon>
+        </g>
+    </g>
+</svg>  
+</button>
+</footer>
+<script src="<%-relativeBase%>/scripts/sfstyle.js" ></script>
+</body>
+</html>

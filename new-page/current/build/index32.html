@@ -1,0 +1,685 @@
+<!DOCTYPE html>
+
+<html lang="ja" prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb# article: http://ogp.me/ns/article#">
+
+<head>
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-15457703-9"></script>
+  <script>
+    if (!location.hostname.match(/localhost/)) {
+      window.dataLayer = window.dataLayer || [];
+      function gtag() { dataLayer.push(arguments); }
+      gtag('js', new Date());
+      gtag('config', 'UA-15457703-9');
+    }
+  </script>
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Twitter Viewer</title>
+  <meta name="description" content="リニューアル用のトップページデザインを考えて実装する" />
+  <meta name="keywords" content="Programming,Music,HTML5,WebGL,javascript,WebAudio" /> 	
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <meta itemprop="image" content="https://www.sfpgmr.net/img/sfweb.png" />
+  <meta itemprop="name" content="S.F. Web" />
+  
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:site" content="S.F. Web" />
+  <meta name="twitter:url" content="./index32.html" />
+  <meta name="twitter:title" content="リニューアル用のトップページデザイン" />
+  <meta name="twitter:description" content="リニューアル用のトップページデザインを考えて実装する" />
+  <meta name="twitter:image" content="https://www.sfpgmr.net/img/sfweb.png" />
+  
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="./index32.html" />
+  <meta property="og:title" content="リニューアル用のトップページデザイン"/>
+  <meta property="og:site_name" content="S.F. Web" />
+  <meta property="og:description" content="Programming,Music,HTML5,WebGL,javascript,WebAudio">
+  <meta property="og:image" content="https://www.sfpgmr.net/img/sfweb.png">
+
+  <style>
+  * {
+  margin: 0;
+  padding: 0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+html {
+  margin: 0;
+  padding: 0;
+  font-size: 10px;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  background: black;
+  color: white;
+}
+
+.top-nav {
+  position: fixed;
+  z-index: 99999;
+  background: rgba(0, 0, 0, 0.5);
+  display: block;
+  width: 100%;
+  height: 32px;
+  color: white;
+}
+
+#sentinel {
+  width: 0px;
+  height: 0px;
+}
+
+.contents {
+  padding-top: 32px;
+  width: 100%;
+  position: relative;
+  content: strict;
+}
+
+@-webkit-keyframes blinking {
+  0% {
+    color: black;
+  }
+  50% {
+    color: white;
+  }
+  100% {
+    color: black;
+  }
+}
+
+@keyframes blinking {
+  0% {
+    color: black;
+  }
+  50% {
+    color: white;
+  }
+  100% {
+    color: black;
+  }
+}
+
+.loading {
+  font-family: monospace;
+  font-size: 24px;
+  position: fixed;
+  width: 100vw;
+  height: 100vh;
+  text-align: center;
+  padding-top: 50vh;
+  z-index: 32768;
+  background: black;
+  -webkit-animation: blinking 2s infinite;
+          animation: blinking 2s infinite;
+  content: strict;
+}
+
+.contents > article {
+  background: #f0f0f0;
+  color: #202020;
+  position: absolute;
+  max-height: 960px;
+  overflow: auto;
+  border-radius: 3px;
+  /* transition: opacity 1s linear;*/
+  opacity: 1.0;
+}
+
+.tweet-header {
+  display: -ms-grid;
+  display: grid;
+  -webkit-box-align: end;
+      -ms-flex-align: end;
+          align-items: end;
+  -ms-grid-columns: 40px 2fr 1fr;
+      grid-template-columns: 40px 2fr 1fr;
+  -ms-grid-rows: 1fr;
+      grid-template-rows: 1fr;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.tweet-img {
+  width: 100%;
+  -o-object-fit: cover;
+     object-fit: cover;
+}
+
+.youtube {
+  position: relative;
+  cursor: pointer;
+}
+
+.youtube > img {
+  width: 100%;
+  -o-object-fit: cover;
+     object-fit: cover;
+}
+
+.youtube > svg.player-play {
+  width: 64px;
+  height: 64px;
+  left: calc(50% - 32px);
+  top: calc(50% - 32px);
+  position: absolute;
+  z-index: 1000;
+  opacity: 0.5;
+}
+
+.youtube:hover > svg.player-play {
+  opacity: 1.0;
+}
+
+.youtube:hover .player-play-1 {
+  stroke: #80808080;
+}
+
+.youtube > div.yt-title {
+  /*text-shadow: #fff 1px 1px 0;*/
+  font-size: 1.2rem;
+  color: white;
+  background: rgba(0, 0, 0, 0.5);
+  position: absolute;
+  left: 0;
+  top: 0;
+  overflow: auto;
+  z-index: 998;
+}
+
+.tweet-profile-img {
+  -ms-grid-column: 1;
+  -ms-grid-column-span: 1;
+  grid-column: 1/2;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+}
+
+.tweet-user-name {
+  -ms-grid-column: 2;
+  -ms-grid-column-span: 1;
+  grid-column: 2/3;
+}
+
+.tweet-date {
+  font-size: 8px;
+  text-align: right;
+  -ms-grid-column: 3;
+  -ms-grid-column-span: 1;
+  grid-column: 3/4;
+}
+
+.contents > twitter-widget {
+  overflow: auto;
+  max-height: 960px;
+  position: absolute;
+}
+
+.contents > article > section > .tweet-text {
+  display: block;
+  padding: 4px;
+  word-break: break-all;
+  font-size: 12px;
+}
+
+.contents > article > h3 {
+  font-size: 12px;
+}
+
+blockquote.card {
+  margin: 4px;
+  padding: 4px;
+  font-size: 12px;
+  background: white;
+  border-radius: 4px;
+}
+
+blockquote.card > header {
+  display: -ms-grid;
+  display: grid;
+  grid-gap: 4px;
+  gap: 4px;
+}
+
+blockquote.card-default > header {
+  -ms-grid-columns: 64px 1fr;
+      grid-template-columns: 64px 1fr;
+}
+
+blockquote.card-large > header {
+  -ms-grid-columns: 1fr;
+      grid-template-columns: 1fr;
+}
+
+blockquote.card > header > img {
+  width: 100%;
+}
+
+div.no-image {
+  display: block;
+  width: 64px;
+  height: 64px;
+  background: gray;
+  color: white;
+  text-align: center;
+  line-height: 64px;
+}
+/*# sourceMappingURL=style.css.map */ 
+  </style>
+</head>
+
+<body>
+  <div class="loading" id="loading">Loading</div>
+  <header class="top-nav">
+    <h1>S.F. Info.</h1>
+  </header>
+  <div class="contents" id="contents" rendersubtree="invisible skip-activation"> 
+    
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1050411381369929728/BtqZX2ZX_normal.jpg" />
+        <p class="tweet-user-name">特殊映画研究室 Panorama Effect Laboratory@tokuken20091</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/tokuken20091/status/1227894209027293185"
+            target="_blank">2020/2/13 18:56:07</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">（株）サントスバーガーの歴史をまとめました。<br/>自販機のミニチュアにはこのような裏設定があります。良ければみて行ってください！<br/>#サントスバーガー<br/>#ミニチュア<br/>#note <a href="https://note.com/tokuken2009/n/n8790dc8ff264" target="_blank">note.com/tokuken2009/n/…</a></p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1212701145379946496/pSDVrvWj_normal.png" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1227692446894608385"
+            target="_blank">2020/2/13 5:34:23</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">OpenProcessing・・すごいな。。<br/><blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="https://www.openprocessing.org/" target="_blank">OpenProcessing - Creative Coding for the Curious Mind</a></header><div></div></blockquote></p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1280045412/images_normal.jpg" />
+        <p class="tweet-user-name">ntsutae@ntsutae</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/ntsutae/status/1227608319906349062"
+            target="_blank">2020/2/13 0:00:05</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">#つぶやきProcessing<br/>setup=_=&gt;{createCanvas(C=W=720,W);P=[C]<br/>for(;C;){P[--C]={i:C,x:H=W/2,y:H}}}<br/>draw=_=&gt;{background(W,50);F=sin(C+=.03)<br/>for(_ of P)with(_){X=x=(x+W)%W;Y=y=(y+W)%W<br/>n=noise(x/W-i,y/W,C)*TAU<br/>d=dist(x+=sin(n)*3,y+=cos(n)*3,H,H)/F<br/>line(X,Y,x+=(x-H)/d,y+=(y-H)/d)}} https://t.co/7qfed1xlL2</p>
+        
+        <video class="tweet-img" controls src="https://video.twimg.com/ext_tw_video/1227608149596598272/pu/vid/320x320/jvNyBZA5Js5JREeB.mp4?tag=10" />
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1210030695931768837/0dWGxNcQ_normal.png" />
+        <p class="tweet-user-name">Hideyuki Tanaka@tanakh</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/tanakh/status/1227621303022043136"
+            target="_blank">2020/2/13 0:51:41</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">(´･_･`) / 1件のコメント <a href="https://b.hatena.ne.jp/entry/s/tanakh.hatenablog.com/entry/2020/02/13/000833" target="_blank">b.hatena.ne.jp/entry/s/tanakh…</a> “使いやすさを重視したHTMLスクレイピングライブラリを作った - 純粋関数型雑記帳” (4 users) <a href="https://htn.to/3MjiTEDDP8" target="_blank">htn.to/3MjiTEDDP8</a></p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1212701145379946496/pSDVrvWj_normal.png" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1227682446927220736"
+            target="_blank">2020/2/13 4:54:39</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">19564にアップデート。<br/><br/><a href="https://blogs.windows.com/windowsexperience/2020/02/12/announcing-windows-10-insider-preview-build-19564/" target="_blank">blogs.windows.com/windowsexperie…</a></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1227682685440544768"
+            target="_blank">2020/2/13 4:55:36</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">今のところ問題なし。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1212701145379946496/pSDVrvWj_normal.png" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1227338462149238785"
+            target="_blank">2020/2/12 6:07:46</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">Webの改良をぼちぼちやろうと思ってたんだけど、SPC700のエミュレータのソースコードがnasmで書かれてることを知って、ちょっと読んでる。<br/><br/><blockquote class="card card-default"><header><img  src="https://avatars0.githubusercontent.com/u/3806814?s=400&v=4" /><a href="https://github.com/sfpgmr/spcplay/blob/develop/snesapu.dll/SPC700.asm" target="_blank">spcplay/SPC700.asm at develop · sfpgmr/spcplay · GitHub</a></header><div>SNES SPC700 Player + Improved SNESAPU.DLL. Contribute to sfpgmr/spcplay development by creating an account on GitHub.</div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1227338870913503232"
+            target="_blank">2020/2/12 6:09:24</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">SPC700については理解を深めたいと前々から思ってたので。フィルタ周りの処理とか、BRRの時のフィルタビットの働きとかね。ガウスなんちゃら補完とかいう処理もコードレベルで理解したいんだよね。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1227339810370543616"
+            target="_blank">2020/2/12 6:13:08</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">昔SPC700に関するエントリを書いたんだけど、結局のところBRRのところは消化しきれてないところがあって、そこがもやもやしたまま続きのポストを書かずに放置。気がつくと5年半経ってたという。読み返すとSPC700のキモについては何も語られていないという（笑）。<br/><br/><blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="https://www.sfpgmr.net/blog/entry/%E3%82%B9%E3%83%BC%E3%83%95%E3%82%A1%E3%83%9F%E9%9F%B3%E6%BA%90spc700%E3%82%92%E6%8E%A2%E3%82%8B%EF%BC%88%EF%BC%91%EF%BC%89.html" target="_blank">S.F. Blog:スーファミ音源(SPC700)を探る（１）</a></header><div>スーファミと私ブログシステムの構築からまた横道にそれはじめている。「ボカロ(作るところから)はじめました」を読んでちょっとスーファミ音源に興味を持ったので、細かく技術的なところを追っていこうと思いこのエントリを書いた。おそらくこのボリュームくらいのものを数回書かなければ全貌は理解できないのでないかと思う。というか今回はちょっと横道にはずれているところが多いからもうちょっと短くできるかもしれないけど...</div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1227340707808960512"
+            target="_blank">2020/2/12 6:16:42</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">FC -&gt; SFCのアップデートで一番衝撃を受けたのはこの音源だもんな。。スーファミは結局所有しなかったけどね。私用としてゲーム機を購入したことは一度もないんだよな。。Wiiは子供用に買ったしね。今も昔はゲームはPC派でございます（笑）。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1227340912771993601"
+            target="_blank">2020/2/12 6:17:31</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">あ、違うわ。ゲーセンのコンソールですかな。今は行くこと自体困難になってますが。周りにないので。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1227341702618210309"
+            target="_blank">2020/2/12 6:20:39</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">snesapu.dllのキモ部分はほぼnasmで書かれてるようなので逆に読みやすいなあ。これをwasmに持っていきたいんだよね。。 https://t.co/pNOEg34MyY</p>
+        
+        <img  class="tweet-img" src="https://pbs.twimg.com/media/EQhkxfhVAAAdXaG.png" />
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1227342211135574016"
+            target="_blank">2020/2/12 6:22:40</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">nasmのBNFはここにあるみたいなんで、これをpeg.js化してwasmのソースコードにトランスパイルしたらどうかと考えたりしてる。。<br/><br/><blockquote class="card card-default"><header><img  src="https://avatars2.githubusercontent.com/u/10799309?s=400&v=4" /><a href="https://github.com/ajkhoury/JetBrains-NASM-Language/blob/master/src/com/nasmlanguage/NASM.bnf" target="_blank">JetBrains-NASM-Language/NASM.bnf at master · ajkhoury/JetBrains-NASM-Language · GitHub</a></header><div>Plugin that adds NASM assembly language support for the IntelliJ Platform IDEs - ajkhoury/JetBrains-NASM-Language</div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1227521146389594114"
+            target="_blank">2020/2/12 18:13:42</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">でもそのまま持ってくというのもなんだかという気もして。私のmwasmで1byte=1qwordで考えてハンドでコードを移植してみようかなとも思ったりしてる。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1227522337030803456"
+            target="_blank">2020/2/12 18:18:26</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">データって64kbなので、これをqwordに伸長しても256kbにしかならんのよね。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1227561610224402432"
+            target="_blank">2020/2/12 20:54:29</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">なんかこう、吉田研究所のXM/MOD互換プレイヤーのことも思い出してきてねえ。。まだソースコードや解説ページは残ってたね。。<br/><br/><blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="http://www2.tky.3web.ne.jp/~yosshin/mod/coding.html" target="_blank">OpenMPT 互換 MOD/XM プレイヤの実装</a></header><div></div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1227564296453779456"
+            target="_blank">2020/2/12 21:05:09</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">このソースをベースに昔NaClでXM/MODプレイヤー作ったことがあってですな。。 https://t.co/TCmU5abuz9</p>
+        
+        <img  class="tweet-img" src="https://pbs.twimg.com/media/EQkvOJlU0AMVhjJ.png" />
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1227564678160666624"
+            target="_blank">2020/2/12 21:06:40</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">NaClちゅうのはNative Clientの略で安全に実行できるx86バイナリというもの。これがPNaClちゅうのに変化し、その後WebAssemblyのベースとなったようなんですな。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1227570287069122560"
+            target="_blank">2020/2/12 21:28:58</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ChromeはまだNaClがchrome://flags/で有効化できて、一応動きましたわ。。<br/><br/><blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="https://www.sfpgmr.net/nacltest/xm_player.html" target="_blank">XM File Player</a></header><div></div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1227570501406511104"
+            target="_blank">2020/2/12 21:29:49</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">動画にしてみました。曲はなつかしのElwood .... <br/><br/><div class="youtube" data-type="yt" id="JFZfMa-eywE"><div class="yt-title">Youtube - NaClを使って作ったXM/MOD Player</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img  data-href="https://youtu.be/JFZfMa-eywE" class="youtube" src="https://i.ytimg.com/vi/JFZfMa-eywE/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1227570871201488896"
+            target="_blank">2020/2/12 21:31:17</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">MODってFastTrackerが世に出て、XMファイルが一般化したあたりが一番活気があった気がする。良い曲も多いよね。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1227572401329688578"
+            target="_blank">2020/2/12 21:37:22</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">Sweet Dreamとかいう曲もサイズが結構大きいなあ。。とか思ってたけど、684kbなんだよなあ。MP3でも1曲数Mだからそれに比べたらすごく小さい。SPC700は64kbだから、さらに少ないメモリでやりくりしてあのような特徴的な音を出してたんだよなあ。。すごいや。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1227573258628648962"
+            target="_blank">2020/2/12 21:40:46</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ジャンル的な要素が大きいけど「ドンキーコング２」が一番のお気に入り。ゲームも大好きで嫁もやりまくってたんだよなあ。。<br/><br/><div class="youtube" data-type="yt" id="AeC2RDwF37g"><div class="yt-title">Youtube - 【ゲームBGM】 ドンキーコング2　名曲総まとめ改 【DK音楽】</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img  data-href="https://youtu.be/AeC2RDwF37g" class="youtube" src="https://i.ytimg.com/vi/AeC2RDwF37g/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1227573259756961793"
+            target="_blank">2020/2/12 21:40:46</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">当時実家のスーファミを借りてやってたこと思い出したよ。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1227573866991509505"
+            target="_blank">2020/2/12 21:43:11</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ローファイな音なんだけど、低音はしっかり出るんでこの圧がなんともいいんですわ。フェアライトの初期のころの音の感じに似てる気もするんだよな。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1227574116493869059"
+            target="_blank">2020/2/12 21:44:11</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">PCゲーム一筋であったのはうそでしたな（笑）</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/861077611719667712/cPAp9DpY_normal.jpg" />
+        <p class="tweet-user-name">Dante 3d dev@dantemendes</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/dantemendes/status/1226930236727623680"
+            target="_blank">2020/2/11 3:05:38</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">SUPER MARIO WORLD for MSX2 by Daemos (WIP)<br/><br/>16-bit "MODE 7" style rotation on 8-BIT MACHINE!<br/><br/>Runs on base MSX2 (OPL🎶)<br/>Pushes the machine to the limit. Gameplay is solid<br/> <br/>Masterpiece of Z80 programming.<br/><br/>#MSXMonday #MSX #8bit #gamedev #pixelart #homebrew #fangame #vgm #chiptune https://t.co/WriYLzMv7C</p>
+        
+        <video class="tweet-img" controls src="https://video.twimg.com/ext_tw_video/1226930125717016579/pu/vid/566x422/7q0WiwB37PtKrj9b.mp4?tag=10" />
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1212701145379946496/pSDVrvWj_normal.png" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1227162899942035457"
+            target="_blank">2020/2/11 18:30:09</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ブログを更新した。Webリニューアルに関する状況がメイン。<br/><br/><blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="https://www.sfpgmr.net/blog/entry/2020/02/c6249524f0e93ffe9111d0df403deb63.html" target="_blank">S.F. Blog:Webサイトリニューアルに関するここまでの活動について</a></header><div>はじめにWebサイトリニューアルに関する活動は「思いつくくまま・気の向くまま・行き当たりばったり」でやっている。方向性はまだ完全には定まっていないがここでいったんいいままでの状況や今後に関してメモっておこうと思った。トップページのリニューアルの状況今使っているSNS（//）へのキュレーション・ページにしようとまず考えた。そしてサンドボックス・ページを試しに作ってみたりした。このページはデザインの検...</div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1227177696272117760"
+            target="_blank">2020/2/11 19:28:57</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">もうちょっと詳細に、Tweetでは難しいところを補完するような内容にしたいんだけど、書いてる途中で端折り気味になってしまうのがいかんよなあ。。今後の課題ですわ。。もうちょっとテーマを絞って詳しく書くようにしてみようかな。。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1212701145379946496/pSDVrvWj_normal.png" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1227105391068078082"
+            target="_blank">2020/2/11 14:41:38</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">確かグリーンスタジアムにオリックスと近鉄の最終試合（消化試合）を観に行ったよなあ。1000人くらいしか観客いなかったけどね。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1227106747455692801"
+            target="_blank">2020/2/11 14:47:01</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">そのオリックスと近鉄も今は一緒になってるんだよなあ。。</p>
+        
+      </section>
+      
+    </article>
+    
+  </div>
+  <footer>
+    CopyLight 2019 Satoshi Fujiwara
+  </footer>
+  <script async src="https://platform.twitter.com/widgets.js"></script>
+
+  <script async src="./index.js"></script>
+
+</body>
+
+</html>

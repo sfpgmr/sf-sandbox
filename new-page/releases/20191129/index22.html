@@ -1,0 +1,1934 @@
+<!DOCTYPE html>
+<html lang="ja" prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb# article: http://ogp.me/ns/article#">
+
+<head>
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-15457703-9"></script>
+  <script>
+    if (!location.hostname.match(/localhost/)) {
+      window.dataLayer = window.dataLayer || [];
+      function gtag() { dataLayer.push(arguments); }
+      gtag('js', new Date());
+      gtag('config', 'UA-15457703-9');
+    }
+  </script>
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>トップページをリニューアルする</title>
+  <meta name="description" content="リニューアル用のトップページデザインを考えて実装する" />
+  <meta name="keywords" content="Programming,Music,HTML5,WebGL,javascript,WebAudio" /> 	
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <meta itemprop="image" content="https://www.sfpgmr.net/img/sfweb.png" />
+  <meta itemprop="name" content="S.F. Web" />
+  
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:site" content="S.F. Web" />
+  <meta name="twitter:url" content="./index22.html" />
+  <meta name="twitter:title" content="リニューアル用のトップページデザイン" />
+  <meta name="twitter:description" content="リニューアル用のトップページデザインを考えて実装する" />
+  <meta name="twitter:image" content="https://www.sfpgmr.net/img/sfweb.png" />
+  
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="./index22.html" />
+  <meta property="og:title" content="リニューアル用のトップページデザイン"/>
+  <meta property="og:site_name" content="S.F. Web" />
+  <meta property="og:description" content="Programming,Music,HTML5,WebGL,javascript,WebAudio">
+  <meta property="og:image" content="https://www.sfpgmr.net/img/sfweb.png">
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    html {
+      margin: 0;
+      padding: 0;
+      font-size:10px;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      background: black;
+      color: white;
+    }
+
+    #sentinel {
+      width:0px;
+      height:0px;
+    }
+    .contents {
+      width: 100%;
+      position: relative;
+      content: strict;
+    }
+
+    @keyframes blinking {
+      0% {
+        color: black;
+      }
+
+      50% {
+        color: white;
+      }
+
+      100% {
+        color: black;
+      }
+    }
+
+    .loading {
+      font-family: monospace;
+      font-size: 24px;
+      position: fixed;
+      width: 100vw;
+      height: 100vh;
+      text-align: center;
+      padding-top: 50vh;
+      z-index: 32768;
+      background: black;
+      animation: blinking 2s infinite;
+      content: strict;
+    }
+
+
+    .contents>article {
+      background: #f0f0f0;
+      color: #202020;
+      position: absolute;
+      max-height: 960px;
+      overflow: auto;
+      border-radius: 3px;
+    }
+
+    .tweet-header {
+      display: grid;
+      align-items: end;
+      grid-template-columns: 40px 2fr 1fr;
+      grid-template-rows: 1fr;
+      font-size: 12px;
+      font-weight: bold;
+    }
+
+
+    .tweet-img {
+      width: 100%;
+      object-fit: cover;
+    }
+
+    .youtube {
+      position: relative;
+      cursor: pointer;
+    }
+
+    .youtube > img {
+      width: 100%;
+      object-fit: cover;
+    }
+
+    .youtube > svg.player-play {
+      width:64px;
+      height:64px;
+      left:calc(50% - 32px);
+      top:calc(50% - 32px);
+      position:absolute;
+      z-index: 1000;
+      opacity: 0.5;
+    }
+    
+    .youtube:hover > svg.player-play {
+      opacity: 1.0;
+    }
+
+    .youtube:hover .player-play-1 {
+      stroke:#80808080;
+    }
+
+    
+    .youtube > div.yt-title {
+      /*text-shadow: #fff 1px 1px 0;*/
+      font-size: 1.2rem;
+      color:white;
+      background:rgba(0, 0,0,0.5);
+      position:absolute;
+      left:0;
+      top:0;
+      overflow: auto;
+      z-index:998;
+    }
+
+
+    .tweet-profile-img {
+      grid-column: 1/2;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+    }
+
+    .tweet-user-name {
+      grid-column: 2/3;
+    }
+
+    .tweet-date {
+      font-size: 8px;
+      text-align: right;
+      grid-column: 3/4;
+    }
+
+    .contents>twitter-widget {
+      overflow: auto;
+      max-height: 960px;
+      position: absolute;
+    }
+
+    .contents>article>section>.tweet-text {
+      display: block;
+      padding: 4px;
+      word-break: break-all;
+      font-size: 12px;
+    }
+
+    .contents>article>h3 {
+      font-size: 12px;
+    }
+
+    blockquote.card {
+      margin:4px;
+      padding:4px;
+      font-size:12px;
+      background:white;
+      border-radius: 4px;
+    }
+
+    blockquote.card > header {
+      display:grid;
+      grid-gap:4px;
+      gap:4px;
+    }
+
+    blockquote.card-default > header {
+      grid-template-columns:64px 1fr;
+    }
+
+    blockquote.card-large > header {
+      grid-template-columns:1fr;
+    }
+
+    blockquote.card > header > img {
+      width:100%;
+    }
+
+
+    div.no-image {
+      display: block;
+      width:64px;
+      height:64px;
+      background:gray;
+      color:white;
+      text-align: center;
+      line-height: 64px;
+    }
+
+  </style>
+</head>
+
+<body>
+  <div class="loading" id="loading">Loading</div>
+  <header class="top-nav">
+    <h1>S.F. Info.</h1>
+  </header>
+  <div class="contents" id="contents" rendersubtree="invisible skip-activation"> 
+    
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1143955359704338432"
+            target="_blank">2019/6/27 3:53:06</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">これすごいな。。 <blockquote class="card card-default"><header><img loading="lazy" src="https://pbs.twimg.com/profile_images/1067630088332599296/sPq-99EL_400x400.jpg" /><a href="https://twitter.com/daily_gadget_jp/status/1143775575154122752" target="_blank">デイリーガジェットさんのツイート: "日本でファミコンやPC-88が圧倒的なパワーを持っていた時代に、欧州や北米市場で人気を博したホビーパソコンのコモドール64復刻版「The C64」が今年12月に登場 小型化でなくフル機能フルキーボード搭載で、素晴らしいことに当時のままプログラミングもできます #コモドール64 https://t.co/jW7SiH8HWR"</a></header><div>“日本でファミコンやPC-88が圧倒的なパワーを持っていた時代に、欧州や北米市場で人気を博したホビーパソコンのコモドール64復刻版「The C64」が今年12月に登場<br/>小型化でなくフル機能フルキーボード搭載で、素晴らしいことに当時のままプログラミングもできます<br/>#コモドール64<br/>https://t.co/jW7SiH8HWR”</div></blockquote></p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/973551872010215424/FxbboEeW_normal.jpg" />
+        <p class="tweet-user-name">しろ@siro700</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/siro700/status/1143499331632156672"
+            target="_blank">2019/6/25 21:41:00</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">木曽駒ヶ岳から見下ろす夜の街、夜、こっそり山小屋から出て徘徊するの面白いですよ https://t.co/43JMONZF31</p>
+        
+        <img loading="lazy" class="tweet-img" src="https://pbs.twimg.com/media/D96GkoCUYAABlyu.jpg" />
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1143842652929974273"
+            target="_blank">2019/6/26 20:25:14</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">おお、ボクセル・モデラをまた発見。<br/><blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="http://www.sanko-shoko.net/note.php?id=3dby" target="_blank">MOG3D 紹介</a></header><div></div></blockquote></p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1143809030575419393"
+            target="_blank">2019/6/26 18:11:38</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">うーむ。クォータニオン使えばジンバルロックを回避できるのか。。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1132516797037498368"
+            target="_blank">2019/5/26 14:20:20</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">wasm用のプリプロセッサ（mwasm）をnode.jsで作っている｜sfpgmr @SFPGMR｜note（ノート） <blockquote class="card card-default"><header><img loading="lazy" src="https://d2l930y2yx77uc.cloudfront.net/production/uploads/images/11787677/rectangle_large_type_2_ad5b39d3fefb53b8887eafb803d01cb6.png" /><a href="https://note.mu/sfpgmr/n/n60e59a4ca3e8" target="_blank">wasm用のプリプロセッサ（mwasm）をnode.jsで作っている｜sfpgmr｜note</a></header><div> 動機  WASMが出てきて、WASMを吐くコンパイラが作れそうだったので「オレオレ言語」を去年の2月くらいから作っていた。今はちょっとお休みの状態になっている。プリプロセスをどうしようかというところで手が止まってしまったのだ。複雑なプリプロセッサ+メタ・プログラミング機能を追加しようとして実装をどうしようか迷っているうちにモチベーションが萎えてしまった。身の丈に合わない仕様を思いついたんだけど私の実装能力が低いから先が見えなくなったのだ。binaryenの助けを借りながら、WASMバイナリを吐くとことまではできたんだけどね。  オレオレ言語を作っている    趣味というのは「締め切り</div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1134203862926090240"
+            target="_blank">2019/5/31 6:04:08</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">プリプロセッサで吐いてるwatをwabt.jsでparseしてwasmにしてるんだけど、なんかおかしいんだよなあ。。<br/><blockquote class="card card-default"><header><img loading="lazy" src="https://avatars3.githubusercontent.com/u/28916798?s=400&v=4" /><a href="https://github.com/AssemblyScript/wabt.js" target="_blank">GitHub - AssemblyScript/wabt.js: A buildbot for wabt.js, a port of WABT to the Web, with TypeScript support.</a></header><div>A buildbot for wabt.js, a port of WABT to the Web, with TypeScript support. - AssemblyScript/wabt.js</div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1134203864863744000"
+            target="_blank">2019/5/31 6:04:08</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">wat2wasmでバイナリ化する結果と異なるという。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1134224481713438720"
+            target="_blank">2019/5/31 7:26:03</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">凡ミスだった。。<br/>let wasmModule = wabt_.parseWat(args.input, preprocessedSourceText);<br/>    wasmModule.resolveNames();//これが足らなかった。。<br/>    wasmModule.validate();</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1134225342694952960"
+            target="_blank">2019/5/31 7:29:29</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">wasmModule.validate();でエラーでまくりでうわぁ。。となってた。wat2wasmだとエラーが出なかったのでなんでかなあと。resolveNames()呼ばないといかんのね。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1134384410655019010"
+            target="_blank">2019/5/31 18:01:34</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">PSGエミュレータは元のCソースを手作業でwatにする作業は終わった。これからデバッグに入る。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1134385184734732289"
+            target="_blank">2019/5/31 18:04:38</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">いっぱい不具合はあるだろうねえ。不具合を潰す作業は、プチプチを潰すのと感覚的に似てる感じがして、なんか好きなんだよね。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1134385677951307776"
+            target="_blank">2019/5/31 18:06:36</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">chromeでwasmをステップトレースできるようになってるから、デバッグもなんとかなりそうだね。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1134386166646693889"
+            target="_blank">2019/5/31 18:08:32</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ソースコードはcソースに比べて1.5倍位になっただろうか。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1134549183560540161"
+            target="_blank">2019/6/1 4:56:18</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">こんな感じでデバッグできるからね。。 https://t.co/vnPKrXN3LO</p>
+        
+        <img loading="lazy" class="tweet-img" src="https://pbs.twimg.com/media/D766d6qV4AA6_1f.jpg" />
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1134554580421709824"
+            target="_blank">2019/6/1 5:17:45</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">死んだ。。 https://t.co/XpueErSwQu</p>
+        
+        <img loading="lazy" class="tweet-img" src="https://pbs.twimg.com/media/D76_YIPVsAABZw8.png" />
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1134608957404672000"
+            target="_blank">2019/6/1 8:53:50</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">とりあえず呼び出しで死ぬようなことはなくなったが、そもそもPSGでどうやって音を鳴らすのかすっかり忘れている（笑）ここで言っているのはPSGのレジスタ操作でどうやって音を鳴らすのかということ。音程はどうやってコントロールするのか、発音・消音はどのような手順の行うのかということ。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1134610066181517312"
+            target="_blank">2019/6/1 8:58:14</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">今のところは適度な大きさのバッファにPSGの音声データをレンダリングして、それをWebAudio APIに渡すことで音を鳴らそうと思ってるとこ。AudioWorklet使ってみたいんだなー。これが。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1134610329860657153"
+            target="_blank">2019/6/1 8:59:17</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">このサンプル・コードが参考になりそう。。<br/><blockquote class="card card-default"><header><img loading="lazy" src="https://avatars2.githubusercontent.com/u/31970254?s=400&v=4" /><a href="https://github.com/GoogleChromeLabs/web-audio-samples/blob/master/audio-worklet/design-pattern/wasm/wasm-worklet-processor.js" target="_blank">web-audio-samples/wasm-worklet-processor.js at master · GoogleChromeLabs/web-audio-samples · GitHub</a></header><div>Web Audio API samples by Chrome WebAudio Team. Contribute to GoogleChromeLabs/web-audio-samples development by creating an account on GitHub.</div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1134612411611136001"
+            target="_blank">2019/6/1 9:07:33</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">このバックで流れているBGMはWebAudioで波形メモリ音源をエミュレートしてみたものだ。この時はPeriodicWaveNodeを使って各チャンネルの音声を4ビット波形データから作ったんだよな。<br/><blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="https://www.sfpgmr.net/dev/graphics/devver/20160417/" target="_blank">Graphics</a></header><div></div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1134612988445437953"
+            target="_blank">2019/6/1 9:09:51</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">4bit波形データ→フーリエ変換で周波数データに変換→PeriodicWaveNodeで再生みたいな感じ。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1134613542898814977"
+            target="_blank">2019/6/1 9:12:03</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">PeriodicWaveNodeを使うと複雑な波形を合成することができるんだよな。。倍音加算式音源みたいなもんだよな。知らんけど。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1134614319755194368"
+            target="_blank">2019/6/1 9:15:08</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">AudioBufferSourceNodeだとちょっとコントロールが難しいんだよな。。持続音というか波形を流しっぱなしにするのが難しいというか。loopパラメータはあるけど、ループで戻るときに波形をうまくつなげないとノイズが出るしね。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1134614958442893312"
+            target="_blank">2019/6/1 9:17:40</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">私としてはほんとはWebAudioのような高機能なものではなくてもっと低レベルなものが欲しいんだけどね。ASIOのWeb版のようなやつ。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1134745769666203648"
+            target="_blank">2019/6/1 17:57:28</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">これ見たらちょっと思い出したな。。PSGの使い方。。<br/><blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="http://www.vdsteenoven.com/aquarius/psgprog.html" target="_blank">Mattel Aquarius programming the AY-3-8910 Sound Chip</a></header><div></div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1134746447541227521"
+            target="_blank">2019/6/1 18:00:10</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">AudiotWorklet内でWASMを使うことはできるけど、バイナリをfetchすることはできんのですわ。なのでメインスレッド側でWASMバイナリをfetchした後ArrayBufferでAudioWorkletに渡せばよいのですな。。渡し方はいろいろあるけど私はコンストラクタで渡すことにした。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1134748772364275713"
+            target="_blank">2019/6/1 18:09:24</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">WebAudioAPIの仕様を読むと、AudioWorkletProcessor のコンストラクタの引数にAudioWorkletNodeOptionsオブジェクトが渡されるのですな。<br/><br/><blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="https://g200kg.github.io/web-audio-api-ja/#audioworkletprocessor" target="_blank">Web Audio API ( 日本語訳 )</a></header><div></div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1134748773798645760"
+            target="_blank">2019/6/1 18:09:24</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">AudioWorkletNodeOptionsにはprocessorOptions メンバがある。これはAudioWorkletNodeをコンストラクトした時の3番目のオブジェクトのメンバである。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1134748774989877248"
+            target="_blank">2019/6/1 18:09:25</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">let node = AudioWorkletNode(audioctx,"PSG",{<br/>processorOptions:{<br/>        wasmBinary:psgBin,<br/>        sampleRate:audioctx.sampleRate,<br/>        clock:3580000<br/>      }});<br/>こんな感じでメインスレッドからAudioWorkletにパラメータを引き渡すことができるんですな。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1134748776302702594"
+            target="_blank">2019/6/1 18:09:25</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">パラメータは勝手にシリアル化されるので利用者はオブジェクトも渡すことができるのですわ。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1134749522729394177"
+            target="_blank">2019/6/1 18:12:23</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">そしてこんな感じでコンストラクタでwasmバイナリを有効化して初期化するようにしてる。が今はメソッドが動くようになっただけでまだまだバグが大量発生中。AudioWorkletのコードはChromeではまだステップ実行できないようだ。知らんけど。。 https://t.co/mjChlilAU8</p>
+        
+        <img loading="lazy" class="tweet-img" src="https://pbs.twimg.com/media/D79wrP1UIAEmO7J.png" />
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1134749793568186370"
+            target="_blank">2019/6/1 18:13:28</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">なのでpostMessageでメインスレッド側にデバッグ情報を渡してconsole.logで表示してチェックするようなことを今はしている。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1134750403214467072"
+            target="_blank">2019/6/1 18:15:53</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">今はPSGレジスタに書いた情報がちゃんと読み込まれるかテストしてるところだが、それすらちゃんと動いとらん（笑）。もうちょっとメインスレッド側でテストを進めてからやらんといかんわな。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1134751423013384192"
+            target="_blank">2019/6/1 18:19:56</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">postMessageとか使ってるとなんかWindows APIを思い出すなあ。。PeekMessageとかGetMassegeとか..</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1134753503971176448"
+            target="_blank">2019/6/1 18:28:12</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">過去にPeriodicWaveで作った波形メモリ音源はナムコの4bit波形メモリ音源を参考にしてる。つくりはまるで違うけど、波形テーブルは同じものが使える。よってこのようにゼビウスのBGMほぼ「まんま」の音を鳴らすことができる。。<br/><br/><blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="https://www.youtube.com/watch?v=u7zQhKuiXLA&feature=youtu.be&t=5" target="_blank">YouTube</a></header><div></div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1134754501661827073"
+            target="_blank">2019/6/1 18:32:10</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">このPSGエミュレータがまともに動いたら、ローレゾな画面のシューティングゲームを作りたいなあと思ってるんだよなあ。WASMでね。。このPSGエミュレータを使うかどうかはわからんけど。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1134754503004020737"
+            target="_blank">2019/6/1 18:32:10</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">I/Oやゲームシステムなどの低レベルな部分はJSでやって、アプリはWASMで作るというかたち。本来であれば低レベルなレイヤーはWASMで作って、JSがそれを利用するのがふつうだが（笑）。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1134756269284134912"
+            target="_blank">2019/6/1 18:39:12</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">リニア・メモリをVRAMに見立ててWASMにアクセスさせて、それをJS側でシェーダーに渡して描画させるようなことをすれば、昔のPCのビット・マップグラフィックをエミュレートすることは容易にできるだろう。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1134757920539725824"
+            target="_blank">2019/6/1 18:45:45</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">JSだけだけど、ArrayBufferでRGBプレーンを作ってそれをシェーダで描かせるようなことも過去やってみたんだよね。<br/>ArrayBufferやDataViewのおかげで線形メモリに対する細かなアクセスがJSでできるようになったのを利用してる。<br/><blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="https://www.sfpgmr.net/dev/graphics/devver/20160410/" target="_blank">Graphics</a></header><div></div></blockquote> https://t.co/haDwdKGOdA</p>
+        
+        <img loading="lazy" class="tweet-img" src="https://pbs.twimg.com/media/D794UDJUEAIe7Ix.png" />
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1134758483876728837"
+            target="_blank">2019/6/1 18:48:00</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">アニメーションはパレット・チェンジの手法を使ってる。そのあたりの処理はシェーダーにパラメータを渡してシェーダー側で処理するんですな。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1134758485227261952"
+            target="_blank">2019/6/1 18:48:00</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">だけどWebGL 1.0のシェーダーは整数値の扱いにちょっと制約があって。ビット演算とかできないんだよな。そこがちょっと面倒なんだけどね。WebGL 2.0だとその制約はほぼなくなったんだけどね。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1134759684718698496"
+            target="_blank">2019/6/1 18:52:46</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">これをさらに応用するとMZ-700のキャラクタVRAMをArrayBufferでエミュレートすることも可能なんですな。。このサンプルはArrayBufferにMZ-700のキャラクタとアトリビュートをまんま再現している。<br/><blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="https://www.sfpgmr.net/dev/graphics/devver/20160417/" target="_blank">Graphics</a></header><div></div></blockquote> https://t.co/O8gyJOYZDm</p>
+        
+        <img loading="lazy" class="tweet-img" src="https://pbs.twimg.com/media/D7956vTUIAIHLzb.png" />
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1134760168938303488"
+            target="_blank">2019/6/1 18:54:41</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">WASMでZ-80とか周辺チップのエミュレーションコードを書くのは、おそらくJSで書くより簡単にできるのでは..と思ってる。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1135413647558172672"
+            target="_blank">2019/6/3 14:11:23</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">PSGエミュレータのデバッグでハマってる私。ただちょっと光明が。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1135414036898541568"
+            target="_blank">2019/6/3 14:12:56</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">使い方も思い出すことができた。ネット上の情報も思いのほか豊富でびっくりした。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1135518607847198726"
+            target="_blank">2019/6/3 21:08:27</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ちょっと鳴るようになった。<br/><div class="youtube" data-type="yt" id="d4xguBzTtwg"><div class="yt-title">Youtube - 作成中のPSGエミュ</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/d4xguBzTtwg" class="youtube" src="https://i.ytimg.com/vi/d4xguBzTtwg/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1136472729194860545"
+            target="_blank">2019/6/6 12:19:47</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">この実装にあたっては色々驚かされことが多い。昔のチップなんでほとんど乗算使わなくていいし。とはいえ自分で一から実装してるわけじゃないんどけと。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1136473137879478272"
+            target="_blank">2019/6/6 12:21:25</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">cソースがお手本としてあって、それをwatで書き直してるんだけどね。スタックマシンだけにメモリのロードストアが頻発するのがちと面倒くさいというか。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1136740859951501312"
+            target="_blank">2019/6/7 6:05:15</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ようやくEGが動くようになった。。凡ミスもいいとこだけど。。<br/><br/><blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="https://www.youtube.com/watch?v=oi6txNjlzHg&feature=youtu.be" target="_blank">YouTube</a></header><div></div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1136740861314719744"
+            target="_blank">2019/6/7 6:05:15</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">今はpostMessageでAudioWorkletにパラメータを送ってるけど、そろそろparameterDescriptorsでレジスタのラッチと値設定できるようにしよう。a-rateでいいわなあ。あとは128サンプルずつ処理するようにwasm側にコードを追加するか。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1136740862543577088"
+            target="_blank">2019/6/7 6:05:15</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">これができたらVRAMやスプライトRAMの実装でもしようかな。160x100か320x200くらいの解像度でね。これは特定のハードウェアのエミュレートをするのではなくオレオレだが。wasm側のメモリでVRAMをエミュレートして、それをWebGLに渡して描かせるのである。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1136740863717957632"
+            target="_blank">2019/6/7 6:05:16</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">そしてオリジナル波形メモリ音源のwasm化もやってみよう。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1136741356930445312"
+            target="_blank">2019/6/7 6:07:13</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">画面まわりはWebGL2.0になってシェーダーで整数の取り扱いが改善されたので相当楽に実装できそうな気がする。とはいえ私が実装すると相当時間はかかるけどね。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1136741788494942208"
+            target="_blank">2019/6/7 6:08:56</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">PSGのパラメータからEGや波形を作るところはなんかとても面白いコードなんだよなあ。思ってたのと全然違うんだな。これは矩形波でデューティ比固定、さらにはEGも特殊だからこそできる実装というか。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1136742822722252800"
+            target="_blank">2019/6/7 6:13:03</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ちなみに今の時点でのPSGエミュレータのWASMバイナリのサイズは2689bytesである。わずか2K..。<br/>#WebAssembly</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1137098278661529600"
+            target="_blank">2019/6/8 5:45:30</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">AudioWorkletをもうちょっと勉強せんといかんね。。<br/><blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="https://g200kg.github.io/web-audio-api-ja/#audioworklet" target="_blank">Web Audio API ( 日本語訳 )</a></header><div></div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1137473166291361792"
+            target="_blank">2019/6/9 6:35:10</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">PSGエミュレータは音はそこそこ鳴るようになったのでUI作ってテストしてみることにした。不具合はまだありですな。。 https://t.co/PLMuTS7yPi</p>
+        
+        <img loading="lazy" class="tweet-img" src="https://pbs.twimg.com/media/D8kd0JGVUAEauUg.png" />
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1137473424173936640"
+            target="_blank">2019/6/9 6:36:12</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">こういうUIがHTMLでサクッと書けるなんてすごい時代になったよな。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1137505861499215872"
+            target="_blank">2019/6/9 8:45:05</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">まあまあ動くようになった。<br/><br/><div class="youtube" data-type="yt" id="5U5zJKlP0gI"><div class="yt-title">Youtube - WASMでPSGエミュレータを作る</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/5U5zJKlP0gI" class="youtube" src="https://i.ytimg.com/vi/5U5zJKlP0gI/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1137535856959414272"
+            target="_blank">2019/6/9 10:44:17</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">Chromeのみで動作する。。<br/><blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="https://www.sfpgmr.net/dev/psg-emulator/" target="_blank">WASMでPSG Emulatorを作る</a></header><div></div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1137645769173766150"
+            target="_blank">2019/6/9 18:01:02</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ちょっとVRAMについて思案中。リニアメモリのある一角をVRAMとして、WASMからそこに書き込んだらそれをGPUにデータテクスチャで渡して描こうかなと思っている。橋渡しのコードはJSで書く。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1137645771090644992"
+            target="_blank">2019/6/9 18:01:02</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">レトロ風のVRAMの構成を考えると、テキストVRAMとビットマップVRAM、そしてスプライト用RAMの3種類が考えられる。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1137647526062936064"
+            target="_blank">2019/6/9 18:08:01</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">テキストRAMもWASM側でASCIIキャラクタを書くとキャラクタのビットパターンをGPUで展開することでエミュレーションする。思案してるのはビットマップ用のVRAMとスプライト用RAMなんだよな。160x100もしくは320x200ピクセルくらいのローレゾなグラフィックでパーティクルをやりたいんだな。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1137650338012385281"
+            target="_blank">2019/6/9 18:19:11</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">160x100pxだとこんな感じのグラフィックスになる。<br/><blockquote class="card card-large"><header><img loading="lazy" src="https://sfpgmr.github.io/images/2018/01/201801081.png" /><a href="https://www.sfpgmr.net/test/twgl/005/" target="_blank">160x100pxでゲームを作る</a></header><div>160x100pxでゲームを作る</div></blockquote> https://t.co/sI8iuTdPzj</p>
+        
+        <img loading="lazy" class="tweet-img" src="https://pbs.twimg.com/media/D8m-8hEV4AAKRzV.jpg" />
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1137650995943464960"
+            target="_blank">2019/6/9 18:21:48</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">CRT風のポスト・エフェクトをかけてるけどね。動いてるキャラはポイント・スプライトで書いてる。WASM側では軽いパラメータを渡すだけにして、GPU側でいろいろややこしい計算を受け持たせようという算段である。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1137652776345800705"
+            target="_blank">2019/6/9 18:28:53</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">VRAM周りの仕様が固まってWASM+JSで実装できたら、<br/><br/>・JSで作った波形メモリ音源をWASM+JSで書き直す<br/>・JSで作ったゲームシステムをWASM+JSで書き直す<br/>・ゲームシステム上で動く横スクロール・シューティングをWASM+JSで作る<br/><br/>で年内は過ごそうかなと。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1137653213912395776"
+            target="_blank">2019/6/9 18:30:37</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">まあ趣味なんでどうなるかはわからんけどね。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1137829412588572673"
+            target="_blank">2019/6/10 6:10:46</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">まずはテキストVRAMからか。フォント・ビットマップは美咲フォントを使わせていただくことにしよう。漢字はどうしようか。。漢字対応するとなるとVRAMは1キャラ当たり最低2バイト必要ですな。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1137829414094364672"
+            target="_blank">2019/6/10 6:10:46</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">UTF-8文字コードをJIS X 0208に変換して表示するか、もしくはUTF-16に変換して表示するか。。うむぅ。難しいなあ。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1137829789065027584"
+            target="_blank">2019/6/10 6:12:16</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">美咲フォントとはこれですな。ありがたく使わせていただくことにしよう。<br/><blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="http://littlelimit.net/misaki.htm" target="_blank">8×8 ドット日本語フォント「美咲フォント」</a></header><div></div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1138424540235616256"
+            target="_blank">2019/6/11 21:35:35</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">160x100はこれくらいだった。ちょっと間違ってた。。 https://t.co/n467t8oA2M</p>
+        
+        <img loading="lazy" class="tweet-img" src="https://pbs.twimg.com/media/D8x_FRzUYAAmgjU.jpg" />
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1138424787431088128"
+            target="_blank">2019/6/11 21:36:34</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ただまあこの解像度でもフルカラーだとかなりの表現力がありそうだな。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1139300505589387265"
+            target="_blank">2019/6/14 7:36:22</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">いま美咲フォントを表示するための仮想テキスト VRAMの設計をしている。ここ数日は美咲フォントをどのようにデータ化するか考えてたんだけどようやく考えがまとまった感じ。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1139302885647245312"
+            target="_blank">2019/6/14 7:45:49</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">エンコードはutf-16のリトルエンディアンにする。フォントを調べてたらbdfというフォントのフォーマットのデータがあって、それはUnicodeで定義されてた。そして美咲フォントもコードポイントが0xffffまでにおさまってるしね。複合文字とかサロゲートペアは仮想VRAMのレイヤーでは無いことにする😅</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1139305485654319104"
+            target="_blank">2019/6/14 7:56:09</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">それでbdfファイルの内容を読み込んで、横256キャラ、縦256キャラのキャラクタ用テクスチャに展開するわけですな。そしてそれを使って文字をレンダリングするのですな。1文字8x8pxなので2048ｘ2048のテクスチャとなる。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1139306563452076035"
+            target="_blank">2019/6/14 8:00:26</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">テキスト仮想VRAMは40x25で、1文字あたり4バイト確保する。2バイトはコードポイント指定用で、2バイトはアトリビュート用。ブリンクとか色指定とかそういうやつね。なかなか豪勢な仕様ですな。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1139307656382824449"
+            target="_blank">2019/6/14 8:04:47</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">仮想VRAMにコードポイントとアトリビュートを書き込むと、それをシェーダでテキストビットマップに展開する。GPUで昔のCRTコントローラのエミュレーションみたいなことをするわけ。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1139621340288131072"
+            target="_blank">2019/6/15 4:51:15</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">フォントデータを256x256(2048x2048px)のビットマップにレンダリングしてみた。ほとんど空白だけどまあこんなもんですわな。。一応ちゃんと変換できとるな。。 https://t.co/tZiWmTgyGK</p>
+        
+        <img loading="lazy" class="tweet-img" src="https://pbs.twimg.com/media/D9C_kREU0AAqJ0j.png" />
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1139622006314299392"
+            target="_blank">2019/6/15 4:53:54</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">なんかこのドット感がいいねえ。。 https://t.co/cyXJVHGxnw</p>
+        
+        <img loading="lazy" class="tweet-img" src="https://pbs.twimg.com/media/D9DALG_UEAADq2e.png" />
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1139632910074466304"
+            target="_blank">2019/6/15 5:37:13</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">実際のデータは1px=1bitとして横8pxを1byteにパックしてる。そしてそれが256x256x8個あるから512Kbyteの容量になる。gzip圧縮すると65kbyteくらいの大きさ。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1139632911420817408"
+            target="_blank">2019/6/15 5:37:14</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">16GBくらい普通の時代でも、メインメモリが16kとかそういう時代のPCから触ってると512kbyteは巨大データな感がある。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1139633646527057920"
+            target="_blank">2019/6/15 5:40:09</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">空白の部分はある程度のブロック単位で詰めて、コードポイントをビットマップ位置に変換するところで吸収しようかなと思ったりもするけどね。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1139633778471534592"
+            target="_blank">2019/6/15 5:40:40</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">そうすると非圧縮でも256Kbyte前後にはなりそうだよね。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1139635562984271872"
+            target="_blank">2019/6/15 5:47:46</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">WebGL側にはフォーマットR8のテクスチャでこのデータを収める。そしてピクセルシェーダーで描画位置のテキストVRAMテクスチャからコードポイントを読み出す。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1139635564355809280"
+            target="_blank">2019/6/15 5:47:46</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">読み出したコードポイントを使ってビットマップテクスチャの位置を計算して1byteを読み出す。<br/>さらにその１byteから描画対象のビットを求めてそのビットが立っていたら描画する。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1139635789099175936"
+            target="_blank">2019/6/15 5:48:40</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">このあたりの処理はWebGL2.0になって整数のビット演算ができるようになったんでとても楽にできるようになったんだよね。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1140225213302394880"
+            target="_blank">2019/6/16 20:50:49</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">160x100pxの仮想画面で仮想テキストVRAMを作り、美咲フォントを表示してみた。テキストVRAMは背景８色、文字色８色というもの。ドットがでかいな。こりゃ。 https://t.co/dIIm2JKB5p</p>
+        
+        <img loading="lazy" class="tweet-img" src="https://pbs.twimg.com/media/D9LkyKkU4AEF6hF.jpg" />
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1140229341499969536"
+            target="_blank">2019/6/16 21:07:14</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">一応パレットやブリンクもサポートしてるという。。あとはアルファもサポートしとけばいいかなと。。<br/><div class="youtube" data-type="yt" id="cyK1hLaMJDE"><div class="yt-title">Youtube - 美咲フォントを表示してみる</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/cyK1hLaMJDE" class="youtube" src="https://i.ytimg.com/vi/cyK1hLaMJDE/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1140230054758236160"
+            target="_blank">2019/6/16 21:10:04</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">なんかでもusampler2Dの動きが思った通りでなくてちょっと悩んでるところはある。とりあえずsampler2Dでしのいでるけどね。usampler2D使うと符号なし整数値でテクスチャルックアップできるからいいな！と思ってたんだけど、実際得られる値がなんか違うんだよなあ。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1140348007944089600"
+            target="_blank">2019/6/17 4:58:46</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">これが動くサンプル。<br/><blockquote class="card card-large"><header><img loading="lazy" src="https://sfpgmr.github.io/images/2018/01/201801081.png" /><a href="https://www.sfpgmr.net/sandbox/tvram/20190617/" target="_blank">仮想テキストＶＲＡＭの実装</a></header><div>仮想テキストＶＲＡＭの実装</div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1140363958492078080"
+            target="_blank">2019/6/17 6:02:09</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">透過指定属性を追加した。 https://t.co/o649B8HWlD</p>
+        
+        <img loading="lazy" class="tweet-img" src="https://pbs.twimg.com/media/D9Ni-CpVUAAzKsb.jpg" />
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1140364831553282048"
+            target="_blank">2019/6/17 6:05:37</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">テキストVRAMはDWORD値でそれぞれの属性配置は以下の通り<br/>bit0 ... 15 UNICODEコードポイント（utf-16）<br/>bit16 ... 23bit アルファ値(0 ... 255)<br/>bit24 ... 26bit 背景色(0 ... 7)<br/>bit28 ... 30bit 文字色(0 ... 7)<br/>bit31 ブリンク</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1140365941684887552"
+            target="_blank">2019/6/17 6:10:02</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">これが一応動くサンプル。。<br/><blockquote class="card card-large"><header><img loading="lazy" src="https://sfpgmr.github.io/images/2018/01/201801081.png" /><a href="https://www.sfpgmr.net/sandbox/tvram/20190617-2/" target="_blank">仮想テキストＶＲＡＭの実装</a></header><div>仮想テキストＶＲＡＭの実装</div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1140547868622614528"
+            target="_blank">2019/6/17 18:12:56</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">いやーしかしusampler2dの挙動が今ひとつ分からないなあ。やっぱりね。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1140596467851091969"
+            target="_blank">2019/6/17 21:26:03</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">と思って色々調べたらやはり凡ミスだった。。ああ、すっきりした。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1140706208849862656"
+            target="_blank">2019/6/18 4:42:08</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">とりあえずCRT風ポストエフェクトを外し透過状況がよくわかるようにしたのがこちら。テクスチャのルックアップもusampler2DつかってtexelFetchで処理してみてる。<br/><blockquote class="card card-large"><header><img loading="lazy" src="https://github.sfpgmr.net/images/2019/20190617.png" /><a href="https://www.sfpgmr.net/sandbox/tvram/20190618/" target="_blank">仮想テキストＶＲＡＭの実装</a></header><div>仮想テキストＶＲＡＭの実装</div></blockquote> https://t.co/OsMRNasRSW</p>
+        
+        <img loading="lazy" class="tweet-img" src="https://pbs.twimg.com/media/D9SaP7eVAAA9g4C.png" />
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1140706211353919488"
+            target="_blank">2019/6/18 4:42:08</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">仮想テキストVRAMの読み取りからピクセルを返す手前までがすべて整数で処理できるようになったのはやっぱりすっきりしていいわ。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1140706439180107777"
+            target="_blank">2019/6/18 4:43:03</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">こんなGPUシェーダの使い方してるの私ぐらいかもしれないね。。<br/>#webgl2</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1140706969482719232"
+            target="_blank">2019/6/18 4:45:09</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ただ私が持ってるAndroid 8.0タブで実行するとちょっとチラツキが目立つ。おそらくCRT風ポストエフェクトのせいだろうな。オプションにしてフラグでON・OFFするようにしないといけないね。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1140707371095711744"
+            target="_blank">2019/6/18 4:46:45</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">あとはこの仮想テキストVRAMをwasmのメモリにマップすればよいだけだが。さてどうしようか。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1140707830665605120"
+            target="_blank">2019/6/18 4:48:34</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">いまのところの考えとしては、メモリはJSで作ってそれを #webassembly にインポートしようと考えている。仮想的なハードウェアのメモリマップをリニアメモリで表現するわけですな。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1140712032297074689"
+            target="_blank">2019/6/18 5:05:16</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">仮想テキストVRAMはまあそのメモリの１区画を使用する。たとえばメモリオフセットの0xE000からマッピングするとなると20桁x12行・１キャラクタあたり4バイトだから960バイト確保することになる。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1140712033635057664"
+            target="_blank">2019/6/18 5:05:16</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">でその区画をtexImage2D()でテクスチャに割り当てる。<br/>void gl.texImage2D(target, level, internalformat, width, height, border, format, type, ArrayBufferView srcData, srcOffset);<br/><br/>srcOffsetを0xE000にすればいけると思ってるんだよね。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1140713056437035009"
+            target="_blank">2019/6/18 5:09:20</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">もしくは<br/>​new TypedArray(buffer [, byteOffset [, length]]);<br/><br/>を使って、メモリに対するビューを新たに作ってそれをsrcDataに割り当ててもよいかなと。<br/><br/>let tvram = new Uint32Array(memoryBuffer,0xe000,240);<br/><br/>こんな感じかなあ。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1140713803459354624"
+            target="_blank">2019/6/18 5:12:18</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">キーボードやゲームコントローラのI/OなんかもJSで情報を取得してメモリに書き込む。それをwasmモジュール側で読み込んで処理を行う。JSでハードウェアに近い低レベルな処理を行って、wasmに引き渡すわけですな。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1140713804994506752"
+            target="_blank">2019/6/18 5:12:19</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">高級言語で低レベル処理をして、wasmアセンブリでアプリを作るという。逆転現象。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1140714859455078400"
+            target="_blank">2019/6/18 5:16:30</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">オーディオもWebAudio+JSで仮想波形メモリ音源を作ってそれをメモリ経由でwasmからアクセスできるようにする。これも8音ポリくらいで4bit波形メモリ＋EG+LPFくらいの仕様にしようかなと。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1140715576861396992"
+            target="_blank">2019/6/18 5:19:21</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">あとはゲーム・キャラクタを動かすエンジンをどうするかですな。いまはポイント・スプライトを使ったスプライト・エンジンを仮組みしてるけど、ローレゾで３Dキャラを動かしたいという欲求も湧き上がってきてるんだよね。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1140715742238654464"
+            target="_blank">2019/6/18 5:20:01</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">メモリ・マップド I/O方式ですな。まさに。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1140716389948256257"
+            target="_blank">2019/6/18 5:22:35</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ただいつもそうなんだけど、ゲーム・キャラクタのグラフィックを描くところでやる気がなえてしまうんだな。。ドット絵って難しいんだよね。絵心がない私にとってはね。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1140717853760339968"
+            target="_blank">2019/6/18 5:28:24</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">今回はその高いハードルを越えるためにあえて160x100というローレゾでチャレンジしようと思うんだな。。量子化の粒度を粗くすれば私にも何とかなるのではないかと（笑）。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1140718833608474624"
+            target="_blank">2019/6/18 5:32:18</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">Blenderではなくもっと簡単にモデリングできるツールはないかなと思って、今MagicaVoxelを試そうとしてるという。。3Dペイントでもいいのかなと思うが。FBXのインポータを作ればいんだよな。。<br/><blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="https://ephtracy.github.io/" target="_blank">MagicaVoxel</a></header><div></div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1140719093437198336"
+            target="_blank">2019/6/18 5:33:20</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ローポリでやりたいと思ってるんだよね。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1140719489467576320"
+            target="_blank">2019/6/18 5:34:54</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ふーん。。<br/>これは使えそうな予感。。 https://t.co/mtMCrIBrCF</p>
+        
+        <img loading="lazy" class="tweet-img" src="https://pbs.twimg.com/media/D9SmU7xU8AAoM6r.jpg" />
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1140722384426528770"
+            target="_blank">2019/6/18 5:46:24</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">まあでもいいかあ。Blenderで。ちょっと頑張るか。。そうなると160x100だとローポリであってもちときつい感がしないでもないね。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1140727053580292096"
+            target="_blank">2019/6/18 6:04:57</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">と思ったがこれはいけそうな予感。。 https://t.co/oXFjuKfxbC</p>
+        
+        <img loading="lazy" class="tweet-img" src="https://pbs.twimg.com/media/D9StNNPUEAAHHke.png" />
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1140727432393003008"
+            target="_blank">2019/6/18 6:06:28</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">このフォーマットでそれなりなレンダラを作ればいける気がしてきたな。。<br/><blockquote class="card card-default"><header><img loading="lazy" src="https://avatars1.githubusercontent.com/u/5446525?s=400&v=4" /><a href="https://github.com/ephtracy/voxel-model/blob/master/MagicaVoxel-file-format-vox.txt" target="_blank">voxel-model/MagicaVoxel-file-format-vox.txt at master · ephtracy/voxel-model · GitHub</a></header><div>Contribute to ephtracy/voxel-model development by creating an account on GitHub.</div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1140727681719255040"
+            target="_blank">2019/6/18 6:07:27</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">1ピクセル=1ボックスみたいな感じでできんやろか。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1140727966864793600"
+            target="_blank">2019/6/18 6:08:35</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">これはやる気がちょっと出てきたよ。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1140734766423007235"
+            target="_blank">2019/6/18 6:35:36</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">9x9くらいがよさそうですなあ。。 https://t.co/YxpbBOrvQO</p>
+        
+        <img loading="lazy" class="tweet-img" src="https://pbs.twimg.com/media/D9S0OIdU0AAjQYF.jpg" />
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1140739299408666629"
+            target="_blank">2019/6/18 6:53:37</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">.voxファイルのフォーマットって、RIFFですがな。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1140739577121918976"
+            target="_blank">2019/6/18 6:54:43</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">wavファイル読むときに書いたよな。RIFF読むやつ。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1140747756123803648"
+            target="_blank">2019/6/18 7:27:13</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">あれだなあ。ジオメトリシェーダとかテッセレータとかあれば一点から指定された正方形のボクセルを生成できるような気もするが、その手はwebgl2では使えんしなあ。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1140748588626018305"
+            target="_blank">2019/6/18 7:30:32</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">今考えてるのは各ボックスの座標をポイントスプライトの頂点として渡してあとはゴニョゴニョしてできんかなという感じ。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1140750341392097280"
+            target="_blank">2019/6/18 7:37:30</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">あとはトランスフォームフィードバックとか頂点シェーダでのテクスチャサンプルあたりを使ってなんとかできんかな。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1141639605931765760"
+            target="_blank">2019/6/20 18:31:07</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ポイントリストでどんな感じになるか試そうとしてる。もうすぐコードはできる。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1141808669908094976"
+            target="_blank">2019/6/21 5:42:55</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">一応表示できたけど、微妙に違う気が。。 https://t.co/VBZ2mZFalh</p>
+        
+        <img loading="lazy" class="tweet-img" src="https://pbs.twimg.com/media/D9iE7n6UwAMPr50.jpg" />
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1141817153785458688"
+            target="_blank">2019/6/21 6:16:38</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">2倍に引き伸ばして回してみた。ギリギリX軸回転しとるのがわかる。。ライティングが適当すぎるのでちゃんとやらんといかんな。。<br/><div class="youtube" data-type="yt" id="jUUcgo7EkKY"><div class="yt-title">Youtube - 160x100でボクセルデータをレンダリング</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/jUUcgo7EkKY" class="youtube" src="https://i.ytimg.com/vi/jUUcgo7EkKY/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1141818202491478016"
+            target="_blank">2019/6/21 6:20:48</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">でもいけそうですな160x100pxでボクセルデータ表示は。これでキャラ作成はなんとかいけそうだ。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1142180503140761600"
+            target="_blank">2019/6/22 6:20:27</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ライティングちゃんとやろうと思ったら、法線ベクトルは必要ですわな。法線のことすっかり忘れてた。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1142181265199648768"
+            target="_blank">2019/6/22 6:23:28</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">うまいこと法線を計算で求める方法はないだろうかの。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1142223965286350848"
+            target="_blank">2019/6/22 9:13:09</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">並行光源＋「ライティングしてる風見えるいい加減ベクトル」によるライティングを実装してみた。これくらいで十分かもな。ピクセルサイズはZ座標に適当にバイアスをかけて算出するようにしてる。<br/><div class="youtube" data-type="yt" id="pNCJycnLDUY"><div class="yt-title">Youtube - voxファイルの表示</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/pNCJycnLDUY" class="youtube" src="https://i.ytimg.com/vi/pNCJycnLDUY/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1142224149231706114"
+            target="_blank">2019/6/22 9:13:53</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">こんないい加減でもそれなりに３Dに見えるのが不思議ですわな。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1142230729939509248"
+            target="_blank">2019/6/22 9:40:02</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">11X11ボクセルのキャラを表示してみる。うむ。まあまあそれらしく表示されるね。<br/><div class="youtube" data-type="yt" id="E73DeLVWSUc"><div class="yt-title">Youtube - Voxデータの表示</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/E73DeLVWSUc" class="youtube" src="https://i.ytimg.com/vi/E73DeLVWSUc/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1142230731755646977"
+            target="_blank">2019/6/22 9:40:02</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ちなみにキャラはボクセルのメッシュを作ってそれを組み合わせて面を作るのではなく、各ボクセル=1ピクセル（Z=0）として表示してる。ピクセルはZ座標に応じて拡縮させてる。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1142231210543869952"
+            target="_blank">2019/6/22 9:41:56</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">フレームバッファのサイズは160x100pxという小さなもの。そこに描画するからピクセルが際立つ画像になるわけですな。当然アンチエイリアスはなし。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1142234131138371586"
+            target="_blank">2019/6/22 9:53:33</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">あとはボクセルで構成された複数キャラクタを同時表示できるようにすればとりあえずは完成かな。。ピクセルを粗くすることによっていい加減でもそれなりに見えるという目標は自分の中では達成したかなと。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1142335257372315650"
+            target="_blank">2019/6/22 16:35:23</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">と思ったが、立方体を回してみるとやっぱり法線に変わりのベクトルの処理がいい加減だから、立方体に見えん。これはちょっとな。。<br/><div class="youtube" data-type="yt" id="JMnYjYdXnBo"><div class="yt-title">Youtube - ボクセルで作った立法体を回す</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/JMnYjYdXnBo" class="youtube" src="https://i.ytimg.com/vi/JMnYjYdXnBo/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1142699668683382785"
+            target="_blank">2019/6/23 16:43:26</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ボクセルデータのなんちゃってライティングのいまいまの状況。40x40のボクセルで試してみた動画。なんか点光源のライティングみたいな感じになってる。自分としては平行光源＋環境光でライティングしてるつもりなんだけどね。。<br/><div class="youtube" data-type="yt" id="JCccDjscqX4"><div class="yt-title">Youtube - Voxelデータの表示ーなんちゃってライティング</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/JCccDjscqX4" class="youtube" src="https://i.ytimg.com/vi/JCccDjscqX4/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1142700102600933376"
+            target="_blank">2019/6/23 16:45:09</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">なんか粗いポリゴンっぽい感じだけど、これはボクセル＝ピクセルとしてレンダリングしてるからね。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1142708570749673472"
+            target="_blank">2019/6/23 17:18:48</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">なのでピクセル単位で動かすなんちゅうのもできるわけですな。。<br/><div class="youtube" data-type="yt" id="sp9Q0QZqw5E"><div class="yt-title">Youtube - Voxelデータの表示-ポイント単位で動かす</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/sp9Q0QZqw5E" class="youtube" src="https://i.ytimg.com/vi/sp9Q0QZqw5E/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1142906101945393152"
+            target="_blank">2019/6/24 6:23:43</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">さてボクセルで作られたオブジェクトを１キャラとして、複数キャラを同時表示する部分を作ろうか。たぶんこれくらいの解像度（160×100px）であればよっぽどひどいコードを書かない限りパフォーマンスで足を引っ張ることはないだろう。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1142906251430338561"
+            target="_blank">2019/6/24 6:24:19</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ライティングはまだまだ改良の余地はあるけど、先に進めようと思う。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1142929949671641088"
+            target="_blank">2019/6/24 7:58:29</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">と思ったらライティング用の逆行列の計算間違っとる。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1142930203435393024"
+            target="_blank">2019/6/24 7:59:29</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">こりゃ思ったとおりにならないはずだ。またしても凡ミスですな。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1143254545763467265"
+            target="_blank">2019/6/25 5:28:19</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">やっぱり「なんちゃって法線」はもう少し工夫しないと「らしく」見えませんな。こりゃちょっとおかしいわ。。<br/><div class="youtube" data-type="yt" id="axs2AsDIq08"><div class="yt-title">Youtube - Voxelデータの表示</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/axs2AsDIq08" class="youtube" src="https://i.ytimg.com/vi/axs2AsDIq08/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1143264908160557058"
+            target="_blank">2019/6/25 6:09:29</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">これが今のところの成果物。。<br/><blockquote class="card card-large"><header><img loading="lazy" src="https://www.sfpgmr.net/sandbox/vox/common/icon.png" /><a href="https://www.sfpgmr.net/sandbox/vox/20190625/" target="_blank">voxファイルの表示</a></header><div>voxファイルの表示</div></blockquote></p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1143138304197451776"
+            target="_blank">2019/6/24 21:46:24</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">あかん。今日はフワフワしためまいのような感じがすごくて気持ちが悪いなあ。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1143254918427336704"
+            target="_blank">2019/6/25 5:29:47</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ここ2-3日の気温の乱高下は体にこたえるな。ものすごく疲れている。。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1142751327488897024"
+            target="_blank">2019/6/23 20:08:42</a></p>
+      </header>
+      <section>
+        <p class="tweet-text"><div class="youtube" data-type="yt" id="LtYujyhvIyQ"><div class="yt-title">Youtube - ADAMSKI -  Killer</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/LtYujyhvIyQ" class="youtube" src="https://i.ytimg.com/vi/LtYujyhvIyQ/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1142752207260938242"
+            target="_blank">2019/6/23 20:12:12</a></p>
+      </header>
+      <section>
+        <p class="tweet-text"><div class="youtube" data-type="yt" id="0KysEIMPPzg"><div class="yt-title">Youtube - Adamski, N-R-G - 1990</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/0KysEIMPPzg" class="youtube" src="https://i.ytimg.com/vi/0KysEIMPPzg/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1142753074856914945"
+            target="_blank">2019/6/23 20:15:39</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">TR909が持てはやされた1980年後半〜1990年あたりの曲。909のシャカシャカハイハットが全面にでてるという。。<br/><div class="youtube" data-type="yt" id="qPvXu49RsuI"><div class="yt-title">Youtube - ADAMSKI 'LIVEANDIRECT' (full album) 1989</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/qPvXu49RsuI" class="youtube" src="https://i.ytimg.com/vi/qPvXu49RsuI/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1142753751524003841"
+            target="_blank">2019/6/23 20:18:20</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">LFOの「LFO」。シャカシャカ言ってるこの曲も繰り返し聴いたね。何がいいんだか。。<br/><div class="youtube" data-type="yt" id="RpZVPSCv79U"><div class="yt-title">Youtube - LFO - LFO (Leeds warehouse mix)</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/RpZVPSCv79U" class="youtube" src="https://i.ytimg.com/vi/RpZVPSCv79U/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1142750841226452998"
+            target="_blank">2019/6/23 20:06:46</a></p>
+      </header>
+      <section>
+        <p class="tweet-text"><div class="youtube" data-type="yt" id="3rBAV3paEho"><div class="yt-title">Youtube - 向井太一 / I Like It (Official Music Video)</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/3rBAV3paEho" class="youtube" src="https://i.ytimg.com/vi/3rBAV3paEho/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/3725519740/82e22c8e9dfc667d313830a69a667f24_normal.jpeg" />
+        <p class="tweet-user-name">ベレッタ＠雛厄@beretta8989</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/beretta8989/status/1142359131581345792"
+            target="_blank">2019/6/22 18:10:15</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">奈良県民の私が、天理周辺の古墳散策の仕方を教えるね。<br/>・池があったら古墳ある<br/>・柿畑や墓地にしか見えなくても古墳<br/>・小高い森や林はほぼ古墳<br/>・それが神社だったとしても境内に古墳ある<br/>・SHARPの工場だったとしても中に古墳ある<br/>・怪しいと思ったら案内板が無くても大抵古墳</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1142717964547788801"
+            target="_blank">2019/6/23 17:56:08</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">おお、このアセンブラニーモニックは68000ですな。。 <blockquote class="card card-default"><header><img loading="lazy" src="https://pbs.twimg.com/media/D9tmZXhUYAAIwZl.jpg:large" /><a href="https://twitter.com/nakayuji/status/1142619520822992897" target="_blank">Yuji Naka / 中　裕司さんのツイート: "Happy Birthday Sonic 28th. This is a 1990 photo of Sonic 1 under development. And Sonic 1 is a program to examine the ground. 誕生日おめでとうソニック！28回目だね。これはソニック1開発中の1990年の私の写真とソニック1の地面を調べるプログラムです。 #Sonic28th… https://t.co/ZcDke4Zl1x"</a></header><div>“Happy Birthday Sonic 28th.  This is a 1990 photo of Sonic 1 under development.  And Sonic 1 is a program to examine the ground.<br/>誕生日おめでとうソニック！28回目だね。これはソニック1開発中の1990年の私の写真とソニック1の地面を調べるプログラムです。<br/>#Sonic28th”</div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1142718984267059201"
+            target="_blank">2019/6/23 18:00:11</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ソニック・ザ・ヘッジホッグの初版はメガドラだからそりゃそうか。。</p>
+        
+      </section>
+      
+    </article>
+    
+  </div>
+  <footer>
+    CopyLight 2019 Satoshi Fujiwara
+  </footer>
+  <script async src="https://platform.twitter.com/widgets.js"></script>
+
+  <script async src="./index.js"></script>
+
+</body>
+
+</html>

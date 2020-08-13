@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Twitter APIを試す</title>
+  <style>
+
+    * {
+      margin:0;
+      padding:0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    html {
+      margin:0;
+      padding:0;
+    }
+
+    body {
+      margin:0;
+      padding:0;
+      background:black;
+      color:white;
+    }
+  
+  .contents {
+    width: 100%;
+    position:relative;
+    content:strict;
+  }
+  
+  @keyframes blinking {
+    0% {color:black;}
+    50% {color:white;}
+    100% {color:black;}
+  }
+
+  .loading {
+    font-family: monospace; 
+    font-size:24px;
+    position: fixed;
+    width:100vw;
+    height:100vh;
+    text-align: center;
+    padding-top:50vh;
+    z-index: 32768;
+    background:black;
+    animation: blinking 2s infinite;
+    content:strict;
+  }
+
+
+  .contents > article {
+    background:#f0f0f0;
+    color:#202020;
+    position: absolute;
+    max-height:960px;
+    overflow: auto;
+    border-radius: 3px;
+  }
+
+  .tweet-header {
+    display:grid;
+    align-items:end; 
+    grid-template-columns:40px 2fr 1fr;
+    grid-template-rows:1fr;
+    font-size:12px;
+    font-weight: bold;
+  }
+
+
+  .tweet-img {
+    width:100%;
+    object-fit: cover;
+  }
+
+  .youtube {
+    width:100%;
+    object-fit: cover;
+  }
+
+  .tweet-profile-img {
+    grid-column: 1/2;
+    width:32px;
+    height:32px;
+    border-radius: 50%;
+  }
+  
+  .tweet-user-name {
+    grid-column: 2/3;
+  }
+
+  .tweet-date {
+    font-size:8px;
+    text-align: right;
+    grid-column: 3/4; 
+  }
+
+  .contents > twitter-widget {
+    overflow: auto;
+    max-height:960px;
+    position:absolute;
+  }
+
+  .contents > article > section > .tweet-text {
+    display: block;
+    padding:4px;
+    word-break: break-all;
+    font-size: 12px;
+  }
+
+  .contents > article > h3 {
+    font-size:12px;
+  }
+
+  
+  </style>
+</head>
+
+<body>
+  <div class="loading" id="loading">Loading</div>
+  <header class="top-nav">
+    <h1>S.F. Info.</h1>
+  </header>
+  <div class="contents" id="contents" rendersubtree="invisible skip-activation" > %>
+  <% //<div class="contents" id="contents"> %>
+      <% tweets.forEach(tweetGroup=>{%>
+      <article>
+        <% // -tweet.embed.html%>
+          <% tweetGroup.forEach((tweet_,index)=>{ 
+            const tweet =  tweet_.retweeted ? tweet_.retweeted_status : tweet_;
+            let tweetText = tweet.full_text?tweet.full_text:tweet.text;
+            let embededs = [];
+            if(tweet.entities.urls){
+              const urls = tweet.entities.urls;
+              for(const url of urls){
+                if(url.youtube){
+                tweetText = tweetText.replace(url.url,
+                // `<iframe class="youtube" type="text/html" src="https://www.youtube.com/embed/${url.youtube.items[0].id}?autoplay=0&origin=https://www.sfpgmr.net" frameborder="0"></iframe>`
+                `<img data-href="${url.expanded_url}" data-type="yt" id="${url.youtube.items[0].id}" class="youtube" src="${url.youtube.items[0].snippet.thumbnails.high.url}" />`
+                );
+                }
+                tweetText = tweetText.replace(url.url,`<a href="${url.expanded_url}" target="_blank">${url.display_url}</a>`);
+              }
+            }
+
+            tweetText = tweetText.replace(/\n/ig,'<br/>');
+          
+           %>
+          <header class="tweet-header">
+            <% if(index == 0){ %>
+              <img class="tweet-profile-img" src="<%-tweet.user.profile_image_url_https%>"/>
+              <p class="tweet-user-name"><%-tweet.user.name%>@<%-tweet.user.screen_name%></p>
+              <% } %>
+              <p class="tweet-date"><a href="https://twitter.com/<%-tweet.user.screen_name%>/status/<%-tweet.id_str%>" target="_blank"><%-(new Date(tweet.created_at)).toLocaleString('ja-JP')%></a></p>
+          </header>
+          <section>
+          <p class="tweet-text"><%-tweetText %></p>
+          <%
+            const medias = (tweet.extended_entities && tweet.extended_entities.media) || (tweet.entities && tweet.entities.media);
+            if(medias){ 
+              if(medias instanceof Array) {
+                medias.forEach(m=>{
+            %>
+            <img class="tweet-img" src="<%-m.media_url_https%>" />
+          <%  });
+              } else {
+
+              }
+          } %> 
+          </section>
+          <% }); %>
+    </article>
+    <% }); %>
+  </div>
+  <footer>
+    CopyLight 2019 Satoshi Fujiwara 
+  </footer>
+  <script async src="https://platform.twitter.com/widgets.js"></script>
+  
+  <script async src="./index.js"></script>
+
+</body>
+
+</html>

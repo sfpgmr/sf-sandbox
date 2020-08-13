@@ -1,0 +1,812 @@
+<!DOCTYPE html>
+<html lang="ja" prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb# article: http://ogp.me/ns/article#">
+
+<head>
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-15457703-9"></script>
+  <script>
+    if (!location.hostname.match(/localhost/)) {
+      window.dataLayer = window.dataLayer || [];
+      function gtag() { dataLayer.push(arguments); }
+      gtag('js', new Date());
+      gtag('config', 'UA-15457703-9');
+    }
+  </script>
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>トップページをリニューアルする</title>
+  <meta name="description" content="リニューアル用のトップページデザインを考えて実装する" />
+  <meta name="keywords" content="Programming,Music,HTML5,WebGL,javascript,WebAudio" /> 	
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <meta itemprop="image" content="https://www.sfpgmr.net/img/sfweb.png" />
+  <meta itemprop="name" content="S.F. Web" />
+  
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:site" content="S.F. Web" />
+  <meta name="twitter:url" content="./index35.html" />
+  <meta name="twitter:title" content="リニューアル用のトップページデザイン" />
+  <meta name="twitter:description" content="リニューアル用のトップページデザインを考えて実装する" />
+  <meta name="twitter:image" content="https://www.sfpgmr.net/img/sfweb.png" />
+  
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="./index35.html" />
+  <meta property="og:title" content="リニューアル用のトップページデザイン"/>
+  <meta property="og:site_name" content="S.F. Web" />
+  <meta property="og:description" content="Programming,Music,HTML5,WebGL,javascript,WebAudio">
+  <meta property="og:image" content="https://www.sfpgmr.net/img/sfweb.png">
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    html {
+      margin: 0;
+      padding: 0;
+      font-size:10px;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      background: black;
+      color: white;
+    }
+
+    #sentinel {
+      width:0px;
+      height:0px;
+    }
+    .contents {
+      width: 100%;
+      position: relative;
+      content: strict;
+    }
+
+    @keyframes blinking {
+      0% {
+        color: black;
+      }
+
+      50% {
+        color: white;
+      }
+
+      100% {
+        color: black;
+      }
+    }
+
+    .loading {
+      font-family: monospace;
+      font-size: 24px;
+      position: fixed;
+      width: 100vw;
+      height: 100vh;
+      text-align: center;
+      padding-top: 50vh;
+      z-index: 32768;
+      background: black;
+      animation: blinking 2s infinite;
+      content: strict;
+    }
+
+
+    .contents>article {
+      background: #f0f0f0;
+      color: #202020;
+      position: absolute;
+      max-height: 960px;
+      overflow: auto;
+      border-radius: 3px;
+    }
+
+    .tweet-header {
+      display: grid;
+      align-items: end;
+      grid-template-columns: 40px 2fr 1fr;
+      grid-template-rows: 1fr;
+      font-size: 12px;
+      font-weight: bold;
+    }
+
+
+    .tweet-img {
+      width: 100%;
+      object-fit: cover;
+    }
+
+    .youtube {
+      position: relative;
+      cursor: pointer;
+    }
+
+    .youtube > img {
+      width: 100%;
+      object-fit: cover;
+    }
+
+    .youtube > svg.player-play {
+      width:64px;
+      height:64px;
+      left:calc(50% - 32px);
+      top:calc(50% - 32px);
+      position:absolute;
+      z-index: 1000;
+      opacity: 0.5;
+    }
+    
+    .youtube:hover > svg.player-play {
+      opacity: 1.0;
+    }
+
+    .youtube:hover .player-play-1 {
+      stroke:#80808080;
+    }
+
+    
+    .youtube > div.yt-title {
+      /*text-shadow: #fff 1px 1px 0;*/
+      font-size: 1.2rem;
+      color:white;
+      background:rgba(0, 0,0,0.5);
+      position:absolute;
+      left:0;
+      top:0;
+      overflow: auto;
+      z-index:998;
+    }
+
+
+    .tweet-profile-img {
+      grid-column: 1/2;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+    }
+
+    .tweet-user-name {
+      grid-column: 2/3;
+    }
+
+    .tweet-date {
+      font-size: 8px;
+      text-align: right;
+      grid-column: 3/4;
+    }
+
+    .contents>twitter-widget {
+      overflow: auto;
+      max-height: 960px;
+      position: absolute;
+    }
+
+    .contents>article>section>.tweet-text {
+      display: block;
+      padding: 4px;
+      word-break: break-all;
+      font-size: 12px;
+    }
+
+    .contents>article>h3 {
+      font-size: 12px;
+    }
+
+    blockquote.card {
+      margin:4px;
+      padding:4px;
+      font-size:12px;
+      background:white;
+      border-radius: 4px;
+    }
+
+    blockquote.card > header {
+      display:grid;
+      grid-gap:4px;
+      gap:4px;
+    }
+
+    blockquote.card-default > header {
+      grid-template-columns:64px 1fr;
+    }
+
+    blockquote.card-large > header {
+      grid-template-columns:1fr;
+    }
+
+    blockquote.card > header > img {
+      width:100%;
+    }
+
+
+    div.no-image {
+      display: block;
+      width:64px;
+      height:64px;
+      background:gray;
+      color:white;
+      text-align: center;
+      line-height: 64px;
+    }
+
+  </style>
+</head>
+
+<body>
+  <div class="loading" id="loading">Loading</div>
+  <header class="top-nav">
+    <h1>S.F. Info.</h1>
+  </header>
+  <div class="contents" id="contents" rendersubtree="invisible skip-activation"> 
+    
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1112669753426862080"
+            target="_blank">2019/4/1 19:55:16</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">習志野の岩沢くんはもう少し左右に球を散らし、そして低めに制球できればいい感じになると思うんだけどな。。アンダーハンドは低めに球を集めないと、高めに浮くと確実に打たれるからね。。やっぱり緊張してんだろうな。。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1112473391213101056"
+            target="_blank">2019/4/1 6:54:59</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">習志野高の横を通って駅に向かうんだけど、応援帰りのバスが止まってた。また明日行くんだよなあ。ご苦労様だよ、ほんと。。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1109751307835826176"
+            target="_blank">2019/3/24 18:38:24</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">習志野高校勝ってよかった。しかし次があの星陵か。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1111174075982839808"
+            target="_blank">2019/3/28 16:51:58</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">いやー習志野勝ったよ。もうこれ以上ないという習志野らしい野球だ。地方大会でさんざん観てきたスモール・ベースボールがここで実を結んだ感じがする。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1111174076783980544"
+            target="_blank">2019/3/28 16:51:59</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">各打者のあのバットの短さ。「食らいついていく」。実際のところ習志野がやれる野球はあれしかないんだよな。実力差のある状況でやれる野球は。それを見事にやってのけたんだよ。ほんとリスペクトしかないんだよ。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1111429581938946048"
+            target="_blank">2019/3/29 9:47:16</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">サイン疑惑はちょっと後味が悪いよなあ。。でもこれでベスト８の市立和歌山の試合は監視がきつくなるはずだから、そういうことはもしあってもできないはず。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1112128240074682368"
+            target="_blank">2019/3/31 8:03:29</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">しかしまあ秋季県大会の決勝も観に行ったけど、完全に中央学院に力負けしてたもんなあ。それからすると今の状況は信じられん。。中央学院は秋季関東大会では早々に敗退してしまって、野球ってわからんなあ。。と思ってた。秋の時点では中央学院がセンバツ行く可能性大だったもんね。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1112129106982789120"
+            target="_blank">2019/3/31 8:06:56</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">この数か月で底上げされたような気もする。飯塚くんのストレートも、2年の時の春季県大会の状態からしたらすごくよくなってるし、スライダーの切れも増してるよね。その前の2017年の秋季大会でも投げてたけど、結構打たれてたもんなあ。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1112129697096192000"
+            target="_blank">2019/3/31 8:09:16</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">飯塚くんは習志野2中の軟式野球部出身で中学のときは控えだったというから、成長著しいですわなあ。他はシニアで占めてるもんね。市立とは思えない選手の充実ぶりだし、練習グラウンドも専用のがあるから私立並みだわな。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1112130732124590080"
+            target="_blank">2019/3/31 8:13:23</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">今日の試合は頑張ってベスト4行ってほしいねえ。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1112131996895997952"
+            target="_blank">2019/3/31 8:18:25</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">公立どうしの対戦ということで、そういう意味でも面白いよねえ。県大会でも市船と習志野の試合結構いい試合するからねえ。ああ、銚子商も忘れてはいけないんだけど、銚子商は今はあまり良い結果出してないんだよな。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1112208274093268994"
+            target="_blank">2019/3/31 13:21:31</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">いやー勝ったな。習志野らしい点の取り方でしたな。。しかし飯塚くんはまさに力投だったわ。146Kmの外角いっぱいのストレートで見逃し三振をとったときはまさに「神」でしたわ。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1112208274902802433"
+            target="_blank">2019/3/31 13:21:31</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">打球が膝にあたって踏ん張れなくなってからは高めに球が浮いてたけど、その球を振ってくれたがすごく助かったよな。。そして最後のスライダーですよ。。あれはもう誰でもあの状況だと振ってしまうよな。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1112209269535866880"
+            target="_blank">2019/3/31 13:25:28</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ストレート押しにきての、最後のスライダーはほんとすごかった。思わず「うぉぉぉ！」と叫んでしまったわ。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1112209801226772481"
+            target="_blank">2019/3/31 13:27:35</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">いやーベスト４ですよ。選手たちはもちろん優勝を目指して頑張ってるんだろうけどね。それにしてもすごいよな。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1112211138505138176"
+            target="_blank">2019/3/31 13:32:53</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ここ数年木更津総合高校が最強だと思ってたから、あの高校をもってしてもなしえなかったことを習志野が成し遂げたのはほんとなんか不思議だなと思う。古豪としての長年の蓄積なのか、応援の後押しなのか、なんなのか。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1112211139411103744"
+            target="_blank">2019/3/31 13:32:54</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">と思ってたら、木更津総合高校は春のセンバツは準決勝まで進んだんだな。。木更津中央高校時代に。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/1083300633937997824/zarWnO2-_normal.jpg" />
+        <p class="tweet-user-name">巴山竜来@hayamatomoe</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/hayamatomoe/status/1111552104089309184"
+            target="_blank">2019/3/29 17:54:07</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">『数学から創るジェネラティブアート』は高校のとき数学に興味がわかなかった人にこそ読んでほしいと思って書きました。数列がわかるとこんな絵が描けます。 https://t.co/KMJcwIFrbp</p>
+        
+        <img loading="lazy" class="tweet-img" src="https://pbs.twimg.com/media/D20GvgLUcAE1BrL.jpg" />
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/992084088965103616/r0LHYOdO_normal.jpg" />
+        <p class="tweet-user-name">日笠雅水@maaco3</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/maaco3/status/1111848345549471744"
+            target="_blank">2019/3/30 13:31:17</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">私が抱っこしてるのがY君のママ、長い長い歴史があるねー https://t.co/0QsF0jrBMq</p>
+        
+        <img loading="lazy" class="tweet-img" src="https://pbs.twimg.com/media/D24UISDUcAI_EdR.jpg" />
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1111001651916083200"
+            target="_blank">2019/3/28 5:26:49</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">Rydeenのカバー曲の改良でここ2-3日は費やされてる。リード音がやっぱり違うなあと思っていじり始めたら止まらなくなってしまった。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1111728912436879361"
+            target="_blank">2019/3/30 5:36:42</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">それとこれにつける動画をelectron/three.js/ffmpegで作ってるんだけど、まあ忘れてる忘れてる。。以前自分で作ったコードも「なにこれ？」状態である。この1週間でようやく書き方を思い出したところである。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1111728913229606912"
+            target="_blank">2019/3/30 5:36:42</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">いじっているうちに「ああ、確かこうだったな！」とかなるので、完全に忘れてるわけではないようなのだが。思い出すのに時間がかかるというか。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1111728913992970240"
+            target="_blank">2019/3/30 5:36:42</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">three.jsもrendererがwebgl2.0に対応しShaderMaterialもglsl es3.0で書けるようになった。前のバージョンのglslでも書けるので、古いコードをすべて書き換える必要はない。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1111728914802442240"
+            target="_blank">2019/3/30 5:36:42</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">動画出力はelectronでフレームごとのビットマップ(jpeg)ファイルを作成して、それをffmpegで音声データと合わせて動画化してる。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1111729600709586944"
+            target="_blank">2019/3/30 5:39:26</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">あらためてthree.jsって面白いと思った。特にShaderコードを生成するところが。ShaderLib/ShaderChunkあたり。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1111730632906825728"
+            target="_blank">2019/3/30 5:43:32</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">この辺りを利用するとShaderMaterial用のシェーダが割と楽に書けるのではと思っていて。まあそりゃそうなんだけど。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1111730633699545088"
+            target="_blank">2019/3/30 5:43:32</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ShaderLibというのはこれ。<br/><blockquote class="card card-large"><header><img loading="lazy" src="https://repository-images.githubusercontent.com/576201/cf70a380-6b1d-11e9-9ce2-457e9517de10" /><a href="https://github.com/mrdoob/three.js/blob/master/src/renderers/shaders/ShaderLib.js" target="_blank">three.js/ShaderLib.js at master · mrdoob/three.js · GitHub</a></header><div>JavaScript 3D library. Contribute to mrdoob/three.js development by creating an account on GitHub.</div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1111731605846908928"
+            target="_blank">2019/3/30 5:47:24</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">materialに対応したuniforms/vertex shader/fragment shaderのコンテナなんだけどね。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1111731606685802496"
+            target="_blank">2019/3/30 5:47:24</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">そしてこのシェーダーはShaderChunkによって作られるわけなんだな。ShaderChunkというのはシェーダーのコード片で、これを組み合わせて所望のシェーダーを作るわけなんですな。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1111732385467424768"
+            target="_blank">2019/3/30 5:50:30</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">そしてこのシェーダーコードはthree.js独自拡張が入ってる。#include ディレクティブである。書き方はcのような感じ。<br/><br/>#include &lt;common&gt;<br/>#include &lt;packing&gt;<br/>#include &lt;dithering_pars_fragment&gt;<br/>#include &lt;color_pars_fragment&gt;<br/>#include &lt;uv_pars_fragment&gt;</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1111732386318839808"
+            target="_blank">2019/3/30 5:50:30</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">これはもうソースインクルードとしての役割しかないんだけどね。これでシェーダーのコード片をマージして、所望のシェーダーを構成するわけである。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1111732837487534080"
+            target="_blank">2019/3/30 5:52:18</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">MeshBasicMaterial用の頂点シェーダのコードはこんな感じ。もうほぼ100%はソースインクルード。<br/><br/><blockquote class="card card-large"><header><img loading="lazy" src="https://repository-images.githubusercontent.com/576201/cf70a380-6b1d-11e9-9ce2-457e9517de10" /><a href="https://github.com/mrdoob/three.js/blob/master/src/renderers/shaders/ShaderLib/meshbasic_vert.glsl.js" target="_blank">three.js/meshbasic_vert.glsl.js at master · mrdoob/three.js · GitHub</a></header><div>JavaScript 3D library. Contribute to mrdoob/three.js development by creating an account on GitHub.</div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1111734101541675008"
+            target="_blank">2019/3/30 5:57:19</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">このShaderChunkを再利用すれば、シェーダーの実装がかなり端折れるというわけなのだ。これが今回の復習で再確認に一番時間をかけたところ。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1111734102359588864"
+            target="_blank">2019/3/30 5:57:19</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">端折れるというか、この知識がないとちょっとMeshBasicMaterialを拡張したいと思うとShaderMaterialでMeshBasicMaterialを再実装しなくちゃいけなくなっちゃうんだよね。。この知識があるとMeshBasicMaterialを継承して作ることができるようになるんだよな。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1111734326893281280"
+            target="_blank">2019/3/30 5:58:13</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">それをちょっと試してみようかなと思ってるんだけどね。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1111734916444622848"
+            target="_blank">2019/3/30 6:00:33</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">あとはREAPERのRPPファイルの解析ですわな。。ここからMIDIイベントとかパンを拾うと動画のエフェクトをもうちょっと工夫できるんではないかなと思ってるのだが。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1111737293482516480"
+            target="_blank">2019/3/30 6:10:00</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">そしてYoutubeにアップした時の動画の劣化の問題。あたりまえだけど、動きの激しいというか、画面全体が激しく動く動画はやっぱり劣化するよなあと。動画の圧縮って、画面の一部しか動かない＆動きの幅が少ないことを前提にしてるからね。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1111737294250074112"
+            target="_blank">2019/3/30 6:10:00</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">CGじゃない動画なんかだとそうなるよな。いろいろ試したんだけど、私の動画はYoutubeの推奨フォーマットでアップロードすると再エンコードの時に劣化してしまうようだ。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1111737295076376576"
+            target="_blank">2019/3/30 6:10:00</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ロスレス圧縮でアップすると劣化が軽減される。つまりできる限り高画質＆高音質でアップしたほうが再エンコード時の品質が上がるようなのだ。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1111737632894013440"
+            target="_blank">2019/3/30 6:11:21</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ただロスレス動画にすると、たった4:30の動画なのに20Gになってしまうという。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1111738073585336320"
+            target="_blank">2019/3/30 6:13:06</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">HD/60fpsの場合だけどね。これが4Kだとちょっとやばいよな。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1111749339326500864"
+            target="_blank">2019/3/30 6:57:52</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">これがそれなんだけど、まあ粗いわな。。<br/><br/><blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="https://www.youtube.com/watch?v=w7G3sfs2_Sg&feature=youtu.be" target="_blank">YMO - RYDEEN (85) - YouTube</a></header><div></div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1111773901535604736"
+            target="_blank">2019/3/30 8:35:28</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">音的にはかなり良くなった気はするんだよな。。ただ非圧縮の元データとくらべるとやっぱりちょっと違うんだなあ。。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1111738870930956288"
+            target="_blank">2019/3/30 6:16:16</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">@USAGI_WRP やはりそうですか。。しかしコンテンツによっては非常に美しいものもYoutubeには存在するので、コツかなんかあるのかなあ？と思って模索してるのですが。別途Youtubeに費用を払えば品質が上がったりするんでしょうかね。。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/1190141438392229888/Gw0g92Wq_normal.jpg" />
+        <p class="tweet-user-name">涼夢@76jj</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/76jj/status/1108930514759503875"
+            target="_blank">2019/3/22 12:16:52</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">社会不適合者の特徴。<br/><br/>・同じ食べ物を頻繁に食べる<br/>・気に入った曲は飽きるまでリピート<br/>・計算しないで散財する<br/>・人ごみが嫌い<br/>・崖っぷちにならないとやらない<br/>・口癖がダルい眠いめんどくさい<br/>・目上の人とのコミュニケーションが苦手<br/>・心を許した相手には口が悪い<br/>・人見知りが激しい</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1109931286364192769"
+            target="_blank">2019/3/25 6:33:34</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">@syntaxerrors72 サンダークロスもちょっと思い入れがあるゲームなので。。<br/>これはちょっと買おうかなと今思ってるところです。それ以外にも思い入れのあるゲームがあるし。A-JAXはいくつかあるバグを直してほしいのですが（笑）。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1108934770417758209"
+            target="_blank">2019/3/22 12:33:46</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">@syntaxerrors72 これはちょっと欲しいですね。サンダークロスも入ってるし。。</p>
+        
+      </section>
+      
+    </article>
+    
+  </div>
+  <footer>
+    CopyLight 2019 Satoshi Fujiwara
+  </footer>
+  <script async src="https://platform.twitter.com/widgets.js"></script>
+
+  <script async src="./index.js"></script>
+
+</body>
+
+</html>

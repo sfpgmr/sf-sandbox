@@ -1,0 +1,878 @@
+<!DOCTYPE html>
+<html lang="ja" prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb# article: http://ogp.me/ns/article#">
+
+<head>
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-15457703-9"></script>
+  <script>
+    if (!location.hostname.match(/localhost/)) {
+      window.dataLayer = window.dataLayer || [];
+      function gtag() { dataLayer.push(arguments); }
+      gtag('js', new Date());
+      gtag('config', 'UA-15457703-9');
+    }
+  </script>
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>トップページをリニューアルする</title>
+  <meta name="description" content="リニューアル用のトップページデザインを考えて実装する" />
+  <meta name="keywords" content="Programming,Music,HTML5,WebGL,javascript,WebAudio" /> 	
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <meta itemprop="image" content="https://www.sfpgmr.net/img/sfweb.png" />
+  <meta itemprop="name" content="S.F. Web" />
+  
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:site" content="S.F. Web" />
+  <meta name="twitter:url" content="./index11.html" />
+  <meta name="twitter:title" content="リニューアル用のトップページデザイン" />
+  <meta name="twitter:description" content="リニューアル用のトップページデザインを考えて実装する" />
+  <meta name="twitter:image" content="https://www.sfpgmr.net/img/sfweb.png" />
+  
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="./index11.html" />
+  <meta property="og:title" content="リニューアル用のトップページデザイン"/>
+  <meta property="og:site_name" content="S.F. Web" />
+  <meta property="og:description" content="Programming,Music,HTML5,WebGL,javascript,WebAudio">
+  <meta property="og:image" content="https://www.sfpgmr.net/img/sfweb.png">
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    html {
+      margin: 0;
+      padding: 0;
+      font-size:10px;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      background: black;
+      color: white;
+    }
+
+    #sentinel {
+      width:0px;
+      height:0px;
+    }
+    .contents {
+      width: 100%;
+      position: relative;
+      content: strict;
+    }
+
+    @keyframes blinking {
+      0% {
+        color: black;
+      }
+
+      50% {
+        color: white;
+      }
+
+      100% {
+        color: black;
+      }
+    }
+
+    .loading {
+      font-family: monospace;
+      font-size: 24px;
+      position: fixed;
+      width: 100vw;
+      height: 100vh;
+      text-align: center;
+      padding-top: 50vh;
+      z-index: 32768;
+      background: black;
+      animation: blinking 2s infinite;
+      content: strict;
+    }
+
+
+    .contents>article {
+      background: #f0f0f0;
+      color: #202020;
+      position: absolute;
+      max-height: 960px;
+      overflow: auto;
+      border-radius: 3px;
+    }
+
+    .tweet-header {
+      display: grid;
+      align-items: end;
+      grid-template-columns: 40px 2fr 1fr;
+      grid-template-rows: 1fr;
+      font-size: 12px;
+      font-weight: bold;
+    }
+
+
+    .tweet-img {
+      width: 100%;
+      object-fit: cover;
+    }
+
+    .youtube {
+      position: relative;
+      cursor: pointer;
+    }
+
+    .youtube > img {
+      width: 100%;
+      object-fit: cover;
+    }
+
+    .youtube > svg.player-play {
+      width:64px;
+      height:64px;
+      left:calc(50% - 32px);
+      top:calc(50% - 32px);
+      position:absolute;
+      z-index: 1000;
+      opacity: 0.5;
+    }
+    
+    .youtube:hover > svg.player-play {
+      opacity: 1.0;
+    }
+
+    .youtube:hover .player-play-1 {
+      stroke:#80808080;
+    }
+
+    
+    .youtube > div.yt-title {
+      /*text-shadow: #fff 1px 1px 0;*/
+      font-size: 1.2rem;
+      color:white;
+      background:rgba(0, 0,0,0.5);
+      position:absolute;
+      left:0;
+      top:0;
+      overflow: auto;
+      z-index:998;
+    }
+
+
+    .tweet-profile-img {
+      grid-column: 1/2;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+    }
+
+    .tweet-user-name {
+      grid-column: 2/3;
+    }
+
+    .tweet-date {
+      font-size: 8px;
+      text-align: right;
+      grid-column: 3/4;
+    }
+
+    .contents>twitter-widget {
+      overflow: auto;
+      max-height: 960px;
+      position: absolute;
+    }
+
+    .contents>article>section>.tweet-text {
+      display: block;
+      padding: 4px;
+      word-break: break-all;
+      font-size: 12px;
+    }
+
+    .contents>article>h3 {
+      font-size: 12px;
+    }
+
+    blockquote.card {
+      margin:4px;
+      padding:4px;
+      font-size:12px;
+      background:white;
+      border-radius: 4px;
+    }
+
+    blockquote.card > header {
+      display:grid;
+      grid-gap:4px;
+      gap:4px;
+    }
+
+    blockquote.card-default > header {
+      grid-template-columns:64px 1fr;
+    }
+
+    blockquote.card-large > header {
+      grid-template-columns:1fr;
+    }
+
+    blockquote.card > header > img {
+      width:100%;
+    }
+
+
+    div.no-image {
+      display: block;
+      width:64px;
+      height:64px;
+      background:gray;
+      color:white;
+      text-align: center;
+      line-height: 64px;
+    }
+
+  </style>
+</head>
+
+<body>
+  <div class="loading" id="loading">Loading</div>
+  <header class="top-nav">
+    <h1>S.F. Info.</h1>
+  </header>
+  <div class="contents" id="contents" rendersubtree="invisible skip-activation"> 
+    
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1174806658259636225"
+            target="_blank">2019/9/20 7:05:08</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">明日から県大会か。。被災地のチームは大丈夫なのだろうか。。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1173542799116926977"
+            target="_blank">2019/9/16 19:23:01</a></p>
+      </header>
+      <section>
+        <p class="tweet-text"><div class="youtube" data-type="yt" id="t0RoKusXHWs"><div class="yt-title">Youtube - Liebe auf den ersten Blick - D.A.F.</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/t0RoKusXHWs" class="youtube" src="https://i.ytimg.com/vi/t0RoKusXHWs/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1173543754512265216"
+            target="_blank">2019/9/16 19:26:49</a></p>
+      </header>
+      <section>
+        <p class="tweet-text"><div class="youtube" data-type="yt" id="WmMSSefZewM"><div class="yt-title">Youtube - CABARET VOLTAIRE -  Eastern Mantra</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/WmMSSefZewM" class="youtube" src="https://i.ytimg.com/vi/WmMSSefZewM/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1173544048566554624"
+            target="_blank">2019/9/16 19:27:59</a></p>
+      </header>
+      <section>
+        <p class="tweet-text"><div class="youtube" data-type="yt" id="vOX06g7OrTo"><div class="yt-title">Youtube - Riuichi Sakamoto* - Differencia</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/vOX06g7OrTo" class="youtube" src="https://i.ytimg.com/vi/vOX06g7OrTo/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1173544412976017409"
+            target="_blank">2019/9/16 19:29:26</a></p>
+      </header>
+      <section>
+        <p class="tweet-text"><div class="youtube" data-type="yt" id="jCvTCw4dLFA"><div class="yt-title">Youtube - Cabaret Voltaire - Nag Nag Nag (1979)</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/jCvTCw4dLFA" class="youtube" src="https://i.ytimg.com/vi/jCvTCw4dLFA/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1173544613543415808"
+            target="_blank">2019/9/16 19:30:13</a></p>
+      </header>
+      <section>
+        <p class="tweet-text"><div class="youtube" data-type="yt" id="RpZVPSCv79U"><div class="yt-title">Youtube - LFO - LFO (Leeds warehouse mix)</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/RpZVPSCv79U" class="youtube" src="https://i.ytimg.com/vi/RpZVPSCv79U/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1173545241237839872"
+            target="_blank">2019/9/16 19:32:43</a></p>
+      </header>
+      <section>
+        <p class="tweet-text"><div class="youtube" data-type="yt" id="52E7EOuOZjI"><div class="yt-title">Youtube - LFO   We Are Back Warp 1991</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/52E7EOuOZjI" class="youtube" src="https://i.ytimg.com/vi/52E7EOuOZjI/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1173546833961873408"
+            target="_blank">2019/9/16 19:39:03</a></p>
+      </header>
+      <section>
+        <p class="tweet-text"><div class="youtube" data-type="yt" id="tLxDRePUwEY"><div class="yt-title">Youtube - 808 State - Pacific State (Original Extended Version)</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/tLxDRePUwEY" class="youtube" src="https://i.ytimg.com/vi/tLxDRePUwEY/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1173547076992417792"
+            target="_blank">2019/9/16 19:40:01</a></p>
+      </header>
+      <section>
+        <p class="tweet-text"><div class="youtube" data-type="yt" id="1pbcC99C-Y8"><div class="yt-title">Youtube - The End Of Europe by Ryuichi Sakamoto</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/1pbcC99C-Y8" class="youtube" src="https://i.ytimg.com/vi/1pbcC99C-Y8/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1173548105754505216"
+            target="_blank">2019/9/16 19:44:06</a></p>
+      </header>
+      <section>
+        <p class="tweet-text"><div class="youtube" data-type="yt" id="PHlcSwBsyks"><div class="yt-title">Youtube - Kraftwerk - Antenna</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/PHlcSwBsyks" class="youtube" src="https://i.ytimg.com/vi/PHlcSwBsyks/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1173548491668258816"
+            target="_blank">2019/9/16 19:45:38</a></p>
+      </header>
+      <section>
+        <p class="tweet-text"><div class="youtube" data-type="yt" id="h4_qhs0Pog8"><div class="yt-title">Youtube - U.T - Yellow Magic Orchestra</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/h4_qhs0Pog8" class="youtube" src="https://i.ytimg.com/vi/h4_qhs0Pog8/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1173550364768927744"
+            target="_blank">2019/9/16 19:53:05</a></p>
+      </header>
+      <section>
+        <p class="tweet-text"><div class="youtube" data-type="yt" id="aVc7SnR1PV0"><div class="yt-title">Youtube - Haruomi Hosono - Philharmony - 10 - Air-Condition</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/aVc7SnR1PV0" class="youtube" src="https://i.ytimg.com/vi/aVc7SnR1PV0/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1173550584898605056"
+            target="_blank">2019/9/16 19:53:57</a></p>
+      </header>
+      <section>
+        <p class="tweet-text"><div class="youtube" data-type="yt" id="HZ_SrK4D1fg"><div class="yt-title">Youtube - Ryuichi Sakamoto-Riot In Lagos</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/HZ_SrK4D1fg" class="youtube" src="https://i.ytimg.com/vi/HZ_SrK4D1fg/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1173551293983420416"
+            target="_blank">2019/9/16 19:56:46</a></p>
+      </header>
+      <section>
+        <p class="tweet-text"><div class="youtube" data-type="yt" id="4JtjFKp0Kuc"><div class="yt-title">Youtube - Epilogue - YMO</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/4JtjFKp0Kuc" class="youtube" src="https://i.ytimg.com/vi/4JtjFKp0Kuc/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1172977945704448000"
+            target="_blank">2019/9/15 5:58:29</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">帯状疱疹にかかった後から、舌が弱くしびれた感じがあり、そのせいかわからんが食べ物の味がよくわからなくなっている。辛い・甘い・苦いとかはなんとなくわかるのだが、風味を感じないというか、感じ方が弱いというか。。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1172646038412226562"
+            target="_blank">2019/9/14 7:59:36</a></p>
+      </header>
+      <section>
+        <p class="tweet-text"><div class="youtube" data-type="yt" id="a6xDiPubxVU"><div class="yt-title">Youtube - Technotronic - Get Up (Before The Night Is Over)</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/a6xDiPubxVU" class="youtube" src="https://i.ytimg.com/vi/a6xDiPubxVU/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1172647418560598017"
+            target="_blank">2019/9/14 8:05:05</a></p>
+      </header>
+      <section>
+        <p class="tweet-text"><div class="youtube" data-type="yt" id="gVAOG_EnyqE"><div class="yt-title">Youtube - Cut 'N' Move ‎– Get Serious (Basement Boys Serious Club Mix)</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/gVAOG_EnyqE" class="youtube" src="https://i.ytimg.com/vi/gVAOG_EnyqE/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1172648103796592640"
+            target="_blank">2019/9/14 8:07:49</a></p>
+      </header>
+      <section>
+        <p class="tweet-text"><div class="youtube" data-type="yt" id="K-guRHfxzzk"><div class="yt-title">Youtube - First Choice - Greatest Hits - Doctor Love (Basement Boys Remix)</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/K-guRHfxzzk" class="youtube" src="https://i.ytimg.com/vi/K-guRHfxzzk/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1172648275058384896"
+            target="_blank">2019/9/14 8:08:30</a></p>
+      </header>
+      <section>
+        <p class="tweet-text"><div class="youtube" data-type="yt" id="YS0Zz1nkU6g"><div class="yt-title">Youtube - CRYSTAL WATERS - Gypsy Woman (She's Homeless) (Basement Boys '' Strip To The Bone'' Mix)</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/YS0Zz1nkU6g" class="youtube" src="https://i.ytimg.com/vi/YS0Zz1nkU6g/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1172648539958046720"
+            target="_blank">2019/9/14 8:09:33</a></p>
+      </header>
+      <section>
+        <p class="tweet-text"><div class="youtube" data-type="yt" id="Gr-zG-IXDyo"><div class="yt-title">Youtube - Inner City - Big Fun</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/Gr-zG-IXDyo" class="youtube" src="https://i.ytimg.com/vi/Gr-zG-IXDyo/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1172648684170825728"
+            target="_blank">2019/9/14 8:10:07</a></p>
+      </header>
+      <section>
+        <p class="tweet-text"><div class="youtube" data-type="yt" id="LtYujyhvIyQ"><div class="yt-title">Youtube - ADAMSKI -  Killer</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/LtYujyhvIyQ" class="youtube" src="https://i.ytimg.com/vi/LtYujyhvIyQ/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1172649576160841728"
+            target="_blank">2019/9/14 8:13:40</a></p>
+      </header>
+      <section>
+        <p class="tweet-text"><div class="youtube" data-type="yt" id="YJfrq2Vt5Do"><div class="yt-title">Youtube - Kym Sims - Take My Advice (HQ)</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/YJfrq2Vt5Do" class="youtube" src="https://i.ytimg.com/vi/YJfrq2Vt5Do/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1172650479156781056"
+            target="_blank">2019/9/14 8:17:15</a></p>
+      </header>
+      <section>
+        <p class="tweet-text"><div class="youtube" data-type="yt" id="etviGf1uWlg"><div class="yt-title">Youtube - Deee-Lite - Groove Is In The Heart (Official Video)</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/etviGf1uWlg" class="youtube" src="https://i.ytimg.com/vi/etviGf1uWlg/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1172651008616366081"
+            target="_blank">2019/9/14 8:19:21</a></p>
+      </header>
+      <section>
+        <p class="tweet-text"><div class="youtube" data-type="yt" id="9BqDI-Yfx8k"><div class="yt-title">Youtube - ULTRA NATE - IS IT LOVE</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/9BqDI-Yfx8k" class="youtube" src="https://i.ytimg.com/vi/9BqDI-Yfx8k/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1172652045481865217"
+            target="_blank">2019/9/14 8:23:29</a></p>
+      </header>
+      <section>
+        <p class="tweet-text"><div class="youtube" data-type="yt" id="MWd5379FMGU"><div class="yt-title">Youtube - Incognito - Don't You Worry 'Bout A Thing</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/MWd5379FMGU" class="youtube" src="https://i.ytimg.com/vi/MWd5379FMGU/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1172653445276286976"
+            target="_blank">2019/9/14 8:29:02</a></p>
+      </header>
+      <section>
+        <p class="tweet-text"><div class="youtube" data-type="yt" id="KdgRx6-1sBY"><div class="yt-title">Youtube - Brand New Heavies - Back To Love</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/KdgRx6-1sBY" class="youtube" src="https://i.ytimg.com/vi/KdgRx6-1sBY/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1172653947942629376"
+            target="_blank">2019/9/14 8:31:02</a></p>
+      </header>
+      <section>
+        <p class="tweet-text"><div class="youtube" data-type="yt" id="5KTacIPkvOI"><div class="yt-title">Youtube - Young Disciples   Apparently Nothin' Soul River Mix 480p</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/5KTacIPkvOI" class="youtube" src="https://i.ytimg.com/vi/5KTacIPkvOI/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1172654435002007552"
+            target="_blank">2019/9/14 8:32:58</a></p>
+      </header>
+      <section>
+        <p class="tweet-text"><div class="youtube" data-type="yt" id="cncEGDrOrRQ"><div class="yt-title">Youtube - Young Disciples 'All I have in me (Original musiquarium mix)</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/cncEGDrOrRQ" class="youtube" src="https://i.ytimg.com/vi/cncEGDrOrRQ/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1172654548449497088"
+            target="_blank">2019/9/14 8:33:25</a></p>
+      </header>
+      <section>
+        <p class="tweet-text"><div class="youtube" data-type="yt" id="JjhnqFruT9I"><div class="yt-title">Youtube - Incognito - Always there</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/JjhnqFruT9I" class="youtube" src="https://i.ytimg.com/vi/JjhnqFruT9I/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1172655409896677376"
+            target="_blank">2019/9/14 8:36:51</a></p>
+      </header>
+      <section>
+        <p class="tweet-text"><div class="youtube" data-type="yt" id="YYb1r_M2pAk"><div class="yt-title">Youtube - Blue Pearl - Little Brother</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/YYb1r_M2pAk" class="youtube" src="https://i.ytimg.com/vi/YYb1r_M2pAk/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1172655781184819201"
+            target="_blank">2019/9/14 8:38:19</a></p>
+      </header>
+      <section>
+        <p class="tweet-text"><div class="youtube" data-type="yt" id="t21dMFdA0NU"><div class="yt-title">Youtube - Adeva-respect</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/t21dMFdA0NU" class="youtube" src="https://i.ytimg.com/vi/t21dMFdA0NU/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1172655958524186624"
+            target="_blank">2019/9/14 8:39:02</a></p>
+      </header>
+      <section>
+        <p class="tweet-text"><div class="youtube" data-type="yt" id="ouomdAej6kY"><div class="yt-title">Youtube - Adeva - I Thank You</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/ouomdAej6kY" class="youtube" src="https://i.ytimg.com/vi/ouomdAej6kY/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1172656601787854849"
+            target="_blank">2019/9/14 8:41:35</a></p>
+      </header>
+      <section>
+        <p class="tweet-text"><div class="youtube" data-type="yt" id="__ugaiz323k"><div class="yt-title">Youtube - CeCe Peniston - We Got A Love Thang</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/__ugaiz323k" class="youtube" src="https://i.ytimg.com/vi/__ugaiz323k/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1172657003052691457"
+            target="_blank">2019/9/14 8:43:11</a></p>
+      </header>
+      <section>
+        <p class="tweet-text"><div class="youtube" data-type="yt" id="JVuuatjHGnY"><div class="yt-title">Youtube - Lisa Stansfield - All Around the World (Official Video)</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/JVuuatjHGnY" class="youtube" src="https://i.ytimg.com/vi/JVuuatjHGnY/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1172657238122450945"
+            target="_blank">2019/9/14 8:44:07</a></p>
+      </header>
+      <section>
+        <p class="tweet-text"><div class="youtube" data-type="yt" id="rBUwaQsxhKk"><div class="yt-title">Youtube - Lisa Stansfield - You Can't Deny It (Official Music Video)</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/rBUwaQsxhKk" class="youtube" src="https://i.ytimg.com/vi/rBUwaQsxhKk/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1172658013057871872"
+            target="_blank">2019/9/14 8:47:11</a></p>
+      </header>
+      <section>
+        <p class="tweet-text"><div class="youtube" data-type="yt" id="7Z5n1uPuw6E"><div class="yt-title">Youtube - Lisa Stansfield - Change (Video (Colour Version))</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/7Z5n1uPuw6E" class="youtube" src="https://i.ytimg.com/vi/7Z5n1uPuw6E/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1172658721165496320"
+            target="_blank">2019/9/14 8:50:00</a></p>
+      </header>
+      <section>
+        <p class="tweet-text"><div class="youtube" data-type="yt" id="C3dkLr1yFps"><div class="yt-title">Youtube - Swing Out Sister - Am I The Same Girl</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/C3dkLr1yFps" class="youtube" src="https://i.ytimg.com/vi/C3dkLr1yFps/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1172659255641427969"
+            target="_blank">2019/9/14 8:52:08</a></p>
+      </header>
+      <section>
+        <p class="tweet-text"><div class="youtube" data-type="yt" id="v1Ayb67IyjU"><div class="yt-title">Youtube - Swing Out Sister - Waiting Game</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/v1Ayb67IyjU" class="youtube" src="https://i.ytimg.com/vi/v1Ayb67IyjU/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1172659793577664514"
+            target="_blank">2019/9/14 8:54:16</a></p>
+      </header>
+      <section>
+        <p class="tweet-text"><div class="youtube" data-type="yt" id="8aE5igfW4lk"><div class="yt-title">Youtube - Swing Out Sister - Another Lost Weekend [Long Version]</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/8aE5igfW4lk" class="youtube" src="https://i.ytimg.com/vi/8aE5igfW4lk/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1172661226490359808"
+            target="_blank">2019/9/14 8:59:58</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">以前聴いてた音楽をYoutubeで調べてTweetしてみると、やっぱり1980年後半～1990年前半のが多いな。そのころは私もまだ若くて、音楽をたくさん聴いてたのですな。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1172661305368399877"
+            target="_blank">2019/9/14 9:00:16</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">女性のボーカルものが多いわ。やっぱり。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1172662180212137985"
+            target="_blank">2019/9/14 9:03:45</a></p>
+      </header>
+      <section>
+        <p class="tweet-text"><a href="https://youtu.be/ACxm7X5wNww" target="_blank">youtu.be/ACxm7X5wNww</a></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1172662436123381760"
+            target="_blank">2019/9/14 9:04:46</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">yanokamiアレンジの元曲<br/><br/><div class="youtube" data-type="yt" id="Ox4T8OSis1w"><div class="yt-title">Youtube - Akiko Yano, Kikyu ni Notte</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/Ox4T8OSis1w" class="youtube" src="https://i.ytimg.com/vi/Ox4T8OSis1w/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1172662708702892032"
+            target="_blank">2019/9/14 9:05:51</a></p>
+      </header>
+      <section>
+        <p class="tweet-text"><div class="youtube" data-type="yt" id="TB54dZkzZOY"><div class="yt-title">Youtube - Soul II Soul - Back To Life (Official Video)</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/TB54dZkzZOY" class="youtube" src="https://i.ytimg.com/vi/TB54dZkzZOY/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1172662936176746496"
+            target="_blank">2019/9/14 9:06:45</a></p>
+      </header>
+      <section>
+        <p class="tweet-text"><div class="youtube" data-type="yt" id="1iQl46-zIcM"><div class="yt-title">Youtube - Soul II Soul - Keep On Movin' (Official Video)</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/1iQl46-zIcM" class="youtube" src="https://i.ytimg.com/vi/1iQl46-zIcM/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1172663182655016961"
+            target="_blank">2019/9/14 9:07:44</a></p>
+      </header>
+      <section>
+        <p class="tweet-text"><div class="youtube" data-type="yt" id="P0FKzPfsxA4"><div class="yt-title">Youtube - Bobby Brown - Every Little Step (Official Video)</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/P0FKzPfsxA4" class="youtube" src="https://i.ytimg.com/vi/P0FKzPfsxA4/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1172663720712921088"
+            target="_blank">2019/9/14 9:09:52</a></p>
+      </header>
+      <section>
+        <p class="tweet-text"><div class="youtube" data-type="yt" id="RcbMW2-Goog"><div class="yt-title">Youtube - Bell Biv DeVoe - Poison (Remix)</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/RcbMW2-Goog" class="youtube" src="https://i.ytimg.com/vi/RcbMW2-Goog/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1172645845444857856"
+            target="_blank">2019/9/14 7:58:50</a></p>
+      </header>
+      <section>
+        <p class="tweet-text"><div class="youtube" data-type="yt" id="_BRv9wGf5pk"><div class="yt-title">Youtube - Snap - I ve Got The power</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/_BRv9wGf5pk" class="youtube" src="https://i.ytimg.com/vi/_BRv9wGf5pk/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1172643077116194816"
+            target="_blank">2019/9/14 7:47:50</a></p>
+      </header>
+      <section>
+        <p class="tweet-text"><div class="youtube" data-type="yt" id="fi33-cITS0s"><div class="yt-title">Youtube - New Order (Substance; 1987) - Ceremony</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/fi33-cITS0s" class="youtube" src="https://i.ytimg.com/vi/fi33-cITS0s/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1172641219693793280"
+            target="_blank">2019/9/14 7:40:28</a></p>
+      </header>
+      <section>
+        <p class="tweet-text"><div class="youtube" data-type="yt" id="ViN2bRGrBx8"><div class="yt-title">Youtube - Giorgio Moroder - Chase (Casablanca Records 1978)</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/ViN2bRGrBx8" class="youtube" src="https://i.ytimg.com/vi/ViN2bRGrBx8/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/1047146817622691840/OEfWnvqB_normal.jpg" />
+        <p class="tweet-user-name">千葉県高校野球情報GRAND☆SLAM@chiba5589</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/chiba5589/status/1172437869501145089"
+            target="_blank">2019/9/13 18:12:25</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">◇第７２回秋季千葉県高等学校野球大会<br/><a href="https://chbf.or.jp/wp-content/uploads/2019/09/%E7%AC%AC%EF%BC%97%EF%BC%92%E5%9B%9E%E7%A7%8B%E5%AD%A3%E7%9C%8C%E5%A4%A7%E4%BC%9A%E7%B5%84%E5%90%88%E3%81%9B-4.pdf" target="_blank">chbf.or.jp/wp-content/upl…</a></p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1171912432018571265"
+            target="_blank">2019/9/12 7:24:31</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">rbj cookbook。私の知識不足のせいで何回読んでも理解できないドキュメントのひとつ。。<br/><br/><blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="https://www.g200kg.com/jp/docs/makingeffects/78743dea3f70c8c2f081b7d5187402ec75e6a6b8.html" target="_blank">BiQuadフィルタの料理法 | g200kg Music & Softwares</a></header><div></div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1171915010932539392"
+            target="_blank">2019/9/12 7:34:46</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">フィルタはこれに倣って実装してみるか。。<br/><blockquote class="card card-default"><header><img loading="lazy" src="http://vstcpp.wpblog.jp/wp-content/plugins/all-in-one-seo-pack/images/default-user-image.png" /><a href="http://vstcpp.wpblog.jp/?page_id=523" target="_blank">簡単なデジタルフィルタの実装 | C++でVST作り</a></header><div>デジタルフィルタを実装しようとすると、フィルタ設計の部分で「Z変換」や「伝達関数」といった高度な数学での説明が始まりますが、ここでは極力高度な数学を使わずに簡単にデジタルフィルタを設計・実装できる方法がありましたので紹介させていただきます。</div></blockquote></p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1171893323818094593"
+            target="_blank">2019/9/12 6:08:35</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">M5StickV (K210 RISC-V CPU搭載,AIカメラ）がもうすぐ販売開始！ <blockquote class="card card-large"><header><img loading="lazy" src="https://mag.switch-science.com/wp-content/uploads/2019/06/face.jpg" /><a href="https://mag.switch-science.com/2019/06/25/m5stickv/" target="_blank">M5StickV (K210 RISC-V CPU搭載,AIカメラ）がもうすぐ販売開始！ – スイッチサイエンス マガジン</a></header><div>https://youtu.be/o0Tvcr9IjN0<br/>M5StickVがもうすぐ出ます！<br/><br/><br/><br/> 今日もM5Stackオフィスに訪れ、 Jimmyたちに新製品について聞いてきました。Sipeedと協力して開発中の、RISC-V CPU搭載AIカメラ、M5StickVがもうすぐ出ます！<br/><br/><br/><br/>製品名のVは、画像認識のVisionとRISC-Vをかけた名前です。読み方はエムファイブスティックブイ。<br/><br/><br/><br/>このサイズでも、しっかりと顔認識されています。現状の開発環境はMaixPy<br/><br/><br/><br/>K210用のMicroPython環境であるMaixPyでプログラムできる、オールインワンのAIカメラです。</div></blockquote></p>
+        
+      </section>
+      
+    </article>
+    
+  </div>
+  <footer>
+    CopyLight 2019 Satoshi Fujiwara
+  </footer>
+  <script async src="https://platform.twitter.com/widgets.js"></script>
+
+  <script async src="./index.js"></script>
+
+</body>
+
+</html>

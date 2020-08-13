@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="ja" prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb# article: http://ogp.me/ns/article#">
+
+<head>
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-15457703-9"></script>
+  <script>
+    if (!location.hostname.match(/localhost/)) {
+      window.dataLayer = window.dataLayer || [];
+      function gtag() { dataLayer.push(arguments); }
+      gtag('js', new Date());
+      gtag('config', 'UA-15457703-9');
+    }
+  </script>
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>トップページをリニューアルする</title>
+  <meta name="description" content="リニューアル用のトップページデザインを考えて実装する" />
+  <meta name="keywords" content="Programming,Music,HTML5,WebGL,javascript,WebAudio" /> 	
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <meta itemprop="image" content="https://www.sfpgmr.net/img/sfweb.png" />
+  <meta itemprop="name" content="S.F. Web" />
+  
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:site" content="S.F. Web" />
+  <meta name="twitter:url" content="./index14.html" />
+  <meta name="twitter:title" content="リニューアル用のトップページデザイン" />
+  <meta name="twitter:description" content="リニューアル用のトップページデザインを考えて実装する" />
+  <meta name="twitter:image" content="https://www.sfpgmr.net/img/sfweb.png" />
+  
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="./index14.html" />
+  <meta property="og:title" content="リニューアル用のトップページデザイン"/>
+  <meta property="og:site_name" content="S.F. Web" />
+  <meta property="og:description" content="Programming,Music,HTML5,WebGL,javascript,WebAudio">
+  <meta property="og:image" content="https://www.sfpgmr.net/img/sfweb.png">
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    html {
+      margin: 0;
+      padding: 0;
+      font-size:10px;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      background: black;
+      color: white;
+    }
+
+    .top-nav {
+      position:fixed;
+      z-index:99999;
+      background: rgba(0,0,0,0.5);
+      display: block;
+      width:100%;
+      height:32px;
+      color:white;
+    }
+    #sentinel {
+      width:0px;
+      height:0px;
+    }
+    .contents {
+      padding-top:32px;
+      width: 100%;
+      position: relative;
+      content: strict;
+    }
+
+    @keyframes blinking {
+      0% {
+        color: black;
+      }
+
+      50% {
+        color: white;
+      }
+
+      100% {
+        color: black;
+      }
+    }
+
+    .loading {
+      font-family: monospace;
+      font-size: 24px;
+      position: fixed;
+      width: 100vw;
+      height: 100vh;
+      text-align: center;
+      padding-top: 50vh;
+      z-index: 32768;
+      background: black;
+      animation: blinking 2s infinite;
+      content: strict;
+    }
+
+
+    .contents > article {
+      background: #f0f0f0;
+      color: #202020;
+      position: absolute;
+      max-height: 960px;
+      overflow: auto;
+      border-radius: 3px;
+      transition: opacity 1s linear;
+      opacity: 0.0;
+    }
+
+    .tweet-header {
+      display: grid;
+      align-items: end;
+      grid-template-columns: 40px 2fr 1fr;
+      grid-template-rows: 1fr;
+      font-size: 12px;
+      font-weight: bold;
+    }
+
+
+    .tweet-img {
+      width: 100%;
+      object-fit: cover;
+    }
+
+    .youtube {
+      position: relative;
+      cursor: pointer;
+    }
+
+    .youtube > img {
+      width: 100%;
+      object-fit: cover;
+    }
+
+    .youtube > svg.player-play {
+      width:64px;
+      height:64px;
+      left:calc(50% - 32px);
+      top:calc(50% - 32px);
+      position:absolute;
+      z-index: 1000;
+      opacity: 0.5;
+    }
+    
+    .youtube:hover > svg.player-play {
+      opacity: 1.0;
+    }
+
+    .youtube:hover .player-play-1 {
+      stroke:#80808080;
+    }
+
+    
+    .youtube > div.yt-title {
+      /*text-shadow: #fff 1px 1px 0;*/
+      font-size: 1.2rem;
+      color:white;
+      background:rgba(0, 0,0,0.5);
+      position:absolute;
+      left:0;
+      top:0;
+      overflow: auto;
+      z-index:998;
+    }
+
+
+    .tweet-profile-img {
+      grid-column: 1/2;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+    }
+
+    .tweet-user-name {
+      grid-column: 2/3;
+    }
+
+    .tweet-date {
+      font-size: 8px;
+      text-align: right;
+      grid-column: 3/4;
+    }
+
+    .contents>twitter-widget {
+      overflow: auto;
+      max-height: 960px;
+      position: absolute;
+    }
+
+    .contents>article>section>.tweet-text {
+      display: block;
+      padding: 4px;
+      word-break: break-all;
+      font-size: 12px;
+    }
+
+    .contents>article>h3 {
+      font-size: 12px;
+    }
+
+    blockquote.card {
+      margin:4px;
+      padding:4px;
+      font-size:12px;
+      background:white;
+      border-radius: 4px;
+    }
+
+    blockquote.card > header {
+      display:grid;
+      grid-gap:4px;
+      gap:4px;
+    }
+
+    blockquote.card-default > header {
+      grid-template-columns:64px 1fr;
+    }
+
+    blockquote.card-large > header {
+      grid-template-columns:1fr;
+    }
+
+    blockquote.card > header > img {
+      width:100%;
+    }
+
+
+    div.no-image {
+      display: block;
+      width:64px;
+      height:64px;
+      background:gray;
+      color:white;
+      text-align: center;
+      line-height: 64px;
+    }
+
+  </style>
+</head>
+
+<body>
+  <div class="loading" id="loading">Loading</div>
+  <header class="top-nav">
+    <h1>S.F. Info.</h1>
+  </header>
+  <div class="contents" id="contents" rendersubtree="invisible skip-activation"> 
+    
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1165041141995069441"
+            target="_blank">2019/8/24 8:20:28</a></p>
+      </header>
+      <section>
+        <p class="tweet-text"><blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="http://teamcoil.sp.u-tokai.ac.jp/calculators/column/100224/index.html" target="_blank">関数電卓コラム</a></header><div></div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1165047104563081218"
+            target="_blank">2019/8/24 8:44:09</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">sin/cosの計算はテイラー展開で求める方法しか知らなかったけど、cordicというやり方もあるんだなあ。さっき初めて知った。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/925621824313892864/BOaAm_EP_normal.jpg" />
+        <p class="tweet-user-name">不変哲@Pg45FAVaoi6lRid</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/Pg45FAVaoi6lRid/status/1164248389350899712"
+            target="_blank">2019/8/22 3:50:21</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">2000以上のドローンを制御飛行させて演出した<br/>花火とは別次元の<br/>夜空を綺麗に彩る魔法のイベント<br/><br/>https://t.co/Sz35riB9fe</p>
+        
+        <video class="tweet-img" controls src="https://video.twimg.com/ext_tw_video/1160940812018040833/pu/vid/640x360/Jvws4-XXxEk2fko6.mp4?tag=10" />
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1164502045409206273"
+            target="_blank">2019/8/22 20:38:17</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">うぉ、飯塚くんU-18代表に選ばれてる。すごい！！</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/463998593959870464/LllKkbGj_normal.png" />
+        <p class="tweet-user-name">aozora@aozora__nico2</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/aozora__nico2/status/1164493520016535553"
+            target="_blank">2019/8/22 20:04:25</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">2019年夏甲子園ストレートMax<br/>154<br/>奥川恭伸(星稜)<br/><br/>151<br/>中森俊介(明石商)<br/><br/>150<br/>池田陽佑(智弁和歌山)<br/><br/>148<br/>飯塚脩人(習志野)<br/>小林樹斗(智弁和歌山)<br/>鈴木寛人(霞ケ浦)<br/>赤塚健利(中京学院大中京)<br/><br/>146<br/>谷幸之助(関東一)<br/>前佑囲斗(津田学園)<br/>江越永輝(海星)</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1163758422455488514"
+            target="_blank">2019/8/20 19:23:24</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">うーむ。大方の予想通り、星稜と履正社の決勝戦となったか。奥川くん7回まで投げて10K2安打か。中1日で決勝も投げるんだろうな。履正社はおそらく星稜打線を1点以内に抑えないと勝てない気がする。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1163758423336345600"
+            target="_blank">2019/8/20 19:23:24</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">奥川くんの出来次第だけど、智辯和歌山のときくらいだとまず打てないと思う。いくら履正社の強力打線でも。それだけに履正社の守備が超重要。それくらい奥川くんは持ってるものが違う気がする。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1163758766380052480"
+            target="_blank">2019/8/20 19:24:46</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">履正社は清水くんの投球にかかっているといっても過言ではない。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1164460734253690880"
+            target="_blank">2019/8/22 17:54:08</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">決勝戦は履正社が5-3で雪辱を果たした。さて奥川くんの投球はどうだったのか。帰ってテレビを観よう。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1164461274513596417"
+            target="_blank">2019/8/22 17:56:17</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">しかしもし調子が悪かったにしても、奥川くんから2桁安打を奪った履正社は私の想像を越えている。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1164492554441637888"
+            target="_blank">2019/8/22 20:00:34</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">録画を観たが、奥川くんの投球は準決勝と同じく、ストレート＆変化球ともに高めに甘く入っていたな。。<br/>特に3回のあの井上くんへのスライダーは高めに甘く入り放り込まれてしまった。しかしあの井上くんのスイングはなんだ。。すごすぎる。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1164492904150126593"
+            target="_blank">2019/8/22 20:01:58</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">やはり私の眼には智辯和歌山戦がベストピッチに映る。。そしてその時の多投でコンディションが崩れてしまったように思う。。まあしかし、それは本人が望んだことだから悔いはないだろう。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1164493675793006593"
+            target="_blank">2019/8/22 20:05:02</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">でもそういうコンディションでも、並みのチームであれば零封されてしまうほど素質だと思う。しかし履正社は違う。そういう甘い球を逃さない。履正社の打線は本当にすごいと感じた。鍛えられている。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1164494289994256384"
+            target="_blank">2019/8/22 20:07:28</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">さて、高校野球の集大成ともいえる夏の甲子園の幕は閉じた。わが千葉県は２回戦敗退。来年はどのチームがどこまで駒を進めるのか。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1164494686909657088"
+            target="_blank">2019/8/22 20:09:03</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">今の時点での有力候補はやはり木総になるよなあ。。木総を阻むチームは現れるのか。そして木総は雪辱を果たすか。。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/591891622/twitterProfilePhoto_normal.jpg" />
+        <p class="tweet-user-name">yasuho@yasuho68k</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/yasuho68k/status/1164311045323706368"
+            target="_blank">2019/8/22 7:59:19</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">私が最初に触ったマイコンといえば旧角田無線のX-Oneビルにあった東芝のEX-80だな。朝から晩まで昼飯も食わずにスタートレック(宇宙戦艦ヤマトゲームに改題されてた)をやりまくってた。そこでふとBASICプログラムの打ち込みを始めたことがキッカケでプログラマとなり現在に至るｗ</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1163876636938268673"
+            target="_blank">2019/8/21 3:13:08</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">@nogi46_yudai318 僅差の投手戦を私は期待してますが、意外に打ち合いになるかもしれませんね。いずれにしても決勝が楽しみです。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1163786854241460224"
+            target="_blank">2019/8/20 21:16:22</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">甲子園の決勝戦はまだ終わってないが、今日から秋季千葉県大会の予選が始まった。8/25まで行われ、本大会出場校が決まる。敗退校は9月上旬の敗者復活戦に臨む。習志野は予選免除。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1163787487711379456"
+            target="_blank">2019/8/20 21:18:53</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">新チームはどうなっているのか、興味津々である。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1163788496974172160"
+            target="_blank">2019/8/20 21:22:54</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ちなみに本大会は9/21-10/6まで行われる。本大会で優勝・準優勝したチームは秋季関東大会に出場する。関東大会でベスト４入りすればほぼセンバツの出場が確定する。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1163788498609983488"
+            target="_blank">2019/8/20 21:22:54</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">関東大会で優勝すれば、神宮大会への出場権を得る。神宮大会で優勝すれば、センバツの関東枠が１増える。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1163780822391934976"
+            target="_blank">2019/8/20 20:52:24</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">@nogi46_yudai318 私も勝手な考察ですみません。。<br/>奥川くんも人間なので、調子の好不調はありますし、絶対はないですけどね。。少しでも甘く入れば、履正社の打線だと捕らえるかとは思いますけどね。ただ奥川くんの150Kストレートが低めに決まり、あのスライダーが来るとちょっと手がつけられない感あります。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1163784010511708166"
+            target="_blank">2019/8/20 21:05:04</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">@nogi46_yudai318 確かに今日の岩崎くんの出来だと期待できますね。履正社としては清水くん、岩崎くんで最少失点に抑え、あとは奥川くんの失投をいかに捕らえ、得点に結びつけるかかなあと。。それができるチーム力はもちろんあると思いますけどね。。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/1101351953978687488/E1O8N-LE_normal.jpg" />
+        <p class="tweet-user-name">笑顔になれるみんなの動画@minna_doga</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/minna_doga/status/1162722941315899394"
+            target="_blank">2019/8/17 22:48:46</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">列車が通った波でサーフィンw<br/>そんなことよりこんなロマンある電車あるんやなwww乗ってみたい🤣🤣🤣<br/> https://t.co/Ym1bMaXi2O</p>
+        
+        <video class="tweet-img" controls src="https://video.twimg.com/amplify_video/1157735254452592640/vid/320x320/r0Rm0DvZZkJbpajL.mp4?tag=13" />
+        
+      </section>
+      
+    </article>
+    
+  </div>
+  <footer>
+    CopyLight 2019 Satoshi Fujiwara
+  </footer>
+  <script async src="https://platform.twitter.com/widgets.js"></script>
+
+  <script async src="./index.js"></script>
+
+</body>
+
+</html>

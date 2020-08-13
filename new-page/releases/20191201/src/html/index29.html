@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="ja" prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb# article: http://ogp.me/ns/article#">
+
+<head>
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-15457703-9"></script>
+  <script>
+    if (!location.hostname.match(/localhost/)) {
+      window.dataLayer = window.dataLayer || [];
+      function gtag() { dataLayer.push(arguments); }
+      gtag('js', new Date());
+      gtag('config', 'UA-15457703-9');
+    }
+  </script>
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>トップページをリニューアルする</title>
+  <meta name="description" content="リニューアル用のトップページデザインを考えて実装する" />
+  <meta name="keywords" content="Programming,Music,HTML5,WebGL,javascript,WebAudio" /> 	
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <meta itemprop="image" content="https://www.sfpgmr.net/img/sfweb.png" />
+  <meta itemprop="name" content="S.F. Web" />
+  
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:site" content="S.F. Web" />
+  <meta name="twitter:url" content="./index29.html" />
+  <meta name="twitter:title" content="リニューアル用のトップページデザイン" />
+  <meta name="twitter:description" content="リニューアル用のトップページデザインを考えて実装する" />
+  <meta name="twitter:image" content="https://www.sfpgmr.net/img/sfweb.png" />
+  
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="./index29.html" />
+  <meta property="og:title" content="リニューアル用のトップページデザイン"/>
+  <meta property="og:site_name" content="S.F. Web" />
+  <meta property="og:description" content="Programming,Music,HTML5,WebGL,javascript,WebAudio">
+  <meta property="og:image" content="https://www.sfpgmr.net/img/sfweb.png">
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    html {
+      margin: 0;
+      padding: 0;
+      font-size:10px;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      background: black;
+      color: white;
+    }
+
+    .top-nav {
+      position:fixed;
+      z-index:99999;
+      background: rgba(0,0,0,0.5);
+      display: block;
+      width:100%;
+      height:32px;
+      color:white;
+    }
+    #sentinel {
+      width:0px;
+      height:0px;
+    }
+    .contents {
+      padding-top:32px;
+      width: 100%;
+      position: relative;
+      content: strict;
+    }
+
+    @keyframes blinking {
+      0% {
+        color: black;
+      }
+
+      50% {
+        color: white;
+      }
+
+      100% {
+        color: black;
+      }
+    }
+
+    .loading {
+      font-family: monospace;
+      font-size: 24px;
+      position: fixed;
+      width: 100vw;
+      height: 100vh;
+      text-align: center;
+      padding-top: 50vh;
+      z-index: 32768;
+      background: black;
+      animation: blinking 2s infinite;
+      content: strict;
+    }
+
+
+    .contents > article {
+      background: #f0f0f0;
+      color: #202020;
+      position: absolute;
+      max-height: 960px;
+      overflow: auto;
+      border-radius: 3px;
+      transition: opacity 1s linear;
+      opacity: 0.0;
+    }
+
+    .tweet-header {
+      display: grid;
+      align-items: end;
+      grid-template-columns: 40px 2fr 1fr;
+      grid-template-rows: 1fr;
+      font-size: 12px;
+      font-weight: bold;
+    }
+
+
+    .tweet-img {
+      width: 100%;
+      object-fit: cover;
+    }
+
+    .youtube {
+      position: relative;
+      cursor: pointer;
+    }
+
+    .youtube > img {
+      width: 100%;
+      object-fit: cover;
+    }
+
+    .youtube > svg.player-play {
+      width:64px;
+      height:64px;
+      left:calc(50% - 32px);
+      top:calc(50% - 32px);
+      position:absolute;
+      z-index: 1000;
+      opacity: 0.5;
+    }
+    
+    .youtube:hover > svg.player-play {
+      opacity: 1.0;
+    }
+
+    .youtube:hover .player-play-1 {
+      stroke:#80808080;
+    }
+
+    
+    .youtube > div.yt-title {
+      /*text-shadow: #fff 1px 1px 0;*/
+      font-size: 1.2rem;
+      color:white;
+      background:rgba(0, 0,0,0.5);
+      position:absolute;
+      left:0;
+      top:0;
+      overflow: auto;
+      z-index:998;
+    }
+
+
+    .tweet-profile-img {
+      grid-column: 1/2;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+    }
+
+    .tweet-user-name {
+      grid-column: 2/3;
+    }
+
+    .tweet-date {
+      font-size: 8px;
+      text-align: right;
+      grid-column: 3/4;
+    }
+
+    .contents>twitter-widget {
+      overflow: auto;
+      max-height: 960px;
+      position: absolute;
+    }
+
+    .contents>article>section>.tweet-text {
+      display: block;
+      padding: 4px;
+      word-break: break-all;
+      font-size: 12px;
+    }
+
+    .contents>article>h3 {
+      font-size: 12px;
+    }
+
+    blockquote.card {
+      margin:4px;
+      padding:4px;
+      font-size:12px;
+      background:white;
+      border-radius: 4px;
+    }
+
+    blockquote.card > header {
+      display:grid;
+      grid-gap:4px;
+      gap:4px;
+    }
+
+    blockquote.card-default > header {
+      grid-template-columns:64px 1fr;
+    }
+
+    blockquote.card-large > header {
+      grid-template-columns:1fr;
+    }
+
+    blockquote.card > header > img {
+      width:100%;
+    }
+
+
+    div.no-image {
+      display: block;
+      width:64px;
+      height:64px;
+      background:gray;
+      color:white;
+      text-align: center;
+      line-height: 64px;
+    }
+
+  </style>
+</head>
+
+<body>
+  <div class="loading" id="loading">Loading</div>
+  <header class="top-nav">
+    <h1>S.F. Info.</h1>
+  </header>
+  <div class="contents" id="contents" rendersubtree="invisible skip-activation"> 
+    
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/624057681960022016/GdKS-iba_normal.png" />
+        <p class="tweet-user-name">プロ野球ドラフト会議ドットコム@draft_com</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/draft_com/status/1124311584283619329"
+            target="_blank">2019/5/3 22:55:45</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">高校野球、春の千葉県大会はベスト4出揃う！ベスト4に進出した4校は夏の県予選にてAシードを獲得。#専大松戸  #木更津総合、#銚子商、#習志野 https://t.co/oB2m2E4e59</p>
+        
+        <img loading="lazy" class="tweet-img" src="https://pbs.twimg.com/media/D5pbaroUYAAt3hU.png" />
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/1081413714601857024/Dj5u_5YD_normal.jpg" />
+        <p class="tweet-user-name">Hirokazu Yokohara@Yokohara_h</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/Yokohara_h/status/1124109614834966530"
+            target="_blank">2019/5/3 9:33:11</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">CGキャラに表情パターン追加してみた。変顔っぽいスライドショー。先日のpolywinkで制作したブレンドシェイプを使用。修正なしでこのくらいの精度。rig組んだら動画にしたい。#C4D #redshift #polywink https://t.co/aA3AnVIODW</p>
+        
+        <video class="tweet-img" controls src="https://video.twimg.com/ext_tw_video/1124107804300546048/pu/vid/320x320/GTnTkLUZHcb0xlZt.mp4?tag=9" />
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1124239551680008193"
+            target="_blank">2019/5/3 18:09:31</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">@RE_DO こんな半端ものの私に、なんかありがとうございます。<br/>アカウントは持ってないですね。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1124238060999208960"
+            target="_blank">2019/5/3 18:03:35</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">@RE_DO あ、すみません。そこはスルーしていただいてもいいかと。まあそれほどまでにRYDEENが好きだということが言いたいだけなので。。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1124234147659112450"
+            target="_blank">2019/5/3 17:48:02</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">@RE_DO 修行僧（笑）。音楽に関しては自分の色というのがそもそもないからではないでしょうか。要するに私は聴き手の一人で、それをどうやってるか探求してるだけですから。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1124236595228340224"
+            target="_blank">2019/5/3 17:57:46</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">@RE_DO 若いころ、デトロイト・テクノやシカゴ・ハウスというのにはまって、シンセ・MTR・シーケンサを買って自作曲を作ろうとした時期はあったのです。が、そもそも自分なりのフレーズがまったくといっていいほど浮かんでこないのでそこで諦めがついた感じですね。で今に至ると。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1124237309644234752"
+            target="_blank">2019/5/3 18:00:36</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">@RE_DO 作曲法・和声・進行などを学べば曲作りのツールとしてはそろうんでしょうけど、私が音をイメージすると既成曲のフレーズしか浮かんでこない（笑）。学びによってそういうことができるようになるのかもしれないですけど、そこまでやりたいとは思わないんですよね。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1124237742433394691"
+            target="_blank">2019/5/3 18:02:19</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">@RE_DO そうしなくても世の中にはたくさんの素晴らしい楽曲があるし、それをなぞるだけでも十分幸せな時間を送ることができてるから欲がでないのかもしれません。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1124235711190712320"
+            target="_blank">2019/5/3 17:54:15</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">@RE_DO Cakewalkも使ったことあります。がVST対応前のやつでしたね（古）。フリーになったんですね。あれ。REAPERってマイナーなんで将来が不安なんですよね（笑）。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1124234998029008896"
+            target="_blank">2019/5/3 17:51:25</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">@RE_DO 好きというまでになったものはないですね。あ、ただ米津さんの「フラミンゴ」っていう曲はちょっと繰り返し聴きましたね。いい曲だなあと思いました。あとは「サチモス」ぐらい（笑）</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1124234542036815873"
+            target="_blank">2019/5/3 17:49:36</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">@RE_DO いやもうREAPERを使ったらトラッカーに戻る気はしないです。市販のDAWってこんなすごいんだって今も思ってますから。私のような半端なものが手を出すジャンルではないと思いました。。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1124232827862564870"
+            target="_blank">2019/5/3 17:42:48</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">@RE_DO そう、Aodixですね。これがなかなか惜しいソフトなのですよね。出力がASIOのみという割り切った仕様で。作者のArguruさんはお亡くなりなって、そこで開発はストップしてしまいましたが。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1124233456026697728"
+            target="_blank">2019/5/3 17:45:17</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">@RE_DO トラック・エディタの部分がトラッカーにしては秀逸だと思いました。当時。やっぱりノイズ・トレッカーやPsycleを作った作者だけあるなと思いましたね。モジュラー部分もPsycleやBuzzにない特徴がありましたね。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1124225242858082305"
+            target="_blank">2019/5/3 17:12:39</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">@RE_DO 根気はあまりないですね。今は楽に音が出せるようになったので、何かの合間にちょこっと直してYouTubeにアップする感じでやってますね。この音色とフレーズっててソフトシンセだとこうやったら出るかなあ？という感じで。GW中はまとまった時間があるのでかなり集中してやってますが。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1124226630438678528"
+            target="_blank">2019/5/3 17:18:10</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">@RE_DO 当時のスタジオ・ワークをなぞったり、音作りの秘訣をご本人に聞いて確かめるというより（そんな機会おそらくないですけど）は、PCでの音楽制作環境が良くなってるので、ソフトシンセでどうやったらシミュレートできるかな？いう感じでやってますね。答えになってますでしょうか。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1124227065148887040"
+            target="_blank">2019/5/3 17:19:54</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">@RE_DO PCのソフトシンセでYMOの曲を再現できるんじゃないかと思い始めたのは、BuzzとPsycleを使い始めたころからですよね。やっぱり。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1124227504820985856"
+            target="_blank">2019/5/3 17:21:38</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">@RE_DO 根気が続くのはRYDEENが強烈に好きだというのがやっぱり大きいのかなあ・・。と思いますね。テクノポリスやBEHIND THE MASKも好きですけどね。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1124228494181916672"
+            target="_blank">2019/5/3 17:25:34</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">@RE_DO Psycleでゲートタイムを入力できるように改造してみたことがあるのですが、それも基本RYDEENのためなんですよね。他のソフトに興味が移って途中で放置（放棄？）してしまいましたが。</p>
+        
+      </section>
+      
+    </article>
+    
+  </div>
+  <footer>
+    CopyLight 2019 Satoshi Fujiwara
+  </footer>
+  <script async src="https://platform.twitter.com/widgets.js"></script>
+
+  <script async src="./index.js"></script>
+
+</body>
+
+</html>

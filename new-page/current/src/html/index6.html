@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+
+<html lang="ja" prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb# article: http://ogp.me/ns/article#">
+
+<head>
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-15457703-9"></script>
+  <script>
+    if (!location.hostname.match(/localhost/)) {
+      window.dataLayer = window.dataLayer || [];
+      function gtag() { dataLayer.push(arguments); }
+      gtag('js', new Date());
+      gtag('config', 'UA-15457703-9');
+    }
+  </script>
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Twitter Viewer</title>
+  <meta name="description" content="リニューアル用のトップページデザインを考えて実装する" />
+  <meta name="keywords" content="Programming,Music,HTML5,WebGL,javascript,WebAudio" /> 	
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <meta itemprop="image" content="https://www.sfpgmr.net/img/sfweb.png" />
+  <meta itemprop="name" content="S.F. Web" />
+  
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:site" content="S.F. Web" />
+  <meta name="twitter:url" content="./index6.html" />
+  <meta name="twitter:title" content="リニューアル用のトップページデザイン" />
+  <meta name="twitter:description" content="リニューアル用のトップページデザインを考えて実装する" />
+  <meta name="twitter:image" content="https://www.sfpgmr.net/img/sfweb.png" />
+  
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="./index6.html" />
+  <meta property="og:title" content="リニューアル用のトップページデザイン"/>
+  <meta property="og:site_name" content="S.F. Web" />
+  <meta property="og:description" content="Programming,Music,HTML5,WebGL,javascript,WebAudio">
+  <meta property="og:image" content="https://www.sfpgmr.net/img/sfweb.png">
+
+  <style>
+  * {
+  margin: 0;
+  padding: 0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+html {
+  margin: 0;
+  padding: 0;
+  font-size: 10px;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  background: black;
+  color: white;
+}
+
+.top-nav {
+  position: fixed;
+  z-index: 99999;
+  background: rgba(0, 0, 0, 0.5);
+  display: block;
+  width: 100%;
+  height: 32px;
+  color: white;
+}
+
+#sentinel {
+  width: 0px;
+  height: 0px;
+}
+
+.contents {
+  padding-top: 32px;
+  width: 100%;
+  position: relative;
+  content: strict;
+}
+
+@-webkit-keyframes blinking {
+  0% {
+    color: black;
+  }
+  50% {
+    color: white;
+  }
+  100% {
+    color: black;
+  }
+}
+
+@keyframes blinking {
+  0% {
+    color: black;
+  }
+  50% {
+    color: white;
+  }
+  100% {
+    color: black;
+  }
+}
+
+.loading {
+  font-family: monospace;
+  font-size: 24px;
+  position: fixed;
+  width: 100vw;
+  height: 100vh;
+  text-align: center;
+  padding-top: 50vh;
+  z-index: 32768;
+  background: black;
+  -webkit-animation: blinking 2s infinite;
+          animation: blinking 2s infinite;
+  content: strict;
+}
+
+.contents > article {
+  background: #f0f0f0;
+  color: #202020;
+  position: absolute;
+  max-height: 960px;
+  overflow: auto;
+  border-radius: 3px;
+  /* transition: opacity 1s linear;*/
+  opacity: 1.0;
+}
+
+.tweet-header {
+  display: -ms-grid;
+  display: grid;
+  -webkit-box-align: end;
+      -ms-flex-align: end;
+          align-items: end;
+  -ms-grid-columns: 40px 2fr 1fr;
+      grid-template-columns: 40px 2fr 1fr;
+  -ms-grid-rows: 1fr;
+      grid-template-rows: 1fr;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.tweet-img {
+  width: 100%;
+  -o-object-fit: cover;
+     object-fit: cover;
+}
+
+.youtube {
+  position: relative;
+  cursor: pointer;
+}
+
+.youtube > img {
+  width: 100%;
+  -o-object-fit: cover;
+     object-fit: cover;
+}
+
+.youtube > svg.player-play {
+  width: 64px;
+  height: 64px;
+  left: calc(50% - 32px);
+  top: calc(50% - 32px);
+  position: absolute;
+  z-index: 1000;
+  opacity: 0.5;
+}
+
+.youtube:hover > svg.player-play {
+  opacity: 1.0;
+}
+
+.youtube:hover .player-play-1 {
+  stroke: #80808080;
+}
+
+.youtube > div.yt-title {
+  /*text-shadow: #fff 1px 1px 0;*/
+  font-size: 1.2rem;
+  color: white;
+  background: rgba(0, 0, 0, 0.5);
+  position: absolute;
+  left: 0;
+  top: 0;
+  overflow: auto;
+  z-index: 998;
+}
+
+.tweet-profile-img {
+  -ms-grid-column: 1;
+  -ms-grid-column-span: 1;
+  grid-column: 1/2;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+}
+
+.tweet-user-name {
+  -ms-grid-column: 2;
+  -ms-grid-column-span: 1;
+  grid-column: 2/3;
+}
+
+.tweet-date {
+  font-size: 8px;
+  text-align: right;
+  -ms-grid-column: 3;
+  -ms-grid-column-span: 1;
+  grid-column: 3/4;
+}
+
+.contents > twitter-widget {
+  overflow: auto;
+  max-height: 960px;
+  position: absolute;
+}
+
+.contents > article > section > .tweet-text {
+  display: block;
+  padding: 4px;
+  word-break: break-all;
+  font-size: 12px;
+}
+
+.contents > article > h3 {
+  font-size: 12px;
+}
+
+blockquote.card {
+  margin: 4px;
+  padding: 4px;
+  font-size: 12px;
+  background: white;
+  border-radius: 4px;
+}
+
+blockquote.card > header {
+  display: -ms-grid;
+  display: grid;
+  grid-gap: 4px;
+  gap: 4px;
+}
+
+blockquote.card-default > header {
+  -ms-grid-columns: 64px 1fr;
+      grid-template-columns: 64px 1fr;
+}
+
+blockquote.card-large > header {
+  -ms-grid-columns: 1fr;
+      grid-template-columns: 1fr;
+}
+
+blockquote.card > header > img {
+  width: 100%;
+}
+
+div.no-image {
+  display: block;
+  width: 64px;
+  height: 64px;
+  background: gray;
+  color: white;
+  text-align: center;
+  line-height: 64px;
+}
+/*# sourceMappingURL=style.css.map */ 
+  </style>
+</head>
+
+<body>
+  <div class="loading" id="loading">Loading</div>
+  <header class="top-nav">
+    <h1>S.F. Info.</h1>
+  </header>
+  <div class="contents" id="contents" rendersubtree="invisible skip-activation"> 
+    
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1161172534789906432/xKRolaCK_normal.jpg" />
+        <p class="tweet-user-name">もふもふ動画@ru_ruru831</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/ru_ruru831/status/1278297837583781889"
+            target="_blank">2020/7/1 21:02:08</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">カワウソのジャグリング見てたら全部どうでもよくなってきた https://t.co/WTcoSb4WKg</p>
+        
+        <video class="tweet-img" controls src="https://video.twimg.com/ext_tw_video/766268993992654848/pu/vid/320x180/i-jGK97l8aWLlkZa.mp4" />
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/689861361824841728/fsRPjJVO_normal.jpg" />
+        <p class="tweet-user-name">Kate@thingskatedid</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/thingskatedid/status/1278274012754309120"
+            target="_blank">2020/7/1 19:27:28</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">Adding important things to my http responses https://t.co/HSleKH9yO1</p>
+        
+        <img  class="tweet-img" src="https://pbs.twimg.com/media/Eb1XMUkU4AAIEWO.jpg" />
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1212701145379946496/pSDVrvWj_normal.png" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1278820008022310914"
+            target="_blank">2020/7/3 7:37:03</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">@MickyAlbert 小沢純子さんってギャプラスの音楽も作られた方でしたよね。すごいですね！</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1212701145379946496/pSDVrvWj_normal.png" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1278816849421950976"
+            target="_blank">2020/7/3 7:24:30</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">スペースマウス２ってあの「芸夢狂人」さんのスペースマウスの続編だったのですね。。 <blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="https://twitter.com/MickyAlbert/status/1278815121976877056" target="_blank"></a></header><div></div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1278817195229720576"
+            target="_blank">2020/7/3 7:25:53</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">いまごろになって気づいてしまった。そしてこの鶏とひよこってどこかで見た記憶があるなあと思ったらI/OとかPIOとかなんかの雑誌のキャラですな。。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1212701145379946496/pSDVrvWj_normal.png" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1278628700020334592"
+            target="_blank">2020/7/2 18:56:52</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">やはりプロはすごいなあ。。<br/><div class="youtube" data-type="yt" id="ucIJJvtF0qo"><div class="yt-title">Youtube - AW3D全世界デジタル3D地図「ビルディング3D 」（東京）</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img  data-href="https://youtu.be/ucIJJvtF0qo" class="youtube" src="https://i.ytimg.com/vi/ucIJJvtF0qo/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1148425604003291136/l-HYvXH__normal.png" />
+        <p class="tweet-user-name">岩谷成晃@nariakiiwatani</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/nariakiiwatani/status/1276329102304133121"
+            target="_blank">2020/6/26 10:39:05</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">こんな感じで、いじりたいパラメーターをいじりたい粒度でアウトプット側から操作できる。アツい。 #glisp https://t.co/1nUWAqyiB9</p>
+        
+        <video class="tweet-img" controls src="https://video.twimg.com/ext_tw_video/1276328843020627968/pu/vid/398x360/Y50mdw3s9RGsxWUN.mp4?tag=10" />
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1211832444539801600/yz0qPQoR_normal.jpg" />
+        <p class="tweet-user-name">ephtracy@ephtracy</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/ephtracy/status/1277805099272876032"
+            target="_blank">2020/6/30 12:24:10</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">drink #magicavoxel https://t.co/CTyjIFHvIJ</p>
+        
+        <img  class="tweet-img" src="https://pbs.twimg.com/media/Ebus7ynXsAILLOo.jpg" />
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1234101723054002178/nhQJoRrj_normal.jpg" />
+        <p class="tweet-user-name">MASATO@MPixelimpress</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/MPixelimpress/status/1276296699128897536"
+            target="_blank">2020/6/26 8:30:20</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">UE4で進めていた背景もようやく完成しました！<br/><br/>#UE4 #screenshotsaturday @UnrealEngine #SubstancePainter https://t.co/GpargLrNBj</p>
+        
+        <img  class="tweet-img" src="https://pbs.twimg.com/media/EbZREr0VcAAdNWd.jpg" />
+        
+        <img  class="tweet-img" src="https://pbs.twimg.com/media/EbZRErzVcAAObhe.jpg" />
+        
+        <img  class="tweet-img" src="https://pbs.twimg.com/media/EbZRE3DU4AEXMEA.jpg" />
+        
+        <img  class="tweet-img" src="https://pbs.twimg.com/media/EbZRE5WUEAUt148.jpg" />
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/479465789779505152/wseqqq-5_normal.jpeg" />
+        <p class="tweet-user-name">ずし@shiba_zushi</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/shiba_zushi/status/1276891470411165702"
+            target="_blank">2020/6/27 23:53:44</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">豚による京都の破壊<br/>#UE4 https://t.co/mYBZ3n4Vkf</p>
+        
+        <video class="tweet-img" controls src="https://video.twimg.com/tweet_video/Ebht0BcUMAAdLIt.mp4" />
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1212701145379946496/pSDVrvWj_normal.png" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1276446540849016834"
+            target="_blank">2020/6/26 18:25:45</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">このジェミニ誘導という技、当時は名前だけ知ってたがこんなにすごいとは思わんかった。ガルザカートでこんなことできるんだ。。私は斜めにレバー入れて避けるので精いっぱいでしたわ。。<br/><blockquote class="card card-default"><header><img  src="https://i.ytimg.com/vi/v9sVvnKTli0/maxresdefault.jpg" /><a href="https://www.youtube.com/watch?v=v9sVvnKTli0" target="_blank">1984 [60fps] Super Xevious 9999990pts Loop1（ジェミニ誘導稼ぎ） - YouTube</a></header><div>スーパーゼビウス / Super Xevious Namco 1984 9,999,990pts+α Player G.M.C.DGM 収録Ver MAME32 0.35b13 1credit 16ｴﾘｱ CLEAR,Lives 5,Difficulty Easy,Bonus Life 10000/40000(ｴ...</div></blockquote></p>
+        
+      </section>
+      
+    </article>
+    
+  </div>
+  <footer>
+    CopyLight 2019 Satoshi Fujiwara
+  </footer>
+  <script async src="https://platform.twitter.com/widgets.js"></script>
+
+  <script async src="./index.js"></script>
+
+</body>
+
+</html>

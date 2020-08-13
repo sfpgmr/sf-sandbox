@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+<html lang="ja" prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb# article: http://ogp.me/ns/article#">
+
+<head>
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-15457703-9"></script>
+  <script>
+    if (!location.hostname.match(/localhost/)) {
+      window.dataLayer = window.dataLayer || [];
+      function gtag() { dataLayer.push(arguments); }
+      gtag('js', new Date());
+      gtag('config', 'UA-15457703-9');
+    }
+  </script>
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>トップページをリニューアルする</title>
+  <meta name="description" content="リニューアル用のトップページデザインを考えて実装する" />
+  <meta name="keywords" content="Programming,Music,HTML5,WebGL,javascript,WebAudio" /> 	
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <meta itemprop="image" content="https://www.sfpgmr.net/img/sfweb.png" />
+  <meta itemprop="name" content="S.F. Web" />
+  
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:site" content="S.F. Web" />
+  <meta name="twitter:url" content="./index10.html" />
+  <meta name="twitter:title" content="リニューアル用のトップページデザイン" />
+  <meta name="twitter:description" content="リニューアル用のトップページデザインを考えて実装する" />
+  <meta name="twitter:image" content="https://www.sfpgmr.net/img/sfweb.png" />
+  
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="./index10.html" />
+  <meta property="og:title" content="リニューアル用のトップページデザイン"/>
+  <meta property="og:site_name" content="S.F. Web" />
+  <meta property="og:description" content="Programming,Music,HTML5,WebGL,javascript,WebAudio">
+  <meta property="og:image" content="https://www.sfpgmr.net/img/sfweb.png">
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    html {
+      margin: 0;
+      padding: 0;
+      font-size:10px;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      background: black;
+      color: white;
+    }
+
+    .top-nav {
+      position:fixed;
+      z-index:99999;
+      background: rgba(0,0,0,0.5);
+      display: block;
+      width:100%;
+      height:32px;
+      color:white;
+    }
+    #sentinel {
+      width:0px;
+      height:0px;
+    }
+    .contents {
+      padding-top:32px;
+      width: 100%;
+      position: relative;
+      content: strict;
+    }
+
+    @keyframes blinking {
+      0% {
+        color: black;
+      }
+
+      50% {
+        color: white;
+      }
+
+      100% {
+        color: black;
+      }
+    }
+
+    .loading {
+      font-family: monospace;
+      font-size: 24px;
+      position: fixed;
+      width: 100vw;
+      height: 100vh;
+      text-align: center;
+      padding-top: 50vh;
+      z-index: 32768;
+      background: black;
+      animation: blinking 2s infinite;
+      content: strict;
+    }
+
+
+    .contents > article {
+      background: #f0f0f0;
+      color: #202020;
+      position: absolute;
+      max-height: 960px;
+      overflow: auto;
+      border-radius: 3px;
+      transition: opacity 1s linear;
+      opacity: 0.0;
+    }
+
+    .tweet-header {
+      display: grid;
+      align-items: end;
+      grid-template-columns: 40px 2fr 1fr;
+      grid-template-rows: 1fr;
+      font-size: 12px;
+      font-weight: bold;
+    }
+
+
+    .tweet-img {
+      width: 100%;
+      object-fit: cover;
+    }
+
+    .youtube {
+      position: relative;
+      cursor: pointer;
+    }
+
+    .youtube > img {
+      width: 100%;
+      object-fit: cover;
+    }
+
+    .youtube > svg.player-play {
+      width:64px;
+      height:64px;
+      left:calc(50% - 32px);
+      top:calc(50% - 32px);
+      position:absolute;
+      z-index: 1000;
+      opacity: 0.5;
+    }
+    
+    .youtube:hover > svg.player-play {
+      opacity: 1.0;
+    }
+
+    .youtube:hover .player-play-1 {
+      stroke:#80808080;
+    }
+
+    
+    .youtube > div.yt-title {
+      /*text-shadow: #fff 1px 1px 0;*/
+      font-size: 1.2rem;
+      color:white;
+      background:rgba(0, 0,0,0.5);
+      position:absolute;
+      left:0;
+      top:0;
+      overflow: auto;
+      z-index:998;
+    }
+
+
+    .tweet-profile-img {
+      grid-column: 1/2;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+    }
+
+    .tweet-user-name {
+      grid-column: 2/3;
+    }
+
+    .tweet-date {
+      font-size: 8px;
+      text-align: right;
+      grid-column: 3/4;
+    }
+
+    .contents>twitter-widget {
+      overflow: auto;
+      max-height: 960px;
+      position: absolute;
+    }
+
+    .contents>article>section>.tweet-text {
+      display: block;
+      padding: 4px;
+      word-break: break-all;
+      font-size: 12px;
+    }
+
+    .contents>article>h3 {
+      font-size: 12px;
+    }
+
+    blockquote.card {
+      margin:4px;
+      padding:4px;
+      font-size:12px;
+      background:white;
+      border-radius: 4px;
+    }
+
+    blockquote.card > header {
+      display:grid;
+      grid-gap:4px;
+      gap:4px;
+    }
+
+    blockquote.card-default > header {
+      grid-template-columns:64px 1fr;
+    }
+
+    blockquote.card-large > header {
+      grid-template-columns:1fr;
+    }
+
+    blockquote.card > header > img {
+      width:100%;
+    }
+
+
+    div.no-image {
+      display: block;
+      width:64px;
+      height:64px;
+      background:gray;
+      color:white;
+      text-align: center;
+      line-height: 64px;
+    }
+
+  </style>
+</head>
+
+<body>
+  <div class="loading" id="loading">Loading</div>
+  <header class="top-nav">
+    <h1>S.F. Info.</h1>
+  </header>
+  <div class="contents" id="contents" rendersubtree="invisible skip-activation"> 
+    
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1176071522269585414"
+            target="_blank">2019/9/23 18:51:15</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">去年秋大会決勝は観に行ったんだけど、その時に聴いた中央学院のチャンス・テーマの「シダックス・ファイヤー」が耳から離れなくなってて。気が付くと鼻歌してたりして困ってる。。<br/><div class="youtube" data-type="yt" id="7rxamczMb5A"><div class="yt-title">Youtube - ハイレゾ録音 中央学院 シダックス・ファイヤー チャンステーマ 第100回 高校野球</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/7rxamczMb5A" class="youtube" src="https://i.ytimg.com/vi/7rxamczMb5A/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1176063760261189633"
+            target="_blank">2019/9/23 18:20:25</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ベスト１６はこうなったのね。。<br/>県立は今回は２校入ったのですな。。<br/><br/>県立<br/>我孫子東<br/>東金<br/><br/>市立<br/>習志野<br/><br/>私立<br/>木更津総合<br/>専修大松戸<br/>中央学院<br/>成田<br/>東海大市原望洋<br/>拓殖大紅陵<br/>千葉商大付<br/>千葉黎明<br/>学館船橋<br/>東葉<br/>東海大浦安<br/>千葉学芸<br/>至学館</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1176064134175051777"
+            target="_blank">2019/9/23 18:21:54</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">私立はベスト１６常連組が多数を占めているよな。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1176065070003916800"
+            target="_blank">2019/9/23 18:25:37</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">右側ブロックは専修大松戸が上がってくるだろうと思う。が、秋大会だからわからんよなあ。東海大市原望洋、拓大紅陵、千葉商大付あたりが続く形だろうか。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1176065643830923269"
+            target="_blank">2019/9/23 18:27:54</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">左側ブロックはちょっと激戦区の様相。<br/>中央学院、木更津総合、習志野が抜けている感じで、あとは成田が続く感じだろうか。千葉黎明もなかなか侮れないチームだからね。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1176066309613740032"
+            target="_blank">2019/9/23 18:30:33</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">今後熱いと思う試合はベスト８の木更津総合ー中央学院、習志野ー成田だろうな。たぶん。。夏なみの熱い戦いが期待できる試合。ベスト16勝ち上がればの話だけど。秋はチーム力が未知数の部分が多いからどうなるかほんとわからんよな。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1176067136210403330"
+            target="_blank">2019/9/23 18:33:50</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ここからは投手力がほんとものをいうから、エース級が２人以上いないとほんと厳しいんだよな。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1176067380482473984"
+            target="_blank">2019/9/23 18:34:48</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">投手力ではやはり木更津総合が１つあたま出てるんだろうな。習志野は堀井くんと一年生の山根くんがどれだけいけるかにかかっている。何しろこのまま行けば準決勝で中央学院か木更津総合とあたるわけだからね。そこで勝たないと春センバツにはほぼ行けない。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1176068990122131456"
+            target="_blank">2019/9/23 18:41:12</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">専大松戸は横山くん、杉田くんの後釜がどうなっているのだろうか。しかしこの2枚看板で夏敗退してしまうとは。。千葉大会のレベルの高さがうかがえるわ。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1176069456293842944"
+            target="_blank">2019/9/23 18:43:03</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">私は一応習志野市民だし、習志野推しではあるのだが木総の篠木くんが春センバツで投げるのも見たい。なんと悩ましいことよ。。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1176059811814731778"
+            target="_blank">2019/9/23 18:04:43</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">木更津総合ー千葉明徳は延長10回６-６か。。千葉明徳は近年強くなってきたチームのひとつ。篠木くんロングリリーフっぽいな。。さて、どうなるのか。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1176060273196584961"
+            target="_blank">2019/9/23 18:06:33</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">あ、もう延長11回表終わってるのか。。延長になると裏の木総が有利だと思う。が延長13回でタイブレークだよな。確か。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1176060628349243392"
+            target="_blank">2019/9/23 18:07:58</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">木総がなんとか勝ち切りそうだが、どうか。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1176061315959255040"
+            target="_blank">2019/9/23 18:10:42</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">11回裏1死満塁、サヨナラのチャンス。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1176062008224972800"
+            target="_blank">2019/9/23 18:13:27</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">篠木くんセンター前でサヨナラ！すごいね。やはり木総は強い。次の壁は中央学院だよなあ。そして習志野が勝ち上がってくれば夏の再戦となるよな。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1176062381287325696"
+            target="_blank">2019/9/23 18:14:56</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">できれば習志野とは決勝で当たってほしかった。木総と習志野が秋関東で両校春出場を夢見ていたが、組み合わせ上それは叶わない。残念。。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1175542447318847489"
+            target="_blank">2019/9/22 7:48:54</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">走れスカイライン。当時PC8001でここまでできるのかと感心したものだ。<br/><br/><div class="youtube" data-type="yt" id="IoJFYri73BA"><div class="yt-title">Youtube - PC-8001 走れスカイライン</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/IoJFYri73BA" class="youtube" src="https://i.ytimg.com/vi/IoJFYri73BA/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1175542804925124608"
+            target="_blank">2019/9/22 7:50:19</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ゲーセンでポールポジションIIにハマっていて、こういう路面の表現ってどうやるんだろうなあ。。と思ってたころに出たんだよなあ。<br/><br/><div class="youtube" data-type="yt" id="W-G__d91-qQ"><div class="yt-title">Youtube - 1983 [60fps] Pole Position II 65420pts Seaside ALL</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/W-G__d91-qQ" class="youtube" src="https://i.ytimg.com/vi/W-G__d91-qQ/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1175544482734886913"
+            target="_blank">2019/9/22 7:56:59</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">F2グランプリなんちゅうのもありましたなあ。これはX-1で遊んだ記憶がある。。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1175332460726407168"
+            target="_blank">2019/9/21 17:54:29</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">千葉県秋季県大会はやっぱり面白いなあ。強豪食いがよく起こるからね。まずは市立船橋と県立船橋。なんと県立船橋が４－２で勝利。次は習志野と。次試合も金星なるか。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1175332461598760961"
+            target="_blank">2019/9/21 17:54:30</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">そして幕張総合はなんと夏準優勝の八千代松陰を破るという。多分新チーム結成してすぐの大会だからだろうな。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1175332730239778816"
+            target="_blank">2019/9/21 17:55:34</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">銚子商と千葉経大付の強豪対決は延長の末銚子商が勝利。銚子商も粘り強さがあるよな。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1175333384022679553"
+            target="_blank">2019/9/21 17:58:10</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">中央学院、木更津総合、成田、習志野は順当勝ちといったところ。中央学院はベスト１６あたり常連の西武台千葉に対して大量得点でコールド勝ち。おそらく木総とベスト８で当たるだろう。これは面白い試合になりそうだね。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1175333947569369088"
+            target="_blank">2019/9/21 18:00:24</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">市原中央はこれまた強豪の敬愛学園に競り勝ってるね。夏の強さは健在。次は中央学院と。木更津総合と姉妹校対決となるかどうは次の試合にかかってますな。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1175334883117240320"
+            target="_blank">2019/9/21 18:04:07</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">習志野は山内くんがエースナンバーで、夏予選控えの堀井くん、そして一年生の山根くんが控え投手。今日は山根くんが投げて５回完封。山根くんの投球も観てみたいよなあ。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1175336101730369536"
+            target="_blank">2019/9/21 18:08:57</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">木更津総合は今日吉鶴くん、篠木くん投げたのか。袖ヶ浦は中盤まではいい試合をしたものの、終わってみれば８－３で負けていた。やっぱり木総は強い。篠木くんの球速が今後どれくらい伸びるかだよな。常時140km後半出るようになればもう手が付けられない気がする。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1175212823720235008"
+            target="_blank">2019/9/21 9:59:06</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">おお、県船橋勝ってる！！</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1175201133364531200"
+            target="_blank">2019/9/21 9:12:39</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">これ持ってました。。 <blockquote class="card card-default"><header><img loading="lazy" src="https://pbs.twimg.com/media/EE7A5zMUcAAnd3s.jpg:large" /><a href="https://twitter.com/ht2995/status/1175088670610604032" target="_blank">hikari togawa ～ナナビットさんのツイート: "micro composer… "</a></header><div>“micro composer”</div></blockquote></p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/931137746936086529/74wzjygZ_normal.jpg" />
+        <p class="tweet-user-name">うつぼかずら@vstcpp</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/vstcpp/status/1175000058682413056"
+            target="_blank">2019/9/20 19:53:39</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">これは期待 <a href="https://twitter.com/hotwatermorning/status/1174999223038726144" target="_blank">twitter.com/hotwatermornin…</a></p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/778463342151151616/QZHaVPWp_normal.jpg" />
+        <p class="tweet-user-name">だ•しげる@dashigeru</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/dashigeru/status/1175184487405088768"
+            target="_blank">2019/9/21 8:06:30</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">頑張れ！習志野！角田主将✨ https://t.co/1m2GlV3rwR</p>
+        
+        <img loading="lazy" class="tweet-img" src="https://pbs.twimg.com/media/EE8YDu1UYAAQ4Yz.jpg" />
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/1170525891497086978/a3vFuQR3_normal.png" />
+        <p class="tweet-user-name">かねごん@kanegonMZ</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/kanegonMZ/status/1175022593687998471"
+            target="_blank">2019/9/20 21:23:11</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">やはりヨーロッパ版MZ-700のキャラグラは素晴らしい…。<br/>どうして、どうして日本版は… <a href="https://twitter.com/SharpworksMZ/status/1174249285954801664" target="_blank">twitter.com/SharpworksMZ/s…</a></p>
+        
+      </section>
+      
+    </article>
+    
+  </div>
+  <footer>
+    CopyLight 2019 Satoshi Fujiwara
+  </footer>
+  <script async src="https://platform.twitter.com/widgets.js"></script>
+
+  <script async src="./index.js"></script>
+
+</body>
+
+</html>

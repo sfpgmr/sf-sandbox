@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+
+<html lang="ja" prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb# article: http://ogp.me/ns/article#">
+
+<head>
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-15457703-9"></script>
+  <script>
+    if (!location.hostname.match(/localhost/)) {
+      window.dataLayer = window.dataLayer || [];
+      function gtag() { dataLayer.push(arguments); }
+      gtag('js', new Date());
+      gtag('config', 'UA-15457703-9');
+    }
+  </script>
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>トップページをリニューアルする</title>
+  <meta name="description" content="リニューアル用のトップページデザインを考えて実装する" />
+  <meta name="keywords" content="Programming,Music,HTML5,WebGL,javascript,WebAudio" /> 	
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <meta itemprop="image" content="https://www.sfpgmr.net/img/sfweb.png" />
+  <meta itemprop="name" content="S.F. Web" />
+  
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:site" content="S.F. Web" />
+  <meta name="twitter:url" content="./index18.html" />
+  <meta name="twitter:title" content="リニューアル用のトップページデザイン" />
+  <meta name="twitter:description" content="リニューアル用のトップページデザインを考えて実装する" />
+  <meta name="twitter:image" content="https://www.sfpgmr.net/img/sfweb.png" />
+  
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="./index18.html" />
+  <meta property="og:title" content="リニューアル用のトップページデザイン"/>
+  <meta property="og:site_name" content="S.F. Web" />
+  <meta property="og:description" content="Programming,Music,HTML5,WebGL,javascript,WebAudio">
+  <meta property="og:image" content="https://www.sfpgmr.net/img/sfweb.png">
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    html {
+      margin: 0;
+      padding: 0;
+      font-size:10px;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      background: black;
+      color: white;
+    }
+
+    .top-nav {
+      position:fixed;
+      z-index:99999;
+      background: rgba(0,0,0,0.5);
+      display: block;
+      width:100%;
+      height:32px;
+      color:white;
+    }
+    #sentinel {
+      width:0px;
+      height:0px;
+    }
+    .contents {
+      padding-top:32px;
+      width: 100%;
+      position: relative;
+      content: strict;
+    }
+
+    @keyframes blinking {
+      0% {
+        color: black;
+      }
+
+      50% {
+        color: white;
+      }
+
+      100% {
+        color: black;
+      }
+    }
+
+    .loading {
+      font-family: monospace;
+      font-size: 24px;
+      position: fixed;
+      width: 100vw;
+      height: 100vh;
+      text-align: center;
+      padding-top: 50vh;
+      z-index: 32768;
+      background: black;
+      animation: blinking 2s infinite;
+      content: strict;
+    }
+
+
+    .contents > article {
+      background: #f0f0f0;
+      color: #202020;
+      position: absolute;
+      max-height: 960px;
+      overflow: auto;
+      border-radius: 3px;
+     /* transition: opacity 1s linear;*/
+      opacity: 1.0;
+    }
+
+    .tweet-header {
+      display: grid;
+      align-items: end;
+      grid-template-columns: 40px 2fr 1fr;
+      grid-template-rows: 1fr;
+      font-size: 12px;
+      font-weight: bold;
+    }
+
+
+    .tweet-img {
+      width: 100%;
+      object-fit: cover;
+    }
+
+    .youtube {
+      position: relative;
+      cursor: pointer;
+    }
+
+    .youtube > img {
+      width: 100%;
+      object-fit: cover;
+    }
+
+    .youtube > svg.player-play {
+      width:64px;
+      height:64px;
+      left:calc(50% - 32px);
+      top:calc(50% - 32px);
+      position:absolute;
+      z-index: 1000;
+      opacity: 0.5;
+    }
+    
+    .youtube:hover > svg.player-play {
+      opacity: 1.0;
+    }
+
+    .youtube:hover .player-play-1 {
+      stroke:#80808080;
+    }
+
+    
+    .youtube > div.yt-title {
+      /*text-shadow: #fff 1px 1px 0;*/
+      font-size: 1.2rem;
+      color:white;
+      background:rgba(0, 0,0,0.5);
+      position:absolute;
+      left:0;
+      top:0;
+      overflow: auto;
+      z-index:998;
+    }
+
+
+    .tweet-profile-img {
+      grid-column: 1/2;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+    }
+
+    .tweet-user-name {
+      grid-column: 2/3;
+    }
+
+    .tweet-date {
+      font-size: 8px;
+      text-align: right;
+      grid-column: 3/4;
+    }
+
+    .contents>twitter-widget {
+      overflow: auto;
+      max-height: 960px;
+      position: absolute;
+    }
+
+    .contents>article>section>.tweet-text {
+      display: block;
+      padding: 4px;
+      word-break: break-all;
+      font-size: 12px;
+    }
+
+    .contents>article>h3 {
+      font-size: 12px;
+    }
+
+    blockquote.card {
+      margin:4px;
+      padding:4px;
+      font-size:12px;
+      background:white;
+      border-radius: 4px;
+    }
+
+    blockquote.card > header {
+      display:grid;
+      grid-gap:4px;
+      gap:4px;
+    }
+
+    blockquote.card-default > header {
+      grid-template-columns:64px 1fr;
+    }
+
+    blockquote.card-large > header {
+      grid-template-columns:1fr;
+    }
+
+    blockquote.card > header > img {
+      width:100%;
+    }
+
+
+    div.no-image {
+      display: block;
+      width:64px;
+      height:64px;
+      background:gray;
+      color:white;
+      text-align: center;
+      line-height: 64px;
+    }
+
+  </style>
+</head>
+
+<body>
+  <div class="loading" id="loading">Loading</div>
+  <header class="top-nav">
+    <h1>S.F. Info.</h1>
+  </header>
+  <div class="contents" id="contents" rendersubtree="invisible skip-activation"> 
+    
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/947868586701479937/tpTC6Wk4_normal.jpg" />
+        <p class="tweet-user-name">8bit Workshop@8bitworkshop</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/8bitworkshop/status/1157033646609616896"
+            target="_blank">2019/8/2 6:01:32</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">Have you played Atari today? OK, MI, WV, VT, and RI have. Everyone else is just as likely to LOAD "*",8,1. https://t.co/VbVzfO6mql</p>
+        
+        <img  class="tweet-img" src="https://pbs.twimg.com/media/EA6b98DXkAEkOYX.png" />
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1156311446755532800"
+            target="_blank">2019/7/31 6:11:46</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">YMOマニアな界隈ではRYDEENのAメロリードは「アープ・オデッセイ説」と「MOOG III-C説」があったのだが、この本読んではっきりしたな。<br/><br/><blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="https://amzn.to/333o2Qg" target="_blank">YMOのONGAKU | 藤井丈司 |本 | 通販 | Amazon</a></header><div></div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1156311447778947073"
+            target="_blank">2019/7/31 6:11:47</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">そしてこのリードはMC-8で演奏してたんですなあ。道理でフレーズの揺れがないはずだ。。いくら坂本さんでもこんなに正確には弾けないよなあ。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1156311935337451520"
+            target="_blank">2019/7/31 6:13:43</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">そしてこの本読んでなぜか大体知ってる感覚に陥る。長期にわたっていろいろネットの情報追っかけてたからなあ。。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1155948023043592195"
+            target="_blank">2019/7/30 6:07:39</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">すべてのことにおいてバテ気味。。やっぱり夏はつらいね。。1０月後半～１１月くらいが一番体の調子がいいね。。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/731335621789147137/bWURa4wY_normal.jpg" />
+        <p class="tweet-user-name">トモカズ@tomo0354</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/tomo0354/status/1155229366944591872"
+            target="_blank">2019/7/28 6:31:58</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ラジカセ風ミュージックプレイヤーを作る【カセットテープのオートチェンジャー？】自分”だけ”で満足している懐古趣味ソフト。でも連続再生が出来るようになって便利に使えるよになってきた気がする。<br/><br/>反応が少なからずあれば一般公開しようかと思っていますが、こんなの使いたい人っていますか？ https://t.co/VHhDGCA8ss</p>
+        
+        <video class="tweet-img" controls src="https://video.twimg.com/ext_tw_video/1155229345171947521/pu/vid/480x360/SLttfQsn5Fs_tstR.mp4?tag=10" />
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1155068241141620736"
+            target="_blank">2019/7/27 19:51:43</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">F.O.Eの「Body Snatcher」。イントロで始まる控えめなTR-909のリズムがなんか好きなんですよね。これ１９８５年作なんで909が見直される前。<br/><div class="youtube" data-type="yt" id="49zs3szLDJc"><div class="yt-title">Youtube - F O E - Return Of Body Snatchers (Exterminated Mix)</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img  data-href="https://youtu.be/49zs3szLDJc" class="youtube" src="https://i.ytimg.com/vi/49zs3szLDJc/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1155068242232147968"
+            target="_blank">2019/7/27 19:51:43</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">これの元曲も好き。ヒップホップという言葉が日本でぼつぼつ出てきたころの曲。やっぱり細野さんはリズムに対する感性がすごいのだなと思うな。。<br/><div class="youtube" data-type="yt" id="d4gypiuQt5E"><div class="yt-title">Youtube - Haruomi Hosono - S-F-X - 01 - Body Snatchers</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img  data-href="https://youtu.be/d4gypiuQt5E" class="youtube" src="https://i.ytimg.com/vi/d4gypiuQt5E/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1155069138781425664"
+            target="_blank">2019/7/27 19:55:17</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">1980年代前半の代表曲はこれだろうな。このあたりに影響を受けてる流れですわな。というかハービー・ハンコックもまあヒップ・ホップ界隈に影響を受けてこれ作ったんだろうけど。<br/><br/><div class="youtube" data-type="yt" id="GHhD4PD75zY"><div class="yt-title">Youtube - Herbie Hancock - Rockit</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img  data-href="https://youtu.be/GHhD4PD75zY" class="youtube" src="https://i.ytimg.com/vi/GHhD4PD75zY/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1155070139559112708"
+            target="_blank">2019/7/27 19:59:16</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">「Vive Alive」はもうヒップ・ホップが落ち着いたころの作品だけど、好きな曲の一つ。聴いてた当時はこの方がジャズ界隈がベースだというのを知らんかった。<br/><br/><div class="youtube" data-type="yt" id="hDHd2w_FNxY"><div class="yt-title">Youtube - Herbie Hancock - Vibe Alive</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img  data-href="https://youtu.be/hDHd2w_FNxY" class="youtube" src="https://i.ytimg.com/vi/hDHd2w_FNxY/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1155070818012946433"
+            target="_blank">2019/7/27 20:01:57</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ハービー・ハンコックも新しいものから聴いて、「カメレオン」に行き着いた感じ。このベースのフレーズはすごいよね。アープだか、ミニ・ムーグとかじゃないかと思うんだけど。当時このようなリズムを作るセンスというのが半端ないよなあ。。<br/><br/><div class="youtube" data-type="yt" id="UbkqE4fpvdI"><div class="yt-title">Youtube - Herbie Hancock - Chameleon (FULL VERSION)</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img  data-href="https://youtu.be/UbkqE4fpvdI" class="youtube" src="https://i.ytimg.com/vi/UbkqE4fpvdI/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1155071823601496064"
+            target="_blank">2019/7/27 20:05:57</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">F.O.Eで一番好きな曲は「Dance Hall」。この曲でちょっとラップ・ミュージックに興味をもったんだよね。<br/>まあこれ当時日本のユニットとしては突出しとったと思うなあ。当然セールスは振るわんかった思う。。<br/><div class="youtube" data-type="yt" id="FTNRMngrDS0"><div class="yt-title">Youtube - Friends of Earth - Dance Hall</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img  data-href="https://youtu.be/FTNRMngrDS0" class="youtube" src="https://i.ytimg.com/vi/FTNRMngrDS0/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1155073228366319616"
+            target="_blank">2019/7/27 20:11:32</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">このあたりを探ってるうちにアフリカン・バンバータがクラフト・ワークのフレーズを使ったプラネット・ロックのことも知った。当時そのことだけ知ってて曲は聞いたことがなかった。最近聴いて「なるほどぉ」と。<br/><br/><div class="youtube" data-type="yt" id="ib8jtrwtAZ8"><div class="yt-title">Youtube - Planet Rock - Afrika Bambaataa  Soul Sonic Force (DJ POPPIN)</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img  data-href="https://youtu.be/ib8jtrwtAZ8" class="youtube" src="https://i.ytimg.com/vi/ib8jtrwtAZ8/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1155074277676179456"
+            target="_blank">2019/7/27 20:15:42</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">「スーパー・ゼビウス」とかも聴いたなあ。これも飽きるほどね。やっぱり細野さんがリズム作るとちょっと黒っぽいよなあ。。<br/><div class="youtube" data-type="yt" id="8VSFN8KDn_U"><div class="yt-title">Youtube - SUPER XEVIOUS/NAMCO（スーパーゼビウス/ナムコ）</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img  data-href="https://youtu.be/8VSFN8KDn_U" class="youtube" src="https://i.ytimg.com/vi/8VSFN8KDn_U/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1155074678647488514"
+            target="_blank">2019/7/27 20:17:18</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">細野さんの「L.D.K」のこのリズムですよ。今一番気に入ってる曲がこれだったりする。。<br/><div class="youtube" data-type="yt" id="EWdo78lckoI"><div class="yt-title">Youtube - Haruomi Hosono - Living Dining Kitchen</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img  data-href="https://youtu.be/EWdo78lckoI" class="youtube" src="https://i.ytimg.com/vi/EWdo78lckoI/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1155075084853231616"
+            target="_blank">2019/7/27 20:18:55</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">「灰色の段階」もたまに聴かずにはおれない曲の一つ。細野さんの曲はちょっと常習性があるようなあ。。<br/><div class="youtube" data-type="yt" id="LMb5DFVPzc0"><div class="yt-title">Youtube - YMO - Gradated Grey (1981)</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img  data-href="https://youtu.be/LMb5DFVPzc0" class="youtube" src="https://i.ytimg.com/vi/LMb5DFVPzc0/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1154999775059574784"
+            target="_blank">2019/7/27 15:19:39</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">やったあ！！<br/>「Use localhost to connect to your Linux applications from Windows」<br/><blockquote class="card card-large"><header><img  src="https://devblogs.microsoft.com/commandline/wp-content/uploads/sites/33/2019/07/WSL2Localhost2.png" /><a href="https://devblogs.microsoft.com/commandline/whats-new-for-wsl-in-insiders-preview-build-18945/" target="_blank">What’s new for WSL in Insiders Preview Build 18945 | Windows Command Line</a></header><div>A new Windows insiders build has just released, and it contains some hot off the press features for the Windows Subsystem for Linux (WSL)! We’ve added the ability to access Linux networking applications in a WSL 2 distro from Windows with localhost,</div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1155001317909135360"
+            target="_blank">2019/7/27 15:25:47</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">しかししかし私の<br/>PCはwsl2のinsider buildをインストールしたらなぜかサスペンド・リジュームが動かなくなってしました。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1155004278081118211"
+            target="_blank">2019/7/27 15:37:33</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">%userprofile%.wslconfigに<br/>localhostForwarding=true<br/>と書けばいいみたい。実際できた。 https://t.co/6tGWhTCV2P</p>
+        
+        <img  class="tweet-img" src="https://pbs.twimg.com/media/EAdmRHxU4AADC26.png" />
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1155002939095670784"
+            target="_blank">2019/7/27 15:32:14</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">最近会社で機会あってpowershellのコードを書くようになった。書いてみてその便利さに衝撃を受けた。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1154889226992807937"
+            target="_blank">2019/7/27 8:00:23</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">私は大阪出身で、PL学園が強かった頃にリアルタイムでみてきた世代である。西田さんとかね。清原、桑田さんは同世代になるね。もちろん知り合いでもなんでもないけど。PL学園の練習も見に行ったりしたな。清原さんがやたら大きくて、ものすごい目立って他のは今でも覚えてる。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1154889938778726402"
+            target="_blank">2019/7/27 8:03:12</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">小学生のころ、習志野高と新居浜商の決勝をテレビで観た記憶がある。内容はほぼ覚えてない。まさかその近隣に住むとは思ってなかったが、記憶にあったチームなので肩入れすることになった。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/630359009141354498/ytoyqbl-_normal.png" />
+        <p class="tweet-user-name">Lorenzo Cadamuro@lorenzocadamuro</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/lorenzocadamuro/status/1154396150310547456"
+            target="_blank">2019/7/25 23:21:04</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">Liquid simulation by merging WebAssembly and WebGL together 👨🏼‍🔬<br/><br/>Shake the window → <a href="https://liquid.lab.lorenzocadamuro.com/" target="_blank">liquid.lab.lorenzocadamuro.com</a><br/><br/>---<br/><br/>Liquid engine → <a href="https://google.github.io/liquidfun/" target="_blank">google.github.io/liquidfun/</a><br/>WebGL library → <a href="https://github.com/regl-project/regl" target="_blank">github.com/regl-project/r…</a><br/><br/>#Wasm #WebAssembly #WebGL #Liquid #Lab https://t.co/eZSUNCmHBX</p>
+        
+        <video class="tweet-img" controls src="https://video.twimg.com/ext_tw_video/1154396116336689152/pu/vid/340x270/CbQvNfe9xuHh0i03.mp4?tag=10" />
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1154686898524176385"
+            target="_blank">2019/7/26 18:36:24</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">大阪代表は履正社濃厚ですな。。</p>
+        
+      </section>
+      
+    </article>
+    
+  </div>
+  <footer>
+    CopyLight 2019 Satoshi Fujiwara
+  </footer>
+  <script async src="https://platform.twitter.com/widgets.js"></script>
+
+  <script async src="./index.js"></script>
+
+</body>
+
+</html>

@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+
+<html lang="ja" prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb# article: http://ogp.me/ns/article#">
+
+<head>
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-15457703-9"></script>
+  <script>
+    if (!location.hostname.match(/localhost/)) {
+      window.dataLayer = window.dataLayer || [];
+      function gtag() { dataLayer.push(arguments); }
+      gtag('js', new Date());
+      gtag('config', 'UA-15457703-9');
+    }
+  </script>
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>トップページをリニューアルする</title>
+  <meta name="description" content="リニューアル用のトップページデザインを考えて実装する" />
+  <meta name="keywords" content="Programming,Music,HTML5,WebGL,javascript,WebAudio" /> 	
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <meta itemprop="image" content="https://www.sfpgmr.net/img/sfweb.png" />
+  <meta itemprop="name" content="S.F. Web" />
+  
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:site" content="S.F. Web" />
+  <meta name="twitter:url" content="./index23.html" />
+  <meta name="twitter:title" content="リニューアル用のトップページデザイン" />
+  <meta name="twitter:description" content="リニューアル用のトップページデザインを考えて実装する" />
+  <meta name="twitter:image" content="https://www.sfpgmr.net/img/sfweb.png" />
+  
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="./index23.html" />
+  <meta property="og:title" content="リニューアル用のトップページデザイン"/>
+  <meta property="og:site_name" content="S.F. Web" />
+  <meta property="og:description" content="Programming,Music,HTML5,WebGL,javascript,WebAudio">
+  <meta property="og:image" content="https://www.sfpgmr.net/img/sfweb.png">
+
+  <style>
+  * {
+  margin: 0;
+  padding: 0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+html {
+  margin: 0;
+  padding: 0;
+  font-size: 10px;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  background: black;
+  color: white;
+}
+
+.top-nav {
+  position: fixed;
+  z-index: 99999;
+  background: rgba(0, 0, 0, 0.5);
+  display: block;
+  width: 100%;
+  height: 32px;
+  color: white;
+}
+
+#sentinel {
+  width: 0px;
+  height: 0px;
+}
+
+.contents {
+  padding-top: 32px;
+  width: 100%;
+  position: relative;
+  content: strict;
+}
+
+@-webkit-keyframes blinking {
+  0% {
+    color: black;
+  }
+  50% {
+    color: white;
+  }
+  100% {
+    color: black;
+  }
+}
+
+@keyframes blinking {
+  0% {
+    color: black;
+  }
+  50% {
+    color: white;
+  }
+  100% {
+    color: black;
+  }
+}
+
+.loading {
+  font-family: monospace;
+  font-size: 24px;
+  position: fixed;
+  width: 100vw;
+  height: 100vh;
+  text-align: center;
+  padding-top: 50vh;
+  z-index: 32768;
+  background: black;
+  -webkit-animation: blinking 2s infinite;
+          animation: blinking 2s infinite;
+  content: strict;
+}
+
+.contents > article {
+  background: #f0f0f0;
+  color: #202020;
+  position: absolute;
+  max-height: 960px;
+  overflow: auto;
+  border-radius: 3px;
+  /* transition: opacity 1s linear;*/
+  opacity: 1.0;
+}
+
+.tweet-header {
+  display: -ms-grid;
+  display: grid;
+  -webkit-box-align: end;
+      -ms-flex-align: end;
+          align-items: end;
+  -ms-grid-columns: 40px 2fr 1fr;
+      grid-template-columns: 40px 2fr 1fr;
+  -ms-grid-rows: 1fr;
+      grid-template-rows: 1fr;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.tweet-img {
+  width: 100%;
+  -o-object-fit: cover;
+     object-fit: cover;
+}
+
+.youtube {
+  position: relative;
+  cursor: pointer;
+}
+
+.youtube > img {
+  width: 100%;
+  -o-object-fit: cover;
+     object-fit: cover;
+}
+
+.youtube > svg.player-play {
+  width: 64px;
+  height: 64px;
+  left: calc(50% - 32px);
+  top: calc(50% - 32px);
+  position: absolute;
+  z-index: 1000;
+  opacity: 0.5;
+}
+
+.youtube:hover > svg.player-play {
+  opacity: 1.0;
+}
+
+.youtube:hover .player-play-1 {
+  stroke: #80808080;
+}
+
+.youtube > div.yt-title {
+  /*text-shadow: #fff 1px 1px 0;*/
+  font-size: 1.2rem;
+  color: white;
+  background: rgba(0, 0, 0, 0.5);
+  position: absolute;
+  left: 0;
+  top: 0;
+  overflow: auto;
+  z-index: 998;
+}
+
+.tweet-profile-img {
+  -ms-grid-column: 1;
+  -ms-grid-column-span: 1;
+  grid-column: 1/2;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+}
+
+.tweet-user-name {
+  -ms-grid-column: 2;
+  -ms-grid-column-span: 1;
+  grid-column: 2/3;
+}
+
+.tweet-date {
+  font-size: 8px;
+  text-align: right;
+  -ms-grid-column: 3;
+  -ms-grid-column-span: 1;
+  grid-column: 3/4;
+}
+
+.contents > twitter-widget {
+  overflow: auto;
+  max-height: 960px;
+  position: absolute;
+}
+
+.contents > article > section > .tweet-text {
+  display: block;
+  padding: 4px;
+  word-break: break-all;
+  font-size: 12px;
+}
+
+.contents > article > h3 {
+  font-size: 12px;
+}
+
+blockquote.card {
+  margin: 4px;
+  padding: 4px;
+  font-size: 12px;
+  background: white;
+  border-radius: 4px;
+}
+
+blockquote.card > header {
+  display: -ms-grid;
+  display: grid;
+  grid-gap: 4px;
+  gap: 4px;
+}
+
+blockquote.card-default > header {
+  -ms-grid-columns: 64px 1fr;
+      grid-template-columns: 64px 1fr;
+}
+
+blockquote.card-large > header {
+  -ms-grid-columns: 1fr;
+      grid-template-columns: 1fr;
+}
+
+blockquote.card > header > img {
+  width: 100%;
+}
+
+div.no-image {
+  display: block;
+  width: 64px;
+  height: 64px;
+  background: gray;
+  color: white;
+  text-align: center;
+  line-height: 64px;
+}
+/*# sourceMappingURL=style.css.map */ 
+  </style>
+</head>
+
+<body>
+  <div class="loading" id="loading">Loading</div>
+  <header class="top-nav">
+    <h1>S.F. Info.</h1>
+  </header>
+  <div class="contents" id="contents" rendersubtree="invisible skip-activation"> 
+    
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1118709573001469952/rbA-Vgev_normal.jpg" />
+        <p class="tweet-user-name">iY☁Yi@iY0Yi</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/iY0Yi/status/1253421556195225608"
+            target="_blank">2020/4/24 5:32:41</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">神が降臨しました...。<br/><a href="https://bit.ly/3cG44ze" target="_blank">bit.ly/3cG44ze</a><br/>#つぶやきGLSL <a href="https://twitter.com/iapafoto/status/1253409264548237312" target="_blank">twitter.com/iapafoto/statu…</a> https://t.co/V77CcGrRDP</p>
+        
+        <video class="tweet-img" controls src="https://video.twimg.com/tweet_video/EWUMEQPU4AQ9_ji.mp4" />
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1212701145379946496/pSDVrvWj_normal.png" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1253622282963939331"
+            target="_blank">2020/4/24 18:50:18</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">rustも一度いじってみたいね。。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/647047958500737024/XhrUBGmb_normal.jpg" />
+        <p class="tweet-user-name">まさとらん@0310lan</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/0310lan/status/1253102263867830272"
+            target="_blank">2020/4/23 8:23:55</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">Windows 98のデザインを忠実に再現したCSSフレームワークがある。<br/>【98.css】<br/><a href="https://jdan.github.io/98.css/" target="_blank">jdan.github.io/98.css/</a> https://t.co/SIsjMGn4RZ</p>
+        
+        <img  class="tweet-img" src="https://pbs.twimg.com/media/EWPp3iBUEAA2Ij7.jpg" />
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1212701145379946496/pSDVrvWj_normal.png" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1252934350263336960"
+            target="_blank">2020/4/22 21:16:42</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">まじっすか。。 <blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="https://twitter.com/syntaxerrors72/status/1252930345210482688" target="_blank"></a></header><div></div></blockquote></p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1212701145379946496/pSDVrvWj_normal.png" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1252840495006412804"
+            target="_blank">2020/4/22 15:03:45</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">そうかあnodeもWASIをサポートしたのかあ。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1252840714230132740"
+            target="_blank">2020/4/22 15:04:37</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">そして14になって--experimental-modulesをつけたときに出るWarningが消えた。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1252843149350731783"
+            target="_blank">2020/4/22 15:14:18</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">WASIってまあwasmからローカル・リソースにアクセスできるにするインターフェースだよなあ。確か。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1252845109202149377"
+            target="_blank">2020/4/22 15:22:05</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">私のような趣味プログラマで困るのは今やってるようなsqlite3のaddonを作るとして、それがいろいろな機種で動くかどうかの検証が難しいということなんだよな。私はMac持ってないんで、macでビルドして動くかどうかの検証ができないし。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1252845548941438986"
+            target="_blank">2020/4/22 15:23:50</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">今はbinding.gypをnode-sqlite3/sqlcipherのものを少しいじって使ってるんで、まあおそらくmacでもビルドできるんだろうけど。いや今はwsl2で動かしてるんで、実際のところwin/linux/macで果たして動くのかどうかは現時点ではわからんよな。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1252846157572653057"
+            target="_blank">2020/4/22 15:26:15</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">これはネイティブ・アドオンなんで各OSのバージョンが必要になってくるからなんだけど、WASIをかませるとその心配が基本なくなるんだよな。コンパイラがWASMバイナリでWASIを通じてリソースにアクセスするようにしておけば。動かすには各OSのランタイムがいるけどね。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1252847107242749958"
+            target="_blank">2020/4/22 15:30:01</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">今のところC/C++とRust、アクセスできるリソースはファイル関係とソケットとかかな？</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1252848859539058688"
+            target="_blank">2020/4/22 15:36:59</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">もともと持ってるnodeからのwasmバインディングだと、リソースへのアクセスがメモリ以外できないんで、そこだけJSのfunctionを呼び出すなりメモリで返してJSが処理を肩代わりする必要があるんだよな。そこが非効率なのよね。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/917625215043194880/DB-47z5l_normal.jpg" />
+        <p class="tweet-user-name">WebAssemblyWeekly@WasmWeekly</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/WasmWeekly/status/1252834739997691905"
+            target="_blank">2020/4/22 14:40:53</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">Node v14 released- with experimental Web Assembly System Interface (WASI) support <a href="https://medium.com/@nodejs/node-js-version-14-available-now-8170d384567e" target="_blank">medium.com/@nodejs/node-j…</a></p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1212701145379946496/pSDVrvWj_normal.png" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1252831082430345217"
+            target="_blank">2020/4/22 14:26:21</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">私がハンバーグを作るときは安直にハウスの「ハンバーガーヘルパー」を使ってしまうことも多いのだが、昔は「バーガーヘルパー」という名前だったんだよな。いつごろ「ハンバーグヘルパー」に変わったんだろうね。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1239108411926523906/nfyNbdxB_normal.jpg" />
+        <p class="tweet-user-name">にご@nigonigosan</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/nigonigosan/status/1251674591295967232"
+            target="_blank">2020/4/19 9:50:52</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">午前中には完成→撮影して、今晩ヤフオク出そうと思います。 https://t.co/BIneUGuTE3</p>
+        
+        <video class="tweet-img" controls src="https://video.twimg.com/ext_tw_video/1251674546895118338/pu/vid/640x360/K1y9DSDOiaUpkpNZ.mp4?tag=10" />
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1026843577878343681/nhRb6hdM_normal.jpg" />
+        <p class="tweet-user-name">バラルバレル@BalalBarrel</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/BalalBarrel/status/1250355726268035073"
+            target="_blank">2020/4/15 18:30:10</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ボスの基本の動きの設定が終わったものの、他の設定に時間が掛かりすぎているので、こちらの「ロックマンXを意識したステージ」をご覧ください。#gamedev #indiedev https://t.co/707RG1WoVv</p>
+        
+        <video class="tweet-img" controls src="https://video.twimg.com/ext_tw_video/1250355043955388422/pu/vid/480x360/hghgu6Ne4INPbOUj.mp4?tag=10" />
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1212701145379946496/pSDVrvWj_normal.png" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1250543592340246528"
+            target="_blank">2020/4/16 6:56:41</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">つぶやきGLSLかあ。。<br/><br/><blockquote class="card card-default"><header><img  src="/resource/ogp.png" /><a href="https://twigl.app/" target="_blank">twigl.app</a></header><div>twigl.app is an online editor for One tweet shader, with gif generator and sound shader.</div></blockquote></p>
+        
+      </section>
+      
+    </article>
+    
+  </div>
+  <footer>
+    CopyLight 2019 Satoshi Fujiwara
+  </footer>
+  <script async src="https://platform.twitter.com/widgets.js"></script>
+
+  <script async src="./index.js"></script>
+
+</body>
+
+</html>

@@ -1,0 +1,726 @@
+<!DOCTYPE html>
+<html lang="ja" prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb# article: http://ogp.me/ns/article#">
+
+<head>
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-15457703-9"></script>
+  <script>
+    if (!location.hostname.match(/localhost/)) {
+      window.dataLayer = window.dataLayer || [];
+      function gtag() { dataLayer.push(arguments); }
+      gtag('js', new Date());
+      gtag('config', 'UA-15457703-9');
+    }
+  </script>
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>トップページをリニューアルする</title>
+  <meta name="description" content="リニューアル用のトップページデザインを考えて実装する" />
+  <meta name="keywords" content="Programming,Music,HTML5,WebGL,javascript,WebAudio" /> 	
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <meta itemprop="image" content="https://www.sfpgmr.net/img/sfweb.png" />
+  <meta itemprop="name" content="S.F. Web" />
+  
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:site" content="S.F. Web" />
+  <meta name="twitter:url" content="./index33.html" />
+  <meta name="twitter:title" content="リニューアル用のトップページデザイン" />
+  <meta name="twitter:description" content="リニューアル用のトップページデザインを考えて実装する" />
+  <meta name="twitter:image" content="https://www.sfpgmr.net/img/sfweb.png" />
+  
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="./index33.html" />
+  <meta property="og:title" content="リニューアル用のトップページデザイン"/>
+  <meta property="og:site_name" content="S.F. Web" />
+  <meta property="og:description" content="Programming,Music,HTML5,WebGL,javascript,WebAudio">
+  <meta property="og:image" content="https://www.sfpgmr.net/img/sfweb.png">
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    html {
+      margin: 0;
+      padding: 0;
+      font-size:10px;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      background: black;
+      color: white;
+    }
+
+    #sentinel {
+      width:0px;
+      height:0px;
+    }
+    .contents {
+      width: 100%;
+      position: relative;
+      content: strict;
+    }
+
+    @keyframes blinking {
+      0% {
+        color: black;
+      }
+
+      50% {
+        color: white;
+      }
+
+      100% {
+        color: black;
+      }
+    }
+
+    .loading {
+      font-family: monospace;
+      font-size: 24px;
+      position: fixed;
+      width: 100vw;
+      height: 100vh;
+      text-align: center;
+      padding-top: 50vh;
+      z-index: 32768;
+      background: black;
+      animation: blinking 2s infinite;
+      content: strict;
+    }
+
+
+    .contents>article {
+      background: #f0f0f0;
+      color: #202020;
+      position: absolute;
+      max-height: 960px;
+      overflow: auto;
+      border-radius: 3px;
+    }
+
+    .tweet-header {
+      display: grid;
+      align-items: end;
+      grid-template-columns: 40px 2fr 1fr;
+      grid-template-rows: 1fr;
+      font-size: 12px;
+      font-weight: bold;
+    }
+
+
+    .tweet-img {
+      width: 100%;
+      object-fit: cover;
+    }
+
+    .youtube {
+      position: relative;
+      cursor: pointer;
+    }
+
+    .youtube > img {
+      width: 100%;
+      object-fit: cover;
+    }
+
+    .youtube > svg.player-play {
+      width:64px;
+      height:64px;
+      left:calc(50% - 32px);
+      top:calc(50% - 32px);
+      position:absolute;
+      z-index: 1000;
+      opacity: 0.5;
+    }
+    
+    .youtube:hover > svg.player-play {
+      opacity: 1.0;
+    }
+
+    .youtube:hover .player-play-1 {
+      stroke:#80808080;
+    }
+
+    
+    .youtube > div.yt-title {
+      /*text-shadow: #fff 1px 1px 0;*/
+      font-size: 1.2rem;
+      color:white;
+      background:rgba(0, 0,0,0.5);
+      position:absolute;
+      left:0;
+      top:0;
+      overflow: auto;
+      z-index:998;
+    }
+
+
+    .tweet-profile-img {
+      grid-column: 1/2;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+    }
+
+    .tweet-user-name {
+      grid-column: 2/3;
+    }
+
+    .tweet-date {
+      font-size: 8px;
+      text-align: right;
+      grid-column: 3/4;
+    }
+
+    .contents>twitter-widget {
+      overflow: auto;
+      max-height: 960px;
+      position: absolute;
+    }
+
+    .contents>article>section>.tweet-text {
+      display: block;
+      padding: 4px;
+      word-break: break-all;
+      font-size: 12px;
+    }
+
+    .contents>article>h3 {
+      font-size: 12px;
+    }
+
+    blockquote.card {
+      margin:4px;
+      padding:4px;
+      font-size:12px;
+      background:white;
+      border-radius: 4px;
+    }
+
+    blockquote.card > header {
+      display:grid;
+      grid-gap:4px;
+      gap:4px;
+    }
+
+    blockquote.card-default > header {
+      grid-template-columns:64px 1fr;
+    }
+
+    blockquote.card-large > header {
+      grid-template-columns:1fr;
+    }
+
+    blockquote.card > header > img {
+      width:100%;
+    }
+
+
+    div.no-image {
+      display: block;
+      width:64px;
+      height:64px;
+      background:gray;
+      color:white;
+      text-align: center;
+      line-height: 64px;
+    }
+
+  </style>
+</head>
+
+<body>
+  <div class="loading" id="loading">Loading</div>
+  <header class="top-nav">
+    <h1>S.F. Info.</h1>
+  </header>
+  <div class="contents" id="contents" rendersubtree="invisible skip-activation"> 
+    
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/960092455486996480/cRvvhRUO_normal.jpg" />
+        <p class="tweet-user-name">herumi@herumi</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/herumi/status/1117912992039849984"
+            target="_blank">2019/4/16 7:10:01</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ディープラーニング、JIT、第2世代Xeon-SP、AVX-512、SIMD化されたexp、キャッシュコントロールなどのキーワードに興味があってIntel職人さんのコードを読んでみたい人向け導入記事として書きました。「そこまでやるんだ。すげー」感を共有したい（ニッチ過ぎる?）。<br/><a href="https://twitter.com/herumi/status/1117699851754459136" target="_blank">twitter.com/herumi/status/…</a></p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/378800000086440757/d1c32c25bb2d85bdcb5dea28292c7623_normal.png" />
+        <p class="tweet-user-name">ぼや@boyahina</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/boyahina/status/1117996232108937216"
+            target="_blank">2019/4/16 12:40:47</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">作ってる端から忘れていく私としては羨ましい話だ。私の場合<br/>・1画面になるだけ沢山の行が入るように書く（数行上を忘れるのでw）<br/>・開発ディレクトリにかならず「boya.txt」があるw（やったことが書いてある）<br/>・出先でコードを書く場合、昔のソースをUSBで持ち歩く（コードが記憶替わり） <a href="https://twitter.com/info_ymcat/status/1117891386286587905" target="_blank">twitter.com/info_ymcat/sta…</a></p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1116816404550836224"
+            target="_blank">2019/4/13 6:32:34</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">どうも帯状疱疹にかかったみたい。痛い。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1116920027892989952"
+            target="_blank">2019/4/13 13:24:20</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">医者に行ったらやっぱりそうだった。おお、痛い。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1117027423357292546"
+            target="_blank">2019/4/13 20:31:05</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">いやー痛いわ。これ。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1117035827236728832"
+            target="_blank">2019/4/13 21:04:29</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ピリピリといたい。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1117246092800745472"
+            target="_blank">2019/4/14 11:00:00</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">あー痛い。。この痛みがあと2週間くらい続くのか。。後遺症が出なければいいんだけど。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1117584521333837824"
+            target="_blank">2019/4/15 9:24:48</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ブログを書いた。<br/><br/><blockquote class="card card-default"><header><img loading="lazy" src="https://www.sfpgmr.net/img/sf.png" /><a href="https://www.sfpgmr.net/blog/entry/2019/04/765881eadb19f1307f5998eb1b34e940.html" target="_blank">S.F. Blog:帯状疱疹</a></header><div>先週あたりから、右胸の下あたり虫刺されのような発疹ができた。ちょっと市民の森を散歩して藪の中に入ってしまったので、ブヨだかアブだかに刺されたのかな？と思っていた。最初はちょっとかゆい感じがした。翌日になると今度は発疹の部分が痛み出した。表面が服に触れるとピリピリした痛みが走る。痛みがあるとするとハチとかなのかな？と思いつつ、市販の軟膏を塗るとすごく痛い。これはおかしいなと思いつつも様子を見ることに...</div></blockquote></p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1115178565719355392"
+            target="_blank">2019/4/8 18:04:23</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">さあ。CSS Gridも勉強するか。。<br/><blockquote class="card card-default"><header><img loading="lazy" src="https://developer.mozilla.org/static/img/opengraph-logo.72382e605ce3.png" /><a href="https://developer.mozilla.org/ja/docs/Web/CSS/CSS_Grid_Layout/Basic_Concepts_of_Grid_Layout" target="_blank">グリッドレイアウトの基本概念 - CSS: カスケーディングスタイルシート | MDN</a></header><div>CSS グリッドレイアウトは、二次元グリッドシステムを CSS にもたらします。グリッドは、主要なページ領域や小さなユーザーインターフェース要素のレイアウトに利用できます。この記事では、 CSS グリッドレイアウトと、 CSS Grid Layout Level 1 仕様の一部の用語について紹介します。この記事では、その概要を紹介し、この一連のガイドの残りで詳細を説明します。</div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1115181063838392320"
+            target="_blank">2019/4/8 18:14:19</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">とりあえずトップページは<br/><br/>・Youtube/Blog/Qiita/Twitter投稿をまとめたポータルみたいな感じの静的ページ<br/><br/>に改造することにしよう。このページはCSS Gridを取り入れることにする。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1115181064786300928"
+            target="_blank">2019/4/8 18:14:19</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">今のページはいちおうCSS FlexBoxを使ってる。<br/><br/><blockquote class="card card-default"><header><img loading="lazy" src="https://www.sfpgmr.net/img/sfweb.png" /><a href="https://www.sfpgmr.net/" target="_blank">S.F. Web</a></header><div>Programming,Music,Game,etc..</div></blockquote><br/><br/>FlexBoxはその時のトレンドだったかもしれん。今はCSS Gridがトレンド？のようだ。いやもう古いのかも。。追っかけてないのでよくわからんけど。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1116085041342271489"
+            target="_blank">2019/4/11 6:06:24</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">cssはpost-cssを使って作ってたが、かなり忘れてしまってるので、思い出そうとしてるところ。cssnextはなくなってpostcss-preset-envに代わってしまったんだったよな。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1116085760434720768"
+            target="_blank">2019/4/11 6:09:15</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">CSSのステージって何だ？<br/><br/><blockquote class="card card-large"><header><img loading="lazy" src="https://cssdb.org/cssdb.jpg" /><a href="https://cssdb.org/#staging-process" target="_blank">cssdb</a></header><div>A comprehensive list of CSS features and their positions in the process of becoming implemented web standards.</div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1116086324870516736"
+            target="_blank">2019/4/11 6:11:30</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">復習しながら新しいフィーチャーを取り込もうと思ってるが、学習に時間がかかりそうだ。なにしろCSSはここ2-3年ほとんどいじってないし。基本的なスタイリングはまあ大丈夫だけど、変数や関数やmixinあたりの記法の記憶がかなり怪しい。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1116086799271522306"
+            target="_blank">2019/4/11 6:13:23</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ブラウザサポートやpolyfillは今までどおりautoprefixerに任そう。<br/><br/><blockquote class="card card-default"><header><img loading="lazy" src="https://avatars3.githubusercontent.com/u/8296347?s=400&v=4" /><a href="https://github.com/postcss/autoprefixer" target="_blank">GitHub - postcss/autoprefixer: Parse CSS and add vendor prefixes to rules by Can I Use</a></header><div> Parse CSS and add vendor prefixes to rules by Can I Use - postcss/autoprefixer</div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1116087202818117632"
+            target="_blank">2019/4/11 6:14:59</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">なぜかトップページの再構築は頭の中で実装の方向性が見えないというか、固まらないんだよな。。いろいろなことが頭の中をめぐり、手を動かすことを阻んでくる感じである。なのでここ2-3日はほとんどコードを書いていない。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1116087931096059904"
+            target="_blank">2019/4/11 6:17:53</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ブログ生成に使ってる静的サイトジェネレータは一応自作なんだけど、これを応用すればトップページ構築にも使えんことはないんだけど、コードを見ると汎用性がない書き方をしてて、自前のコードながらちょっとげんなりしてしまう。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1116088585025753088"
+            target="_blank">2019/4/11 6:20:29</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">検索エンジンがあるんで、トップページの意義も今は薄れてるから、そこに手間暇をかけるというのもどうかなと思ったりもするし。。まあでも今回はちょっとページ・デザインを学ぶという意味でちょっと力を入れてやろうと思うんだけど。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1116088813590212608"
+            target="_blank">2019/4/11 6:21:23</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">モダンなページにしてみたいんだよね。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1116307381850267649"
+            target="_blank">2019/4/11 20:49:54</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">Baylon.jsにも興味が出てきてるんだよな。。<br/><br/><blockquote class="card card-default"><header><img loading="lazy" src="https://www.babylonjs.com/assets/logo-babylonjs-social-twitter.png" /><a href="https://www.babylonjs.com/" target="_blank">Babylon.js: Powerful, Beautiful, Simple, Open - Web-Based 3D At Its Best</a></header><div>Babylon.js is one of the world's leading WebGL-based graphics engines. From a new visual scene inspector, best-in-class physically-based rendering, countless performance optimizations, and much more, Babylon.js brings powerful, beautiful, simple, and open 3D to everyone on the web.</div></blockquote></p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/1137351759456661504/neJofuWI_normal.jpg" />
+        <p class="tweet-user-name">北上部 柚奈@11/22赤坂/23駒込 12/1大塚あくは°UC/8新宿コスメ口@NotFound404_KY</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/NotFound404_KY/status/1115605891133239296"
+            target="_blank">2019/4/9 22:22:26</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">気がついたら2時間かけてた<br/>分かる人には分かれ<br/><br/>#再現CGメーカー https://t.co/EZOcoZ8R12</p>
+        
+        <img loading="lazy" class="tweet-img" src="https://pbs.twimg.com/media/D3ttpB-U0AARQu-.jpg" />
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1115722739929636864"
+            target="_blank">2019/4/10 6:06:44</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">Webの再構築をどうするかで悩むなあ。。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1115214072402927616"
+            target="_blank">2019/4/8 20:25:29</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">すごい雷が。。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/1026843577878343681/nhRb6hdM_normal.jpg" />
+        <p class="tweet-user-name">バラルバレル@BalalBarrel</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/BalalBarrel/status/1114678726833266688"
+            target="_blank">2019/4/7 8:58:12</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">現在制作中のフリーゲームです。新しくなった背景を使った高速道路ステージを見てほしい。#gamedev #indiedev https://t.co/m2lfP1xjuU</p>
+        
+        <video class="tweet-img" controls src="https://video.twimg.com/ext_tw_video/1114676788372709376/pu/vid/640x480/maU_jd3fI8cUFTFm.mp4?tag=8" />
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/877067655223451649/x5rJ3xGx_normal.jpg" />
+        <p class="tweet-user-name">トゥギャッター公式@togetter_jp</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/togetter_jp/status/1115105254024941568"
+            target="_blank">2019/4/8 13:13:04</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">いま最もいいね！が多いまとめは「騙されたと思ってやってみて！！ ストレッチのプロが教える 肩、腰、腕周りのストレッチまとめ「痛くてちぎれる」「生活の質が３段階上がる」」みたいだよ！あなたもチェックしていいね！ボタンをクリック！ <a href="https://togetter.com/li/1334998" target="_blank">togetter.com/li/1334998</a></p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1113773804335943681"
+            target="_blank">2019/4/4 21:02:22</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ちょっと少しずつシェーダーやthree.jsの復習がてら、コンテンツをアップデートしていこうかな。。と思ってるところ。。<br/>まあこれは最近作ったやつだけどね。<br/><br/><blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="https://www.sfpgmr.net/sandbox/shader/20190404/" target="_blank">Three.jsによるアニメーション</a></header><div></div></blockquote> https://t.co/oDub8eeiu3</p>
+        
+        <img loading="lazy" class="tweet-img" src="https://pbs.twimg.com/media/D3Tqzg3UcAU3nqc.jpg" />
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1113773805883625473"
+            target="_blank">2019/4/4 21:02:22</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">昔のコードもたぶん動かなくなってたりするだろうし、three.jsやd3もアップデートしたいし。実験コードとかもすべてこのsandboxディレクトリにまとめていこうかなと。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1113888076307124224"
+            target="_blank">2019/4/5 4:36:27</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ここまでのセンスは私にはないけど、ギャラリー的な感じにトップページを作りかえたいんだよねえ。。GWあたりまではこれに取り組むか。。<br/><blockquote class="card card-large"><header><img loading="lazy" src="http://ykob.github.io/sketch-threejs/img/common/ogp_common.jpg" /><a href="https://ykob.github.io/sketch-threejs/" target="_blank">sketch of three.js</a></header><div>interactive sketches made with three.js. created by yoichi kobayashi.</div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1113904021389996032"
+            target="_blank">2019/4/5 5:39:48</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">webglに対応してるブラウザ（まあ大半はそうだと思うけど）用と、そうでないようのページを静的に生成して、切り替えるようにすればいいだろうかね。とりあえずそんな感じのものを作ろうかな。。まとまってはないが。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1113904698270945280"
+            target="_blank">2019/4/5 5:42:30</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">YoutubeとかQiita（あんまりやってないけど）githubとかまあいろいろなものにコンテンツが散在してるので、これのインデックスとしてのポータルになるようにしようか。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1113904699063726080"
+            target="_blank">2019/4/5 5:42:30</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ちなみに今のトップページはこんな感じなんだな。。<br/><blockquote class="card card-default"><header><img loading="lazy" src="https://www.sfpgmr.net/img/sfweb.png" /><a href="https://www.sfpgmr.net/" target="_blank">S.F. Web</a></header><div>Programming,Music,Game,etc..</div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1113905179588349952"
+            target="_blank">2019/4/5 5:44:24</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">bl\.ocks\.orgのやつもまとめんといかんなあ。。 <br/><br/><blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="http://bl.ocks.org/sfpgmr" target="_blank">SFPGMR’s Blocks - bl.ocks.org</a></header><div></div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1113905545780420608"
+            target="_blank">2019/4/5 5:45:52</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">そしてjxckさんのブログをみて、キャッチアップできるところはしておくと。。<br/><br/><blockquote class="card card-default"><header><img loading="lazy" src="https://jxck.io/assets/img/jxck.png" /><a href="https://blog.jxck.io/" target="_blank">blog.jxck.io</a></header><div>Web Technology Blog by Jxck</div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1113934963571691521"
+            target="_blank">2019/4/5 7:42:45</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">この流れはいつも思いついては放置をここ2-3年繰り返してるので、さてどうなることやら。。HTMLのデザイン的な知識もかなり忘却の彼方。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1114812662523748352"
+            target="_blank">2019/4/7 17:50:25</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">シェーダーコードをちょこちょこ書き始めてる。といっても全くと言っていいほど地味な感じ。画像の簡単なトランジションをglslで書いてみた。。半分忘れてるからね。。かなり復習をせんといかん。。<br/><br/><blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="https://www.sfpgmr.net/sandbox/page-design/trans-a/" target="_blank">S.F.Page(sandbox):glslによる画面トランジション</a></header><div></div></blockquote> https://t.co/7o8Oe4V1E3</p>
+        
+        <img loading="lazy" class="tweet-img" src="https://pbs.twimg.com/media/D3icH34V4AA83bN.jpg" />
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1114813014799081472"
+            target="_blank">2019/4/7 17:51:49</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ちなみに16:9の画面比率じゃないとちゃんと表示されないけどね。テクスチャのアスペクト比まったく考慮してないので。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1114813169547931648"
+            target="_blank">2019/4/7 17:52:26</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">画像がなんで落花生と桜なんだという。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1114813390856151041"
+            target="_blank">2019/4/7 17:53:19</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ちなみにglsl es 3.0で書いてるので、webgl2.0限定でございます。。</p>
+        
+      </section>
+      
+    </article>
+    
+  </div>
+  <footer>
+    CopyLight 2019 Satoshi Fujiwara
+  </footer>
+  <script async src="https://platform.twitter.com/widgets.js"></script>
+
+  <script async src="./index.js"></script>
+
+</body>
+
+</html>

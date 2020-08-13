@@ -1,0 +1,1315 @@
+<!DOCTYPE html>
+
+<html lang="ja" prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb# article: http://ogp.me/ns/article#">
+
+<head>
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-15457703-9"></script>
+  <script>
+    if (!location.hostname.match(/localhost/)) {
+      window.dataLayer = window.dataLayer || [];
+      function gtag() { dataLayer.push(arguments); }
+      gtag('js', new Date());
+      gtag('config', 'UA-15457703-9');
+    }
+  </script>
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>トップページをリニューアルする</title>
+  <meta name="description" content="リニューアル用のトップページデザインを考えて実装する" />
+  <meta name="keywords" content="Programming,Music,HTML5,WebGL,javascript,WebAudio" /> 	
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <meta itemprop="image" content="https://www.sfpgmr.net/img/sfweb.png" />
+  <meta itemprop="name" content="S.F. Web" />
+  
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:site" content="S.F. Web" />
+  <meta name="twitter:url" content="./index2.html" />
+  <meta name="twitter:title" content="リニューアル用のトップページデザイン" />
+  <meta name="twitter:description" content="リニューアル用のトップページデザインを考えて実装する" />
+  <meta name="twitter:image" content="https://www.sfpgmr.net/img/sfweb.png" />
+  
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="./index2.html" />
+  <meta property="og:title" content="リニューアル用のトップページデザイン"/>
+  <meta property="og:site_name" content="S.F. Web" />
+  <meta property="og:description" content="Programming,Music,HTML5,WebGL,javascript,WebAudio">
+  <meta property="og:image" content="https://www.sfpgmr.net/img/sfweb.png">
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    html {
+      margin: 0;
+      padding: 0;
+      font-size:10px;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      background: black;
+      color: white;
+    }
+
+    .top-nav {
+      position:fixed;
+      z-index:99999;
+      background: rgba(0,0,0,0.5);
+      display: block;
+      width:100%;
+      height:32px;
+      color:white;
+    }
+    #sentinel {
+      width:0px;
+      height:0px;
+    }
+    .contents {
+      padding-top:32px;
+      width: 100%;
+      position: relative;
+      content: strict;
+    }
+
+    @keyframes blinking {
+      0% {
+        color: black;
+      }
+
+      50% {
+        color: white;
+      }
+
+      100% {
+        color: black;
+      }
+    }
+
+    .loading {
+      font-family: monospace;
+      font-size: 24px;
+      position: fixed;
+      width: 100vw;
+      height: 100vh;
+      text-align: center;
+      padding-top: 50vh;
+      z-index: 32768;
+      background: black;
+      animation: blinking 2s infinite;
+      content: strict;
+    }
+
+
+    .contents > article {
+      background: #f0f0f0;
+      color: #202020;
+      position: absolute;
+      max-height: 960px;
+      overflow: auto;
+      border-radius: 3px;
+     /* transition: opacity 1s linear;*/
+      opacity: 1.0;
+    }
+
+    .tweet-header {
+      display: grid;
+      align-items: end;
+      grid-template-columns: 40px 2fr 1fr;
+      grid-template-rows: 1fr;
+      font-size: 12px;
+      font-weight: bold;
+    }
+
+
+    .tweet-img {
+      width: 100%;
+      object-fit: cover;
+    }
+
+    .youtube {
+      position: relative;
+      cursor: pointer;
+    }
+
+    .youtube > img {
+      width: 100%;
+      object-fit: cover;
+    }
+
+    .youtube > svg.player-play {
+      width:64px;
+      height:64px;
+      left:calc(50% - 32px);
+      top:calc(50% - 32px);
+      position:absolute;
+      z-index: 1000;
+      opacity: 0.5;
+    }
+    
+    .youtube:hover > svg.player-play {
+      opacity: 1.0;
+    }
+
+    .youtube:hover .player-play-1 {
+      stroke:#80808080;
+    }
+
+    
+    .youtube > div.yt-title {
+      /*text-shadow: #fff 1px 1px 0;*/
+      font-size: 1.2rem;
+      color:white;
+      background:rgba(0, 0,0,0.5);
+      position:absolute;
+      left:0;
+      top:0;
+      overflow: auto;
+      z-index:998;
+    }
+
+
+    .tweet-profile-img {
+      grid-column: 1/2;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+    }
+
+    .tweet-user-name {
+      grid-column: 2/3;
+    }
+
+    .tweet-date {
+      font-size: 8px;
+      text-align: right;
+      grid-column: 3/4;
+    }
+
+    .contents>twitter-widget {
+      overflow: auto;
+      max-height: 960px;
+      position: absolute;
+    }
+
+    .contents>article>section>.tweet-text {
+      display: block;
+      padding: 4px;
+      word-break: break-all;
+      font-size: 12px;
+    }
+
+    .contents>article>h3 {
+      font-size: 12px;
+    }
+
+    blockquote.card {
+      margin:4px;
+      padding:4px;
+      font-size:12px;
+      background:white;
+      border-radius: 4px;
+    }
+
+    blockquote.card > header {
+      display:grid;
+      grid-gap:4px;
+      gap:4px;
+    }
+
+    blockquote.card-default > header {
+      grid-template-columns:64px 1fr;
+    }
+
+    blockquote.card-large > header {
+      grid-template-columns:1fr;
+    }
+
+    blockquote.card > header > img {
+      width:100%;
+    }
+
+
+    div.no-image {
+      display: block;
+      width:64px;
+      height:64px;
+      background:gray;
+      color:white;
+      text-align: center;
+      line-height: 64px;
+    }
+
+  </style>
+</head>
+
+<body>
+  <div class="loading" id="loading">Loading</div>
+  <header class="top-nav">
+    <h1>S.F. Info.</h1>
+  </header>
+  <div class="contents" id="contents" rendersubtree="invisible skip-activation"> 
+    
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1212701145379946496/pSDVrvWj_normal.png" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1286449773340315648"
+            target="_blank">2020/7/24 8:55:01</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">今頃気づいたが、Win10だと「プリンス・オブ・ペルシャ」無料で遊べるんだなあ。どうりでSTEAMで探してもないはずですわ。。しかしキー操作忘れたわ。。 https://t.co/56MZdzxMZe</p>
+        
+        <img  class="tweet-img" src="https://pbs.twimg.com/media/EdpjLt6U8AEULNl.png" />
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1286451868990705665"
+            target="_blank">2020/7/24 9:03:21</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">fan madeも含めてこれだけバリエーションがあるんだなあ。。 https://t.co/Px6Hp2e42p</p>
+        
+        <img  class="tweet-img" src="https://pbs.twimg.com/media/EdplJs0UEAAh2eG.png" />
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1286452047160602624"
+            target="_blank">2020/7/24 9:04:03</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">でもAdがはいっちゃうね。外すのは230円か。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1286453408711360512"
+            target="_blank">2020/7/24 9:09:28</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">このゲームもさんざんやったはずなんだけど、記憶に全然ないのはどういうことか。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1286454041183051776"
+            target="_blank">2020/7/24 9:11:59</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">当時キャラの動きの滑らかさとリアルさに衝撃を受けたんだよね。さすがブローダーバンド社だなと。アクションに加えて若干のパズル要素もあってね。こういうたぐいのゲームにハマってしまうんだよね。Half-LifeなんかもFPS+若干のパズル的（謎解き）要素があって、もちろんハマりましたわ。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1286480692524662784"
+            target="_blank">2020/7/24 10:57:53</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ようやくレベル１クリア。。<br/><div class="youtube" data-type="yt" id="Nn2PFGiic6w"><div class="yt-title">Youtube - Prince Of Persiaで遊ぶ</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img  data-href="https://youtu.be/Nn2PFGiic6w" class="youtube" src="https://i.ytimg.com/vi/Nn2PFGiic6w/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1286481026244468736"
+            target="_blank">2020/7/24 10:59:12</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">しかし面白いなあ。。このゲーム。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1286481433721094144"
+            target="_blank">2020/7/24 11:00:50</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">このOPL丸出しのBGMもいいわ。。Ad Libサウンド全開ですぜ。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1286502964870307848"
+            target="_blank">2020/7/24 12:26:23</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">無料だとセーブできんのですな。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1286506485325807616"
+            target="_blank">2020/7/24 12:40:22</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">しかしこのゲーム、セーブできないと相当つらい。セーブできるようにするにはさらに600円ほど追加が必要かあ。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1286509300592939010"
+            target="_blank">2020/7/24 12:51:34</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">セーブ・ロードはどうしても欲しいので580円払いました😅</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1286516247002148865"
+            target="_blank">2020/7/24 13:19:10</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">なんかこのセーブ・ロード機能って思ったのと違うみたいですな。。無料でもセーブ・ロードできそうな雰囲気もある。よくわからんですわ🤔</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1286524598452854784"
+            target="_blank">2020/7/24 13:52:21</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">やっぱり無料ではできないみたいね。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1286525682189660162"
+            target="_blank">2020/7/24 13:56:39</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">1990年前半に使用してたPCは98ではなく、AXもしくはPC/AT、まれにMacという具合だったので、自然とゲームもAX（EGA)もしくはVGAで動くもので遊んでた。当時大阪だったので日本橋で輸入ソフトウェアを扱っている店で買ったりしてたな。結構安く買えたんだよね。当時は。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1286526572913074176"
+            target="_blank">2020/7/24 14:00:12</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ただこの「Prince of Persia」はなぜかPC98版で遊んでた。たまたま転がってたものがあったのでね。PC98版もよくできてたよ。でもこのゲームもともとはApple II用だったよなあ。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1286529855530496001"
+            target="_blank">2020/7/24 14:13:14</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">これこれ。<br/>アルシスとリバーヒルソフトが移植してたのか。。キャラがよりリアルだったんだよな。確かね。<br/><br/><div class="youtube" data-type="yt" id="8r6-NxxEju4"><div class="yt-title">Youtube - [PC98] Prince of Persia (1990) (Arsys / Riverhillsoft)</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img  data-href="https://youtu.be/8r6-NxxEju4" class="youtube" src="https://i.ytimg.com/vi/8r6-NxxEju4/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1286532567177392128"
+            target="_blank">2020/7/24 14:24:01</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">AXパソコンってグラフィックだけ特殊（JEGAとか言ってたなあ。。）なAT互換機だったんだよな。PC98みたく漢字用のVRAMも持ってたんだよね。ベースはEGAだけど、640x480というビデオ・モードを追加してたな。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1286532940256616448"
+            target="_blank">2020/7/24 14:25:30</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">なんとかLEVEL2をクリア。LEVEL3からセーブ・ロードが使えるみたい。実際使えた。<br/><br/><div class="youtube" data-type="yt" id="6H_c4IH_Rmo"><div class="yt-title">Youtube - Prince of Persia level 2</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img  data-href="https://youtu.be/6H_c4IH_Rmo" class="youtube" src="https://i.ytimg.com/vi/6H_c4IH_Rmo/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1286564063191814146"
+            target="_blank">2020/7/24 16:29:10</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">LEVEL3クリア。難しいわ。。そうか骸骨って死ななかったよな。落とすしかないんだよな。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1286564393635913731"
+            target="_blank">2020/7/24 16:30:29</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ゲームの腕は相当鈍っているのは間違いない。こまめなセーブ・ロードを駆使してようやくですよ。ちょっと情けないな🥲</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1286579733681995776"
+            target="_blank">2020/7/24 17:31:26</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">今LEVEL4をやってるんだけど死ぬと急にコピープロテクト対策用のキーコード入力を求められるんだよね😂<br/>マニュアルはオンラインなのでもちろんついてない。これどうしたらいいんだろう。ちなみにこのままだと初期画面かLEVELに戻る。一応Ad外しとロード・セーブのコストは支払ったんだけどね。。 https://t.co/qDgWSSoz0K</p>
+        
+        <img  class="tweet-img" src="https://pbs.twimg.com/media/EdrYrG5VoAMCIxw.png" />
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1286579833401520128"
+            target="_blank">2020/7/24 17:31:50</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">こういうの昔よくあったなあ。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1286596876725137408"
+            target="_blank">2020/7/24 18:39:33</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">まあちょっとこのアプリは少し？？な気がする。なのでこのPrince of Persia（ファンの間ではPoPと呼ばれているらしい）というソフトウェアの現在の状況についてすこし調べてみることにする。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1286596966768447491"
+            target="_blank">2020/7/24 18:39:55</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">Wikipediaの情報ソースになってしまうんだけども、正式なリリースとしてWindows用のPoPは存在しない😅<br/>UnofficialなものとしてPoPSDLというのが存在している。これはPoPをリバース・エンジニアリングしてSDLで再構築したものだそうだ。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1286597299242561537"
+            target="_blank">2020/7/24 18:41:14</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">そして作者のJordan Mechnerさんは、オリジナル（Apple IIのソースコード）を2012年にgithubに公開している。<br/><blockquote class="card card-default"><header><img  src="https://avatars3.githubusercontent.com/u/1650049?s=400&v=4" /><a href="https://github.com/jmechner/Prince-of-Persia-Apple-II" target="_blank">GitHub - jmechner/Prince-of-Persia-Apple-II: A running-jumping-swordfighting game I made on the Apple II from 1985-89</a></header><div>A running-jumping-swordfighting game I made on the Apple II from 1985-89 - jmechner/Prince-of-Persia-Apple-II</div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1286597529107234817"
+            target="_blank">2020/7/24 18:42:09</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">そして今Readmeを読んでいる。。<br/><blockquote class="card card-default"><header><img  src="https://avatars3.githubusercontent.com/u/1650049?s=400&v=4" /><a href="https://github.com/jmechner/Prince-of-Persia-Apple-II/blob/master/README.md" target="_blank">Prince-of-Persia-Apple-II/README.md at master · jmechner/Prince-of-Persia-Apple-II · GitHub</a></header><div>A running-jumping-swordfighting game I made on the Apple II from 1985-89 - jmechner/Prince-of-Persia-Apple-II</div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1286598572511645698"
+            target="_blank">2020/7/24 18:46:18</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">Readme読むと２０１２年の時点ではPoPの版権はUBIソフトにあったんだね。確かに最近までPoPの名前でいくつかゲームがリリースされてるもんなあ。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1286598817534468097"
+            target="_blank">2020/7/24 18:47:16</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ついでにJordan Mechnerさんのtwitterアカウントがあったのでフォローしておこう😄<br/><blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="https://twitter.com/jmechner" target="_blank">Twitter</a></header><div></div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1286600466441179137"
+            target="_blank">2020/7/24 18:53:49</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ソースコードチラ見したけど6502のアセンブラソースコードですわ。そりゃまあそうか。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1286609191256301570"
+            target="_blank">2020/7/24 19:28:29</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">PoP unofficial websiteにはPoPの初版が「Abandonware」としてダウンロード可能になっている。Abandonwareってなんぞや？「放棄されたソフトウェア」って🤔<br/><br/><blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="https://www.popuw.com/" target="_blank">Prince of Persia Unofficial Website</a></header><div></div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1286618476107333632"
+            target="_blank">2020/7/24 20:05:23</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">おそらくPoP1,2についてはベンダによるサポートが終了している。また作者もそのソフトウェアに対して著作権侵害の申し立てを現時点では行っていない（そもそも行使自体を放棄しているかもであるがそのような記述を見つけることはできなかった）。モヤっとした状態にあるようだ。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1286618972662542336"
+            target="_blank">2020/7/24 20:07:21</a></p>
+      </header>
+      <section>
+        <p class="tweet-text"><blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="http://popuw.com" target="_blank">Prince of Persia Unofficial Website</a></header><div></div></blockquote>や<blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="http://popot.org" target="_blank">News · Prince of Persia: Original Trilogy</a></header><div></div></blockquote>でダウンロードできるpop1/2は製品そのもののバイナリで放棄ソフトウェアの状態で提供されている。さらにそれをリバースエンジニアリングしてSDLにポートしたバージョンがあるというわけですな。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1286619599098671104"
+            target="_blank">2020/7/24 20:09:51</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">PoPの作者とアンオフィシャルなPoPコミュニティは良好な関係にあるようだ。いや、良好なのかどうかはわからんが係争状態にはない状態がもう何年も続いているようだ。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1286619858642169856"
+            target="_blank">2020/7/24 20:10:53</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">このようなレジェンドなソフトウェアがこのような状態にあるというのは驚きだが、まあそういう状態のソフトウェアって星の数ほどあるんだろうな。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1286622097838546945"
+            target="_blank">2020/7/24 20:19:47</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">まあそういうわけでPoP1のSDL版を動かしてみると普通に動きますな。MS Storeのアプリは不要ですわ。結論から言うとね。 https://t.co/YR0Fg37dnL</p>
+        
+        <img  class="tweet-img" src="https://pbs.twimg.com/media/Edr_pgOUwAACRIO.png" />
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1286622833540358145"
+            target="_blank">2020/7/24 20:22:42</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">MS StoreにあるPoP PCというのはDOS BOXで原版を動かしているようである。なのであのライセンス認証のような画面が出てきたのですわ。おそらく。だがこのアプリはグレーではあるがPoP1/2がAbandanwareの状態なので問題があるのかないのかは微妙である。がこのアプリにお金を払った私はアホである😅</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1286623741833707521"
+            target="_blank">2020/7/24 20:26:19</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ちなみにSDLポート版ではセーブ・ロードも１面からできるようである。すばらしい😄 https://t.co/V6PjhwpPkh</p>
+        
+        <img  class="tweet-img" src="https://pbs.twimg.com/media/EdsBOy0UEAE3_0l.png" />
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1286624187222601728"
+            target="_blank">2020/7/24 20:28:05</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">なのでこれからはこのSDLPoPで遊ばせていただくことにする。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1286626173875675138"
+            target="_blank">2020/7/24 20:35:58</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">このPoPの作者のJordan Mechnerさんはソースコードに始まり、開発情報などをコミュニティに対して積極的に開示しているようだ。「いい人」だと思うな。<br/><br/><blockquote class="card card-default"><header><img  src="https://external-preview.redd.it/xQK5t2Q70CJ9yY46xZQCbHzRZdpExQLyXnqJtCDqyVs.jpg?auto=webp&s=81a098e975bcba3a49e6da31bb1766cfc2ebbad1" /><a href="https://www.reddit.com/r/IAmA/comments/gaxsgh/im_jordan_mechner_thirty_years_ago_i_made_a_game/" target="_blank">I'm Jordan Mechner. Thirty years ago, I made a game called Prince of Persia. Now I'm releasing my 1980s game-dev journals as a book. AMA! : IAmA</a></header><div>46,596 votes and 2,315 comments so far on Reddit</div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1286626818989019137"
+            target="_blank">2020/7/24 20:38:32</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">PoPのこのリアルなキャラクタは「ロトスコーピング」という手法で作成されたとのこと。<br/><br/><blockquote class="card card-default"><header><img  src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/43/Tantalizing_Fly_1919.AVI.025q6a4mono.ogv/480px--Tantalizing_Fly_1919.AVI.025q6a4mono.ogv.jpg" /><a href="https://ja.wikipedia.org/wiki/%E3%83%AD%E3%83%88%E3%82%B9%E3%82%B3%E3%83%BC%E3%83%97" target="_blank">ロトスコープ - Wikipedia</a></header><div></div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1286637948230746117"
+            target="_blank">2020/7/24 21:22:46</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">PoPの開発ドキュメント。移植開発者向けに作られたようだ。<br/><a href="https://www.jordanmechner.com/downloads/popsource.pdf" target="_blank">jordanmechner.com/downloads/pops…</a></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1286639989321695234"
+            target="_blank">2020/7/24 21:30:52</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">こういう「放棄ソフトウェア」ってほかにもあるのかなあ。。「4-D Boxing」なんて今どのような状態にあるんだろう。。これもものすごく面白かったんだよね。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1286643293623705600"
+            target="_blank">2020/7/24 21:44:00</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">というわけでSDLPoPでLEVEL3までプレイしてみた。<br/><div class="youtube" data-type="yt" id="xxmfLTstmL8"><div class="yt-title">Youtube - Prince of Persia で遊ぶ (LEVEL3)</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img  data-href="https://youtu.be/xxmfLTstmL8" class="youtube" src="https://i.ytimg.com/vi/xxmfLTstmL8/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1286768305034809345"
+            target="_blank">2020/7/25 6:00:45</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">Abandonwareは「著作権者が既に販売を中止したりサポートを終了したソフトウェアや、著作権者が不明なソフトウェア」。グレーなカテゴリですわ。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1286771987415588864"
+            target="_blank">2020/7/25 6:15:23</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">Abandonewareのポータルもあるね。これはdosboxをemscriptenでビルドしてブラウザ上でもプレイできるようにしているな。。<br/><blockquote class="card card-default"><header><img  src="https://www.myabandonware.com/media/img/facebook/logo-v2.png" /><a href="https://www.myabandonware.com/" target="_blank">My Abandonware - Download Old Video Games</a></header><div>Database of 15900 abandonware games free. One of the most complete video games museum. Take a trip down Memory Lane now! Warning: whole weekends can be lost.</div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1286774564953808896"
+            target="_blank">2020/7/25 6:25:38</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">おそらくこのような類のポータルは、権利関係が明確になったり、申立てがあったソフトウェアを逐次削除することで問題回避を行っているものと思われる。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1286781699888562178"
+            target="_blank">2020/7/25 6:53:59</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">話をPoPに戻す。ソースコードをよくよく見ると、キャラクタデータやレベルマップなども公開してるなあ。ふつうはソースコードだけだったりすることも多いんだけどね。<br/><br/><blockquote class="card card-default"><header><img  src="https://avatars3.githubusercontent.com/u/1650049?s=400&v=4" /><a href="https://github.com/jmechner/Prince-of-Persia-Apple-II" target="_blank">GitHub - jmechner/Prince-of-Persia-Apple-II: A running-jumping-swordfighting game I made on the Apple II from 1985-89</a></header><div>A running-jumping-swordfighting game I made on the Apple II from 1985-89 - jmechner/Prince-of-Persia-Apple-II</div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1286784152524558337"
+            target="_blank">2020/7/25 7:03:43</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">Readmeを読むと、このソースコードの利用に関しては以下としている。<br/><br/>「このソースコードの作者であり著作権者である私は、だれもがこのソースコードを研究したり、修正したり、実行してみることに個人的には何の問題もありません。」<br/><br/><blockquote class="card card-default"><header><img  src="https://avatars3.githubusercontent.com/u/1650049?s=400&v=4" /><a href="https://github.com/jmechner/Prince-of-Persia-Apple-II/blob/master/README.md" target="_blank">Prince-of-Persia-Apple-II/README.md at master · jmechner/Prince-of-Persia-Apple-II · GitHub</a></header><div>A running-jumping-swordfighting game I made on the Apple II from 1985-89 - jmechner/Prince-of-Persia-Apple-II</div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1286785506416590849"
+            target="_blank">2020/7/25 7:09:06</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">個人の範囲内でこのソースコードを使って楽しむ分には何をしてもいいよと作者自身は言ってるんだな。<br/><br/>でもPoPの製作や配布する権利を持っているのはUBIであると続けている。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1286798063059705856"
+            target="_blank">2020/7/25 7:59:00</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">Jordan Mechnerさんの「The Making of Prince of Persia: Journals 1985 - 1993 」をポチってしまった。Kindle版で600円くらいだったので😅<br/><br/><blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="https://amzn.to/2WTHBJI" target="_blank">警告：アダルトコンテンツ</a></header><div></div></blockquote> @amazonより</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1286948949459210242"
+            target="_blank">2020/7/25 17:58:34</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">この動画も観た。最初は敵キャラのとの格闘はAPPLE Ⅱのメモリの都合で仕様になかった。まずメインキャラを１ビットシフトしてXORすることでキャラデータを増やさずにシャドウ・マンを実現。そして拡張メモリの隠しメモリ12Kを使う方法を編み出して敵キャラを登場させた。<br/><br/><div class="youtube" data-type="yt" id="sw0VfmXKq54"><div class="yt-title">Youtube - How Prince of Persia Defeated Apple II's Memory Limitations | War Stories | Ars Technica</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img  data-href="https://youtu.be/sw0VfmXKq54" class="youtube" src="https://i.ytimg.com/vi/sw0VfmXKq54/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1286950261097771008"
+            target="_blank">2020/7/25 18:03:47</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ゲームのアイデアは映画「レイダース・失われたアーク」、「ロード・ランナー」、「The Castle of Dr. Creep」から着想したそうだ。確かに言われてみればそうだなあ。「The Castle of Dr. Creep」というゲームは知らんなあ。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1286953225854148609"
+            target="_blank">2020/7/25 18:15:34</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">「The Castle of Dr. Creep」もロード・ランナーっぽいゲームなんだなあ。クリアの時にトンネルの中の階段を上がってくところは確かにPoPにもあるね。。<br/><div class="youtube" data-type="yt" id="mi2dvxcioBw"><div class="yt-title">Youtube - C64 Longplay - Castles Of Dr.Creep</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img  data-href="https://youtu.be/mi2dvxcioBw" class="youtube" src="https://i.ytimg.com/vi/mi2dvxcioBw/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1286956499609108481"
+            target="_blank">2020/7/25 18:28:34</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">キャラ作成は以下の手番で行われたようだ。<br/><br/>１．VHSビデオカメラで撮影<br/>２．それをコマ送りで再生してカメラで撮影<br/>３．それをハンドメイドで簡略化<br/>４.   ビデオ・デジタイザで取り込み<br/><br/>ビデオ・デジタイザはDS65というオプション・カードを使用していた模様<br/><br/><blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="http://www.vintagecomputing.com/wp-content/images/retroscan/apple_ds65_digisector_large.jpg" target="_blank">apple_ds65_digisector_large.jpg (1000×515)</a></header><div></div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1286956641032630274"
+            target="_blank">2020/7/25 18:29:08</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">デジタイズした後は自作のエディタで編集したようですな。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1287189328460824578"
+            target="_blank">2020/7/26 9:53:45</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">Apple Ⅱのグラフィックって面白いなあ。。特にハイレゾモードが。<br/><br/><blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="https://en.wikipedia.org/wiki/Apple_II_graphics#High-Resolution_(Hi-Res)_graphics" target="_blank">Apple II graphics - Wikipedia</a></header><div></div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1287189641574023168"
+            target="_blank">2020/7/26 9:55:00</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">Apple IIのあの独特の色使いはハードウェアの仕様によるものなんだなあ。。 https://t.co/BwkqgK7ls6</p>
+        
+        <img  class="tweet-img" src="https://pbs.twimg.com/media/Ed0EHy9VoAA_RrA.png" />
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1287323448574763008"
+            target="_blank">2020/7/26 18:46:42</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">Apple IIのカラーのしくみを学んだので、ソースコードレポジトリに入っているキャラクタデータの一部をmatplotlibを使って表示してみた。が、ちょっと色がおかしいな。。 https://t.co/jqODWDm14n</p>
+        
+        <img  class="tweet-img" src="https://pbs.twimg.com/media/Ed19vbpU0AEh2rs.png" />
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1287324203436318721"
+            target="_blank">2020/7/26 18:49:42</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">横に１ビットずれてるから皮膚の色がおかしくなってるんだと思う。ゲーム中でそれを補正してるような気もするし、私のApple IIのハイレゾ・モードの理解度がまだ足りてない気もする。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1287331443354419200"
+            target="_blank">2020/7/26 19:18:28</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">骸骨くんもなんか頭が欠けてる気がしないでもないね。。 https://t.co/Bhe86qTc5R</p>
+        
+        <img  class="tweet-img" src="https://pbs.twimg.com/media/Ed2FHWSU8AAZzzo.png" />
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1287332025314054146"
+            target="_blank">2020/7/26 19:20:46</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">しかし少ないデータであの滑らかな動きを実現しているのはほんとにすごいな。48Kですからな。Apple IIってね。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1287332819727859712"
+            target="_blank">2020/7/26 19:23:56</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">横2ピクセルのビットバターンでその2ピクセルの色が決まるんだよね。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1287333099613728768"
+            target="_blank">2020/7/26 19:25:03</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">1バイト7ピクセルという特殊なVRAM配置ですわ。しかしこのVRAMもウォズの魔法がかかっとるわ。間違いなく。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1287333696878415873"
+            target="_blank">2020/7/26 19:27:25</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">お姫様が起き上がって抱きつくシーンだな。いやー素晴らしいドット絵ですわ。この色ずれの問題なんとかしたいなあ。。どこがおかしいのか。。 https://t.co/zY4CLmLgJT</p>
+        
+        <img  class="tweet-img" src="https://pbs.twimg.com/media/Ed2G-U2U0AMBw9G.png" />
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1287343882410156033"
+            target="_blank">2020/7/26 20:07:53</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">起き上がるんじゃなくて振り返って抱きつくんだった。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1287357191775690754"
+            target="_blank">2020/7/26 21:00:47</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">6502のソースコードを見てる。やはりキャラはオフセット足しとるよなあ。Fcheckの下位5ビットにキャラの左端からのピクセルオフセットが入っている。それを符号反転したものとFdxを足してオフセットを求める。これにキャラの現在位置を足して描画位置とするようだ。 https://t.co/rfhY7pbLfA</p>
+        
+        <img  class="tweet-img" src="https://pbs.twimg.com/media/Ed2bqq9UwAEU8TR.png" />
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1287358338133417984"
+            target="_blank">2020/7/26 21:05:20</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">6502だと符号反転（NEG）命令がないんだった。なので$ffとeor(xor)とって1足しているのか。。さらにADDもないんだった。ADCのみだった。それでCLCをADCの前に入れとるんだなあ。。なんか思い出してきたぞ😄</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1287358590156550144"
+            target="_blank">2020/7/26 21:06:20</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">キャラごとに補正するためのテーブルってやっぱりこれみたいだなあ。。 https://t.co/mYvxL28u0k</p>
+        
+        <img  class="tweet-img" src="https://pbs.twimg.com/media/Ed2dzudVAAIzv0H.png" />
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1287359156995764229"
+            target="_blank">2020/7/26 21:08:35</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">しかし一体私は何をやっているんだか。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1287367458358038529"
+            target="_blank">2020/7/26 21:41:34</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">手っ取り早く色がおかしいキャラは1列0ビットを挿入して直してしまった😅 https://t.co/pGzm9gMlrm</p>
+        
+        <img  class="tweet-img" src="https://pbs.twimg.com/media/Ed2l3qyUEAAxzjX.png" />
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1287367804870471682"
+            target="_blank">2020/7/26 21:42:57</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">お姫様もちゃんとした色になった😄 https://t.co/xL3J5qKFo2</p>
+        
+        <img  class="tweet-img" src="https://pbs.twimg.com/media/Ed2mMGiUEAAWHOn.png" />
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1287367952900059136"
+            target="_blank">2020/7/26 21:43:32</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">直ったから何がどうなるというのではないのだが😅</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1287368764036485121"
+            target="_blank">2020/7/26 21:46:46</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">キャラってHigh Bitの4色で作ってるんだなあ。よくできるわあ。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1287369115129114625"
+            target="_blank">2020/7/26 21:48:09</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">とりあえずmatplotlibの勉強にはなった。Appleのハイレゾモードでの描画エミュレートもできたし😅</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1287515742192013312"
+            target="_blank">2020/7/27 7:30:48</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">matplotlibが便利すぎてたまらん感じになっている😄<br/>これ会社でも使おうと思う😅</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1287516196347105282"
+            target="_blank">2020/7/27 7:32:36</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">今のところPoP+python+matplotlibで幸せな時を過ごせている👍</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1287685110980947968"
+            target="_blank">2020/7/27 18:43:49</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">10代のころApple IIにあこがれてた時期があってね。大阪の日本橋にある電気屋さんに実機がショーウィンドウの中に飾ってあって、それをしばらく眺めてるような時期があったんだよね。買うなんていうのはとんでもない。当時モニターやらなにやら買いそろえると60万くらいしたからね😅</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1287686422523023360"
+            target="_blank">2020/7/27 18:49:01</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">当時Apple IIの互換機みたいなものも売ってたんだよな。それってほんとの意味での互換機だったのか謎だけど、セミキットのような感じで本物の半分くらいの価格で変えたような気がする。共立電子の古い店舗で見かけたんだよな。それ。それもショーウィンドウで飾られたな。確か。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1287687008744173568"
+            target="_blank">2020/7/27 18:51:21</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">PoPもそうなんだけど、革新的なゲームはApple IIから生まれてきてる感じもしてた。アドベンチャーゲームとかロールプレイングゲームとかね。Apple IIから生まれたのではないのかもしれないけれど、有名どころはまずApple IIからのリリースだったもんね。「ウィザードリィ」とかね。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1287687367071997954"
+            target="_blank">2020/7/27 18:52:47</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">そして当時にしては精細なグラフィック機能であったり、そのパッケージのデザインとかちょっと他のPCと一線を画してたのは間違いないよな。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1287687946636673024"
+            target="_blank">2020/7/27 18:55:05</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ベーマガなんかでもApple IIのゲームを紹介するコーナーがあったと思うんだよね。そこでのゲーム紹介を読んで、憧れをさらに強くしたもんですよ。実際に触ったことないのにね😅</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1287688084193067008"
+            target="_blank">2020/7/27 18:55:38</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ウィザードリィなんてプレイしたことなんて1回もないよ😅</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1287688655075602432"
+            target="_blank">2020/7/27 18:57:54</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ロードランナーとかも何かのパソコンの移植だったような気もするんだよなあ。X1かなあ。。ブローダーバンド社というのが一時代を築いた時期でしたな。。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1227856682270674945/8rn5dnGA_normal.jpg" />
+        <p class="tweet-user-name">清い竜@課題に追われる暇人@clean_dradra</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/clean_dradra/status/1287382391808393216"
+            target="_blank">2020/7/26 22:40:55</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">https://t.co/w5hxUxq7c3</p>
+        
+        <img  class="tweet-img" src="https://pbs.twimg.com/media/Ed2zdOyVAAAUm-f.png" />
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1285352006714941440/KWTqmdor_normal.jpg" />
+        <p class="tweet-user-name">みねか🌸タウイタウイの五月雨提督⚓️@kawamineka</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/kawamineka/status/1287444053190045699"
+            target="_blank">2020/7/27 2:45:56</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">やっと敵と自機のミサイルの当たり判定と爆発を実装しました・・・<br/>つかれた・・・ https://t.co/6O4QRNADkK</p>
+        
+        <video class="tweet-img" controls src="https://video.twimg.com/ext_tw_video/1287444009175064576/pu/vid/960x720/wd7irp88xXR3PSjb.mp4?tag=10" />
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1231229040985436161/sQo-_dcp_normal.jpg" />
+        <p class="tweet-user-name">株式会社ゼンリン@ZENRIN_official</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/ZENRIN_official/status/1287550730245611521"
+            target="_blank">2020/7/27 9:49:50</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">微レ存どころか…ほぼそれ🤔<br/>※これはゲームではありません。 <a href="https://twitter.com/Kirisame_MH/status/1286884505068769280" target="_blank">twitter.com/Kirisame_MH/st…</a> https://t.co/EdtFcZgazX</p>
+        
+        <video class="tweet-img" controls src="https://video.twimg.com/ext_tw_video/1287549785231122432/pu/vid/640x360/qpB4Rx5RU05oBee8.mp4?tag=10" />
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1285175460087750657/7q691B_6_normal.jpg" />
+        <p class="tweet-user-name">BBコリー✂︎@BitBlt_Korry</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/BitBlt_Korry/status/1287342094290313218"
+            target="_blank">2020/7/26 20:00:47</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">紙工作のミキサー車、ついに完成！！<br/>約3週間、紙を切り貼りし続けました！<br/><br/>糊と汚し用塗料以外は全て紙です！<br/><br/>可動部や質感も完全再現を目指し頑張ったので、すごいと思ったら拡散お願いします！！<br/><br/>#紙でミキサー車作る https://t.co/G1qxBkQOCm</p>
+        
+        <img  class="tweet-img" src="https://pbs.twimg.com/media/Ed2Ov4AU4AEsjiO.jpg" />
+        
+        <img  class="tweet-img" src="https://pbs.twimg.com/media/Ed2Ov4FU4AALiDu.jpg" />
+        
+        <img  class="tweet-img" src="https://pbs.twimg.com/media/Ed2Ov4IUcAA-qWz.jpg" />
+        
+        <img  class="tweet-img" src="https://pbs.twimg.com/media/Ed2Ov4JU4AID8P5.jpg" />
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1212701145379946496/pSDVrvWj_normal.png" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1287344791865323520"
+            target="_blank">2020/7/26 20:11:30</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">@voyetrasyn 私もApple IIは詳しくないのですが、色ずれがないとApple IIらしさがなくなる気がしますね。。あの色のあの感じが独特でしたからね。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1212701145379946496/pSDVrvWj_normal.png" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1286615706033823745"
+            target="_blank">2020/7/24 19:54:23</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">@akune69 昔のゲームの大半はアセンブラ・ベースでしたね。パソコン用のコンパイラもまだ黎明期で今のような最適化機能はありませんでしたし、PCの処理速度も厳しくアセンブラで書かざるを得なかったという側面はありましたね。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1280826850923560962/f2OS7f9p_normal.jpg" />
+        <p class="tweet-user-name">ざきち@zakichi_</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/zakichi_/status/1286220155391860736"
+            target="_blank">2020/7/23 17:42:36</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">#4連休だ俺のフリゲを遊んでくれ<br/><br/>VASTYNEX<br/><br/>#サンダーフォース 関連の動画を見ていたらなぜか急にやる気が出てそれまでいくつか温めていたネタがあったので勢いで作った #STG<br/><br/>他にもあれやこれやが登場するかもしれません<br/><br/>DL:<a href="http://zakichi.ojaru.jp/vastynex.html" target="_blank">zakichi.ojaru.jp/vastynex.html</a> https://t.co/z4jiUNv0EO</p>
+        
+        <video class="tweet-img" controls src="https://video.twimg.com/ext_tw_video/1286219926529650688/pu/vid/432x270/oK4uMgWcS2aeMQaA.mp4?tag=10" />
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1212701145379946496/pSDVrvWj_normal.png" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1286229208046252032"
+            target="_blank">2020/7/23 18:18:34</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">オールアバウトナムコかあ。。持ってたなあ。。XEVIOUSのSEの譜面とかこれに載ってたんだっけかな。。<br/><br/><blockquote class="card card-default"><header><img  src="https://www.dempa.co.jp/img_sns.png" /><a href="https://www.dempa.co.jp/latest_information_2.php" target="_blank">最新情報</a></header><div>株式会社電波新聞社</div></blockquote></p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1212701145379946496/pSDVrvWj_normal.png" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1286118064421888000"
+            target="_blank">2020/7/23 10:56:56</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">マジなのか。。<br/>私のコードも北極の地下に保存されとるわ。 https://t.co/ysEHM51SDG</p>
+        
+        <img  class="tweet-img" src="https://pbs.twimg.com/media/Edk1HEVUwAAu1wU.png" />
+        
+      </section>
+      
+    </article>
+    
+  </div>
+  <footer>
+    CopyLight 2019 Satoshi Fujiwara
+  </footer>
+  <script async src="https://platform.twitter.com/widgets.js"></script>
+
+  <script async src="./index.js"></script>
+
+</body>
+
+</html>

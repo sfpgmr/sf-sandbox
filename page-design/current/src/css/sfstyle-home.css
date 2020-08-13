@@ -1,0 +1,20 @@
+@import "./include/base.css";
+
+/* デバイス共通属性 */
+@media screen {
+
+  header {
+    background-image: url('../img/fuji-2.jpg');
+    background-size:cover;
+    background-position: 58% 5%;
+    min-height:30vh;
+  }
+
+}
+
+/* スマートフォン向け */
+@media (--smart-phone) {
+  header {
+    min-height:30vh;
+  }
+}

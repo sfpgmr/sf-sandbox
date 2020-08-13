@@ -1,0 +1,1146 @@
+<!DOCTYPE html>
+<html lang="ja" prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb# article: http://ogp.me/ns/article#">
+
+<head>
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-15457703-9"></script>
+  <script>
+    if (!location.hostname.match(/localhost/)) {
+      window.dataLayer = window.dataLayer || [];
+      function gtag() { dataLayer.push(arguments); }
+      gtag('js', new Date());
+      gtag('config', 'UA-15457703-9');
+    }
+  </script>
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>トップページをリニューアルする</title>
+  <meta name="description" content="リニューアル用のトップページデザインを考えて実装する" />
+  <meta name="keywords" content="Programming,Music,HTML5,WebGL,javascript,WebAudio" /> 	
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <meta itemprop="image" content="https://www.sfpgmr.net/img/sfweb.png" />
+  <meta itemprop="name" content="S.F. Web" />
+  
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:site" content="S.F. Web" />
+  <meta name="twitter:url" content="./index55.html" />
+  <meta name="twitter:title" content="リニューアル用のトップページデザイン" />
+  <meta name="twitter:description" content="リニューアル用のトップページデザインを考えて実装する" />
+  <meta name="twitter:image" content="https://www.sfpgmr.net/img/sfweb.png" />
+  
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="./index55.html" />
+  <meta property="og:title" content="リニューアル用のトップページデザイン"/>
+  <meta property="og:site_name" content="S.F. Web" />
+  <meta property="og:description" content="Programming,Music,HTML5,WebGL,javascript,WebAudio">
+  <meta property="og:image" content="https://www.sfpgmr.net/img/sfweb.png">
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    html {
+      margin: 0;
+      padding: 0;
+      font-size:10px;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      background: black;
+      color: white;
+    }
+
+    .top-nav {
+      position:fixed;
+      z-index:99999;
+      background: rgba(0,0,0,0.5);
+      display: block;
+      width:100%;
+      height:32px;
+      color:white;
+    }
+    #sentinel {
+      width:0px;
+      height:0px;
+    }
+    .contents {
+      padding-top:32px;
+      width: 100%;
+      position: relative;
+      content: strict;
+    }
+
+    @keyframes blinking {
+      0% {
+        color: black;
+      }
+
+      50% {
+        color: white;
+      }
+
+      100% {
+        color: black;
+      }
+    }
+
+    .loading {
+      font-family: monospace;
+      font-size: 24px;
+      position: fixed;
+      width: 100vw;
+      height: 100vh;
+      text-align: center;
+      padding-top: 50vh;
+      z-index: 32768;
+      background: black;
+      animation: blinking 2s infinite;
+      content: strict;
+    }
+
+
+    .contents > article {
+      background: #f0f0f0;
+      color: #202020;
+      position: absolute;
+      max-height: 960px;
+      overflow: auto;
+      border-radius: 3px;
+      transition: opacity 1s linear;
+      opacity: 0.0;
+    }
+
+    .tweet-header {
+      display: grid;
+      align-items: end;
+      grid-template-columns: 40px 2fr 1fr;
+      grid-template-rows: 1fr;
+      font-size: 12px;
+      font-weight: bold;
+    }
+
+
+    .tweet-img {
+      width: 100%;
+      object-fit: cover;
+    }
+
+    .youtube {
+      position: relative;
+      cursor: pointer;
+    }
+
+    .youtube > img {
+      width: 100%;
+      object-fit: cover;
+    }
+
+    .youtube > svg.player-play {
+      width:64px;
+      height:64px;
+      left:calc(50% - 32px);
+      top:calc(50% - 32px);
+      position:absolute;
+      z-index: 1000;
+      opacity: 0.5;
+    }
+    
+    .youtube:hover > svg.player-play {
+      opacity: 1.0;
+    }
+
+    .youtube:hover .player-play-1 {
+      stroke:#80808080;
+    }
+
+    
+    .youtube > div.yt-title {
+      /*text-shadow: #fff 1px 1px 0;*/
+      font-size: 1.2rem;
+      color:white;
+      background:rgba(0, 0,0,0.5);
+      position:absolute;
+      left:0;
+      top:0;
+      overflow: auto;
+      z-index:998;
+    }
+
+
+    .tweet-profile-img {
+      grid-column: 1/2;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+    }
+
+    .tweet-user-name {
+      grid-column: 2/3;
+    }
+
+    .tweet-date {
+      font-size: 8px;
+      text-align: right;
+      grid-column: 3/4;
+    }
+
+    .contents>twitter-widget {
+      overflow: auto;
+      max-height: 960px;
+      position: absolute;
+    }
+
+    .contents>article>section>.tweet-text {
+      display: block;
+      padding: 4px;
+      word-break: break-all;
+      font-size: 12px;
+    }
+
+    .contents>article>h3 {
+      font-size: 12px;
+    }
+
+    blockquote.card {
+      margin:4px;
+      padding:4px;
+      font-size:12px;
+      background:white;
+      border-radius: 4px;
+    }
+
+    blockquote.card > header {
+      display:grid;
+      grid-gap:4px;
+      gap:4px;
+    }
+
+    blockquote.card-default > header {
+      grid-template-columns:64px 1fr;
+    }
+
+    blockquote.card-large > header {
+      grid-template-columns:1fr;
+    }
+
+    blockquote.card > header > img {
+      width:100%;
+    }
+
+
+    div.no-image {
+      display: block;
+      width:64px;
+      height:64px;
+      background:gray;
+      color:white;
+      text-align: center;
+      line-height: 64px;
+    }
+
+  </style>
+</head>
+
+<body>
+  <div class="loading" id="loading">Loading</div>
+  <header class="top-nav">
+    <h1>S.F. Info.</h1>
+  </header>
+  <div class="contents" id="contents" rendersubtree="invisible skip-activation"> 
+    
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1082924844138651648"
+            target="_blank">2019/1/9 17:59:37</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">二重思考か。。 <blockquote class="card card-default"><header><img loading="lazy" src="https://pbs.twimg.com/profile_images/1148860451549147137/pvcubB43_400x400.png" /><a href="https://twitter.com/EzoeRyou/status/1082822166255611904" target="_blank">Ryou Ezoe(江添 亮)さんのツイート: "奨学金と謳いつつ実態は借金であることを理解するにはダブルシンクを理解する必要がある。ダブルシンクとは2つの矛盾する事実が同時に存在しうるという概念である。ダブルシンクの理解にはダブルシンクが必要だ。党は常に正しい。"</a></header><div>“奨学金と謳いつつ実態は借金であることを理解するにはダブルシンクを理解する必要がある。ダブルシンクとは2つの矛盾する事実が同時に存在しうるという概念である。ダブルシンクの理解にはダブルシンクが必要だ。党は常に正しい。”</div></blockquote></p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/1046987301874741249/uTQ7cmCC_normal.jpg" />
+        <p class="tweet-user-name">中国最新情報(xChina)@xChina4</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/xChina4/status/1082094737371217920"
+            target="_blank">2019/1/7 11:01:04</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">豆腐をめっちゃ細かく切るプロ https://t.co/CBj2wnAfAY</p>
+        
+        <video class="tweet-img" controls src="https://video.twimg.com/ext_tw_video/1082094637823668224/pu/vid/320x568/IDGghioJu276v5jP.mp4?tag=6" />
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1082377521973190661"
+            target="_blank">2019/1/8 5:44:45</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">休み明けの初日の出勤はさすがに疲れたなあ。電車もなぜか混雑するし。。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1081839855951216640"
+            target="_blank">2019/1/6 18:08:15</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">さて私がすでに1000回は聴いてるであろう「BEHIND THE MASK」ですが。<br/><br/><div class="youtube" data-type="yt" id="u4VMLYnH_Dc"><div class="yt-title">Youtube - Yellow Magic Orchestra - Behind the Mask (1979)</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/u4VMLYnH_Dc" class="youtube" src="https://i.ytimg.com/vi/u4VMLYnH_Dc/hqdefault.jpg" /></div>   <br/><br/><br/>この曲はキックがMoog III-Cで作られてるらしい。スネアは生とシンセのノイズ、ハイハットは生という構成だと思われる。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1081840487663775744"
+            target="_blank">2019/1/6 18:10:46</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">この曲はSEIKOのCM用に作られた坂本さんの曲がベースとなっているとのこと。この曲を聴きたいがためにUC-YMOも買いました。。<br/><br/><div class="youtube" data-type="yt" id="mEm8_Xzwlvs"><div class="yt-title">Youtube - Behind The Mask (SEIKO Quartz CM Version) / Yellow Magic Orchestra</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/mEm8_Xzwlvs" class="youtube" src="https://i.ytimg.com/vi/mEm8_Xzwlvs/hqdefault.jpg" /></div>   <br/><br/><br/>アレンジは「千のナイフ」のアルバムっぽいよね。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1081841661976563713"
+            target="_blank">2019/1/6 18:15:26</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">この曲ってマイケルジャクソンがカバーしようとしたことでも有名だよなあ。こういのあるところからするとレコーディングまでしたのかな。。<br/><br/><div class="youtube" data-type="yt" id="5bOkWTprifg"><div class="yt-title">Youtube - Michael Jackson - Behind the Mask</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/5bOkWTprifg" class="youtube" src="https://i.ytimg.com/vi/5bOkWTprifg/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1081841662945517569"
+            target="_blank">2019/1/6 18:15:26</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">このアレンジで最初に出たのは以下の方のようなんだよな。。<br/><br/><div class="youtube" data-type="yt" id="4SreNsrMu7k"><div class="yt-title">Youtube - 1985 Greg Phillinganes :: Behind the Mask @ 432 Hz</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/4SreNsrMu7k" class="youtube" src="https://i.ytimg.com/vi/4SreNsrMu7k/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1081842241474183173"
+            target="_blank">2019/1/6 18:17:44</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">さらにこれをエリック・クラプトンがカバーしたりとか。<br/>ちなみにこれも買ってしまいました。。<br/><br/><div class="youtube" data-type="yt" id="d_xMJscsw7w"><div class="yt-title">Youtube - Eric Clapton - Behind The Mask</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/d_xMJscsw7w" class="youtube" src="https://i.ytimg.com/vi/d_xMJscsw7w/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1081842242430464000"
+            target="_blank">2019/1/6 18:17:44</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">これをさらに坂本さんがセルフカバーするという。面白いよね。<br/><br/><div class="youtube" data-type="yt" id="hZpB2rBe7uQ"><div class="yt-title">Youtube - BEHIND THE MASK　坂本龍一 RYUICHI SAKAMOTO</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/hZpB2rBe7uQ" class="youtube" src="https://i.ytimg.com/vi/hZpB2rBe7uQ/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1081842611248193537"
+            target="_blank">2019/1/6 18:19:12</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">このアレンジを聴いたのは確かメディア・バーン・ライブの時のやつだったと思うんだよな。やっぱりロックなんだなあ。この曲は。。と思った。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1081844448718278656"
+            target="_blank">2019/1/6 18:26:30</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">この曲は好きすぎて、自分でソフトシンセでコピーして再現しようと頑張ったが、このレベルで力尽きました。。<br/><br/><div class="youtube" data-type="yt" id="8yRyV6AXcOM"><div class="yt-title">Youtube - YMO - BEHIND THE MASK (7)</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/8yRyV6AXcOM" class="youtube" src="https://i.ytimg.com/vi/8yRyV6AXcOM/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1081845655033675776"
+            target="_blank">2019/1/6 18:31:18</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">まだ道半ばの出来といったところで力尽きるという、いつもの私のパターンですが。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1081849641266601984"
+            target="_blank">2019/1/6 18:47:08</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">トラックごとに音が聴けるというので2-3年前にGIGA CAPSULEも中古で買ったりもしたなあ。。 https://t.co/Qc4DzLjC5O</p>
+        
+        <img loading="lazy" class="tweet-img" src="https://pbs.twimg.com/media/DwOAgKjVYAA6sc3.jpg" />
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1081849801946279936"
+            target="_blank">2019/1/6 18:47:47</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">これは私が死ぬまで保有し続けるつもりの実物でございます。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1081850398611189760"
+            target="_blank">2019/1/6 18:50:09</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ただ残念なことにトラックの音声ファイルは音質がかなり悪い。さらに悪いことに私のWin10環境では再生できない。というかShockwaveのアプリが動かんだけですけどね。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1081851650245939200"
+            target="_blank">2019/1/6 18:55:07</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ただライディーンのコード弾きの部分のスコアを拾うのにはとても役に立ったけどね。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1081852126865682432"
+            target="_blank">2019/1/6 18:57:01</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">YMOマニアとしては「ソリッド・ステイト・サバイバー」のマルチトラックデータが欲しいところではありますが。。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1081660838623072256"
+            target="_blank">2019/1/6 6:16:54</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">スマフォに触れた時点で数学の恩恵を受けているんだけどなあ。電化製品もそうだよねえ。。それ以外にもある。今日の文明生活の一端を数学が支えているというリスペクトは忘れないでほしいなあ。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1081660839352950785"
+            target="_blank">2019/1/6 6:16:55</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">という私も数学は幼少期で理解不能になったクチなのですが。三角関数やベクトルは必要性が社会人になってわかってあわてて勉強したクチなのですが。すべての仕事において必要だというわけではないのですが。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1081662475416756224"
+            target="_blank">2019/1/6 6:23:25</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">成人になるまでの学習というのは、初期の段階では幅広くいろいろなものを学ぶのがよいのかなあと思う。成人になった時の自分のイメージを明確化できてる人はいるけど、そういうひとは少数派だと思うからね。それぞれの可能性を知る上でも幅広く学ぶことは必要なんじゃないかなと。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1081663243146260480"
+            target="_blank">2019/1/6 6:26:28</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ある学問が苦手かどうかで方向性が見えてくるものもあるし。とはいえ学問も導く人の出来・不出来や性格の一致・不一致など純粋な学問以外のことで苦手意識が芽生えてしまう可能性もあるよなあ。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1081664148876881920"
+            target="_blank">2019/1/6 6:30:04</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">そういう雑音みたいなものを排除して純粋に学問の良さを知ること自体、現代社会では難しいことなのかもしれないなあ。。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1081659103305359362"
+            target="_blank">2019/1/6 6:10:01</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">その通りですね。。 <blockquote class="card card-default"><header><img loading="lazy" src="https://pbs.twimg.com/profile_images/603918430639521792/zZNtUnXN_400x400.png" /><a href="https://twitter.com/tanakh/status/1081387769304240128" target="_blank">Hideyuki Tanakaさんのツイート: "てか数学だけｸｯｿ初歩的なやつを逐一不要だ不要だと攻撃する勢力あるんだけどなんで数学だけ目の敵にされるんだ？数学は敵じゃないよ(´･_･`)"</a></header><div>“てか数学だけｸｯｿ初歩的なやつを逐一不要だ不要だと攻撃する勢力あるんだけどなんで数学だけ目の敵にされるんだ？数学は敵じゃないよ(´･_･`)”</div></blockquote></p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1081486657008717824"
+            target="_blank">2019/1/5 18:44:46</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">TELEXで一番最初に聴いたのがこの曲なのですが。<br/>「Dance To The Music」<br/><div class="youtube" data-type="yt" id="FS2WjoH2VsI"><div class="yt-title">Youtube - Telex - Dance To The Music (extended version)</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/FS2WjoH2VsI" class="youtube" src="https://i.ytimg.com/vi/FS2WjoH2VsI/hqdefault.jpg" /></div>   <br/><br/><br/>これぞテクノ・ポップというような曲ですわ。8分打ちのベースラインといい。。ハットとシンバルとスネアが生なのかな。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1081487242659475456"
+            target="_blank">2019/1/5 18:47:06</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">で後になってこの曲はSly &amp; The Family Stoneのカバーだということを知るのですが。<br/><div class="youtube" data-type="yt" id="Jn2PNlhvy8E"><div class="yt-title">Youtube - Sly & The Family Stone - Dance To The Music (Audio)</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/Jn2PNlhvy8E" class="youtube" src="https://i.ytimg.com/vi/Jn2PNlhvy8E/hqdefault.jpg" /></div>   <br/><br/><br/>こういう古い曲のテクノ・アレンジしたカバーをTELEXって結構やってるんだよなあ。・</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1081488089845882880"
+            target="_blank">2019/1/5 18:50:28</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">アナログシンセではどうしてもドラムの音が貧弱になってしまう。まああのような複雑なノイズ（複雑なノイズって。。）を作るのって無理があるんだよね。なので初期のYMOなんかもドラムは生なんだよね。高橋ユキヒロさんも確か生ドラムが一番って言ってたしな。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1081488686833754112"
+            target="_blank">2019/1/5 18:52:50</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">だけどその貧弱な音に深めのリバーブとかゲートエコーとかけて厚み（というのかな）を出すテクで頑張ってた方々も一方でいるわけで。KRAFTWERKなどはわざとその貧弱な音を前面に出して特徴的なサウンドとしてた。ような気がする。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1081489227420905473"
+            target="_blank">2019/1/5 18:54:59</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">TELEXはアナログ・シンセのドラムで頑張ってるんだよな。。<br/><br/><div class="youtube" data-type="yt" id="6USa0zUMmqI"><div class="yt-title">Youtube - Telex at Eurovision 1980</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/6USa0zUMmqI" class="youtube" src="https://i.ytimg.com/vi/6USa0zUMmqI/hqdefault.jpg" /></div>   <br/><br/><br/>いい音（いい低域とでもいうのだろうか）してると思うんだよね。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1081489470531108864"
+            target="_blank">2019/1/5 18:55:57</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ああ。「いい音圧」といったほうがいいのかも。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1081490980841213953"
+            target="_blank">2019/1/5 19:01:57</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">YMOの「ソリッド・ステイト・サバイバー」も生ドラム全開なのだが、生ドラム臭さを消すためのエフェクトをあえてかけて音をテクノっぽくしてるところがまたいいのですな。コンプかけたりと、極端なイコライジングとかノイズ・ゲートでリリースをカットしたりとか。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1081491596133097472"
+            target="_blank">2019/1/5 19:04:24</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ただキックだけはかなり近い音がシンセで作れるから、キャスタリアとかビハインド・ザ・マスクはキックがシンセなんですな。これがまた他の曲と毛色が異なる音になってて興味ぶかいのですが。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1081492320023789568"
+            target="_blank">2019/1/5 19:07:16</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">Linnドラムの登場でドラムもまたリアルな音で自動演奏できるようになるわけですが。後期のYMOはいたるところで使いまくってるよね。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1081493084205047808"
+            target="_blank">2019/1/5 19:10:19</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">このBrainwashっていう曲もドラムがいい音してると思うんだよね。。<br/><div class="youtube" data-type="yt" id="RbuVPR65ThA"><div class="yt-title">Youtube - Telex - Brainwash</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/RbuVPR65ThA" class="youtube" src="https://i.ytimg.com/vi/RbuVPR65ThA/hqdefault.jpg" /></div>   <br/><br/><br/>ただこの曲TR909も使ってるんじゃないかと思うんだけど。。特にハイハットやクラップが怪しい。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1081497505488003072"
+            target="_blank">2019/1/5 19:27:53</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ジョルジオ・モロダーの初期ものはキックが生で、スネアがシンセという組み合わせだったりする。面白いなあ。。<br/><div class="youtube" data-type="yt" id="0OU7Hka_--U"><div class="yt-title">Youtube - Giorgio Moroder - From Here To Eternity</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/0OU7Hka_--U" class="youtube" src="https://i.ytimg.com/vi/0OU7Hka_--U/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1081497903414165505"
+            target="_blank">2019/1/5 19:29:28</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">一聴してわかるジョルジオ・モロダーの特徴的な音づくりとアレンジ。。<br/><div class="youtube" data-type="yt" id="Nm-ISatLDG0"><div class="yt-title">Youtube - Donna Summer - I Feel Love [Studio Version]</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/Nm-ISatLDG0" class="youtube" src="https://i.ytimg.com/vi/Nm-ISatLDG0/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1081498650658783233"
+            target="_blank">2019/1/5 19:32:26</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">そのジョルジオ・モロダーものちには生ドラムに戻るのですが。。<br/><br/><div class="youtube" data-type="yt" id="Wf2yuBi4zoc"><div class="yt-title">Youtube - Giorgio Moroder - Baby Blue (1979 Electro Disco) (Remastered).</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/Wf2yuBi4zoc" class="youtube" src="https://i.ytimg.com/vi/Wf2yuBi4zoc/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1081499326868684801"
+            target="_blank">2019/1/5 19:35:07</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">KRAFTWERKの初期のころはドラムの音作りはシンセなんだけど、自作っぽいパッドで生演奏してるんだよね。たしかに初期のアルバムとか聴くとリズムがちょっと揺れてたりしてるんだよな。<br/><blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="https://www.youtube.com/watch?v=UIbSkw4yvec" target="_blank">YouTube</a></header><div></div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1081500129687793664"
+            target="_blank">2019/1/5 19:38:18</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">KRAFTWERKのドラムの1つの極みに達したと勝手に思ってるアルバムが「Europe Express」だと思ってたりする。<br/><br/><blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="https://www.youtube.com/watch?v=cqGsi9k6ra0" target="_blank">YouTube</a></header><div></div></blockquote><br/><br/>この音結構いい線いってると思うんだよなあ。キックとスネアの演奏は手動だと思う。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1081500806254227458"
+            target="_blank">2019/1/5 19:41:00</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">そして次のアルバムではスネアがパーカッシブになってたりする。これはアルバムのコンセプトに音色を寄せたんだと思ってるんだよね。<br/><div class="youtube" data-type="yt" id="rbARvOyyjUI"><div class="yt-title">Youtube - Kraftwerk - Neon Lights</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/rbARvOyyjUI" class="youtube" src="https://i.ytimg.com/vi/rbARvOyyjUI/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1081501358673473536"
+            target="_blank">2019/1/5 19:43:11</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">「コンピュータ・ワールド」では「ナンバーズ」という曲でさらにドラムがおかしな音になったりする。当時としては相当えげつない音だと思うんだけどね。。<br/><blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="https://www.youtube.com/watch?v=8QpXI2_YSkw" target="_blank">YouTube</a></header><div></div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1081502918014951425"
+            target="_blank">2019/1/5 19:49:23</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">Ultravoxも古くからリズムマシンを使ったりしてるよね。リズムマシンな曲も結構ある。<br/><div class="youtube" data-type="yt" id="VUnWqHv8DOU"><div class="yt-title">Youtube - Stranger Within (2008 Remaster)</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/VUnWqHv8DOU" class="youtube" src="https://i.ytimg.com/vi/VUnWqHv8DOU/hqdefault.jpg" /></div>   <br/><br/><br/>この曲のリズムはおそらくYMOの「体操」に多大な影響を与えてると思われる。。<br/><blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="https://www.youtube.com/watch?v=4-XUTTqMs48" target="_blank">YouTube</a></header><div></div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1081503737007374336"
+            target="_blank">2019/1/5 19:52:38</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">「thin wall」もそうだよな。。<br/><br/><div class="youtube" data-type="yt" id="X2zG7D2DqXs"><div class="yt-title">Youtube - Ultravox. The Thin Wall.</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/X2zG7D2DqXs" class="youtube" src="https://i.ytimg.com/vi/X2zG7D2DqXs/hqdefault.jpg" /></div>   <br/><br/><br/>これもおそらくYMOの「Key」に影響を与えてると思われる。。<br/><br/><blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="https://www.youtube.com/watch?v=kMD7UUMZ0pQ" target="_blank">YouTube</a></header><div></div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1081504667383676928"
+            target="_blank">2019/1/5 19:56:20</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">UltravoxとYMOの類似性で一番有名なのは「Passionate Reply」だよな。<br/><br/><div class="youtube" data-type="yt" id="D6sVf-Grdws"><div class="yt-title">Youtube - Passionate Reply (2008 Remaster)</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/D6sVf-Grdws" class="youtube" src="https://i.ytimg.com/vi/D6sVf-Grdws/hqdefault.jpg" /></div>   <br/><br/><br/>これは「CUE」にモロに影響を与えている。。<br/><br/><blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="https://www.youtube.com/watch?v=U55HUfjwMKw" target="_blank">YouTube</a></header><div></div></blockquote><br/><br/>聴き比べると違うんだけどね。。影響を受けたのは当時本人たちも言ってるようだからそうだと思う。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1081506805681778688"
+            target="_blank">2019/1/5 20:04:50</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">Linnが登場するあたりの時代で、シンセ主体のポップ・ミュージックのリズム音がガラッと変わったのはほんとそうだよなあ。Yazooなんかもう全然違うもんな。1枚目と2枚目のリズムの音色が。1枚目は808で、2枚目はドラム・マシン（どこのメーカーかは不明）。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1081506806529060865"
+            target="_blank">2019/1/5 20:04:50</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">これが1枚目の曲「Don't Go」<br/><blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="https://www.youtube.com/watch?v=PPeQGWL7fok" target="_blank">YouTube</a></header><div></div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1081506807472828416"
+            target="_blank">2019/1/5 20:04:50</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">これが2枚目の曲「Nobody's diary」<br/><blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="https://www.youtube.com/watch?v=aTEZ9xT-6EI&list=PLa3HlKFsnLvbS1muKN_EtdcLcPcfc3RSu" target="_blank">YouTube</a></header><div></div></blockquote><br/><br/>なぜかこの音を聴いてちょっとがっかりしたりして。。それくらい1枚目のリズムの音がよかったんだよな。私の耳ではですが。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1081509517240619009"
+            target="_blank">2019/1/5 20:15:37</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ヴィンス・クラークがいたころのDepeche Modeもリズム・ボックス全開ですなあ。。<br/><div class="youtube" data-type="yt" id="ZFnEhwmpjXI"><div class="yt-title">Youtube - Depeche Mode - New Life (High Quality 1080p)</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/ZFnEhwmpjXI" class="youtube" src="https://i.ytimg.com/vi/ZFnEhwmpjXI/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1081510562826117122"
+            target="_blank">2019/1/5 20:19:46</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">アナログ・シンセベースのリズム・マシンは消滅するかと思ってたけど、その独特な音色ゆえにいまだに使われることになるとは夢にも思わなかったなあ。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1081511544448372736"
+            target="_blank">2019/1/5 20:23:40</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">現代にまで残ることに関しては、日本のシンセメーカーの果たした役割もまた大きいよな。特にローランドですわ。808と909がなかったらどうなっていたことか。。ああ、909はハイブリッドですが。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1081511984732860416"
+            target="_blank">2019/1/5 20:25:25</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">アナログ・リズムマシン→サンプリング・ドラム→アナログ・リズムマシンの再評価→共存という進み方をしたんだよな。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1081524979252916224"
+            target="_blank">2019/1/5 21:17:03</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ちょっと話を戻すと、坂本龍一さんの初期アルバムもシンセによるリズム音作りにこだわった感じがするんだな。例えば「plastic bamboo」とか。。<br/><blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="https://www.youtube.com/watch?v=imuT6HAWLDY" target="_blank">YouTube</a></header><div></div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1081525072412606464"
+            target="_blank">2019/1/5 21:17:25</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">このスネアの音ですよ。これ。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1081525861851922432"
+            target="_blank">2019/1/5 21:20:33</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">Riot In Lagosのリズムもすごい音色だと思う。これが初期坂本サウンドで最高のリズムではないだろうか。。<br/><div class="youtube" data-type="yt" id="x1NCb2sOXeg"><div class="yt-title">Youtube - Ryuichi Sakamoto - Riot In Lagos</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/x1NCb2sOXeg" class="youtube" src="https://i.ytimg.com/vi/x1NCb2sOXeg/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1081526167373438976"
+            target="_blank">2019/1/5 21:21:46</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">「War Head」もリズムはシンセですわな。<br/><div class="youtube" data-type="yt" id="t2a-JKiCw0c"><div class="yt-title">Youtube - 坂本龍一 「War Head （ウォーヘッド）」</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/t2a-JKiCw0c" class="youtube" src="https://i.ytimg.com/vi/t2a-JKiCw0c/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1081529251814227979"
+            target="_blank">2019/1/5 21:34:02</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">まあしかしYMOのお三方ですとやっぱり細野さんのリズムマシンのアレンジが最高はないかと。。<br/><br/><div class="youtube" data-type="yt" id="LMb5DFVPzc0"><div class="yt-title">Youtube - YMO - Gradated Grey (1981)</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/LMb5DFVPzc0" class="youtube" src="https://i.ytimg.com/vi/LMb5DFVPzc0/hqdefault.jpg" /></div>   <br/><br/><br/>808の音が生音のように聞こえてくるから不思議だ。生ドラムも入ってるからかもですけど。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1081529252825096193"
+            target="_blank">2019/1/5 21:34:02</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">生音のキックと808のキックのタイミングがぴったり合ってるところがさらに良くて。初期のYMOだとシンセのキックと生ドラムのキックはちょっと頭がずれてたりするよな。東風とかね。<br/><blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="https://www.youtube.com/watch?v=2T7TXVtGGFc" target="_blank">YouTube</a></header><div></div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1081529791268847616"
+            target="_blank">2019/1/5 21:36:10</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">技術の進歩ですわな。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1081530470494396426"
+            target="_blank">2019/1/5 21:38:52</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">Pure Jamの808のハットもいいよねえ。。なんか生っぽい。。<br/><div class="youtube" data-type="yt" id="STPpnnfJ-GM"><div class="yt-title">Youtube - Pure Jam - YMO</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/STPpnnfJ-GM" class="youtube" src="https://i.ytimg.com/vi/STPpnnfJ-GM/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1081531087581413376"
+            target="_blank">2019/1/5 21:41:19</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">この細野さんの曲のリズムとか当時ちょっととびぬけてた気もするのですよ。。<br/><div class="youtube" data-type="yt" id="EWdo78lckoI"><div class="yt-title">Youtube - Haruomi Hosono - Living Dining Kitchen</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/EWdo78lckoI" class="youtube" src="https://i.ytimg.com/vi/EWdo78lckoI/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1081531330783895553"
+            target="_blank">2019/1/5 21:42:17</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">当時日本のミュージシャンでこんな音作りしている人はたぶんいなかったと思う。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1081532515972608000"
+            target="_blank">2019/1/5 21:47:00</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ハービーハンコックあたりにも通じるところがあるよなあ。。<br/><div class="youtube" data-type="yt" id="GHhD4PD75zY"><div class="yt-title">Youtube - Herbie Hancock - Rockit</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/GHhD4PD75zY" class="youtube" src="https://i.ytimg.com/vi/GHhD4PD75zY/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/877328413157081089/XHcc8iCg_normal.jpg" />
+        <p class="tweet-user-name">アタリショック（ハメコミ合成研究中ｗ@goegoezzz</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/goegoezzz/status/1081307260599451650"
+            target="_blank">2019/1/5 6:51:55</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ソフトベンダーTAKERU 　<br/><br/>ブラザー工業 https://t.co/QrzCGhH07t</p>
+        
+        <video class="tweet-img" controls src="https://video.twimg.com/ext_tw_video/1081307161899130880/pu/vid/240x180/cHzkILsfjX4AOgBC.mp4?tag=6" />
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1081318605612969984"
+            target="_blank">2019/1/5 7:37:00</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">Windows + VC++で遊んでた時はUnicode = wchar_t使うという感じだったよな。確かに。wchar_tは２バイトで、１単位でUnicodeの任意の一文字を表すことができると。でもサロゲート・ペアを知るとそれは無理筋なんだよな。<br/><br/><blockquote class="card card-default"><header><img loading="lazy" src="https://cdn.qiita.com/assets/qiita-fb-2887e7b4aad86fd8c25cea84846f2236.png" /><a href="https://qiita.com/yumetodo/items/54e1a8230dbf513ea85b#%E5%B4%A9%E5%A3%8A%E3%81%97%E3%81%9Fwchar_t%E5%9E%8B" target="_blank">C++標準化委員会、ついに文字とは何かを理解する: char8_t - Qiita</a></header><div># C++ Advent Calendar 2018<br/><br/>この記事は[C++ Advent Calendar 2018](https://qiita.com/advent-calendar/2018/cpp) 15日目の記事です。<br/><br/>-...</div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1081320757060284416"
+            target="_blank">2019/1/5 7:45:33</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">wchar_t自体UTF-16だと言えるのはWindowsの世界だけなんだなあ。。そもそもwchar_tはエンコードや文字コードが規定されてないということか。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1081321260494147584"
+            target="_blank">2019/1/5 7:47:33</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">UTF-32であっても、結合文字だったっけ？があるからもはや固定長で文字を表すということ自体が幻想であるのですな。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1081323700769574912"
+            target="_blank">2019/1/5 7:57:14</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">そういえばWindowsではTCHARなるマクロがあったよなあ。。Unicodeビルド/マルチバイトビルドを切り替えできるように文字列はすべてこのマクロで指定しておくと。_T("ABCDEF")なんちゅうリテラル用のマクロもあったなあ。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1081324319739760640"
+            target="_blank">2019/1/5 7:59:42</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">C++11には、char16_t/char32_tなる型があるのか。バイト長は決めたけど、相変わらずエンコード方式の規定はないのですな。<br/><br/><blockquote class="card card-default"><header><img loading="lazy" src="https://cdn.qiita.com/assets/qiita-fb-2887e7b4aad86fd8c25cea84846f2236.png" /><a href="https://qiita.com/yumetodo/items/54e1a8230dbf513ea85b#char16_tchar32_t%E5%9E%8B%E3%81%AE%E8%BF%BD%E5%8A%A0" target="_blank">C++標準化委員会、ついに文字とは何かを理解する: char8_t - Qiita</a></header><div># C++ Advent Calendar 2018<br/><br/>この記事は[C++ Advent Calendar 2018](https://qiita.com/advent-calendar/2018/cpp) 15日目の記事です。<br/><br/>-...</div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1081325472158343168"
+            target="_blank">2019/1/5 8:04:17</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">と思ったらUTF-8だけはエンコードが保証されてるのかいな。。<br/><br/>・UTF-8文字列リテラル<br/><br/>u8"このリテラルはUTF-8でエンコードされることが保証される";<br/><br/><blockquote class="card card-default"><header><img loading="lazy" src="https://cdn.qiita.com/assets/qiita-fb-2887e7b4aad86fd8c25cea84846f2236.png" /><a href="https://qiita.com/yumetodo/items/54e1a8230dbf513ea85b#utf-8%E6%96%87%E5%AD%97%E5%88%97%E3%83%AA%E3%83%86%E3%83%A9%E3%83%AB" target="_blank">C++標準化委員会、ついに文字とは何かを理解する: char8_t - Qiita</a></header><div># C++ Advent Calendar 2018<br/><br/>この記事は[C++ Advent Calendar 2018](https://qiita.com/advent-calendar/2018/cpp) 15日目の記事です。<br/><br/>-...</div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1081328946925322240"
+            target="_blank">2019/1/5 8:18:05</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">UTF-8文字を表す型であるchar8_tはC++20で採用なのですな。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1081329272856297472"
+            target="_blank">2019/1/5 8:19:23</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">「ワイド文字はなぜいけてないか」がよくわかるなあ。。<br/><br/>・「char8_tによせて」<br/><blockquote class="card card-large"><header><img loading="lazy" src="https://ogimage.blog.st-hatena.com/12704346814673878668/10257846132689255924/1545582886" /><a href="https://naruse.hateblo.jp/entry/2018/12/24/013446" target="_blank">char8_tによせて - なるせにっき</a></header><div>C++標準化委員会、ついに文字とは何かを理解する: char8_tという記事が話題だってので、つらつらと書いてみました。 「グリフ」について グリフ（glyph）という言葉の定義をめぐって でも触れられていますが、「グリフ」という言葉が「字体」を指すのか「字形」を指すのかってのは議論がありますね。文字コードの文脈では普通「字形」の意味だとして話を進めることが多いように思います。 CJK統合漢字について Wikipediaの記事にまとまっていますが、実際に推進していたのは中国みたいですね。うまくやればあんまり問題なかったんでしょうが、あんまりうまく行かなかったんですが、それでも国ごとにその国の過…</div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1081329969769242625"
+            target="_blank">2019/1/5 8:22:09</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">char8_tはUTF-8であることが保証されるから、まあライブラリも作りやすくなるんだろうな。文字列を長さを求めるやつとかね。。長さ＝コードポイント数であってほしいからね。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1081332019794079744"
+            target="_blank">2019/1/5 8:30:18</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">Unicodeの複雑さの１つに合成済み文字というのがあってですな。<br/><blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="https://ja.wikipedia.org/wiki/%E5%90%88%E6%88%90%E6%B8%88%E3%81%BF%E6%96%87%E5%AD%97" target="_blank">合成済み文字 - Wikipedia</a></header><div></div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1081335076774805504"
+            target="_blank">2019/1/5 8:42:27</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">これに対して結合文字ちゅうのもあってですな。。<br/><blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="https://ja.wikipedia.org/wiki/%E7%B5%90%E5%90%88%E6%96%87%E5%AD%97" target="_blank">結合文字 - Wikipedia</a></header><div></div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1081336729305370624"
+            target="_blank">2019/1/5 8:49:01</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">例えば「ぱ」という文字はUnicodeでは2通りあるんですな<br/><br/>結合文字を使う：「は」＋「゜」...  "\u306F\u309A"<br/>合成済み文字を使う：「ぱ」 ... "\u3071"<br/><br/>実際に実行してみるとこんな感じ。。<br/><blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="https://wandbox.org/permlink/gdlVR71EJQITsmA8" target="_blank">[Wandbox]三へ( へ՞ਊ ՞)へ ﾊｯﾊｯ</a></header><div></div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1081337283972784128"
+            target="_blank">2019/1/5 8:51:13</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">なので同じ文字だけど比較すると偽と出る場合があるので、比較する場合は正規化を行わないといけないんだよなあ。。<br/><blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="https://ja.wikipedia.org/wiki/Unicode%E6%AD%A3%E8%A6%8F%E5%8C%96" target="_blank">Unicode正規化 - Wikipedia</a></header><div></div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1081337915525844992"
+            target="_blank">2019/1/5 8:53:44</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">でこの正規化にはUnicodeで定められた形式（NFD/NFC/NFKD/NFKC）があるんだよな。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1081338438480146433"
+            target="_blank">2019/1/5 8:55:48</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">もうUnicodeに触れるのはやめておこう。。肩凝ってきたわ。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1081339883900157952"
+            target="_blank">2019/1/5 9:01:33</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ああ、正準等価と互換等価ちゅうのもあるんだよなあ。。等価性だけとってみても面倒なんですわ。。<br/><a href="http://tech.albert2005.co.jp/501/" target="_blank">tech.albert2005.co.jp/501/</a></p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1080967306333700097"
+            target="_blank">2019/1/4 8:21:03</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">@syntaxerrors72 よろしくお願いいたします。<br/>ゲイラカイトはまだ現役なのですね！しかし思い返すと勉強はほぼせず、外で遊びまくった小学生時代だったような気がします。。</p>
+        
+      </section>
+      
+    </article>
+    
+  </div>
+  <footer>
+    CopyLight 2019 Satoshi Fujiwara
+  </footer>
+  <script async src="https://platform.twitter.com/widgets.js"></script>
+
+  <script async src="./index.js"></script>
+
+</body>
+
+</html>

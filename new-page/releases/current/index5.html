@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+
+<html lang="ja" prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb# article: http://ogp.me/ns/article#">
+
+<head>
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-15457703-9"></script>
+  <script>
+    if (!location.hostname.match(/localhost/)) {
+      window.dataLayer = window.dataLayer || [];
+      function gtag() { dataLayer.push(arguments); }
+      gtag('js', new Date());
+      gtag('config', 'UA-15457703-9');
+    }
+  </script>
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>トップページをリニューアルする</title>
+  <meta name="description" content="リニューアル用のトップページデザインを考えて実装する" />
+  <meta name="keywords" content="Programming,Music,HTML5,WebGL,javascript,WebAudio" /> 	
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <meta itemprop="image" content="https://www.sfpgmr.net/img/sfweb.png" />
+  <meta itemprop="name" content="S.F. Web" />
+  
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:site" content="S.F. Web" />
+  <meta name="twitter:url" content="./index5.html" />
+  <meta name="twitter:title" content="リニューアル用のトップページデザイン" />
+  <meta name="twitter:description" content="リニューアル用のトップページデザインを考えて実装する" />
+  <meta name="twitter:image" content="https://www.sfpgmr.net/img/sfweb.png" />
+  
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="./index5.html" />
+  <meta property="og:title" content="リニューアル用のトップページデザイン"/>
+  <meta property="og:site_name" content="S.F. Web" />
+  <meta property="og:description" content="Programming,Music,HTML5,WebGL,javascript,WebAudio">
+  <meta property="og:image" content="https://www.sfpgmr.net/img/sfweb.png">
+
+  <style>
+  * {
+  margin: 0;
+  padding: 0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+html {
+  margin: 0;
+  padding: 0;
+  font-size: 10px;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  background: black;
+  color: white;
+}
+
+.top-nav {
+  position: fixed;
+  z-index: 99999;
+  background: rgba(0, 0, 0, 0.5);
+  display: block;
+  width: 100%;
+  height: 32px;
+  color: white;
+}
+
+#sentinel {
+  width: 0px;
+  height: 0px;
+}
+
+.contents {
+  padding-top: 32px;
+  width: 100%;
+  position: relative;
+  content: strict;
+}
+
+@-webkit-keyframes blinking {
+  0% {
+    color: black;
+  }
+  50% {
+    color: white;
+  }
+  100% {
+    color: black;
+  }
+}
+
+@keyframes blinking {
+  0% {
+    color: black;
+  }
+  50% {
+    color: white;
+  }
+  100% {
+    color: black;
+  }
+}
+
+.loading {
+  font-family: monospace;
+  font-size: 24px;
+  position: fixed;
+  width: 100vw;
+  height: 100vh;
+  text-align: center;
+  padding-top: 50vh;
+  z-index: 32768;
+  background: black;
+  -webkit-animation: blinking 2s infinite;
+          animation: blinking 2s infinite;
+  content: strict;
+}
+
+.contents > article {
+  background: #f0f0f0;
+  color: #202020;
+  position: absolute;
+  max-height: 960px;
+  overflow: auto;
+  border-radius: 3px;
+  /* transition: opacity 1s linear;*/
+  opacity: 1.0;
+}
+
+.tweet-header {
+  display: -ms-grid;
+  display: grid;
+  -webkit-box-align: end;
+      -ms-flex-align: end;
+          align-items: end;
+  -ms-grid-columns: 40px 2fr 1fr;
+      grid-template-columns: 40px 2fr 1fr;
+  -ms-grid-rows: 1fr;
+      grid-template-rows: 1fr;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.tweet-img {
+  width: 100%;
+  -o-object-fit: cover;
+     object-fit: cover;
+}
+
+.youtube {
+  position: relative;
+  cursor: pointer;
+}
+
+.youtube > img {
+  width: 100%;
+  -o-object-fit: cover;
+     object-fit: cover;
+}
+
+.youtube > svg.player-play {
+  width: 64px;
+  height: 64px;
+  left: calc(50% - 32px);
+  top: calc(50% - 32px);
+  position: absolute;
+  z-index: 1000;
+  opacity: 0.5;
+}
+
+.youtube:hover > svg.player-play {
+  opacity: 1.0;
+}
+
+.youtube:hover .player-play-1 {
+  stroke: #80808080;
+}
+
+.youtube > div.yt-title {
+  /*text-shadow: #fff 1px 1px 0;*/
+  font-size: 1.2rem;
+  color: white;
+  background: rgba(0, 0, 0, 0.5);
+  position: absolute;
+  left: 0;
+  top: 0;
+  overflow: auto;
+  z-index: 998;
+}
+
+.tweet-profile-img {
+  -ms-grid-column: 1;
+  -ms-grid-column-span: 1;
+  grid-column: 1/2;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+}
+
+.tweet-user-name {
+  -ms-grid-column: 2;
+  -ms-grid-column-span: 1;
+  grid-column: 2/3;
+}
+
+.tweet-date {
+  font-size: 8px;
+  text-align: right;
+  -ms-grid-column: 3;
+  -ms-grid-column-span: 1;
+  grid-column: 3/4;
+}
+
+.contents > twitter-widget {
+  overflow: auto;
+  max-height: 960px;
+  position: absolute;
+}
+
+.contents > article > section > .tweet-text {
+  display: block;
+  padding: 4px;
+  word-break: break-all;
+  font-size: 12px;
+}
+
+.contents > article > h3 {
+  font-size: 12px;
+}
+
+blockquote.card {
+  margin: 4px;
+  padding: 4px;
+  font-size: 12px;
+  background: white;
+  border-radius: 4px;
+}
+
+blockquote.card > header {
+  display: -ms-grid;
+  display: grid;
+  grid-gap: 4px;
+  gap: 4px;
+}
+
+blockquote.card-default > header {
+  -ms-grid-columns: 64px 1fr;
+      grid-template-columns: 64px 1fr;
+}
+
+blockquote.card-large > header {
+  -ms-grid-columns: 1fr;
+      grid-template-columns: 1fr;
+}
+
+blockquote.card > header > img {
+  width: 100%;
+}
+
+div.no-image {
+  display: block;
+  width: 64px;
+  height: 64px;
+  background: gray;
+  color: white;
+  text-align: center;
+  line-height: 64px;
+}
+/*# sourceMappingURL=style.css.map */ 
+  </style>
+</head>
+
+<body>
+  <div class="loading" id="loading">Loading</div>
+  <header class="top-nav">
+    <h1>S.F. Info.</h1>
+  </header>
+  <div class="contents" id="contents" rendersubtree="invisible skip-activation"> 
+    
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/739357739328012288/xWltLV4u_normal.jpg" />
+        <p class="tweet-user-name">Miya the king(そいちろ)@MiyasouKing</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/MiyasouKing/status/1280423839223042054"
+            target="_blank">2020/7/7 17:50:07</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">SEGA announces Astro City Mini Arcade, To Get 36 Classics » SEGAbits - #1 Source for SEGA News <a href="http://segabits.com/blog/2020/07/07/sega-announces-astro-city-mini-arcade-to-get-36-classics/" target="_blank">segabits.com/blog/2020/07/0…</a><br/><br/>結構スゴいニュースだと思うのだ。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/817864664851750912/hN2kbele_normal.jpg" />
+        <p class="tweet-user-name">阿部@ave620</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/ave620/status/1280059447167995906"
+            target="_blank">2020/7/6 17:42:09</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">「旅行など遊びに行く」ことを考える時、最初に「何を食べようかな」を考えてしまうようになったのは年を取ったからだろうか…… https://t.co/CKMZ4I9J4F</p>
+        
+        <img  class="tweet-img" src="https://pbs.twimg.com/media/EcOvR7vUwAMcbJP.jpg" />
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/875611464563687424/lVTDx6Yd_normal.jpg" />
+        <p class="tweet-user-name">AKIBA PC Hotline!@watch_akiba</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/watch_akiba/status/1280246663383150592"
+            target="_blank">2020/7/7 6:06:05</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">更新：43台も2.5インチSSDが搭載できる純国産PCケース「AX2 Ver1.2」 標準構成で実売49,500円から、汐見板金製 <a href="https://akiba-pc.watch.impress.co.jp/docs/news/news/1263426.html" target="_blank">akiba-pc.watch.impress.co.jp/docs/news/news…</a> #自作PC https://t.co/z380cycVbP</p>
+        
+        <img  class="tweet-img" src="https://pbs.twimg.com/media/EcRZjdXU4AEC_3L.jpg" />
+        
+        <img  class="tweet-img" src="https://pbs.twimg.com/media/EcRZjj0VAAEJBL3.jpg" />
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1179091821277769728/Bcf559Hl_normal.jpg" />
+        <p class="tweet-user-name">天気少年(気象予報士・行政書士)@weather_and_law</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/weather_and_law/status/1280110449829150720"
+            target="_blank">2020/7/6 21:04:49</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">本当に、本当にお願いします。強い危機感を持って!!<br/><br/>広い範囲で非常に危険な状況になります。 線状降水帯の発生に関わる水蒸気フラックスとよばれるものが非常に広い範囲で尋常でない値になります<br/><br/>※引用したツイートから時間がたったため、新しい図を掲載し、再び同内容のツイートを致しました <a href="https://twitter.com/weather_and_law/status/1279793413022289920" target="_blank">twitter.com/weather_and_la…</a> https://t.co/EqaE8DdDyS</p>
+        
+        <img  class="tweet-img" src="https://pbs.twimg.com/media/EcPdh5nUYAA9jul.jpg" />
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/460353474174009344/UEB6ADr3_normal.png" />
+        <p class="tweet-user-name">g200kg@g200kg</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/g200kg/status/1279303190748356608"
+            target="_blank">2020/7/4 15:37:03</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">デノーマル問題は今どうなっているのか: もう今から 10 年近く前の話になりますが、ソフトシンセ等の楽器系ソフトウェアではデノーマル問題というのがちらほらと起こっていました。これは扱うデータが通常の浮動小数点では表現できないほど小さい ( 0 に近い)… <a href="http://dlvr.it/RZwkNP" target="_blank">dlvr.it/RZwkNP</a> https://t.co/KtTCL07N3J</p>
+        
+        <img  class="tweet-img" src="https://pbs.twimg.com/media/EcD_eODVAAAlbij.png" />
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/906039489943834624/eJMI1O5x_normal.jpg" />
+        <p class="tweet-user-name">地理院地図@gsi_cyberjapan</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/gsi_cyberjapan/status/1278865709951401984"
+            target="_blank">2020/7/3 10:38:40</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">地理院地図Vectorで提供しているベクトルタイルの活用例として、建物を3D風に表示した地図のサンプルをGitHubで公開しました。<br/><a href="https://github.com/gsi-cyberjapan/gsivectortile-3d-like-building/" target="_blank">github.com/gsi-cyberjapan…</a><br/>このように、ベクトルタイルを活用することで、様々なデザインの地図を作ることができます。 https://t.co/DXd5Nbo32B</p>
+        
+        <img  class="tweet-img" src="https://pbs.twimg.com/media/Eb9xUqBUEAAarb4.jpg" />
+        
+        <img  class="tweet-img" src="https://pbs.twimg.com/media/Eb9xVVtVcAA4_QN.jpg" />
+        
+        <img  class="tweet-img" src="https://pbs.twimg.com/media/Eb9xV8OVcAAuVmU.jpg" />
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/617722474327732224/kEGNMW1w_normal.png" />
+        <p class="tweet-user-name">b.p.s.@BasicProgrammer</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/BasicProgrammer/status/1278734172073283584"
+            target="_blank">2020/7/3 1:55:59</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">FM-11のF-BASICでMAPPYを作ろうとしていた黒歴史を動画にしてみました（約35年前）。<br/>BGMとマイキャラが動くだけで満足してしまうのは、今も一緒のような気がします(^^; https://t.co/QS0LeuVOES</p>
+        
+        <video class="tweet-img" controls src="https://video.twimg.com/ext_tw_video/1278733752030519297/pu/vid/640x400/Q8GdPPstmo8UWf1A.mp4?tag=10" />
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1212701145379946496/pSDVrvWj_normal.png" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1278987524468170752"
+            target="_blank">2020/7/3 18:42:42</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">うわぁ。<br/>いつの間にか電卓でグラフ描けるようになっとるわ。。 https://t.co/a0qHOnHA8R</p>
+        
+        <img  class="tweet-img" src="https://pbs.twimg.com/media/Eb_gXxTVAAEEgXO.png" />
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1212701145379946496/pSDVrvWj_normal.png" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1278986695312990210"
+            target="_blank">2020/7/3 18:39:25</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">@MickyAlbert ああ、そうでした。。「ドルアーガの塔の」ほうが有名でしたね。失礼しました。<br/>個人的にはギャプラスのほうが思い入れが強かったので。ナムコの黄金期だったころですね。ナムコの追っかけをやってたころが懐かしいです。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1232072277732151297/yxAMLI0Q_normal.jpg" />
+        <p class="tweet-user-name">マっさん@MassyStripes</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/MassyStripes/status/1278906900570988546"
+            target="_blank">2020/7/3 13:22:20</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">これを解決する為の方法を知りたい。 https://t.co/BppvLD6GyG</p>
+        
+        <img  class="tweet-img" src="https://pbs.twimg.com/media/Eb-XDAOUMAEiT3_.jpg" />
+        
+      </section>
+      
+    </article>
+    
+  </div>
+  <footer>
+    CopyLight 2019 Satoshi Fujiwara
+  </footer>
+  <script async src="https://platform.twitter.com/widgets.js"></script>
+
+  <script async src="./index.js"></script>
+
+</body>
+
+</html>

@@ -1,0 +1,913 @@
+<!DOCTYPE html>
+
+<html lang="ja" prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb# article: http://ogp.me/ns/article#">
+
+<head>
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-15457703-9"></script>
+  <script>
+    if (!location.hostname.match(/localhost/)) {
+      window.dataLayer = window.dataLayer || [];
+      function gtag() { dataLayer.push(arguments); }
+      gtag('js', new Date());
+      gtag('config', 'UA-15457703-9');
+    }
+  </script>
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>トップページをリニューアルする</title>
+  <meta name="description" content="リニューアル用のトップページデザインを考えて実装する" />
+  <meta name="keywords" content="Programming,Music,HTML5,WebGL,javascript,WebAudio" /> 	
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <meta itemprop="image" content="https://www.sfpgmr.net/img/sfweb.png" />
+  <meta itemprop="name" content="S.F. Web" />
+  
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:site" content="S.F. Web" />
+  <meta name="twitter:url" content="./index30.html" />
+  <meta name="twitter:title" content="リニューアル用のトップページデザイン" />
+  <meta name="twitter:description" content="リニューアル用のトップページデザインを考えて実装する" />
+  <meta name="twitter:image" content="https://www.sfpgmr.net/img/sfweb.png" />
+  
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="./index30.html" />
+  <meta property="og:title" content="リニューアル用のトップページデザイン"/>
+  <meta property="og:site_name" content="S.F. Web" />
+  <meta property="og:description" content="Programming,Music,HTML5,WebGL,javascript,WebAudio">
+  <meta property="og:image" content="https://www.sfpgmr.net/img/sfweb.png">
+
+  <style>
+  * {
+  margin: 0;
+  padding: 0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+html {
+  margin: 0;
+  padding: 0;
+  font-size: 10px;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  background: black;
+  color: white;
+}
+
+.top-nav {
+  position: fixed;
+  z-index: 99999;
+  background: rgba(0, 0, 0, 0.5);
+  display: block;
+  width: 100%;
+  height: 32px;
+  color: white;
+}
+
+#sentinel {
+  width: 0px;
+  height: 0px;
+}
+
+.contents {
+  padding-top: 32px;
+  width: 100%;
+  position: relative;
+  content: strict;
+}
+
+@-webkit-keyframes blinking {
+  0% {
+    color: black;
+  }
+  50% {
+    color: white;
+  }
+  100% {
+    color: black;
+  }
+}
+
+@keyframes blinking {
+  0% {
+    color: black;
+  }
+  50% {
+    color: white;
+  }
+  100% {
+    color: black;
+  }
+}
+
+.loading {
+  font-family: monospace;
+  font-size: 24px;
+  position: fixed;
+  width: 100vw;
+  height: 100vh;
+  text-align: center;
+  padding-top: 50vh;
+  z-index: 32768;
+  background: black;
+  -webkit-animation: blinking 2s infinite;
+          animation: blinking 2s infinite;
+  content: strict;
+}
+
+.contents > article {
+  background: #f0f0f0;
+  color: #202020;
+  position: absolute;
+  max-height: 960px;
+  overflow: auto;
+  border-radius: 3px;
+  /* transition: opacity 1s linear;*/
+  opacity: 1.0;
+}
+
+.tweet-header {
+  display: -ms-grid;
+  display: grid;
+  -webkit-box-align: end;
+      -ms-flex-align: end;
+          align-items: end;
+  -ms-grid-columns: 40px 2fr 1fr;
+      grid-template-columns: 40px 2fr 1fr;
+  -ms-grid-rows: 1fr;
+      grid-template-rows: 1fr;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.tweet-img {
+  width: 100%;
+  -o-object-fit: cover;
+     object-fit: cover;
+}
+
+.youtube {
+  position: relative;
+  cursor: pointer;
+}
+
+.youtube > img {
+  width: 100%;
+  -o-object-fit: cover;
+     object-fit: cover;
+}
+
+.youtube > svg.player-play {
+  width: 64px;
+  height: 64px;
+  left: calc(50% - 32px);
+  top: calc(50% - 32px);
+  position: absolute;
+  z-index: 1000;
+  opacity: 0.5;
+}
+
+.youtube:hover > svg.player-play {
+  opacity: 1.0;
+}
+
+.youtube:hover .player-play-1 {
+  stroke: #80808080;
+}
+
+.youtube > div.yt-title {
+  /*text-shadow: #fff 1px 1px 0;*/
+  font-size: 1.2rem;
+  color: white;
+  background: rgba(0, 0, 0, 0.5);
+  position: absolute;
+  left: 0;
+  top: 0;
+  overflow: auto;
+  z-index: 998;
+}
+
+.tweet-profile-img {
+  -ms-grid-column: 1;
+  -ms-grid-column-span: 1;
+  grid-column: 1/2;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+}
+
+.tweet-user-name {
+  -ms-grid-column: 2;
+  -ms-grid-column-span: 1;
+  grid-column: 2/3;
+}
+
+.tweet-date {
+  font-size: 8px;
+  text-align: right;
+  -ms-grid-column: 3;
+  -ms-grid-column-span: 1;
+  grid-column: 3/4;
+}
+
+.contents > twitter-widget {
+  overflow: auto;
+  max-height: 960px;
+  position: absolute;
+}
+
+.contents > article > section > .tweet-text {
+  display: block;
+  padding: 4px;
+  word-break: break-all;
+  font-size: 12px;
+}
+
+.contents > article > h3 {
+  font-size: 12px;
+}
+
+blockquote.card {
+  margin: 4px;
+  padding: 4px;
+  font-size: 12px;
+  background: white;
+  border-radius: 4px;
+}
+
+blockquote.card > header {
+  display: -ms-grid;
+  display: grid;
+  grid-gap: 4px;
+  gap: 4px;
+}
+
+blockquote.card-default > header {
+  -ms-grid-columns: 64px 1fr;
+      grid-template-columns: 64px 1fr;
+}
+
+blockquote.card-large > header {
+  -ms-grid-columns: 1fr;
+      grid-template-columns: 1fr;
+}
+
+blockquote.card > header > img {
+  width: 100%;
+}
+
+div.no-image {
+  display: block;
+  width: 64px;
+  height: 64px;
+  background: gray;
+  color: white;
+  text-align: center;
+  line-height: 64px;
+}
+/*# sourceMappingURL=style.css.map */ 
+  </style>
+</head>
+
+<body>
+  <div class="loading" id="loading">Loading</div>
+  <header class="top-nav">
+    <h1>S.F. Info.</h1>
+  </header>
+  <div class="contents" id="contents" rendersubtree="invisible skip-activation"> 
+    
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1212701145379946496/pSDVrvWj_normal.png" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1230257594914099200"
+            target="_blank">2020/2/20 7:27:22</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">シェルスクリプトも一度ちゃんと勉強せんといかんなあ。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1050411381369929728/BtqZX2ZX_normal.jpg" />
+        <p class="tweet-user-name">特殊映画研究室 Panorama Effect Laboratory@tokuken20091</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/tokuken20091/status/1229949821617750016"
+            target="_blank">2020/2/19 11:04:23</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ハジラvsキングデスラ <a href="https://www.youtube.com/watch?v=UNlmsYyuMoY&t=30s" target="_blank">youtube.com/watch?v=UNlmsY…</a> に登場する阪堺電車モ161形のミニチュアです。スケールは1/25で、このサイズは販売されていないため1から手作りとなりました。<br/>基本素材は紙で、屋根の丸みを出すのに悪戦苦闘しました。<br/><br/>#ハジラ<br/>#特殊映画研究室<br/>#ミニチュア https://t.co/cBC2yHDP2P</p>
+        
+        <img  class="tweet-img" src="https://pbs.twimg.com/media/ERGo0THVUAAOWTP.jpg" />
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1212701145379946496/pSDVrvWj_normal.png" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1229893876871127040"
+            target="_blank">2020/2/19 7:22:05</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ブログを書いた。<br/><br/><blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="https://www.sfpgmr.net/blog/entry/2020/02/7f20da69dfd096d6421b965d8f0fe7f8.amp.html" target="_blank">S.F. Blog:markdown.plを読む</a></header><div>パーサ・レンダラを作るのであれば原典のソースコードであるを読まないといかんだろうということでぼちぼち読んでいる。拡張子が示す通り、で書かれていて、2004年にさんが作ったコードである。Perlという言語を知ったのは確か1996年あたりである。当時勤め先のWebは上のだった。まだもリリースされて間がないころで、企業のWebサーバーはNetscape社製が多かった。Netscape Enterpris...</div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1229898148748775429"
+            target="_blank">2020/2/19 7:39:03</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">まとまった文章を書く訓練の意味合いでまたブログを書き始めたけど、このくらいの長さを書くのも結構時間がかかっている。そのせいでコードが書けない。あくまで趣味の範囲なので1日に使える時間は限られている。。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1212701145379946496/pSDVrvWj_normal.png" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1229875045339549697"
+            target="_blank">2020/2/19 6:07:15</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">graphvizのdot言語をsvgやpngにレンダリングするツール。<br/><blockquote class="card card-default"><header><img  src="https://avatars2.githubusercontent.com/u/1383?s=400&v=4" /><a href="https://github.com/mdaines/viz.js" target="_blank">GitHub - mdaines/viz.js: A hack to put Graphviz on the web.</a></header><div>A hack to put Graphviz on the web. Contribute to mdaines/viz.js development by creating an account on GitHub.</div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1229896030377795584"
+            target="_blank">2020/2/19 7:30:38</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">これもmarkdown文中に直接書けると便利そうだよねえ。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1212701145379946496/pSDVrvWj_normal.png" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1229748438499115008"
+            target="_blank">2020/2/18 21:44:10</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ブログを書いた。<br/><br/><blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="https://www.sfpgmr.net/blog/entry/2020/02/11dcc255f3b18b26ab429ddb3d64f95a.amp.html" target="_blank">S.F. Blog:Markdownのパーサー・レンダラの自作</a></header><div>Webサイトリニューアルの一環として、ベースのオリジナル・ドキュメントのパーサ/レンダラをで作りはじめた。が、まだはっきりと「これ」で進めると決めているわけでもなく、markdownに関する知識を得たい欲求もあるので手を止めて情報を集めたりしている。githubのreadme.mdもmarkdownで書けるわけだが、これは正確にはmarkdownではなく(GFM)というmarkdownの拡張書式で...</div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1229748602500612096"
+            target="_blank">2020/2/18 21:44:49</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">「markdownパーサ・レンダラの自作」という題だが、まだ全然できてないけど。。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1212701145379946496/pSDVrvWj_normal.png" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1228286127099899904"
+            target="_blank">2020/2/14 20:53:27</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">まず.PHONYって何？ってなって（笑）。<br/>続いてコマンド引数にある「$@ $&lt;」って？？？？なってググりまくりました（笑）。ちょっと前に使ってたんだけど、爺の記憶力は半端なく低い。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1228474595079901185"
+            target="_blank">2020/2/15 9:22:22</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">忘れ方は半端ないんだけど、ググるとああ、あれだった！って思い出すから、記憶の片隅には残ってるんだろうね。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1229316495714316288"
+            target="_blank">2020/2/17 17:07:46</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">commonmarkの仕様はクリアしたいと考えた。<br/>ありがたいことにcommonmarkはspecのexamplesをテストケースとして使えるようにしてくれている。<br/><br/><blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="https://commonmark.org/" target="_blank">CommonMark</a></header><div></div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1229317013928984576"
+            target="_blank">2020/2/17 17:09:50</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">最初はmarkdownのBNFみたいなものがないかな？とか思ったけどなくて、このspecのexampleを満たすことが構文仕様となっているようである。つまりはBNFでは書けんということなのであろうか。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1229317517455183872"
+            target="_blank">2020/2/17 17:11:50</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">それはさておき、このexampleをjsonデータとして吐いてくれるpythonツールがあるので、それでjsonデータを吐いた。<br/>{<br/>  "markdown": "Foo\nBar\n---\n",<br/>  "html": "&lt;h2&gt;Foo\nBar&lt;/h2&gt;\n",<br/>  "section": "Setext headings",<br/>  "number": 65<br/>}</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1229317862247915520"
+            target="_blank">2020/2/17 17:13:12</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">データは見れば分かるよね。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1229318437299601409"
+            target="_blank">2020/2/17 17:15:29</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">このjsonデータをもとにavaのテストコードを吐くコードを書いた。そしてこのテストコードのテストをcommonmark.jsを使って行った。テストケースは650あって、それをすべてパスした。さすがリファレンス実装だけある。当たり前か。。<br/><br/><blockquote class="card card-default"><header><img  src="https://avatars1.githubusercontent.com/u/8661225?s=400&v=4" /><a href="https://github.com/commonmark/commonmark.js/" target="_blank">GitHub - commonmark/commonmark.js: CommonMark parser and renderer in JavaScript</a></header><div>CommonMark parser and renderer in JavaScript. Contribute to commonmark/commonmark.js development by creating an account on GitHub.</div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1229318954759245824"
+            target="_blank">2020/2/17 17:17:33</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">commonmarkはGFMがサポートする```とかテーブル記法はない。この部分は追加サポートせねばならない。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1229319744676720640"
+            target="_blank">2020/2/17 17:20:41</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">試しにmarked.jsでテストしてみたが、エラーがところどころで発生。そもそもcommonmarkはmarkdownではないから、これはしょうがないかもしれない。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1229320023862235136"
+            target="_blank">2020/2/17 17:21:48</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">markdownは今も<blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="http://markdown.pl" target="_blank">Félicitations ! Votre domaine a bien été créé chez OVH !</a></header><div></div></blockquote> が原典である。Perlなんで読む気はしないけど。。<br/><br/><blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="https://daringfireball.net/projects/markdown/" target="_blank">Daring Fireball: Markdown</a></header><div></div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1229320606589415424"
+            target="_blank">2020/2/17 17:24:06</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">でまあぼちぼちpeg.jsで書いてるけど、サクっと書けるほどpeg.jsに精通しているわけでもないから、この構文どう書けばいいんだろう？ということはしょっちゅうで、exampleとdocumentは手放せない。よってなかなか進まない（笑）。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1229321308229423105"
+            target="_blank">2020/2/17 17:26:54</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">markdownは行志向だから、行単位でまず分割してからparseしたほうがいいのかもしれない。peg.jsは字句解析と構文解析が同時にできるのが特色だけど、markdownに関しては不得手かもしれない。知らんけど。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1229331890504527872"
+            target="_blank">2020/2/17 18:08:57</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">marked.jsは内部的にはlexer -&gt; parser -&gt; rendererという作りになっている。他の部分ももちろんいじれるけど、renderer部分をいじって私はamp対応した。amp用のrendererを作ったというべしか。それでまあrendererにparseで行うべきことを書いたりしてそれがだんだん見苦しくなってきたわけですよ。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1229332736248172546"
+            target="_blank">2020/2/17 18:12:18</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">Lexer部分のコードは正規表現の塊みたいな感じで、私にはすごく難解というか手を入れがたい感じ。正規表現の中にプレースフォルダを設けて、さらにそのプレースフォルダを正規表現のコード片でreplaceして所望の正規表現を作ってるところもあって、そこが難解な感じ。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1229334712948117504"
+            target="_blank">2020/2/17 18:20:10</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">これがそうなのだが。ただ私がベースにしてるのは0.6あたりのようだ。 https://t.co/KghxYnXv7r</p>
+        
+        <img  class="tweet-img" src="https://pbs.twimg.com/media/EQ95Z9KU4AATZi8.png" />
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1229335767563898881"
+            target="_blank">2020/2/17 18:24:21</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">今はコードが書き直されて、正規表現の塊ではなくなってるね。正規表現を駆使しているのは変わりないけどね。peg.jsで書いたパーサも結局は正規表現＋αのコードになるんだけどね。それと正規表現が難解に思えるのは私の感覚で、ほかのひとは違うかもしれんよね。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1229335982073233408"
+            target="_blank">2020/2/17 18:25:12</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ひょっとしたらmarked.jsは<blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="http://markdown.pl" target="_blank">Félicitations ! Votre domaine a bien été créé chez OVH !</a></header><div></div></blockquote>を参考にしとるかもしれんね。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1229338828306972672"
+            target="_blank">2020/2/17 18:36:31</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">GFM specはcommonmarkのspecをベースに独自仕様を書き足している。<br/><br/><blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="https://github.github.com/gfm/" target="_blank">GitHub Flavored Markdown Spec</a></header><div></div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1229339891718184960"
+            target="_blank">2020/2/17 18:40:44</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ああ、ここにgfmのspec.txtがあったのか。。<br/><br/><blockquote class="card card-default"><header><img  src="https://avatars3.githubusercontent.com/u/9919?s=400&v=4" /><a href="https://github.com/github/cmark-gfm/blob/master/test/spec.txt" target="_blank">cmark-gfm/spec.txt at master · github/cmark-gfm · GitHub</a></header><div>GitHub's fork of cmark, a CommonMark parsing and rendering library and program in C - github/cmark-gfm</div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1229340748295766016"
+            target="_blank">2020/2/17 18:44:09</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">今更だけど、cmark-gfmっちゅうレポジトリにnode bindingがあるようですな。今知りましたわ。ネイティブ・モジュールか。。<br/><br/><blockquote class="card card-default"><header><img  src="https://avatars3.githubusercontent.com/u/9919?s=400&v=4" /><a href="https://github.com/github/cmark-gfm" target="_blank">GitHub - github/cmark-gfm: GitHub's fork of cmark, a CommonMark parsing and rendering library and program in C</a></header><div>GitHub's fork of cmark, a CommonMark parsing and rendering library and program in C - github/cmark-gfm</div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1229496537266315264"
+            target="_blank">2020/2/18 5:03:12</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">cmark-gfmもちょっと見てみよう。ネイティブ・モジュールも興味ある分野だし。とりあえずビルドしてみるか。。<br/><br/><blockquote class="card card-default"><header><img  src="https://avatars3.githubusercontent.com/u/9919?s=400&v=4" /><a href="https://github.com/github/cmark-gfm" target="_blank">GitHub - github/cmark-gfm: GitHub's fork of cmark, a CommonMark parsing and rendering library and program in C</a></header><div>GitHub's fork of cmark, a CommonMark parsing and rendering library and program in C - github/cmark-gfm</div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1229505840551301121"
+            target="_blank">2020/2/18 5:40:10</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">node-cmarkというnodeバインディングをforkし、ビルドしてみたところエラーが大量に出て落ちますな。レポジトリが3年前で更新が止まっているところからして、その後のv8やらnanのアップデートで使用できなくなった（なくなった）メソッドを使っているようだ。<br/><blockquote class="card card-default"><header><img  src="https://avatars0.githubusercontent.com/u/3806814?s=400&v=4" /><a href="https://github.com/sfpgmr/node-cmark" target="_blank">GitHub - sfpgmr/node-cmark: Node.js wrapper for GitHub's fork of cmark/libcmark</a></header><div>Node.js wrapper for GitHub's fork of cmark/libcmark - sfpgmr/node-cmark</div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1229506675024904192"
+            target="_blank">2020/2/18 5:43:29</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">このモジュールをビルドするのにcmake-jsちゅうのを使うんだけどね。node-gypではないんですな。こりゃなんだ？と今なっているわけですよ。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1229508644703571968"
+            target="_blank">2020/2/18 5:51:18</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">まあそれでエラーを仔細に見るとnan内部でエラーが起きてるんですな。ああ、こりゃ「あれ」だということでnanをアップデートしたらビルドできましたわ。。<br/><br/>node-cmark/node_modules/nan/nan_maybe_43_inl.h:112:15: error: ‘class v8::Object’ has no member named ‘ForceSet’</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1229509596860960768"
+            target="_blank">2020/2/18 5:55:05</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">cmake-jsというのはgypを使わずにcmakeを使ってネイティブ・アドオンを作るビルドツールのようですな。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1229510257870639104"
+            target="_blank">2020/2/18 5:57:43</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">gypっちゅうのは今なのか過去なのか知らんがgnに移行中でサポートされなくなるんじゃないかということがcmake-js作成のモチベーションとなったようですな。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1229510768648806401"
+            target="_blank">2020/2/18 5:59:45</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">Why Cmake ?の節にいろいろ書いてありますな。。<br/><br/><blockquote class="card card-default"><header><img  src="https://avatars2.githubusercontent.com/u/15966585?s=400&v=4" /><a href="https://github.com/cmake-js/cmake-js#why-cmake" target="_blank">GitHub - cmake-js/cmake-js: CMake.js - a Node.js native addon build tool</a></header><div>CMake.js - a Node.js native addon build tool. Contribute to cmake-js/cmake-js development by creating an account on GitHub.</div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1229511385484185601"
+            target="_blank">2020/2/18 6:02:12</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">正直makeにしろcmakeにしろnmakeにしろ、VisualStudioを初期から使っている私は、ビルドスクリプトを書くということをほぼしたことがない（ツールがそれなりやってくれてた）ので、かなり疎いんですわ。makeについてはちょっと勉強したが、すぐ忘れた。make自体そんなにメンテするもんでもないしね。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1229512056690266112"
+            target="_blank">2020/2/18 6:04:52</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">これを機会にネイティブ・アドオンを勉強するか。nanを使えば割と楽にできそうだしね。趣味なんで無限に横道に逸れることが可能。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1229513255145492480"
+            target="_blank">2020/2/18 6:09:37</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">しかしc言語のコンパイル速度は速いですよ。昔から思ってましたが。C++はテンプレート・メタプログラミングをガンガンに利かしてるものは重いですよ。実行時の速度を高めるためにコンパイル時間を費やすので、それはしょうがないんだけどね。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1229513582368346112"
+            target="_blank">2020/2/18 6:10:55</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">しかしこの方向で行くと、ＣでMarkdownパーサーを書くといういかいじることになるんだな。大丈夫だろうか。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1229533888629764096"
+            target="_blank">2020/2/18 7:31:37</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">cmark-gfmのコードを読もうとしてる。まずlexerからということでscanner.cあたりかなと開いてみたら、re2cというlexerジェネレータで作成したものらしい。re2cは知らんねえ。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1229535886213148672"
+            target="_blank">2020/2/18 7:39:33</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">これか。これも有名なツールなんだろうなあ。。私が知らんだけでね。<br/><blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="http://re2c.org/" target="_blank">re2c — re2c 2.0.2 documentation</a></header><div></div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1229538009642487810"
+            target="_blank">2020/2/18 7:47:59</a></p>
+      </header>
+      <section>
+        <p class="tweet-text"><a href="http://scanner.re" target="_blank">scanner.re</a> がlexer のソースのようですな。<br/><br/><blockquote class="card card-default"><header><img  src="https://avatars3.githubusercontent.com/u/9919?s=400&v=4" /><a href="https://github.com/github/cmark-gfm/blob/e3f3a27ba1762f7acfc9881369fee737f8f73386/src/scanners.re" target="_blank">cmark-gfm/scanners.re at e3f3a27ba1762f7acfc9881369fee737f8f73386 · github/cmark-gfm · GitHub</a></header><div>GitHub's fork of cmark, a CommonMark parsing and rendering library and program in C - github/cmark-gfm</div></blockquote><br/><br/>これはいいものを見つけた気がする。。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1212701145379946496/pSDVrvWj_normal.png" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1229497426001547264"
+            target="_blank">2020/2/18 5:06:43</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">Windows Terminalってなかなかいい感じ。デフォルトでwsl動くようにしてる。 https://t.co/FcRBZdzhgn</p>
+        
+        <img  class="tweet-img" src="https://pbs.twimg.com/media/ERANZC5VAAAd0Cp.png" />
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1212701145379946496/pSDVrvWj_normal.png" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1229308728672837635"
+            target="_blank">2020/2/17 16:36:55</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">expanse シーズン4を観終えた。。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/666406258451152896/ROaK4lhC_normal.png" />
+        <p class="tweet-user-name">じゃがりきん@jagarikin</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/jagarikin/status/1228122662368448512"
+            target="_blank">2020/2/14 10:03:54</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ついに立体的に動いて見える錯視が完成しました。<br/>キューブが回転して見えますね？<br/>止まっています https://t.co/nyyWdr5O1E</p>
+        
+        <video class="tweet-img" controls src="https://video.twimg.com/tweet_video/EQsrDB4UcAERge_.mp4" />
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1212701145379946496/pSDVrvWj_normal.png" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1228290244350369793"
+            target="_blank">2020/2/14 21:09:49</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">職場ではSMC70のCP/M上でWordMaster/M80で開発をしてた時もあって。そのあとすぐにPC98を使うことになって、そのスピードの速さに衝撃を受けたんですな、当時。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1228291416230518784"
+            target="_blank">2020/2/14 21:14:28</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">MS-C/MASMもその時職場のPCに入ってたので、それでちょこちょこツールを作ったりしてたような記憶もあるなあ。。CodeViewデバッガとか、オーバーレイ・リンカとか。CodeViewも衝撃を受けたソフトウェアのひとつですわ。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1228291913687564289"
+            target="_blank">2020/2/14 21:16:27</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">WordMasterも衝撃を受けましたわ。フルスクリーン・テキストエディタのすごさを知ったのはたぶんこのソフトウェアだったと思うんだな。これの互換エディタがMS-DOS上にあって、重宝しましたわ。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1228293433690689536"
+            target="_blank">2020/2/14 21:22:29</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">こりゃぁ、PC98みんな使うよなあって当時は思いましたわ。でもその後買ったのはPS55NOTEなんだけど（笑）。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1228293814726512640"
+            target="_blank">2020/2/14 21:24:00</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">モノクロの液晶でSTUNT DRIVEや4D Boxingやってましたわ。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1228295077820157952"
+            target="_blank">2020/2/14 21:29:01</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">違うなあ。その前にYAMAHAのC1を中古で買ったのだった。MIDIインターフェースが8個くらいついてるラップトップだった。まあ音楽用ですわな。このPCでSTUNT DRIVEやってたんだった（笑）。<br/><br/><blockquote class="card card-default"><header><img  src="https://jp.yamaha.com/files/F446616F69074353BBB6267C0A8348FE_12073_863x671_de79c53413575818071e1040907d7525.jpg" /><a href="https://jp.yamaha.com/products/music_production/music-computers/c1/index.html" target="_blank">ヤマハ | C1 - シンセサイザー・音楽制作 - 概要</a></header><div>「フル・ミュージックI/O」装備の16ビット・マシン。超強力シーケンス・ソフトをバンドリング。</div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1228295360973430785"
+            target="_blank">2020/2/14 21:30:09</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">なんかすごいシーケンサもついてたんだけど、MIDI Out 8個もつなげるシンセがないので、手に余る代物でした。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1228295742315384832"
+            target="_blank">2020/2/14 21:31:40</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">PS55 NOTEもモノクロでしたけどね。これにプリンタポートにつなげるサウンドカードを使ってゲームしてたんだよな。。</p>
+        
+      </section>
+      
+    </article>
+    
+  </div>
+  <footer>
+    CopyLight 2019 Satoshi Fujiwara
+  </footer>
+  <script async src="https://platform.twitter.com/widgets.js"></script>
+
+  <script async src="./index.js"></script>
+
+</body>
+
+</html>

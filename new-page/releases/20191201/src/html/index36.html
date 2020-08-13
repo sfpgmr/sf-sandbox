@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="ja" prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb# article: http://ogp.me/ns/article#">
+
+<head>
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-15457703-9"></script>
+  <script>
+    if (!location.hostname.match(/localhost/)) {
+      window.dataLayer = window.dataLayer || [];
+      function gtag() { dataLayer.push(arguments); }
+      gtag('js', new Date());
+      gtag('config', 'UA-15457703-9');
+    }
+  </script>
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>トップページをリニューアルする</title>
+  <meta name="description" content="リニューアル用のトップページデザインを考えて実装する" />
+  <meta name="keywords" content="Programming,Music,HTML5,WebGL,javascript,WebAudio" /> 	
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <meta itemprop="image" content="https://www.sfpgmr.net/img/sfweb.png" />
+  <meta itemprop="name" content="S.F. Web" />
+  
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:site" content="S.F. Web" />
+  <meta name="twitter:url" content="./index36.html" />
+  <meta name="twitter:title" content="リニューアル用のトップページデザイン" />
+  <meta name="twitter:description" content="リニューアル用のトップページデザインを考えて実装する" />
+  <meta name="twitter:image" content="https://www.sfpgmr.net/img/sfweb.png" />
+  
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="./index36.html" />
+  <meta property="og:title" content="リニューアル用のトップページデザイン"/>
+  <meta property="og:site_name" content="S.F. Web" />
+  <meta property="og:description" content="Programming,Music,HTML5,WebGL,javascript,WebAudio">
+  <meta property="og:image" content="https://www.sfpgmr.net/img/sfweb.png">
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    html {
+      margin: 0;
+      padding: 0;
+      font-size:10px;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      background: black;
+      color: white;
+    }
+
+    .top-nav {
+      position:fixed;
+      z-index:99999;
+      background: rgba(0,0,0,0.5);
+      display: block;
+      width:100%;
+      height:32px;
+      color:white;
+    }
+    #sentinel {
+      width:0px;
+      height:0px;
+    }
+    .contents {
+      padding-top:32px;
+      width: 100%;
+      position: relative;
+      content: strict;
+    }
+
+    @keyframes blinking {
+      0% {
+        color: black;
+      }
+
+      50% {
+        color: white;
+      }
+
+      100% {
+        color: black;
+      }
+    }
+
+    .loading {
+      font-family: monospace;
+      font-size: 24px;
+      position: fixed;
+      width: 100vw;
+      height: 100vh;
+      text-align: center;
+      padding-top: 50vh;
+      z-index: 32768;
+      background: black;
+      animation: blinking 2s infinite;
+      content: strict;
+    }
+
+
+    .contents > article {
+      background: #f0f0f0;
+      color: #202020;
+      position: absolute;
+      max-height: 960px;
+      overflow: auto;
+      border-radius: 3px;
+      transition: opacity 1s linear;
+      opacity: 0.0;
+    }
+
+    .tweet-header {
+      display: grid;
+      align-items: end;
+      grid-template-columns: 40px 2fr 1fr;
+      grid-template-rows: 1fr;
+      font-size: 12px;
+      font-weight: bold;
+    }
+
+
+    .tweet-img {
+      width: 100%;
+      object-fit: cover;
+    }
+
+    .youtube {
+      position: relative;
+      cursor: pointer;
+    }
+
+    .youtube > img {
+      width: 100%;
+      object-fit: cover;
+    }
+
+    .youtube > svg.player-play {
+      width:64px;
+      height:64px;
+      left:calc(50% - 32px);
+      top:calc(50% - 32px);
+      position:absolute;
+      z-index: 1000;
+      opacity: 0.5;
+    }
+    
+    .youtube:hover > svg.player-play {
+      opacity: 1.0;
+    }
+
+    .youtube:hover .player-play-1 {
+      stroke:#80808080;
+    }
+
+    
+    .youtube > div.yt-title {
+      /*text-shadow: #fff 1px 1px 0;*/
+      font-size: 1.2rem;
+      color:white;
+      background:rgba(0, 0,0,0.5);
+      position:absolute;
+      left:0;
+      top:0;
+      overflow: auto;
+      z-index:998;
+    }
+
+
+    .tweet-profile-img {
+      grid-column: 1/2;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+    }
+
+    .tweet-user-name {
+      grid-column: 2/3;
+    }
+
+    .tweet-date {
+      font-size: 8px;
+      text-align: right;
+      grid-column: 3/4;
+    }
+
+    .contents>twitter-widget {
+      overflow: auto;
+      max-height: 960px;
+      position: absolute;
+    }
+
+    .contents>article>section>.tweet-text {
+      display: block;
+      padding: 4px;
+      word-break: break-all;
+      font-size: 12px;
+    }
+
+    .contents>article>h3 {
+      font-size: 12px;
+    }
+
+    blockquote.card {
+      margin:4px;
+      padding:4px;
+      font-size:12px;
+      background:white;
+      border-radius: 4px;
+    }
+
+    blockquote.card > header {
+      display:grid;
+      grid-gap:4px;
+      gap:4px;
+    }
+
+    blockquote.card-default > header {
+      grid-template-columns:64px 1fr;
+    }
+
+    blockquote.card-large > header {
+      grid-template-columns:1fr;
+    }
+
+    blockquote.card > header > img {
+      width:100%;
+    }
+
+
+    div.no-image {
+      display: block;
+      width:64px;
+      height:64px;
+      background:gray;
+      color:white;
+      text-align: center;
+      line-height: 64px;
+    }
+
+  </style>
+</head>
+
+<body>
+  <div class="loading" id="loading">Loading</div>
+  <header class="top-nav">
+    <h1>S.F. Info.</h1>
+  </header>
+  <div class="contents" id="contents" rendersubtree="invisible skip-activation"> 
+    
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1108933034873516035"
+            target="_blank">2019/3/22 12:26:53</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">@syntaxerrors72 入ってましたか。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1108860972008013824"
+            target="_blank">2019/3/22 7:40:32</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">KONAMI，「グラディウス」や「悪魔城ドラキュラ」など往年のタイトルをセットにした「アニバーサリーコレクション」シリーズの発売を決定。第1弾は4月18日に - <blockquote class="card card-large"><header><img loading="lazy" src="https://www.4gamer.net/image/4gamer_logo_og.png" /><a href="http://4Gamer.net" target="_blank">4Gamer.net ― 日本最大級の総合ゲーム情報サイト。最新ゲームのニュース，レビューはここで！</a></header><div>ゲームの最新ニュースをお届けします。また，ゲームのタイトルのユーザーレビューの募集/掲載や，発売スケジュールなども用意。遊びたいゲームを探す時にご活用ください！</div></blockquote> <blockquote class="card card-large"><header><img loading="lazy" src="https://www.4gamer.net/games/453/G045335/20190320014/TN/001.jpg" /><a href="https://www.4gamer.net/games/453/G045335/20190320014/" target="_blank">KONAMI，「グラディウス」や「悪魔城ドラキュラ」など往年のタイトルをセットにした「アニバーサリーコレクション」シリーズの発売を決定。第1弾は4月18日に - 4Gamer.net</a></header><div>　KONAMIは本日，往年のタイトルを収録した「アニバーサリーコレクション」シリーズの発売を決定した。PC/PS4/Switch/XboxOne向けのDL専売タイトルで，第1弾の「アーケードクラシックス」を4月18日に発売する。価格は3000円（税抜）だ。</div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1108861305320931329"
+            target="_blank">2019/3/22 7:41:51</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ああ、グラIIも入れといて欲しかった。。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/1142704713156026368/qafj2_Vy_normal.jpg" />
+        <p class="tweet-user-name">ゴリラ@自宅警備隊@gorilla0513</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/gorilla0513/status/1108692079545208833"
+            target="_blank">2019/3/21 20:29:24</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ねぇ、知っている？<br/>vim scp://remote-host/to/path/file<br/>を実行するとscpでサーバ上にあるファイルを編集・保存できるんだよ</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/3110880316/a2198c9fc116028a743af3954d3cccc0_normal.jpeg" />
+        <p class="tweet-user-name">及川貴史@TakafumiOikawa</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/TakafumiOikawa/status/1108634279288791042"
+            target="_blank">2019/3/21 16:39:44</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">YMOのONGAKU届いたぜ(^^) https://t.co/iFWicUQcUG</p>
+        
+        <img loading="lazy" class="tweet-img" src="https://pbs.twimg.com/media/D2Ko-0dUgAAEjvq.jpg" />
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/1178046868648943616/1Ja8Kiaj_normal.jpg" />
+        <p class="tweet-user-name">Maki@makiko_75_</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/makiko_75_/status/1108473130027089920"
+            target="_blank">2019/3/21 5:59:23</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">常人のわたくし。<br/><br/>36歳から日本を出て移住、英語を一から習得し続け、ネイティブと共に働き、44歳の今もなおカレッジで学習しオールAの成績を修めており、47歳で新人看護師になる予定でおりますので、本人がスパークを感じるやりたい事があれば年齢の呪いをご自身でかけずに、皆さまに幸あれ。 <a href="https://twitter.com/Linerfil/status/1106558282490011648" target="_blank">twitter.com/Linerfil/statu…</a></p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1108808121244254208"
+            target="_blank">2019/3/22 4:10:31</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">割と読めますね。。 <blockquote class="card card-default"><header><img loading="lazy" src="https://pbs.twimg.com/profile_images/782595859686895618/KPwEsVWY_400x400.jpg" /><a href="https://twitter.com/puyotaroh/status/1108210270172667905" target="_blank">ぷよ太郎(12/31西う17a)さんのツイート: "实际问题、同じ汉字でも中国大陆の简体字は读み惯れてないと日本人には难しい。この文章では、试验的に日本语の文章の汉字を对应する简体字に变换したけど、パッと见て皆どれだけ理解できるのか气になる。逆のことが、日本の汉字を见た简体字ユーザーにも言えるのではないか。"</a></header><div>“实际问题、同じ汉字でも中国大陆の简体字は读み惯れてないと日本人には难しい。この文章では、试验的に日本语の文章の汉字を对应する简体字に变换したけど、パッと见て皆どれだけ理解できるのか气になる。逆のことが、日本の汉字を见た简体字ユーザーにも言えるのではないか。”</div></blockquote></p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/932523104001179648/e-WOE6ri_normal.jpg" />
+        <p class="tweet-user-name">tasha@phootahh</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/phootahh/status/1108352507078557698"
+            target="_blank">2019/3/20 22:00:04</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">毎晩工具が箱の中に片付けられているのが不思議で<br/>カメラを設置してみた。<br/><br/> https://t.co/oG0UzwrGDl</p>
+        
+        <video class="tweet-img" controls src="https://video.twimg.com/ext_tw_video/1108020801004060672/pu/vid/480x480/C4_OjQzXx4rPfUE_.mp4?tag=8" />
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/1197393286765264898/Y1loSyvZ_normal.jpg" />
+        <p class="tweet-user-name">寺嶋瑞仁@葛飾区@simakaze01</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/simakaze01/status/1108554139733127168"
+            target="_blank">2019/3/21 11:21:17</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">絞り加工<br/>絞り加工自体は何度か見たことあるけどこんな感じに円筒から完全？に蓋をしてしまえのははじめてみた。<br/>銅の柔らかさと綺麗にシールする技術凄い<br/>旋盤使って試してみよ<br/> <a href="https://twitter.com/universal_sci/status/1108533977361666050/video/1" target="_blank">twitter.com/universal_sci/…</a></p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1108661877880446976"
+            target="_blank">2019/3/21 18:29:24</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">今こんな感じ。。<br/><br/><blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="https://www.sfpgmr.net/test/three/horse-001/" target="_blank">Three.jsによる馬のアニメーション</a></header><div></div></blockquote> https://t.co/JySuAe0Doz</p>
+        
+        <img loading="lazy" class="tweet-img" src="https://pbs.twimg.com/media/D2LCDkWVYAAgyg6.png" />
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1108547006144765952"
+            target="_blank">2019/3/21 10:52:56</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ちょっと久しぶりにthree.jsをいじる。馬のアニメーション。RYDEEN動画用。。<br/><br/><blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="https://www.sfpgmr.net/test/three/horse/" target="_blank">Three.jsによる馬のアニメーション</a></header><div></div></blockquote> https://t.co/BAur6WOEzi</p>
+        
+        <img loading="lazy" class="tweet-img" src="https://pbs.twimg.com/media/D2JZnSOU0AAej_X.png" />
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1108548174598144000"
+            target="_blank">2019/3/21 10:57:35</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">エドワード・マイブリッジの「The Horse in Motion」の画像データを拝借し、トレースして加工し、シルエットのsvgデータにした。<br/><br/><blockquote class="card card-default"><header><img loading="lazy" src="https://upload.wikimedia.org/wikipedia/commons/0/07/Muybridge-2.jpg" /><a href="https://ja.wikipedia.org/wiki/%E3%82%A8%E3%83%89%E3%83%AF%E3%83%BC%E3%83%89%E3%83%BB%E3%83%9E%E3%82%A4%E3%83%96%E3%83%AA%E3%83%83%E3%82%B8#/media/File:The_Horse_in_Motion.jpg" target="_blank">エドワード・マイブリッジ - Wikipedia</a></header><div></div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1108548175588020224"
+            target="_blank">2019/3/21 10:57:35</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">さらにそれをthree.jsのShapeに変換して最終的にはMeshにして表示してる。昔に比べて簡単になったなあ。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1108548831006748672"
+            target="_blank">2019/3/21 11:00:11</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">これをさらにジオメトリ・インスタンシングで大量に表示してみようかな。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1108561476061560832"
+            target="_blank">2019/3/21 11:50:26</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">と思ったけど、メッシュ複数だから無理か。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1108609488565600256"
+            target="_blank">2019/3/21 15:01:13</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">画面に敷き詰めてみた。<br/><br/><blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="https://www.sfpgmr.net/test/three/horse-001/" target="_blank">Three.jsによる馬のアニメーション</a></header><div></div></blockquote> https://t.co/zhUzb6Ilzq</p>
+        
+        <img loading="lazy" class="tweet-img" src="https://pbs.twimg.com/media/D2KScwZU4AEobVi.png" />
+        
+      </section>
+      
+    </article>
+    
+  </div>
+  <footer>
+    CopyLight 2019 Satoshi Fujiwara
+  </footer>
+  <script async src="https://platform.twitter.com/widgets.js"></script>
+
+  <script async src="./index.js"></script>
+
+</body>
+
+</html>

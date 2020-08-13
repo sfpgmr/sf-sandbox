@@ -1,0 +1,1008 @@
+<!DOCTYPE html>
+<html lang="ja" prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb# article: http://ogp.me/ns/article#">
+
+<head>
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-15457703-9"></script>
+  <script>
+    if (!location.hostname.match(/localhost/)) {
+      window.dataLayer = window.dataLayer || [];
+      function gtag() { dataLayer.push(arguments); }
+      gtag('js', new Date());
+      gtag('config', 'UA-15457703-9');
+    }
+  </script>
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>トップページをリニューアルする</title>
+  <meta name="description" content="リニューアル用のトップページデザインを考えて実装する" />
+  <meta name="keywords" content="Programming,Music,HTML5,WebGL,javascript,WebAudio" /> 	
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <meta itemprop="image" content="https://www.sfpgmr.net/img/sfweb.png" />
+  <meta itemprop="name" content="S.F. Web" />
+  
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:site" content="S.F. Web" />
+  <meta name="twitter:url" content="./index32.html" />
+  <meta name="twitter:title" content="リニューアル用のトップページデザイン" />
+  <meta name="twitter:description" content="リニューアル用のトップページデザインを考えて実装する" />
+  <meta name="twitter:image" content="https://www.sfpgmr.net/img/sfweb.png" />
+  
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="./index32.html" />
+  <meta property="og:title" content="リニューアル用のトップページデザイン"/>
+  <meta property="og:site_name" content="S.F. Web" />
+  <meta property="og:description" content="Programming,Music,HTML5,WebGL,javascript,WebAudio">
+  <meta property="og:image" content="https://www.sfpgmr.net/img/sfweb.png">
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    html {
+      margin: 0;
+      padding: 0;
+      font-size:10px;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      background: black;
+      color: white;
+    }
+
+    .top-nav {
+      position:fixed;
+      z-index:99999;
+      background: rgba(0,0,0,0.5);
+      display: block;
+      width:100%;
+      height:32px;
+      color:white;
+    }
+    #sentinel {
+      width:0px;
+      height:0px;
+    }
+    .contents {
+      padding-top:32px;
+      width: 100%;
+      position: relative;
+      content: strict;
+    }
+
+    @keyframes blinking {
+      0% {
+        color: black;
+      }
+
+      50% {
+        color: white;
+      }
+
+      100% {
+        color: black;
+      }
+    }
+
+    .loading {
+      font-family: monospace;
+      font-size: 24px;
+      position: fixed;
+      width: 100vw;
+      height: 100vh;
+      text-align: center;
+      padding-top: 50vh;
+      z-index: 32768;
+      background: black;
+      animation: blinking 2s infinite;
+      content: strict;
+    }
+
+
+    .contents > article {
+      background: #f0f0f0;
+      color: #202020;
+      position: absolute;
+      max-height: 960px;
+      overflow: auto;
+      border-radius: 3px;
+      transition: opacity 1s linear;
+      opacity: 0.0;
+    }
+
+    .tweet-header {
+      display: grid;
+      align-items: end;
+      grid-template-columns: 40px 2fr 1fr;
+      grid-template-rows: 1fr;
+      font-size: 12px;
+      font-weight: bold;
+    }
+
+
+    .tweet-img {
+      width: 100%;
+      object-fit: cover;
+    }
+
+    .youtube {
+      position: relative;
+      cursor: pointer;
+    }
+
+    .youtube > img {
+      width: 100%;
+      object-fit: cover;
+    }
+
+    .youtube > svg.player-play {
+      width:64px;
+      height:64px;
+      left:calc(50% - 32px);
+      top:calc(50% - 32px);
+      position:absolute;
+      z-index: 1000;
+      opacity: 0.5;
+    }
+    
+    .youtube:hover > svg.player-play {
+      opacity: 1.0;
+    }
+
+    .youtube:hover .player-play-1 {
+      stroke:#80808080;
+    }
+
+    
+    .youtube > div.yt-title {
+      /*text-shadow: #fff 1px 1px 0;*/
+      font-size: 1.2rem;
+      color:white;
+      background:rgba(0, 0,0,0.5);
+      position:absolute;
+      left:0;
+      top:0;
+      overflow: auto;
+      z-index:998;
+    }
+
+
+    .tweet-profile-img {
+      grid-column: 1/2;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+    }
+
+    .tweet-user-name {
+      grid-column: 2/3;
+    }
+
+    .tweet-date {
+      font-size: 8px;
+      text-align: right;
+      grid-column: 3/4;
+    }
+
+    .contents>twitter-widget {
+      overflow: auto;
+      max-height: 960px;
+      position: absolute;
+    }
+
+    .contents>article>section>.tweet-text {
+      display: block;
+      padding: 4px;
+      word-break: break-all;
+      font-size: 12px;
+    }
+
+    .contents>article>h3 {
+      font-size: 12px;
+    }
+
+    blockquote.card {
+      margin:4px;
+      padding:4px;
+      font-size:12px;
+      background:white;
+      border-radius: 4px;
+    }
+
+    blockquote.card > header {
+      display:grid;
+      grid-gap:4px;
+      gap:4px;
+    }
+
+    blockquote.card-default > header {
+      grid-template-columns:64px 1fr;
+    }
+
+    blockquote.card-large > header {
+      grid-template-columns:1fr;
+    }
+
+    blockquote.card > header > img {
+      width:100%;
+    }
+
+
+    div.no-image {
+      display: block;
+      width:64px;
+      height:64px;
+      background:gray;
+      color:white;
+      text-align: center;
+      line-height: 64px;
+    }
+
+  </style>
+</head>
+
+<body>
+  <div class="loading" id="loading">Loading</div>
+  <header class="top-nav">
+    <h1>S.F. Info.</h1>
+  </header>
+  <div class="contents" id="contents" rendersubtree="invisible skip-activation"> 
+    
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1119192120080748546"
+            target="_blank">2019/4/19 19:52:49</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">いやー買ってしまった。。<br/><blockquote class="card card-large"><header><img loading="lazy" src="https://www.konami.com/games/50th/ac/s/img/share_img.jpg" /><a href="https://www.konami.com/games/50th/ac/arcade/jp/ja/" target="_blank">アーケードクラシックス アニバーサリーコレクション</a></header><div>KONAMI 50周年記念シリーズ「アニバーサリーコレクション」！往年のアーケード・家庭用ゲームが最新ハードで復活！</div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1119192188917653504"
+            target="_blank">2019/4/19 19:53:06</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">STEAMでね。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1119192789877583872"
+            target="_blank">2019/4/19 19:55:29</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">それでまあサンダークロスを久しぶりにやってみたけどめちゃめちゃ下手になってしまって、1面クリアするのも大変なレベルという。。1面は昔楽勝だったんだけど、歳とって動体視力も落ちてるし、動くものが多いと頭もついてけないし。。ちょっとショックだった。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1119193280502095872"
+            target="_blank">2019/4/19 19:57:26</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">そしておまけの対談は懐かしき方々。。涙ものですわ。。みなさん歳とりましたなあ。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1119367650465828864"
+            target="_blank">2019/4/20 7:30:19</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ほんとに久しぶりにシューティングらしいシューティングをやった。小一時間ほどやってちょっとコツがわかってきた。キモは敵配置の記憶と予測だった。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1119368472276791297"
+            target="_blank">2019/4/20 7:33:35</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ほぼ30年ぶりくらいにサンダークロスをやったので、敵の配置をすっかり忘れていた。この時代のシューティングは反射神経だけではクリアできないのだ。何度もやられて敵配置を頭に叩き込む必要があるのだ。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1119385371102474240"
+            target="_blank">2019/4/20 8:40:44</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">そして記憶を紐解きながら、先読みして出来るだけ敵を早めに段取りよく片付けていくのだ。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1119386263629336576"
+            target="_blank">2019/4/20 8:44:17</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">しかしこのパワーアップと釣り合いを取るための難易度の変化の感じにコナミのクセを感じるな。。ブーメランレーザーの威力がちょっと頭一つ出てる感じがする。なので敵の弾数がこのアイテム取ると格段に増える。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1119386902983954433"
+            target="_blank">2019/4/20 8:46:49</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">オプションを4つ取った後のパワーアップアイテムは取らない方が私はやりやすいのも思い出した。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1119387196333494272"
+            target="_blank">2019/4/20 8:47:59</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">オプションが大きくなりすぎて自機がどこにあるか見失ってしまうんだよなあ。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1119387462860546049"
+            target="_blank">2019/4/20 8:49:03</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">だけどレーザーとか演出がすごいので何とか取ろうとしてしまう。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1119387951249575937"
+            target="_blank">2019/4/20 8:50:59</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">自機を見失いがちなのはいつでもといえばいつでもなんだけど。自機を常に注視してないと、アレ、なんか死んだ。。 となる。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1119388385825550336"
+            target="_blank">2019/4/20 8:52:43</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">グラディウスだとそうならんのは多分動き方の差なんだろうなあ。自機と間隔を置いて今の位置と同期して動くからね。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1119388867293925376"
+            target="_blank">2019/4/20 8:54:37</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">wさんとtさんらしい敵の配置と動きですな。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1119392716478042112"
+            target="_blank">2019/4/20 9:09:55</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">この時代って大きなキャラはスプライトを組み合わせて作るんだけど、ズレずにうまく動かすのも結構面倒でね。。木構造にして動かせばいいだけなんだけど、概念的な理解が足りてなかったなあ。当時の私は。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1119569883048452099"
+            target="_blank">2019/4/20 20:53:55</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">サンダークロスようやく2面までノーミスでクリア。。こんなに難しかったかなあ。。歳のせいだろうなあ。やっぱり。。プレイすると肩が凝ってしかたがない。仕事より凝る（笑）。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1119570069850222592"
+            target="_blank">2019/4/20 20:54:39</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">なので長時間プレイできない。。うう。。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/1148922612300386304/lDjxtnIb_normal.jpg" />
+        <p class="tweet-user-name">Masaki@Web技術者@plus_one_masaki</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/plus_one_masaki/status/1118675079162777600"
+            target="_blank">2019/4/18 9:38:17</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">やべーなもうHTMLのコーディングいらなくなる未来がある？ <a href="https://twitter.com/m__sb04/status/1118462497739034624" target="_blank">twitter.com/m__sb04/status…</a></p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1118838144953008128"
+            target="_blank">2019/4/18 20:26:15</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ちょっとこのブログをポストしてから無性にPSGの音が聞きたいというか、BASICのPLAY命令で音を鳴らしたくなって。。<br/><blockquote class="card card-default"><header><img loading="lazy" src="https://www.sfpgmr.net/img/sf.png" /><a href="https://www.sfpgmr.net/blog/entry/2019/04/676d1c6f17ea44afe4d447c2566bb0e1.html" target="_blank">S.F. Blog:RYDEENのカバー曲をパソコンで作り始めて35年経過した～ここに至るまでの変遷をまとめる（２）</a></header><div>はじめに35年を経過したこのカバー曲つくり。ここに至るまでの変遷と現状についてここで一つまとめておこうと思った。の続き。1つ前のエントリはこちら。きっかけの続き1983年:MZ-700購入最初に手にしたパソコンはMZ-700だった。おそらく1982年の終わりころだったと思うんだよなあ。。PC6001にするかどうか悩んだんだけど、PC6001はメモリの少なさが気になって買わなかった。ゲームと音楽演奏...</div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1118838700220096512"
+            target="_blank">2019/4/18 20:28:27</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">あれこれ探すとWebMSXというのを見つけてですな。というか前から知ってたといえば知ってたけど。。<br/><br/><blockquote class="card card-large"><header><img loading="lazy" src="https://webmsx.org/images/wmsx-logo-large.png" /><a href="https://webmsx.org/" target="_blank">WebMSX</a></header><div>Play MSX2+ games in your browser, phone or tablet!</div></blockquote> https://t.co/udIRrQnJrF</p>
+        
+        <img loading="lazy" class="tweet-img" src="https://pbs.twimg.com/media/D4bp2JsU4AEPTw7.png" />
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1118840012848582656"
+            target="_blank">2019/4/18 20:33:40</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">PLAY命令を打ち込んで音を鳴らすことはできたんですな。しかしR（休符）はL（音符の長さ）の影響を受けるんじゃなかったっけ？とか思って。<br/><br/>PLAY "L16CRCRCRCR"<br/><br/>なんてやると8分でスタッカート気味のドが鳴ると思ってたんだけど、実際やってみると影響を受けず、</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1118840013674803200"
+            target="_blank">2019/4/18 20:33:40</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">PLAY "L16CR16CR16CR16CR16"<br/><br/>こう書かないと意図した長さにならなかったんですな。これはMSXだからで、X1のHu-BASICだとどうだったかなとか思って。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1118840446275346432"
+            target="_blank">2019/4/18 20:35:24</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">MMLは記憶してた。けどエンベロープどうやって指定するのかとかすっかり忘れてた。PSGがプリセットで持ってるエンベロープね。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1118841369018003457"
+            target="_blank">2019/4/18 20:39:04</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">どうだったかは実機で確かめないといけないけど、もう手元にないからなあ。。X1C持ってたんだけど。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1118841369949167617"
+            target="_blank">2019/4/18 20:39:04</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">BASICのテープだけでも持ってたらそれを何とかして吸い出すとかすればなあとか思ってて。あ、カセットデッキがないだろうが。。そういえばカセット自体いつごろから使わなくなったんだろうなあ。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1118841532608421888"
+            target="_blank">2019/4/18 20:39:43</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">吸い出せば今は高機能なエミュレータがあるからね。。<br/><blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="http://takeda-toshiya.my.coocan.jp/x1twin/index.html" target="_blank">eX1 / eX1twin / eX1turbo / eX1turboZ / ePCEngine 謎WIPページ</a></header><div></div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1118843014384717830"
+            target="_blank">2019/4/18 20:45:36</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">1995年に結婚するまで実家に居たんだけど、そのときはまだあった気がするんだよなあ。。その実家も今は引っ越して別の場所にあって、その時に処分したら全部なくなっちゃったんだけどね。。何か一つくらいは残しとけばよかったなと。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1118848346490322948"
+            target="_blank">2019/4/18 21:06:47</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">結婚直前まで持ってたと思われるPCは<br/><br/>・MZ-700<br/>・X1C<br/>・FM77-AV<br/>・SONY HB-F1<br/><br/>そのときにはほとんど使ってなかったと思うけどね。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1118849179122421760"
+            target="_blank">2019/4/18 21:10:06</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">あ、あれだ。<br/><br/>・IBM PS 55 Note<br/>・YAMAHA C1<br/><br/>も持ってたわ。C1は中古だけど。。<br/>しかし当時もPCに結構散財してるよなあ。。<br/>今思えば勿体無い気がしないでもない。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1118849650939899904"
+            target="_blank">2019/4/18 21:11:58</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">C1ちゅうのはこれですわ。。<br/><br/><blockquote class="card card-default"><header><img loading="lazy" src="https://jp.yamaha.com/files/F446616F69074353BBB6267C0A8348FE_12073_863x671_de79c53413575818071e1040907d7525.jpg" /><a href="https://jp.yamaha.com/products/music_production/music-computers/c1/index.html" target="_blank">ヤマハ | C1 - シンセサイザー・音楽制作 - 概要</a></header><div>「フル・ミュージックI/O」装備の16ビット・マシン。超強力シーケンス・ソフトをバンドリング。</div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1118849942733254661"
+            target="_blank">2019/4/18 21:13:08</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">これ、MIDIポートが大量についてたんだよな。。このあたりの話もブログにまとめんといかん。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1118850275878420485"
+            target="_blank">2019/4/18 21:14:27</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">これIBM PC互換機だったので、ゲームも遊べたんだよな。スタント・ドライブや４Dボクシングとかもこの白黒画面で遊んだわ。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1118851910096670720"
+            target="_blank">2019/4/18 21:20:57</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">PS/55 Note買うよりも前に買ったような気もするし、あとのような気もするし。。いずれにせよ全部処分したけどね。。この時期のAT互換機向けのゲームは洋物中心だったけど印象に残るものが結構多いわ。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1118851911015264256"
+            target="_blank">2019/4/18 21:20:57</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">・スタント・ドライブ<br/>・ウルフェンシュタイン3D<br/>・４Dボクシング<br/>・DOOM<br/><br/>そんなところか。DOOMはちょっとあとかなぁ。。なんかクソゲーもあったと思うけどね。EGA/VGAあたりの時代ですわ。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1118852510490320897"
+            target="_blank">2019/4/18 21:23:20</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">まそれはさておき、それでちょっとPSG（AY-3-8910/YM2149）のエミュレータのソースコードはないかな？とか探しはじめて。探すと2-3ぐらいはすぐに見つかった。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1118852934152810496"
+            target="_blank">2019/4/18 21:25:01</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">まずはこれ<br/><blockquote class="card card-default"><header><img loading="lazy" src="https://avatars0.githubusercontent.com/u/16206233?s=400&v=4" /><a href="https://github.com/digital-sound-antiques/emu2149" target="_blank">GitHub - digital-sound-antiques/emu2149: A YM2149 (aka PSG) emulator written in C.</a></header><div>A YM2149 (aka PSG) emulator written in C. Contribute to digital-sound-antiques/emu2149 development by creating an account on GitHub.</div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1118853241389719552"
+            target="_blank">2019/4/18 21:26:14</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">そしてこれ<br/><blockquote class="card card-default"><header><img loading="lazy" src="https://avatars2.githubusercontent.com/u/4078084?s=400&v=4" /><a href="https://github.com/true-grue/ayumi" target="_blank">GitHub - true-grue/ayumi: Highly precise emulation of AY-3-8910 and YM2149 sound chips</a></header><div>Highly precise emulation of AY-3-8910 and YM2149 sound chips - true-grue/ayumi</div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1118853775727288320"
+            target="_blank">2019/4/18 21:28:22</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">そしてmameのこれ<br/><blockquote class="card card-default"><header><img loading="lazy" src="https://avatars1.githubusercontent.com/u/9024458?s=400&v=4" /><a href="https://github.com/mamedev/mame/blob/master/src/devices/sound/ay8910.cpp" target="_blank">mame/ay8910.cpp at master · mamedev/mame · GitHub</a></header><div>MAME. Contribute to mamedev/mame development by creating an account on GitHub.</div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1118853932791394304"
+            target="_blank">2019/4/18 21:28:59</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ちょっとこのあたりのコードを読んで遊んでみようかなと思ってるところ。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1118854493813141504"
+            target="_blank">2019/4/18 21:31:13</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">エミュレータっちゅうのがいまいちどういう風に動いてるのかちゃんと理解できてないんだなあ。。これが。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1118855122929381378"
+            target="_blank">2019/4/18 21:33:43</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">それでまあ、このPSGのコードを読んでちょっと動かしてみようと思っているのですわ。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1118855577818374146"
+            target="_blank">2019/4/18 21:35:31</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">まあちらっと見たところでは、デシメータに違いがあったり、mameのコードが若干複雑だなあと思ったりとか。もうちょっと読み比べんとわからんけどね。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1118856548682326017"
+            target="_blank">2019/4/18 21:39:23</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">それでこれをwasmテキストモードで書いて移植してみようかなと思ったのだった。しかしwasmでコードを書ききるにはちょっと面倒なところがあって。オフセット定数を数字でしか表せないところなんだけどね。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1118856549500219393"
+            target="_blank">2019/4/18 21:39:23</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">メモリはリニアでとれるので、アロケータとかでメモリをマネージメントするのではなく、ワークエリアをそれなりにとって、そこにオフセットでアクセスすれば今回のようなレトロチップのエミュレーションにはちょうどいいと思ったんだよね。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1118857019870474240"
+            target="_blank">2019/4/18 21:41:15</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">そのオフセットは数字ではなく定数ラベルで指定したいんだよね。。アセンブラだとEQU命令とかいうやつだったと思うんだけど、WASMのテキスト・フォーマットだとそれがないんだよな。確か。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1118858129003835392"
+            target="_blank">2019/4/18 21:45:39</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">だからちょっとpeg.jsでプリプロセッサみたいなのをちょこちょこって作って、定数ラベルとあとはソースインクルード、そしてマクロ機能を用意すれば移植できるんではないかとまたできもしないことを考えてるわけですわ。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1118858129842688000"
+            target="_blank">2019/4/18 21:45:40</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">拡張wasmテキスト・モードでソースを書いて、プリプロセッサで定数置換とマクロ置換、ソースインクルードして、wat形式で吐いて、wat2wasmに食わせようかなとか思ったりしてるんだな。。binaryenに引き渡してもよいんだけど。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1118858593921634304"
+            target="_blank">2019/4/18 21:47:30</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">というわけでちょっとトライしてみることにしようかなと。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1118859247465271297"
+            target="_blank">2019/4/18 21:50:06</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">PSGのエミュレーションに限定すれば動くとこまでは作れそうかなと思ってるんだけどね。。PCハードのエミュレーションは無理にしても。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1118860475612053509"
+            target="_blank">2019/4/18 21:54:59</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ちょっと前に4bit波形メモリ音源もどきを作ってみたりしたことはあったんだけど、これはチップのエミュレーションではないんだよね。。<br/><br/><blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="https://www.sfpgmr.net/dev/graphics/devver/20160417/" target="_blank">Graphics</a></header><div></div></blockquote> https://t.co/q17HOXynxx</p>
+        
+        <img loading="lazy" class="tweet-img" src="https://pbs.twimg.com/media/D4b9kNkUEAIDJvQ.png" />
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1118861164832645120"
+            target="_blank">2019/4/18 21:57:43</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">で波形メモリに連続してデータを流し込むと4bitPCM再生ができるので4bit サンプリングのリズム再生をしてみたりもしたんだよなあ。<br/><br/><blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="https://www.sfpgmr.net/dev/graphics/devver/20160422/" target="_blank">Graphics</a></header><div></div></blockquote> https://t.co/nyD78guKmL</p>
+        
+        <img loading="lazy" class="tweet-img" src="https://pbs.twimg.com/media/D4b-P9nVUAEQmZM.png" />
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1118861921409572864"
+            target="_blank">2019/4/18 22:00:44</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">まあおそらくガンヘッドのドラムとかってこうやって鳴らしてたんだろうなあとか想像したりしてね。。PCエンジンも波形メモリ音源ですからな。。<br/><br/><div class="youtube" data-type="yt" id="mpAJxb56GVg"><div class="yt-title">Youtube - 1989年キャラバン公認ソフト：ＰＣエンジン・ガンヘッド</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/mpAJxb56GVg" class="youtube" src="https://i.ytimg.com/vi/mpAJxb56GVg/hqdefault.jpg" /></div>   <br/><br/><br/>ガンヘッド面白かったなあ。。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/1191705344818335749/4_UDObui_normal.jpg" />
+        <p class="tweet-user-name">upusen@upusen</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/upusen/status/1118511244678352897"
+            target="_blank">2019/4/17 22:47:16</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">https://t.co/SfFclhkFF8</p>
+        
+        <video class="tweet-img" controls src="https://video.twimg.com/ext_tw_video/1118511184125157377/pu/vid/320x180/TyUs7W0Lge05Yv0i.mp4?tag=8" />
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1118445523638177792"
+            target="_blank">2019/4/17 18:26:07</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">これは知らんかった。。 <blockquote class="card card-default"><header><img loading="lazy" src="https://pbs.twimg.com/ext_tw_video_thumb/1117942071224963072/pu/img/Bf7BPOjXTKGICDU-.jpg" /><a href="https://twitter.com/soltme1/status/1117942184957759488" target="_blank">ソルトミさんのツイート: "昔の日本ってすごかったんだな、今これ作れないもの。… "</a></header><div>“昔の日本ってすごかったんだな、今これ作れないもの。 https://t.co/TFidaFIOMG”</div></blockquote></p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/1193899326/gorry5_normal.jpg" />
+        <p class="tweet-user-name">後藤 浩昭 / GORRY@gorry5</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/gorry5/status/1118391381658099712"
+            target="_blank">2019/4/17 14:50:58</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">一時期、シードフィルのアルゴリズム研究に凝っていたことがある…というか、シードフィルの速度や機能（タイリングとか）がBASICやアドベンチャーゲームの技術的ウリになった時代がですね… :D <a href="https://twitter.com/snapwith/status/1118312700902170627" target="_blank">twitter.com/snapwith/statu…</a></p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/256913586/publickey_icon_normal.png" />
+        <p class="tweet-user-name">Publickey@publickey</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/publickey/status/1118360660721774593"
+            target="_blank">2019/4/17 12:48:54</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">GNU AWK 5.0がリリース。8年ぶりのメジャーバージョンアップ。正規表現ライブラリがGLIBCからGNULIBへ移行、名前空間が実装 <a href="https://www.publickey1.jp/blog/19/gnu_awk_508glibcgnulib.html" target="_blank">publickey1.jp/blog/19/gnu_aw…</a></p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://abs.twimg.com/sticky/default_profile_images/default_profile_normal.png" />
+        <p class="tweet-user-name">masahiko-Bot@amasahiko2</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/amasahiko2/status/1117634941158690816"
+            target="_blank">2019/4/15 12:45:09</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">客先常駐で仕事する<br/>↓<br/>色々効率化したくなる<br/>↓<br/>相談する<br/>↓<br/>上司「それはお前の仕事じゃない。専門部署に依頼しろ」<br/>↓<br/>依頼<br/>↓<br/>専門部署「その変更により具体的に何がどのくらい改善されますか？」<br/>↓<br/>資料作ろうとする<br/>↓<br/>上司「お前その稼働、どのプロジェクトで付けるつもり？」<br/>↓<br/>諦める</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1117762851861450752"
+            target="_blank">2019/4/15 21:13:25</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ブログを書いた。<br/><br/><blockquote class="card card-default"><header><img loading="lazy" src="https://www.sfpgmr.net/img/sf.png" /><a href="https://www.sfpgmr.net/blog/entry/2019/04/8627a53c21006487e4bc2d6a084f3186.html" target="_blank">S.F. Blog:RYDEENのカバー曲をパソコンで作り始めて35年経過した～ここに至るまでの変遷をまとめる（１）</a></header><div>はじめに最近になってまたYMOのRYDEENのカバー曲つくりを再開している。ちょっと飽きてきた感はあるんだけど。。BASICのPLAY文で打ち込み、ダブルラジカセでピンポン録音しはじめたのが17歳ころじゃないかなと思う。そこから数えると今年でちょうど35年目である。現在はWin10+REAPER+UR22MkII＋AKAI MPK miniで作っている。35年を経過したこのカバー曲つくり。ここに至...</div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1118265801696374784"
+            target="_blank">2019/4/17 6:31:58</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ブログを書いた。<br/><br/><blockquote class="card card-default"><header><img loading="lazy" src="https://www.sfpgmr.net/img/sf.png" /><a href="https://www.sfpgmr.net/blog/entry/2019/04/676d1c6f17ea44afe4d447c2566bb0e1.html" target="_blank">S.F. Blog:RYDEENのカバー曲をパソコンで作り始めて35年経過した～ここに至るまでの変遷をまとめる（２）</a></header><div>はじめに35年を経過したこのカバー曲つくり。ここに至るまでの変遷と現状についてここで一つまとめておこうと思った。の続き。1つ前のエントリはこちら。きっかけの続き1983年:MZ-700購入最初に手にしたパソコンはMZ-700だった。おそらく1982年の終わりころだったと思うんだよなあ。。PC6001にするかどうか悩んだんだけど、PC6001はメモリの少なさが気になって買わなかった。ゲームと音楽演奏...</div></blockquote></p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1118092352512348160"
+            target="_blank">2019/4/16 19:02:44</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">インテルのライブラリでxbyakが使われてるのか。。すごいなあ。。<br/><br/>MKL-DNNで学ぶIntel CPUの最適化手法 - Cybozu Inside Out | サイボウズエンジニアのブログ <blockquote class="card card-large"><header><img loading="lazy" src="https://cdn-ak.f.st-hatena.com/images/fotolife/c/cybozuinsideout/20190411/20190411223730.png" /><a href="https://blog.cybozu.io/entry/2019/04/15/170000" target="_blank">MKL-DNNで学ぶIntel CPUの最適化手法 - Cybozu Inside Out | サイボウズエンジニアのブログ</a></header><div>初めに サイボウズ・ラボの光成です。 DNN（deep neural network : 深層学習）といえばGPUや専用プロセッサを使うのが主流です。 しかしIntelはCPUで高速にDNNをするためのライブラリ MKL-DNN を提供しています。 MKL-DNNはIntelの最新CPUに対応したオープンソースソフトウェアなのでコードを見ると勉強になります。 ここではMKL-DNNで使われているテクニックをいくつか紹介します。</div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1118093791318007808"
+            target="_blank">2019/4/16 19:08:27</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">Xbyakのコンセプトは素晴らしいものがある。このライブラリでしかできないことがある。実行時のバイナリコード生成だ。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1118136682044375040"
+            target="_blank">2019/4/16 21:58:53</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">Xbyakのすごいところはこの一文に要約されている。<br/><br/>「 Xbyakの主要な目的はコンパイル時には未確定だが実行時には確定している部分において, 一層の高速化をしたい場合にあります.」<br/><br/><blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="http://herumi.in.coocan.jp/soft/xbyak.html" target="_blank">XBYAK</a></header><div></div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1118137229157781504"
+            target="_blank">2019/4/16 22:01:04</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">コンパイル時には不定で実行時にはイミディエイト値として扱えるものは実行時でないと最適化できん（イミディエイト値に関する命令が使えん）のですわ。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1118138008367194114"
+            target="_blank">2019/4/16 22:04:09</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">昔だとコード書き換えとかのテクニックがそれに相当するのかもしれん。命令に埋め込まれているイミディエイト値を上書きすることによって最適化するという点においてだけど。それに相当するようなことがXbyakではできるということだ。アプローチの仕方はまったくことなると思うけど。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1118138807159808001"
+            target="_blank">2019/4/16 22:07:20</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">VirtualProtectとか使ってデータエリアを実行可能にしてそこに実行時にアセンブルしたバイナリデータを入れて実行するようになってたと思うな。たしか。C++テンプレートをうまく使ってコンパクトに実装してた記憶があるな。。</p>
+        
+      </section>
+      
+    </article>
+    
+  </div>
+  <footer>
+    CopyLight 2019 Satoshi Fujiwara
+  </footer>
+  <script async src="https://platform.twitter.com/widgets.js"></script>
+
+  <script async src="./index.js"></script>
+
+</body>
+
+</html>

@@ -1,0 +1,4231 @@
+<!DOCTYPE html>
+
+<html lang="ja" prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb# article: http://ogp.me/ns/article#">
+
+<head>
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-15457703-9"></script>
+  <script>
+    if (!location.hostname.match(/localhost/)) {
+      window.dataLayer = window.dataLayer || [];
+      function gtag() { dataLayer.push(arguments); }
+      gtag('js', new Date());
+      gtag('config', 'UA-15457703-9');
+    }
+  </script>
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Twitter Viewer</title>
+  <meta name="description" content="リニューアル用のトップページデザインを考えて実装する" />
+  <meta name="keywords" content="Programming,Music,HTML5,WebGL,javascript,WebAudio" /> 	
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <meta itemprop="image" content="https://www.sfpgmr.net/img/sfweb.png" />
+  <meta itemprop="name" content="S.F. Web" />
+  
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:site" content="S.F. Web" />
+  <meta name="twitter:url" content="./index11.html" />
+  <meta name="twitter:title" content="リニューアル用のトップページデザイン" />
+  <meta name="twitter:description" content="リニューアル用のトップページデザインを考えて実装する" />
+  <meta name="twitter:image" content="https://www.sfpgmr.net/img/sfweb.png" />
+  
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="./index11.html" />
+  <meta property="og:title" content="リニューアル用のトップページデザイン"/>
+  <meta property="og:site_name" content="S.F. Web" />
+  <meta property="og:description" content="Programming,Music,HTML5,WebGL,javascript,WebAudio">
+  <meta property="og:image" content="https://www.sfpgmr.net/img/sfweb.png">
+
+  <style>
+  * {
+  margin: 0;
+  padding: 0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+html {
+  margin: 0;
+  padding: 0;
+  font-size: 10px;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  background: black;
+  color: white;
+}
+
+.top-nav {
+  position: fixed;
+  z-index: 99999;
+  background: rgba(0, 0, 0, 0.5);
+  display: block;
+  width: 100%;
+  height: 32px;
+  color: white;
+}
+
+#sentinel {
+  width: 0px;
+  height: 0px;
+}
+
+.contents {
+  padding-top: 32px;
+  width: 100%;
+  position: relative;
+  content: strict;
+}
+
+@-webkit-keyframes blinking {
+  0% {
+    color: black;
+  }
+  50% {
+    color: white;
+  }
+  100% {
+    color: black;
+  }
+}
+
+@keyframes blinking {
+  0% {
+    color: black;
+  }
+  50% {
+    color: white;
+  }
+  100% {
+    color: black;
+  }
+}
+
+.loading {
+  font-family: monospace;
+  font-size: 24px;
+  position: fixed;
+  width: 100vw;
+  height: 100vh;
+  text-align: center;
+  padding-top: 50vh;
+  z-index: 32768;
+  background: black;
+  -webkit-animation: blinking 2s infinite;
+          animation: blinking 2s infinite;
+  content: strict;
+}
+
+.contents > article {
+  background: #f0f0f0;
+  color: #202020;
+  position: absolute;
+  max-height: 960px;
+  overflow: auto;
+  border-radius: 3px;
+  /* transition: opacity 1s linear;*/
+  opacity: 1.0;
+}
+
+.tweet-header {
+  display: -ms-grid;
+  display: grid;
+  -webkit-box-align: end;
+      -ms-flex-align: end;
+          align-items: end;
+  -ms-grid-columns: 40px 2fr 1fr;
+      grid-template-columns: 40px 2fr 1fr;
+  -ms-grid-rows: 1fr;
+      grid-template-rows: 1fr;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.tweet-img {
+  width: 100%;
+  -o-object-fit: cover;
+     object-fit: cover;
+}
+
+.youtube {
+  position: relative;
+  cursor: pointer;
+}
+
+.youtube > img {
+  width: 100%;
+  -o-object-fit: cover;
+     object-fit: cover;
+}
+
+.youtube > svg.player-play {
+  width: 64px;
+  height: 64px;
+  left: calc(50% - 32px);
+  top: calc(50% - 32px);
+  position: absolute;
+  z-index: 1000;
+  opacity: 0.5;
+}
+
+.youtube:hover > svg.player-play {
+  opacity: 1.0;
+}
+
+.youtube:hover .player-play-1 {
+  stroke: #80808080;
+}
+
+.youtube > div.yt-title {
+  /*text-shadow: #fff 1px 1px 0;*/
+  font-size: 1.2rem;
+  color: white;
+  background: rgba(0, 0, 0, 0.5);
+  position: absolute;
+  left: 0;
+  top: 0;
+  overflow: auto;
+  z-index: 998;
+}
+
+.tweet-profile-img {
+  -ms-grid-column: 1;
+  -ms-grid-column-span: 1;
+  grid-column: 1/2;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+}
+
+.tweet-user-name {
+  -ms-grid-column: 2;
+  -ms-grid-column-span: 1;
+  grid-column: 2/3;
+}
+
+.tweet-date {
+  font-size: 8px;
+  text-align: right;
+  -ms-grid-column: 3;
+  -ms-grid-column-span: 1;
+  grid-column: 3/4;
+}
+
+.contents > twitter-widget {
+  overflow: auto;
+  max-height: 960px;
+  position: absolute;
+}
+
+.contents > article > section > .tweet-text {
+  display: block;
+  padding: 4px;
+  word-break: break-all;
+  font-size: 12px;
+}
+
+.contents > article > h3 {
+  font-size: 12px;
+}
+
+blockquote.card {
+  margin: 4px;
+  padding: 4px;
+  font-size: 12px;
+  background: white;
+  border-radius: 4px;
+}
+
+blockquote.card > header {
+  display: -ms-grid;
+  display: grid;
+  grid-gap: 4px;
+  gap: 4px;
+}
+
+blockquote.card-default > header {
+  -ms-grid-columns: 64px 1fr;
+      grid-template-columns: 64px 1fr;
+}
+
+blockquote.card-large > header {
+  -ms-grid-columns: 1fr;
+      grid-template-columns: 1fr;
+}
+
+blockquote.card > header > img {
+  width: 100%;
+}
+
+div.no-image {
+  display: block;
+  width: 64px;
+  height: 64px;
+  background: gray;
+  color: white;
+  text-align: center;
+  line-height: 64px;
+}
+/*# sourceMappingURL=style.css.map */ 
+  </style>
+</head>
+
+<body>
+  <div class="loading" id="loading">Loading</div>
+  <header class="top-nav">
+    <h1>S.F. Info.</h1>
+  </header>
+  <div class="contents" id="contents" rendersubtree="invisible skip-activation"> 
+    
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1212701145379946496/pSDVrvWj_normal.png" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1257478368267694081"
+            target="_blank">2020/5/5 10:13:00</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">v8ブログに載ってたwabtに入ってるwasm-decompileを使って作成中のモジュールをdecompileしてみた。抽象的な言語コードにデコンパイルされるのだが、確かに読みやすくてデバッグに有効かも。左がデコンパイルしたやつで、右がwat版の同じ関数。<br/>#webassembly<br/><br/><blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="https://v8.dev/blog/wasm-decompile" target="_blank">What’s in that .wasm? Introducing: wasm-decompile · V8</a></header><div></div></blockquote> https://t.co/UtDo6kMRBx</p>
+        
+        <img  class="tweet-img" src="https://pbs.twimg.com/media/EXN1IW5UEAAuzhc.png" />
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1257496176305160192"
+            target="_blank">2020/5/5 11:23:46</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">音楽やシンセのことをtweetしてたら作りかけてほったらかしにしてた波形メモリシンセの続きが作りたくなったので。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1258166314713018369"
+            target="_blank">2020/5/7 7:46:39</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">波形メモリシンセのコードいじってるが、wasmも半分くらい忘れており、さらには自分で作ったはずのmwasmというマクロアセンブラもどきの構文にも悩まされる始末（笑）</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1258166623719964675"
+            target="_blank">2020/5/7 7:47:53</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">web再構築の話はどこに行ってしまったのやら。sqliteのラッパーは少し寝かせておこう。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1258167346830573570"
+            target="_blank">2020/5/7 7:50:45</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">rustという言語も少しだけ仕様を読んだけど、ifも式な感じはwasmと似た感じがしないでもない。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1258671759475146753"
+            target="_blank">2020/5/8 17:15:07</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ちょっと前にwatで<br/><br/>・JSによるメタプログラミング<br/>・マクロ<br/>・メモリアドレスのラベル付け<br/><br/>できるようにするプリプロセッサを作った。<br/><br/><blockquote class="card card-large"><header><img  src="https://qiita-user-contents.imgix.net/https%3A%2F%2Fcdn.qiita.com%2Fassets%2Fpublic%2Farticle-ogp-background-1150d8b18a7c15795b701a55ae908f94.png?ixlib=rb-1.2.2&w=1200&mark=https%3A%2F%2Fqiita-user-contents.imgix.net%2F~text%3Fixlib%3Drb-1.2.2%26w%3D840%26h%3D380%26txt%3Dmwasm%2528webassembly%25E3%2583%2586%25E3%2582%25AD%25E3%2582%25B9%25E3%2583%2588%25E3%2583%2595%25E3%2582%25A9%25E3%2583%25BC%25E3%2583%259E%25E3%2583%2583%25E3%2583%2588%25E7%2594%25A8%25E3%2583%2597%25E3%2583%25AA%25E3%2583%2597%25E3%2583%25AD%25E3%2582%25BB%25E3%2583%2583%25E3%2582%25B5%2529%2520%25E3%2581%25AE%25E8%25A3%25BD%25E4%25BD%259C%26txt-color%3D%2523333%26txt-font%3DHiragino%2520Sans%2520W6%26txt-size%3D54%26txt-clip%3Dellipsis%26txt-align%3Dcenter%252Cmiddle%26s%3D846ff3530045c7501e8d635fec3bd030&mark-align=center%2Cmiddle&blend=https%3A%2F%2Fqiita-user-contents.imgix.net%2F~text%3Fixlib%3Drb-1.2.2%26w%3D840%26h%3D500%26txt%3D%2540SFPGMR%26txt-color%3D%2523333%26txt-font%3DHiragino%2520Sans%2520W6%26txt-size%3D45%26txt-align%3Dright%252Cbottom%26s%3Dc23b0952f5b9bbd73a7e2c18c323897d&blend-align=center%2Cmiddle&blend-mode=normal&s=4aae7106376f4b9b10c798eea0556b21" /><a href="https://qiita.com/SFPGMR/items/427a0ac38338e659fe4a" target="_blank">mwasm(webassemblyテキストフォーマット用プリプロセッサ) の製作 - Qiita</a></header><div><br/><br/>mwasm(wasmテキストフォーマット用プリプロセッサ) の製作<br/><br/><br/>はじめに<br/><br/>mwasmはWebAssesembly Text Format （S式）用のプリプロセッサである。<br/>独自仕様+JavaScriptの構文を採用し、...</div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1258681138161147905"
+            target="_blank">2020/5/8 17:52:23</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">これはまだプロトタイプもいいところなのだが、つかえないこともない。が１つこれはないとちょっときついなと思ったのがポインタ＆ポインタメンバ指定によるメモリオフセットの取得である。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1258682686303961088"
+            target="_blank">2020/5/8 17:58:32</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">線形メモリの配置を絶対オフセットで指定するのではなくてデータ型とラベルで定義して、オフセットはラベルでアクセスできるようにするということですな。 https://t.co/ooYrqdliVk</p>
+        
+        <img  class="tweet-img" src="https://pbs.twimg.com/media/EXe8868VcAAWo_H.png" />
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1258683129138606080"
+            target="_blank">2020/5/8 18:00:17</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">アセンブラでいうDWとかDBとかそういうやつですわ。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1258684408845840384"
+            target="_blank">2020/5/8 18:05:22</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">それをC風なデータ型で指定できるようにしたんだよな。watはS式なので、ほんとはブレスじゃなくてS式で統一ししたほうがきれいな気もするけど、ここはプリプロセスする箇所だというのをソース中でわかるようにしたかったんだよね。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1258684646927118337"
+            target="_blank">2020/5/8 18:06:19</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">しかしwatはS式でスタートしたもの今はフラット形式のほうがメインになっているようである。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1258685153343238149"
+            target="_blank">2020/5/8 18:08:20</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">そして次に構造体を定義できるようにしたのですな。 https://t.co/I9EbTOL7oT</p>
+        
+        <img  class="tweet-img" src="https://pbs.twimg.com/media/EXe_beHUEAAbj_N.png" />
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1258686401853353984"
+            target="_blank">2020/5/8 18:13:18</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">でこれ使うとこんな感じでオフセットアドレスを取得できるわけですな。これがないとすべて絶対値（数字）でオフセット指定しなくてはならず、可読性が著しく下がってしまう。 https://t.co/Kln7b0fxoy</p>
+        
+        <img  class="tweet-img" src="https://pbs.twimg.com/media/EXfAXSyUMAARH1G.png" />
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1258686918180564994"
+            target="_blank">2020/5/8 18:15:21</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">watはそもそも人が書くフォーマットではないのでこんな機能はいらないが、watでどうしても書きたい私はこういうプリプロセッサを作ったのだ。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1258688342784225282"
+            target="_blank">2020/5/8 18:21:00</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">でさっきいってたポインタ機能というのはこういうことですわな。構造体に*をつけて定義すると、構造体の領域を確保するのではなく構造体のオフセットアドレスを格納する領域を確保するという意味になる。 https://t.co/jjwIlTAOLm</p>
+        
+        <img  class="tweet-img" src="https://pbs.twimg.com/media/EXfB8V7U0AA5Bgk.png" />
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1258688710578630663"
+            target="_blank">2020/5/8 18:22:28</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">今はどうしてるかというとオフセット・アドレスというのは単なるi32の値なので、i32という型で定義してそこに構造体のオフセットアドレスを入れている。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1258689572281520131"
+            target="_blank">2020/5/8 18:25:54</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">そしてC言語と同じように<br/><br/>sequence-&gt;tempo<br/><br/>とすればsequenceに入ってるオフセットからtempoのオフセットを求めて返せるようにする。<br/><br/>この機能は今ないが、やっぱり必要かなあと思っている。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1258728698892546048"
+            target="_blank">2020/5/8 21:01:22</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">これ自体大した機能ではない。実はこのメモリ配置や構造体の情報はメタデータとして保存し、JS側と情報共有することを指向している。実際今も使っているが、現在の仕様ではJS側ではi32の整数値が構造体のポインタかどうかを判別できない。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1258728747739394049"
+            target="_blank">2020/5/8 21:01:34</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ポインタ定義できるようになるとその情報もメタ情報として渡せる。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1258729921649635330"
+            target="_blank">2020/5/8 21:06:14</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">今JS側ではwasmと共有しているメモリは<br/><br/>// sample_rateのオフセットアドレスを求めてそのアドレスにある値をsample_rateの型で取り出して返す。<br/>memory.get('sample_rate');<br/>// 値をセットする <br/>memory.set('sample_rate',8000);<br/><br/>こんな感じでアクセスできるようになっている。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1258730382087741440"
+            target="_blank">2020/5/8 21:08:03</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">私のプリプロセッサ(mwasm)からだすメタ情報は型の情報を持っているのでJS側で適切な型でメモリに値をセットできる。これを構造体を指すオフセットアドレスにも対応できるようにしたいわけ。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1258730856044130304"
+            target="_blank">2020/5/8 21:09:56</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">こうするとJS側のメモリ操作もコストはかかるがラベルでできるようになるので可読性が上がる。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1258731379581313025"
+            target="_blank">2020/5/8 21:12:01</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">オフセットアドレスを別途const定義しなくてもよくなる。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1258733754517864448"
+            target="_blank">2020/5/8 21:21:27</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ああ、アセンブラでいうところのDSも欲しくなってるんだよな。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1258734579449397249"
+            target="_blank">2020/5/8 21:24:44</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">glslのようなオレオレ言語を作ろうと手を出してみたが、自分にはまだ早かった。このアセンブラで修行を積んでから再チャレンジしたいと思っているのだが。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1258891800019755009"
+            target="_blank">2020/5/9 7:49:28</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">simdが試験レベルだけどwasmで使えるようになってるので、ベクトルや行列の演算が割と効率よくできるはず。効率よくできるというのは構文をwasmのオペレーションに効率的に変換できるという意味だが。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1258892175665815552"
+            target="_blank">2020/5/9 7:50:58</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">いまどきだから256bit長のsimdにしてほしかったところだが。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1258893624558841856"
+            target="_blank">2020/5/9 7:56:43</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">watを手書きしてて高級言語の表現力の高さにいまさらながら驚嘆している次第である。watは適切なコメントをしておかないと内容を忘れたときに何をしているのか理解するのに恐ろしく苦労する（笑）</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1258893714644021248"
+            target="_blank">2020/5/9 7:57:05</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">wasm-decompileの疑似言語風表記を見ていて、今使ってるプリプロセッサに式表現を追加しようと思った。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1258894283655897088"
+            target="_blank">2020/5/9 7:59:21</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">式を実現するにあたってはできる限りコンパイラ側で余計なコードを吐かないようにしたいと思う。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1258894522915762176"
+            target="_blank">2020/5/9 8:00:18</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">watのS式って基本全部「式」なのよね。あたりまえだけどいまさら強く認識してる（笑）</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1258896579139735552"
+            target="_blank">2020/5/9 8:08:28</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">こういうS式があるとすると<br/>;; 8 byte 境界にそろえる<br/>(local.set $size<br/> (i32.and<br/>  (i32.add<br/>  (local.get $size)<br/>  (i32.const 0x7)<br/>  )<br/>  (i32.const 0xffff_fff8)<br/> )<br/>)<br/>これをC風の式で書けるようにする。<br/><br/>$size = (($size + 0x7) &amp; 0xffff_fff8);<br/><br/>こんな感じ</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1258897917387001857"
+            target="_blank">2020/5/9 8:13:47</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">オレオレプリプロセッサ（mwasm）ではwatの構文以外のものはすべてブレスで囲むようにしているから、<br/><br/>{$size = (($size + 0x7) &amp; 0xffff_fff8);}<br/><br/>こんな感じになる。が{$というのはすでに構文としては採用済みだったような気がするな。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1258898426843955201"
+            target="_blank">2020/5/9 8:15:48</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">watが基本であることは大前提で、そこに可読性を高めるような表現を付け加えていくポリシーでいくことは崩さない。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1258901097973862400"
+            target="_blank">2020/5/9 8:26:25</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">さっきのポインタ表現はS式だとこんな感じになる。<br/><br/>{$value = sequence-&gt;tempo;}<br/><br/>↓<br/><br/>(local.set $value<br/> (i32.load <br/>  (i32.add <br/>   (i32.load (&amp;sequence;))<br/>   (i32.const &amp;Sequence.tempo;)<br/>  )<br/> )<br/>)<br/><br/>間接アドレッシングのためのオペコードが挿入されるわけですな。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1258901555891208192"
+            target="_blank">2020/5/9 8:28:14</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">問題はlocal.teeをどう式で表現するかなのだが。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1258902039603494917"
+            target="_blank">2020/5/9 8:30:10</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">まあしかし、C風な式表現がわかりやすいのはC風な式表現に親しみがあるからであって、Lispに親しみのある人たちはS式のほうが自然なのかもしれんね。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1258904844913373184"
+            target="_blank">2020/5/9 8:41:19</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">local.teeを使って部分が疑似言語ではどのように表現されているかを見てみると、2つの式に分かれてるね。意味としては同じだけどオペコードとしては違ってくるな。。 https://t.co/kerHAmfmiJ</p>
+        
+        <img  class="tweet-img" src="https://pbs.twimg.com/media/EXiHEydVcAAlNIu.png" />
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1258906023999336448"
+            target="_blank">2020/5/9 8:46:00</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">疑似コードから素直に生成するとこうなっちゃう気がするね。。<br/><br/>(local.set $sin_omega_f64<br/> (call $sin (local.get $omega))<br/>)<br/><br/>(local.set $sin_omega<br/> (f32.demote_f64<br/>  (local.get $sin_omega_f64)<br/> )<br/>)</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1258906601542438912"
+            target="_blank">2020/5/9 8:48:17</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">この辺のコードって実はデジタル・フィルタの実装コードである。RBJ CookBookとかいうやつ。それをC++のコードで書いた人がいて、それを私がwasmに書き直したもの。<br/><br/><blockquote class="card card-default"><header><img  src="https://vstcpp.wpblog.jp/wp-content/uploads/2020/04/03e6df50c937c161b3b5def2f0842100.jpg" /><a href="https://vstcpp.wpblog.jp/?page_id=523" target="_blank">簡単なデジタルフィルタの実装 | C++でVST作り</a></header><div>デジタルフィルタを実装しようとすると、フィルタ設計の部分で「Z変換」や「伝達関数」といった高度な数学での説明が始まりますが、ここでは極力高度な数学を使わずに簡単にデジタルフィルタを設計・実装できる方法がありましたので紹介させていただきます。</div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1258906940937105408"
+            target="_blank">2020/5/9 8:49:38</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">デジタルフィルタって、やっぱり理屈は難しい。がその理屈を式表現にすると比較的簡素だったりする。とはいえやはり理屈はきちんと理解したいよね。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1258907360107458560"
+            target="_blank">2020/5/9 8:51:18</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ちなみにRBJ Cookbookというのはこれ。<br/><br/><blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="https://webaudio.github.io/Audio-EQ-Cookbook/audio-eq-cookbook.html" target="_blank">Cookbook formulae for audio EQ biquad filter coefficients</a></header><div></div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1258908566808719360"
+            target="_blank">2020/5/9 8:56:06</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">local.teeというのはlocal変数にスタックの値をセットしつつ、スタックはそのままにしておくという命令なんだよね。local.setはスタックの値をセットしたらスタックポインタを値の型のサイズ分プラスするんだよね。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1259061514796818432"
+            target="_blank">2020/5/9 19:03:52</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">しかし新しい式表現を実装するということはほぼ言語実装を行うに等しいような気もするな。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1259061593465221120"
+            target="_blank">2020/5/9 19:04:10</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">まあちょっとやってみるか。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1259087616596602883"
+            target="_blank">2020/5/9 20:47:35</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">これメモリにストアするときのdecompilerの結果。なかなか面白い結果になるなあ。 https://t.co/oFIZx1s4AS</p>
+        
+        <img  class="tweet-img" src="https://pbs.twimg.com/media/EXks6g3VcAYoSr2.png" />
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1259257329138012160"
+            target="_blank">2020/5/10 8:01:57</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ちょっとmwasmを改造して少しオレオレ言語チックなものを作ってみようと思う。sqliteはちょっと棚上げですな。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1259257942806654976"
+            target="_blank">2020/5/10 8:04:24</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">改造というか作り直しだけどね。たぶん。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1259281561574232066"
+            target="_blank">2020/5/10 9:38:15</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">破壊的変更ですな。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1259586440943464448"
+            target="_blank">2020/5/11 5:49:44</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">言語の構文をどうするか思考中のテキスト・メモ。まだ全然固まっていない。が、基本書いたコードはほぼそのままwasmのオペコードに変換されるイメージで考えている。 https://t.co/01lbq8kF2t</p>
+        
+        <img  class="tweet-img" src="https://pbs.twimg.com/media/EXryuQSUcAEPX0W.png" />
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1259587352885817344"
+            target="_blank">2020/5/11 5:53:21</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">言語はスタックが露骨にコードに現れるのはどうかな？と思っているところ。<br/><br/>a + 1;// 基本演算結果はスタックに入る<br/>a = @stack;// スタックからaに再代入</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1259588257555181570"
+            target="_blank">2020/5/11 5:56:57</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ifも式とするとか。wasmもifは式だからね。<br/><br/>b:i32 = 1,a:i32 = 2;<br/><br/> if:i32 (b &gt; 1) { a + 3; } else { a + 10; };<br/><br/>a = @stack; // 12</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1259588964194766848"
+            target="_blank">2020/5/11 5:59:45</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">1年くらい前もこうやって構文考えてたんだけど、コルーチンとか例外とか、高級言語チックなことを考えて頭脳が破綻したので、今回はあくまでwasmのオペコードから離れないようにという縛りを強くしようと思う。それとコンパイラができる限り余計なサポートコードをはかないようにしよう。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1259589649950892032"
+            target="_blank">2020/5/11 6:02:29</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">データ型もsimdやリファレンスなんかもwasmに追加されるのは確実だから、それも要素に入れると前にやりたかったこともできるのではないかと思ったり。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1259589702732050432"
+            target="_blank">2020/5/11 6:02:41</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">WASIも出てきたのでコンパイラ自体をwasmだけで実装することも可能になってきてるしね。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1259590783901954048"
+            target="_blank">2020/5/11 6:06:59</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">JSをメタ言語にするのはそのままにしておこう。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1259591601568886785"
+            target="_blank">2020/5/11 6:10:14</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">だがすでにこういう風に身の丈を超えたことをしようとしてる（笑）こういうのはやめとこう（笑） https://t.co/AG27x641fU</p>
+        
+        <img  class="tweet-img" src="https://pbs.twimg.com/media/EXr31xtUYAEfcyf.png" />
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1259591894805303296"
+            target="_blank">2020/5/11 6:11:24</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">スタックからの代入式はこれでもいいような気もするね。<br/><br/>a = ;</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1259592251837014016"
+            target="_blank">2020/5/11 6:12:49</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">スタックを意識すると余計なローカル変数を定義しなくてもよくなるんだよね。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1259592630930980865"
+            target="_blank">2020/5/11 6:14:19</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">結局はAssemblyScriptみたくなるのかもしれんが（笑）。賢明な方はAssemblyScript使いましょうね。。<br/><br/><blockquote class="card card-large"><header><img  src="https://repository-images.githubusercontent.com/105138356/2a853280-b6f0-11ea-897b-a9b7b4898a85" /><a href="https://github.com/AssemblyScript/assemblyscript" target="_blank">GitHub - AssemblyScript/assemblyscript: Definitely not a TypeScript to WebAssembly compiler 🚀</a></header><div>Definitely not a TypeScript to WebAssembly compiler 🚀 - AssemblyScript/assemblyscript</div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1259611979699810305"
+            target="_blank">2020/5/11 7:31:13</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">例外もproposal に入ってるなあ。。<br/><br/><blockquote class="card card-default"><header><img  src="https://avatars3.githubusercontent.com/u/11578470?s=400&v=4" /><a href="https://github.com/WebAssembly/exception-handling/blob/master/README.md#exception-handling" target="_blank">exception-handling/README.md at master · WebAssembly/exception-handling · GitHub</a></header><div>Proposal to add exception handling to WebAssembly. Contribute to WebAssembly/exception-handling development by creating an account on GitHub.</div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1259616825022640128"
+            target="_blank">2020/5/11 7:50:28</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">Multi Value Extensionってつまり限定的にスタックトップ以外の値を参照したりできる機能なんだなあ。<br/><br/><blockquote class="card card-default"><header><img  src="https://avatars3.githubusercontent.com/u/11578470?s=400&v=4" /><a href="https://github.com/WebAssembly/multi-value/blob/master/proposals/multi-value/Overview.md" target="_blank">multi-value/Overview.md at master · WebAssembly/multi-value · GitHub</a></header><div>Proposal to add multi-values to WebAssembly. Contribute to WebAssembly/multi-value development by creating an account on GitHub.</div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1259617139931021313"
+            target="_blank">2020/5/11 7:51:43</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ちょっと昔に比べて敷居が下がった感あり。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1259798894432497664"
+            target="_blank">2020/5/11 19:53:57</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">しかし今更だが、なぜCのif 文の条件式は()で囲む構文としたのだろうかね。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1260170880769904640"
+            target="_blank">2020/5/12 20:32:05</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">とりあえずpeg.jsで構文を書きはじめている。 https://t.co/l9GNZMPHrH</p>
+        
+        <img  class="tweet-img" src="https://pbs.twimg.com/media/EX0GPCDVcAEhcGp.png" />
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1260171233145970688"
+            target="_blank">2020/5/12 20:33:29</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">local.teeはtee operator ":="をあてがうことにした。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1260172244371701760"
+            target="_blank">2020/5/12 20:37:30</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">peg.jsも書く→行き詰まる→放置を繰り返しているがそれでもなにがしかの経験は積まれてるようですな。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1260174217401626624"
+            target="_blank">2020/5/12 20:45:20</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">プリプロセッサも作るつもりだが<br/><br/>１.ソーステキストレベルでのプリプロセス時のメタ言語（JS）による介入<br/>２.コード生成プロセス時のメタ言語（JS）による介入<br/><br/>ができると面白いかなと考えた。ソースインクルードと条件付きコンパイルは実装するつもりだけどそれ以外は未定ですが。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1260174449925451776"
+            target="_blank">2020/5/12 20:46:16</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">なんでメタ言語がJSかというとJSでコンパイラを作ってるのでメタ言語はJSだと何かと楽できるので（笑）</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1260176331498614785"
+            target="_blank">2020/5/12 20:53:45</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">今回はbinaryen.jsを使おうと思ってるので、コンパイラ作るといっても<br/><br/>１．プリプロセス<br/>２．AST生成<br/>３．AST -&gt; binaryen AST変換<br/><br/>するだけなんだけどね。<br/><br/>さっきのメタ言語によるユーザーの介入は１．と３．に対してできるようにしたいということなんだよね。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1260177566230474755"
+            target="_blank">2020/5/12 20:58:39</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">少し前に作ったプリプロセッサは<br/><br/>１．プリプロセス<br/>２．ソーステキストをwabtに渡してwasmバイナリにする<br/><br/>という感じ。そしてメタ言語（JS）によって１．に介入できるようにしたんだな。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1260178374158245888"
+            target="_blank">2020/5/12 21:01:52</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">プリプロセッサなんだけど一応mwasmコマンドという体にしてwasmバイナリまでは出力できるようにしてたんだな。wabtでのバイナリだとオプティマイザが働かないんだよな。binaryenだとそれなりなオプティマイザを動かすことができるんだよね。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1260178728140734464"
+            target="_blank">2020/5/12 21:03:16</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">でもその反面、binaryen S式というwatとはまた違うフォーマットでコードを書かないといけないんだけどね。実際はオブジェクトでソースツリーを作るんだけど。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1260179517387112449"
+            target="_blank">2020/5/12 21:06:24</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">binaryen.jsはbinaryenをemscripten＋αでJSにしたもの。以前これをwasm化してみたんだけど、今は普通にwasm化できるかな。。<br/><br/><blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="https://www.sfpgmr.net/blog/entry/2018/05/bf5958a1e29c307c13179264246a313c.html" target="_blank">S.F. Blog:binaryenをwasmでコンパイルしなおす</a></header><div>今作っているオレオレ言語はbinaryen.jsというライブラリでwasmバイナリを出力している。これを使うことによってJS上でwasmオペコードを編集・バイナリ出力・テキスト形式出力などが簡単にできる。https://github.com/AssemblyScript/binaryen.jsbinaryen.jsはbinaryenをemscriptenでコンパイルしたjsファイルである。これを今...</div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1260351620568604672"
+            target="_blank">2020/5/13 8:30:17</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">式を書き始めている。式は演算子の優先順位があるので書くのがすごい面倒な部分ですな。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1260413840451346435"
+            target="_blank">2020/5/13 12:37:31</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">これを参考に書いてるんだけどね。<br/><br/><blockquote class="card card-default"><header><img  src="https://developer.mozilla.org/static/img/opengraph-logo.72382e605ce3.png" /><a href="https://developer.mozilla.org/ja/docs/Web/JavaScript/Reference/Operators/Operator_Precedence" target="_blank">演算子の優先順位 - JavaScript | MDN</a></header><div>演算子の優先順位は、演算子が互いにどのように解析されるかを決定します。優先度の高い演算子は、優先度の低い演算子のオペランドになります。</div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1260448426069721088"
+            target="_blank">2020/5/13 14:54:57</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">peg.jsでパーサーを書いてて、このサンプルはとても参考になるわ。。<br/><br/><blockquote class="card card-default"><header><img  src="https://avatars0.githubusercontent.com/u/9988648?s=400&v=4" /><a href="https://github.com/pegjs/pegjs/blob/master/examples/javascript.pegjs" target="_blank">pegjs/javascript.pegjs at master · pegjs/pegjs · GitHub</a></header><div>PEG.js: Parser generator for JavaScript. Contribute to pegjs/pegjs development by creating an account on GitHub.</div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1260449188824993796"
+            target="_blank">2020/5/13 14:57:59</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ところどころコピペでそのまま使えるし（笑）</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1260449351505248256"
+            target="_blank">2020/5/13 14:58:38</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">式は大体できたなあ。。 https://t.co/qCLlkIPUXs</p>
+        
+        <img  class="tweet-img" src="https://pbs.twimg.com/media/EX4EAMlX0AAII9y.png" />
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1260451406428987401"
+            target="_blank">2020/5/13 15:06:48</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">式の記述方法については以前書いてたときよりも理解度が進んでる気がしないでもない。この歳になると新しいことを記憶できてることがとてつもなくうれしい（笑）</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1260468918021435395"
+            target="_blank">2020/5/13 16:16:23</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">一応こういうのがパースできるようになっている。ifを式にしたので式の中にifを含めることができる。 https://t.co/uATpWNr1yV</p>
+        
+        <img  class="tweet-img" src="https://pbs.twimg.com/media/EX4Vk3tXkAITOMe.png" />
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1260469513373483009"
+            target="_blank">2020/5/13 16:18:45</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">wasmのblockも式っちゃあ式なので、オレオレ言語でも式にしようと思っている。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1260479905227247618"
+            target="_blank">2020/5/13 17:00:02</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">blockも式化するとこんなヘンテコな式もかけるな。。 https://t.co/YcxVCnunij</p>
+        
+        <img  class="tweet-img" src="https://pbs.twimg.com/media/EX4fygoXgAIaKDn.png" />
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1260480465389137921"
+            target="_blank">2020/5/13 17:02:16</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">これが果たして役に立つのかは微妙。blockをwasmのblockみたくやるとこうなるという。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1260482095195066371"
+            target="_blank">2020/5/13 17:08:44</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">typescript や rustの変数定義は型が後置なんだけどこれのメリットがよくわからんな。。今作ってる言語も後置だけど意味は分かっておらず、流行に倣ってるだけだけど（笑）。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1260484709617934339"
+            target="_blank">2020/5/13 17:19:08</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">こういうことらしいな。。<br/><br/>１.型推論を前提にすると型指定をオプション扱いにでき、変数定義のキーワードは型ではなくvarなどで抽象化できる<br/>２．varにすることでそのステートメントが変数定義であることを明確化できる<br/>３.後置にすることで実装が容易になる<br/><br/><blockquote class="card card-default"><header><img  src="https://cdn.sstatic.net/Sites/softwareengineering/Img/apple-touch-icon@2.png?v=1ef7363febba" /><a href="https://softwareengineering.stackexchange.com/a/316219" target="_blank">Why does the type go after the variable name in modern programming languages? - Software Engineering Stack Exchange</a></header><div>Why is it that in nearly all modern programming languages (Go, Rust, Kotlin, Swift, Scala, Nim, even Python last version) types always come after the variable name in the variable declaration, and ...</div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1260485208371073024"
+            target="_blank">2020/5/13 17:21:07</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">右辺値が存在するときは推論に任せて、右辺値がない場合だけ型指定すればいいな。確かに。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1260810201503956992"
+            target="_blank">2020/5/14 14:52:31</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">型指定オペレータやメモリアクセス・オペレータを検討中。。 https://t.co/9f1i1val74</p>
+        
+        <img  class="tweet-img" src="https://pbs.twimg.com/media/EX9LvnlU8AA9Imm.png" />
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1260811651021811712"
+            target="_blank">2020/5/14 14:58:17</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">スタック操作構文について考える。。 https://t.co/TPEg6C48rb</p>
+        
+        <img  class="tweet-img" src="https://pbs.twimg.com/media/EX9NZ1-UcAAGpQg.png" />
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1260812430822653953"
+            target="_blank">2020/5/14 15:01:22</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">wasmでは演算結果はスタックに積まれる。これをうまく使うと途中式のために変数を定義する必要がなくなる。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1260815959016656898"
+            target="_blank">2020/5/14 15:15:24</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">「$」がスタックの意味。しかし考えたらスタックへ積まれる順序があるんでこういうNGなアクションが発生するな。。 https://t.co/w80jaVrMD7</p>
+        
+        <img  class="tweet-img" src="https://pbs.twimg.com/media/EX9Q_cBUEAIoqWX.png" />
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1260817373411504128"
+            target="_blank">2020/5/14 15:21:01</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">「$ - 3」だと<br/><br/>i32.const 3<br/>i32.sub<br/><br/>で済む。<br/>しかし「3 - $」だとローカル変数が必要になってコンパイラ側でサポート・コードが必要になってくるな。。<br/><br/>local.set $temp<br/>i32.const 3<br/>local.get $temp<br/>i32.sub<br/><br/>こういうコードを吐く必要があるな。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1260819536913117184"
+            target="_blank">2020/5/14 15:29:37</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">こういう場合<br/>a + b + $ <br/><br/>だと<br/><br/>local.set $s ;;スタックから戻してsに格納<br/>local.get $a ;; a積む<br/>local.get $b ;; b 積む<br/>i32.add<br/>local.get $s ;; <br/>i32.add<br/><br/>こんな感じにしないといけないんだな。つまり式の中で一番左側にある場合以外はテンポラリな入れ物が必要なんですな。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1260822366080253958"
+            target="_blank">2020/5/14 15:40:51</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ただ演算は交換法則が成り立つから<br/><br/>a + b + $ の場合は$を左側に持ってきても差し支えないので、一時変数はいらなくなるね。。<br/><br/>a + b * $とかもそうだね。<br/>$ * b + aでもよいよね。しかし式が<br/><br/>a + b * (c + d / (e + $))<br/><br/>こんなだと式ツリーが複雑になって交換可能かどうかの判断は難しそうだな。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1260824829944492032"
+            target="_blank">2020/5/14 15:50:39</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">どうにかして$を左に持ってくる最適化を行うのは筋が悪いのでやめておこう。しかも$は何回も参照できないんだよね。wasmはスタックをpeekすることができんのですよ。popするしかないんですよ。popという命令もないけどね。で、そこで気になってるのがmultivalueというproposalなのである。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1260827011007696896"
+            target="_blank">2020/5/14 15:59:19</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">だがまだちゃんと理解していないのでmultivalueのドキュメントを読むのであった。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1260847487759179776"
+            target="_blank">2020/5/14 17:20:41</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">がしかしこのMultivalueってどこまで規格に取り込まれるのだろうか。finishedになってるから全部なのかなあ。。<br/><br/><blockquote class="card card-default"><header><img  src="https://avatars3.githubusercontent.com/u/11578470?s=400&v=4" /><a href="https://github.com/WebAssembly/multi-value/blob/master/proposals/multi-value/Overview.md" target="_blank">multi-value/Overview.md at master · WebAssembly/multi-value · GitHub</a></header><div>Proposal to add multi-values to WebAssembly. Contribute to WebAssembly/multi-value development by creating an account on GitHub.</div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1260853598243614722"
+            target="_blank">2020/5/14 17:44:58</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">そもそもfunctionの戻り値が今１つだけなのを複数返すようにできる拡張だけだと思ってたけど、それだけじゃないんだよね。気になってるのはブロックに対する拡張の部分。特にここ。<br/><br/><blockquote class="card card-default"><header><img  src="https://avatars3.githubusercontent.com/u/11578470?s=400&v=4" /><a href="https://github.com/WebAssembly/multi-value/blob/master/proposals/multi-value/Overview.md#blocks-with-inputs" target="_blank">multi-value/Overview.md at master · WebAssembly/multi-value · GitHub</a></header><div>Proposal to add multi-values to WebAssembly. Contribute to WebAssembly/multi-value development by creating an account on GitHub.</div></blockquote> https://t.co/rKsFjiAyAr</p>
+        
+        <img  class="tweet-img" src="https://pbs.twimg.com/media/EX9zo8UU4AEW6jm.png" />
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1260854490153934848"
+            target="_blank">2020/5/14 17:48:30</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">このpickという命令はなんだ？と。そしてphiのように引数を使ってとはどういうことだと。phiってなんだ？と。で調べるとphiってllvmのphi命令のことを指しているのかな？というのが今の状況。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1260891356857159681"
+            target="_blank">2020/5/14 20:15:00</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">この１文が理解できんのですわ。。<br/><br/>「Inputs to blocks can represent phis on backward edges.」</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1260891777931726848"
+            target="_blank">2020/5/14 20:16:40</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">このloop/blockでのparamってブロック内でどう使うのかがわからんのよね。。<br/><br/>;; A loop that consumes an `i32` stack value<br/>;; at the start of each iteration.<br/>loop (param i32)<br/>  ...<br/>end</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1260892366581362688"
+            target="_blank">2020/5/14 20:19:01</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">これも読んだんだけど、そこんとこはあまり触れられてないんだよね。。<br/><blockquote class="card card-large"><header><img  src="https://hacks.mozilla.org/files/2019/11/Screenshot_2019-11-20-Multi-Value-All-The-Wasm-–-Mozilla-Hacks-the-Web-developer-blog1.png" /><a href="https://hacks.mozilla.org/2019/11/multi-value-all-the-wasm/" target="_blank">Multi-Value All The Wasm! - Mozilla Hacks - the Web developer blog</a></header><div>Multi-value is a proposed extension to core WebAssembly that enables functions to return many values, among other things. It is also a prerequisite for Wasm interface types. Nick Fitzgerald has ...</div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1260893112320180225"
+            target="_blank">2020/5/14 20:21:58</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ProposalのOverviewのこれがそうなんだろうなあと思うんだが。どうもpickというのでparamの値を引っ張ってこれるような気がしないでもない。 https://t.co/n4q3FOD1aY</p>
+        
+        <img  class="tweet-img" src="https://pbs.twimg.com/media/EX-XFdDUwAA_0CJ.png" />
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1260893467997204484"
+            target="_blank">2020/5/14 20:23:23</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">それにこのコードだと階乗の関数になってないんじゃないかと思うんだけどね。。 https://t.co/swzi5RAm9A</p>
+        
+        <img  class="tweet-img" src="https://pbs.twimg.com/media/EX-X5dGUMAEVkZr.png" />
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1260893938124066816"
+            target="_blank">2020/5/14 20:25:15</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">pickが何をするのかがわからん以上、あってるかどうかなんてわからないよね。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1261044012632305665"
+            target="_blank">2020/5/15 6:21:36</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">とりあえずmulti-valueはfunction/loop/blockで複数の値を返す仕様だという理解のみで進めよう。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1261044624430215168"
+            target="_blank">2020/5/15 6:24:02</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">loop/block の構文はwasmとほぼ同じですわ。。ああ、あとはbr_tableがあるなあ。。 https://t.co/piIXeJtKYM</p>
+        
+        <img  class="tweet-img" src="https://pbs.twimg.com/media/EYAg3ffXYAAvJzE.png" />
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1261224637586796546"
+            target="_blank">2020/5/15 18:19:20</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">br_tableはこれですなあ。たしかwasmのbrはbreakのbrだと思うが正しかったかな。。最初はbranchのbrと思ったが。ひょっとして両方か？ https://t.co/8OPJOf3FQv</p>
+        
+        <img  class="tweet-img" src="https://pbs.twimg.com/media/EYDE7BxVcAECt_Z.png" />
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1261224980852817920"
+            target="_blank">2020/5/15 18:20:42</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">今のところwhile/for/do～whileなどのループ構文は作るつもりがないという（笑）</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1261225459880091648"
+            target="_blank">2020/5/15 18:22:36</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">あとこのloop/block/if/funcなどの戻り値のmulti-valueをどう表現するかだな。まあしかし今決めているのは仮レベルでコード生成部分を作ってるうちにどんどん変わってしまうので適当でいいかもね。とりあえず。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1261226102300635138"
+            target="_blank">2020/5/15 18:25:09</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">あと今回は++/--の前置・後置単項演算子はとりあえず作らないつもり。これ以外と面倒なので（笑）。wasmにはinc/decないし、後置++/--もサポートコードが必要だからね。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1261226464717889536"
+            target="_blank">2020/5/15 18:26:36</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ただあれかあ、binaryenにはrelooperという機能があるからそれ使えばループ構文については作るかもしれんねぇ。。ちゅうか作らんといかんかなあ。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1261228032997462016"
+            target="_blank">2020/5/15 18:32:50</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">いやしかし、私はRelooperって何するものなのかわかってないかもしれん（笑）</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1261235767382138880"
+            target="_blank">2020/5/15 19:03:34</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">むむう。確かにwasmのフロー制御構文はなぜあんななのかと思ったことはあるなあ。。まあでもその筋のエキスパートが考えたものだからこの構文に何かメリットがあるのではないかと思ってはいた。が、具体的なメリットは私のような技術レベルでは何一つ思い浮かばない（笑）<br/><br/><blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="http://troubles.md/posts/why-do-we-need-the-relooper-algorithm-again/" target="_blank">WebAssembly Troubles part 2: Why Do We Need the Relooper Algorithm, Again?</a></header><div></div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1261235964858396673"
+            target="_blank">2020/5/15 19:04:21</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">それをそのまま言語仕様に持ってきてる時点で思考停止がばれてしまっているわ（笑）</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1261236407269351426"
+            target="_blank">2020/5/15 19:06:06</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">本質的な理解はまだまだだが、先ほどのブログにかかれてたblockにパラメータを持たせたり、複数の戻り値を指定できるようにするのはまさに昨日悩んでいたmulti-valueの件だよな。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1261237274303361024"
+            target="_blank">2020/5/15 19:09:33</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">このRelooperの話に関してはCFGというキーワードが出てくる。Control Flow Graph。。<br/><br/><blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="https://ja.wikipedia.org/wiki/%E5%88%B6%E5%BE%A1%E3%83%95%E3%83%AD%E3%83%BC%E3%82%B0%E3%83%A9%E3%83%95" target="_blank">制御フローグラフ - Wikipedia</a></header><div></div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1261238001469755394"
+            target="_blank">2020/5/15 19:12:26</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ただこのwasmのこの制御構文に関してはなぜこうなっているのかというのをどこかで読んだ気がしないでもないんだよなあ。。どこだったか。。最近は顔見知りの人でも名前が出てこなくなってきたくらいで、こういう「思い出し」行為はひどく脳が疲れるので避けてしまう。まさに老害（笑）</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1261252739360714753"
+            target="_blank">2020/5/15 20:11:00</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">このドキュメントは書いてあることが難しい。。<br/><br/><blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="http://troubles.md/posts/wasm-is-not-a-stack-machine/" target="_blank">WebAssembly Troubles part 1: WebAssembly Is Not a Stack Machine</a></header><div></div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1261253444448346112"
+            target="_blank">2020/5/15 20:13:48</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ありゃ。。ブロックをまたぐとスタックの値もらえなかったのか。。今頃気づいた（笑）ああ、それでmulti-valueのblockにparamを加えるproposalなのね。。 https://t.co/1UIG171UtY</p>
+        
+        <img  class="tweet-img" src="https://pbs.twimg.com/media/EYDfAugUYAAwfpq.png" />
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1261254191130963968"
+            target="_blank">2020/5/15 20:16:46</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">SSA（static single assignment)形式か。もちろん知らない（笑）<br/><br/><blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="https://ja.wikipedia.org/wiki/%E9%9D%99%E7%9A%84%E5%8D%98%E4%B8%80%E4%BB%A3%E5%85%A5" target="_blank">静的単一代入 - Wikipedia</a></header><div></div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1261255446343462913"
+            target="_blank">2020/5/15 20:21:46</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ここで出た！Φ（ファイ）関数！！これかあ。。multi-valueのドキュメントで出てきたのは。<br/><br/>「Φ (ファイ) 関数と呼ばれる特別な命令を最後のブロックの始めに追加することである」<br/><br/>llvmのphi命令とかもこれなんですな。。理解できてないけど（笑）<br/><br/><blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="https://ja.wikipedia.org/wiki/%E9%9D%99%E7%9A%84%E5%8D%98%E4%B8%80%E4%BB%A3%E5%85%A5" target="_blank">静的単一代入 - Wikipedia</a></header><div></div></blockquote> https://t.co/mHQ9YAyd4j</p>
+        
+        <img  class="tweet-img" src="https://pbs.twimg.com/media/EYDgl81UcAEoOCv.png" />
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1261257187873054720"
+            target="_blank">2020/5/15 20:28:41</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">このあたりの話はコンパイラ最適化で必要な知識なんだな。私は最適化は「神の技術」として崇め奉るもので、理解するなんていう行為は神への冒涜となるのでするべきではないと思っていた（笑）。SSAにしてもしかし書いてあることはわかりそうでさっぱりわかんないな。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1261257610931527682"
+            target="_blank">2020/5/15 20:30:22</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">代入するたびに変数を定義するということは理解したが（笑）。こういうところを知識として持っておくと多分wasmの構造なども理解が早いのかもしれんねえ。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1261259202955112449"
+            target="_blank">2020/5/15 20:36:41</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">webassemblyのローカル変数は本質的に最適化を妨げる要素になるようなことが書いてあるね。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1261260049835454465"
+            target="_blank">2020/5/15 20:40:03</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">wasmってレジスタマシンになって最後の最後でスタックマシンになったのか。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1261260404350574593"
+            target="_blank">2020/5/15 20:41:28</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">そしてストリーミング・コンパイラへの取り組みによってこの問題に気づいたと。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1261261905450024960"
+            target="_blank">2020/5/15 20:47:26</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">うーむ。wasmの高級言語チックな仕様の部分が逆にコンパイラの実装自体、特に最適化を難しくしているということなんだろうか。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1261262825982291969"
+            target="_blank">2020/5/15 20:51:05</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">つまりスタックマシンのコードは自動的に最適化に適したSSA形式になるのに、wasmの仕様がそれを阻んでいる。つまりスタック・マシンにする意味がないというようなことかな。なぜwasmがこうなったかというとasm.jsをベースにしてるからだそう。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1261262991888011264"
+            target="_blank">2020/5/15 20:51:45</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">この部分ほんとよくわかんないや。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1261263205864583170"
+            target="_blank">2020/5/15 20:52:36</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">とりあえずPart2は明日読もう。。<br/><br/><blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="http://troubles.md/posts/why-do-we-need-the-relooper-algorithm-again/" target="_blank">WebAssembly Troubles part 2: Why Do We Need the Relooper Algorithm, Again?</a></header><div></div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1261263383224971265"
+            target="_blank">2020/5/15 20:53:18</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">これからスーパー・ナチュラルのシーズン１２を観たいので。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1261264437140287489"
+            target="_blank">2020/5/15 20:57:29</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">まあしかしmulti-valueの提案そのものが単に複数の値を返却できるという１次的なメリットだけではなく、最適化においても有効なものであるということは理解できましたわ。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1261264779575873536"
+            target="_blank">2020/5/15 20:58:51</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">最適化までをきちんと自前でやろうと思うと相当な知識が必要なんだな。。AST作るだけでほぼ終わりといえるのはbinaryenがあるおかげですな。binaryen様様（笑）</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1261416552814919682"
+            target="_blank">2020/5/16 7:01:56</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">さてPart2を読むとするか。なぜ「なぜRelooperアルゴリズムが必要なのか？ 」<br/><blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="http://troubles.md/posts/why-do-we-need-the-relooper-algorithm-again/" target="_blank">WebAssembly Troubles part 2: Why Do We Need the Relooper Algorithm, Again?</a></header><div></div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1261420276887089152"
+            target="_blank">2020/5/16 7:16:44</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">英文を読むのに最近は自力＋単語調べによる翻訳を避けて安直にdeepl使ってる。書かれてる内容がわかればよいし、DeepLだとあまり意味不明な日本語にならないので。が、たまに翻訳されない部分があるなあ。まあいいけど。。 https://t.co/DSLNMDPZXZ</p>
+        
+        <img  class="tweet-img" src="https://pbs.twimg.com/media/EYF2Q4HU0AAza9y.png" />
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1261422774318321664"
+            target="_blank">2020/5/16 7:26:40</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ここでいうところの問題点。<br/><br/>１．コンパイラがベスト・パフォーマンスの最適化情報を持っているにも関わらず、wasmの特殊な制御フローによってRelooper/Stackfilerなどの複雑なアルゴリズムでwasmバイナリを出力しなければならなくなる。またこの変換によって最適化情報が失われる。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1261423901575221248"
+            target="_blank">2020/5/16 7:31:08</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">２.そして今度はwasmバイナリを実行する環境はこのバイナリをコンパイルするときにそのRelooper/Stackfilerによって変換されたバイナリが元のCFGを再現するに足る情報を提供しないため、不完全な最適化となり実行時のパフォーマンスが落ちる。<br/><br/>と書いてあると思うけどあってるかな？</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1261424559728627712"
+            target="_blank">2020/5/16 7:33:45</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">つまりwasmの特殊性（制御フローの）によって、コンパイラから正確な最適化情報が受け側のJITに届かなくなっていると。それによって無駄な処理とパフォーマンスの低下を招いていると。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1261425591590334466"
+            target="_blank">2020/5/16 7:37:51</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">これを解消するにはblockへの引数と複数の戻り値をサポートする必要があるといっている。multi-value proposalだな。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1261426544108396544"
+            target="_blank">2020/5/16 7:41:38</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">これサポートすると完全なCFGがwasmバイナリで表現でき、最適化に関する情報が失われないということですな。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1261427386454642688"
+            target="_blank">2020/5/16 7:44:59</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">emscriptenもやはり同じ問題を抱えているということですな。wasmへ同じ問題を持ち込んでしまっているのがちょっと不思議だみたいなことが書いてあるな。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1261428629117923328"
+            target="_blank">2020/5/16 7:49:56</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">wasmはJS起点なものなので、成果物として存在しているv8などの実装に強く依存してる。その依存によってCFGを表現できず、今のような状況になっていると。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1261429664976789504"
+            target="_blank">2020/5/16 7:54:03</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">この文書の本質的な理解をするにはコンパイラ最適化に関する基礎知識が必要だなあ。。私には表面上のことをなぞることくらいしかできんね。まずCFGの勉強をせんといかんね。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1261429790201937920"
+            target="_blank">2020/5/16 7:54:32</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">といいつつ、Part3を読むと（笑）<br/><br/><blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="http://troubles.md/posts/the-stack-is-not-the-stack/" target="_blank">WebAssembly Troubles part 3: What About Alloca?</a></header><div></div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1261430058196938752"
+            target="_blank">2020/5/16 7:55:36</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ちなみにDeepLのWindows版アプリだと、ブラウザのテキストを選択してCtrl + C  Cすると翻訳してくれる。楽だ。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1261431884241727489"
+            target="_blank">2020/5/16 8:02:52</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">Relooperを理解するには教えていただいたこの文章を読む必要があるのかな。。<br/><br/><blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="https://twitter.com/tenpoku1000/status/1261239599457681408" target="_blank"></a></header><div></div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1261448535955791874"
+            target="_blank">2020/5/16 9:09:02</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">たしかにそういうことがPart1に書いてあった。。<br/><br/>「WebAssemblyにおけるローカル変数は不要なだけではなく、全般の性能を損なうものであり、スタックだけを使えばコードは自動的にライフタイム情報を持ったSSA形式になる」</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1261449682850439168"
+            target="_blank">2020/5/16 9:13:35</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ﾊﾟｰﾄ3はAlloca。これはllvmなどに存在するSSA形式を回避するalloca演算子のこと。wasmではSSA形式を実現できないのになぜllvmにはSSA形式を回避するalloca命令があるのか？ということのよう。<br/><br/><blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="http://troubles.md/posts/the-stack-is-not-the-stack/" target="_blank">WebAssembly Troubles part 3: What About Alloca?</a></header><div></div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1261449775313903616"
+            target="_blank">2020/5/16 9:13:57</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">正直まったくわかりません（笑）</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1261452332622962688"
+            target="_blank">2020/5/16 9:24:07</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">allocaは具体的にはスタック上に値の領域を確保し、そこへのポインタ（オフセット/アドレス）返す動作をする。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1261452809540472832"
+            target="_blank">2020/5/16 9:26:01</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">こういうrustのコードがあったとすると、llvmのIRではローカル変数の領域確保にalloca命令を使用するのだそう。これがwasmだとどうなるのか。なかなか驚愕の結果になる。 https://t.co/OWQ3muQwHu</p>
+        
+        <img  class="tweet-img" src="https://pbs.twimg.com/media/EYGUbK5UcAAHa8W.png" />
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1261453522492518400"
+            target="_blank">2020/5/16 9:28:51</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">要するにこれ、線形メモリ上に疑似的にスタックを作って動作をエミュレートしているのだ。そしてスタックポインタはグローバル変数となる。これ記事としては古いから今どうなってるかわからんけど。 https://t.co/oc7zKPHFmp</p>
+        
+        <img  class="tweet-img" src="https://pbs.twimg.com/media/EYGUv24UEAAVsgB.png" />
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1261454655617294336"
+            target="_blank">2020/5/16 9:33:21</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">これ結果としてネイティブ・バイナリになったときにどうなるかということなんだけど、llvm IRからネイティブへはまあこうなるわな。。素直にスタックに領域をpushで確保して初期化し、関数を呼び出して最後にスタックに確保した領域をpopして捨てると。まあ想像したとおり。これがwasmだと... https://t.co/uD6xuT3bUG</p>
+        
+        <img  class="tweet-img" src="https://pbs.twimg.com/media/EYGV--TUYAA_OeF.png" />
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1261454968394936321"
+            target="_blank">2020/5/16 9:34:35</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">まあさっきのスタック・エミュレートしてるところがそのまま出てくるんでまあこういう結果になるわな。。 https://t.co/kszc39cLCj</p>
+        
+        <img  class="tweet-img" src="https://pbs.twimg.com/media/EYGWmQ6UwAIf_4a.png" />
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1261456103075753984"
+            target="_blank">2020/5/16 9:39:06</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">wasmバイナリからネイティブ・コードへの変換はFirefoxの最適化コンパイラを使ったそう。これも今どういうネイティブ・コードを吐くのかはわからんけどね。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1261457797314560000"
+            target="_blank">2020/5/16 9:45:50</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">これ単なる「値」を引数とした関数であればこんなwasmコードにはならんと思う。つまりwasmにおけるローカル変数のアドレスを引数として渡すことができないから、アドレス（メモリ）が引き渡せるメモリ上でこのようなエミュレーションを行わざるを得ないと、こういうわけなんですな。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1261472128894828544"
+            target="_blank">2020/5/16 10:42:47</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">かといって線形メモリにスタックポインタ(sp)を確保して、グローバル変数にsp値を持たせるような仕様にしてしまうとセキュリティ的に脆弱だと。線形メモリのオフセットは単なるi32値で自由に演算が可能であるからまあちょっとやばいと。スタックに対するアクセスが自由になりすぎるからだろうかね。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1261475169089904641"
+            target="_blank">2020/5/16 10:54:52</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">Part3はもうちょっと読み込まんと理解できんなあ。眠いのもちょっとあるけど（笑）</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1261475982344515586"
+            target="_blank">2020/5/16 10:58:05</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">Part4では結局wasmの下にローレベルなレイヤというかmicrowasmというものを用意してwasmも一つのIRとしてそこからmicrowasmを出力する。そしてllvmはmicrowasmを直接出力する。こうすることで問題を解決しようということなんだな。。<br/><br/><blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="http://troubles.md/posts/microwasm/" target="_blank">WebAssembly Troubles part 4: Microwasm</a></header><div></div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1261477369237221377"
+            target="_blank">2020/5/16 11:03:36</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">でまあJIT側はmicrowasmを入力としてネイティブ・バイナリを出力すると。そういうわけなんですな。ただこのmicrowasmを使用したlightbeamというJITはのはwasmtimeに統合されたようですな。で今どうなってんのかいな。。よくわからんわ。。<br/><br/><blockquote class="card card-default"><header><img  src="https://avatars0.githubusercontent.com/u/11573910?s=400&v=4" /><a href="https://github.com/CraneStation/lightbeam/pull/18" target="_blank">Microwasm by Vurich · Pull Request #18 · CraneStation/lightbeam · GitHub</a></header><div>This implements the &quot;microwasm&quot; MIR for lightbeam. An example of what this IR looks like is below (using straw-man text syntax).<br/>Here&#39;s the Wasm for a simple fibonacci function (this ...</div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1261477606064455680"
+            target="_blank">2020/5/16 11:04:33</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">先ほどのmicrowasmではスタック操作に関してはpickという命令を使って値を取り出せるようであった。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1261771887199182848"
+            target="_blank">2020/5/17 6:33:55</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">peg.jsでいまいち理解できていない部分は<br/><br/>・適切な構文のエラー出力方法<br/><br/>である。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1261774045546049536"
+            target="_blank">2020/5/17 6:42:29</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">何がというと例えばこのような構文があった場合<br/><br/>IfExpression = "if" __ "(" __ Expression __ ")"   <br/><br/>'if'キーワードの後の"(" __ Expression __ ")" にマッチしていない場合エラーとしたい場合の適切な方法が何かと。今はこの定義にマッチしないと他の構文マッチに遷移する。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1261775030628675586"
+            target="_blank">2020/5/17 6:46:24</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">どの構文にもマッチしないので結局エラーにはなるのだが、エラーとしてはどの構文にもマッチしないという曖昧なエラーとなってしまう。'if' 以降は必ず丸かっこつきの条件式が入るので、少なくとも'if'文の構文に誤りがあるというエラー表示にしたい。そうしないとなんのエラーなのかわからない。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1261779286857416706"
+            target="_blank">2020/5/17 7:03:19</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">１つのアイデアとしてはマッチしない場合の処理を構文定義中に入れ込むことである。<br/><br/>"if" __ ("(" __ Expression __ ")" / &amp;{error('条件式が必要です。')}) <br/><br/>条件式のマッチに失敗すると 「/」 以降に遷移するので述語でerrorを出し強制終了するようにする。これはうまくいく。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1261793740533886976"
+            target="_blank">2020/5/17 8:00:45</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ただいい方法が別にありそうな気もしてる。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1261799548583698437"
+            target="_blank">2020/5/17 8:23:50</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">peg.jsのグラマーはpeg.jsのフォームで記述されている。そのソースを見てみる。これは「ラベル識別子は、予約語以外の識別子である」ルールを実現するために、アクション内で予約語チェックを行っている。つまり識別子としていったんマッチさせてアクションでチェックする。<br/><br/><blockquote class="card card-default"><header><img  src="https://avatars0.githubusercontent.com/u/9988648?s=400&v=4" /><a href="https://github.com/pegjs/pegjs/blob/master/src/parser.pegjs#L160-L167" target="_blank">pegjs/parser.pegjs at master · pegjs/pegjs · GitHub</a></header><div>PEG.js: Parser generator for JavaScript. Contribute to pegjs/pegjs development by creating an account on GitHub.</div></blockquote> https://t.co/8PZnqjOBGm</p>
+        
+        <img  class="tweet-img" src="https://pbs.twimg.com/media/EYLPH-RUMAET2Qr.png" />
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1261800723919978496"
+            target="_blank">2020/5/17 8:28:30</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">以下は予約語以外の識別子というのを構文として書いたものである。これだと予約語でない識別子のみがマッチする構文となる。<br/><br/>CustomIdentifier = !ReservedWord Identifier https://t.co/gb3rDTjLXK</p>
+        
+        <img  class="tweet-img" src="https://pbs.twimg.com/media/EYLQUSgU0AAoo-J.png" />
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1261801830360571905"
+            target="_blank">2020/5/17 8:32:54</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">でこれを他の構文で使うことを考える例えば変数定義<br/><br/>VarDeclaration = 'var' __ CustomIdentifier;<br/><br/>「__」は別途定義してあり、「任意のスペース」という意味である。<br/>この構文は「予約語以外の識別子を変数名として定義する」となる。でここで'var'の次に予約語が来た場合は構文エラーにしたい。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1261802229788323841"
+            target="_blank">2020/5/17 8:34:29</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">pegはトークン化とパースを同時に行うのでこういう「任意のスペース」のような定義が必要になる。これ結構構文の見栄え上かなり邪魔である。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1261804877287575552"
+            target="_blank">2020/5/17 8:45:00</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">1つは先ほどのように予約語のテーブルを用意しておいてアクションでチェックするというベタな方法。もう１つはvarの次に予約語が来た場合はエラーとなる構文を追加することである。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1261805593980878848"
+            target="_blank">2020/5/17 8:47:51</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">こうするわけですな<br/><br/>VarDeclaration = 'var' __ (CustomIdentifier / ReservedWord {error('変数名には予約語は使用できません。');})</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1261806406543396865"
+            target="_blank">2020/5/17 8:51:05</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">この文脈ではCustomIdentifierにマッチしないものは全部エラーにしないといけないんだけどね。ほんとは。そうしたければ述語で書けばいいと思う。<br/><br/>VarDeclaration = 'var' __ (CustomIdentifier / !{error('変数定義は予約語以外の識別子の指定が必要です。');})</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1261808537803481088"
+            target="_blank">2020/5/17 8:59:33</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">これきちんとやるとなると相当骨が折れる。構文の正しさまでなんとかpeg.jsで頑張ってやって、セマンティックチェックはAST構築後にやればいい。問題なのは、チェック内容が「文法上」なのか「セマンティック上」なのかという切り分けが私のようなポンコツにとっては難しいということ（笑）</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1261809394053869568"
+            target="_blank">2020/5/17 9:02:57</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">peg.jsを使うモチベーションとしては文法のドキュメント化（視覚化）も兼ねるという部分が大きかったんだけど、こういうのをソースにどんどん突っ込んでいくと見通しが悪くなって文法ソース解説用の別ドキュメントを作らないといけないかもね（笑）</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1261809944300408833"
+            target="_blank">2020/5/17 9:05:08</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">こういうところまできっちりケアし、実用的な言語を成果物として完成させている方々は、ほんとすごいと思うね。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1261825972036202496"
+            target="_blank">2020/5/17 10:08:49</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">昨日のwasmにおける最適化の課題のブログを読んで、multi-value proposalのこのコードがちょっと読めるようになった。これloop内でローカル変数を使用しないでスタックだけで階乗の処理を実現してるということですわな。。でもmulは(pick 0) (pick1) (i64.mul)じゃないと階乗にならんような。。 https://t.co/fVnaf9grEf</p>
+        
+        <img  class="tweet-img" src="https://pbs.twimg.com/media/EYLm4-xU4AAKtWM.png" />
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1261826278845341701"
+            target="_blank">2020/5/17 10:10:03</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">このpickという命令がブロック中で使えるようになるのかは不明だけどね。どうもmulti-valueのproposalは部分採用のような気がするんだよな。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1261827126493278208"
+            target="_blank">2020/5/17 10:13:25</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">block/loopにパラメータ指定し、さらに複数の戻り値を指定できることによって自然なCFGが描け、スタックのみでローカル変数を使用しないことで自動的にSSA IRチックなコードになるんだろうね。。そうすれば最適化に有利だと。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1261828156886933504"
+            target="_blank">2020/5/17 10:17:30</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">昨日のブログの話は、コンパイラがwasmバイナリを出力するときに、コンパイラが持つ最適化情報をwasmバイナリにうまく反映できないということなんだよね。wasmが持つ制御構造が特殊だから。ただし私の今作っている言語には当てはまらない。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1261828422226993152"
+            target="_blank">2020/5/17 10:18:34</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">なぜならばその特殊な制御構造をそのまま言語仕様としているので（笑）。そもそもコンパイルによるロスが発生しない（笑）。ただしそれはメリットというわけではない。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1261893161355407365"
+            target="_blank">2020/5/17 14:35:49</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">multi-valueのテストコードを見てみる限りproposalのうち<br/><br/>・funcの戻り値のマルチ化<br/>・block/loop/ifのparam/resultのマルチ化<br/><br/>は仕様に入ってるようだね。。<br/><br/><blockquote class="card card-default"><header><img  src="https://avatars3.githubusercontent.com/u/11578470?s=400&v=4" /><a href="https://github.com/WebAssembly/multi-value/blob/master/test/core/block.wast#L282-L288" target="_blank">multi-value/block.wast at master · WebAssembly/multi-value · GitHub</a></header><div>Proposal to add multi-values to WebAssembly. Contribute to WebAssembly/multi-value development by creating an account on GitHub.</div></blockquote> https://t.co/xrsMwDDejG</p>
+        
+        <img  class="tweet-img" src="https://pbs.twimg.com/media/EYMkt5sUEAAkY52.png" />
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1261899237584809984"
+            target="_blank">2020/5/17 14:59:57</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">stackのpickの話はここで読んだ気がしないでもない。さらにいうとwasmのdesign issueとしてたびたび登場している気もしないでもない。pickはスタックの内容を読むということである。スタックへ値を戻すのはSSAのことをちょっと知った今では、意味がないことがわかる。<br/><br/><blockquote class="card card-default"><header><img  src="https://avatars3.githubusercontent.com/u/11578470?s=400&v=4" /><a href="https://github.com/WebAssembly/design/issues/755" target="_blank">AST to Stack Machine questions · Issue #755 · WebAssembly/design · GitHub</a></header><div>I&#39;m trying to learn what &quot;pivot to stack machine&quot; mean. So this is an attempt to clear up understanding. The reason to change to a full stack machine appears to be multiple return val...</div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1261900100831346688"
+            target="_blank">2020/5/17 15:03:23</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">つまりpickだけだと、戻り値アドレスを書き換えるような危ないスタック操作を不可能にする。また、スタック・マシンなので計算結果はスタックに積まれる。この動きは「代入が発生すると新しい変数を定義する」のと意味的に同じ。なのでこの動きがSSAにフィットするということなんだろうな。たぶん。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1261900389042909184"
+            target="_blank">2020/5/17 15:04:32</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">スタックに値を戻すようになれば今使えるローカル変数と同じ動きになるので意味がないということ。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1261901971767783424"
+            target="_blank">2020/5/17 15:10:49</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">今ちょっとこのproposalを読んでる。stack walkingの話。。<br/><br/><blockquote class="card card-default"><header><img  src="https://avatars3.githubusercontent.com/u/11578470?s=400&v=4" /><a href="https://github.com/WebAssembly/design/issues/1340" target="_blank">Proposal: Stack Walking · Issue #1340 · WebAssembly/design · GitHub</a></header><div>Based on feedback from the discussion at the CG meeting, @fgmccabe and I would like to propose adding stack-walking primitives to WebAssembly based on the primer in WebAssembly/exception-handling#1...</div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1261904857973190656"
+            target="_blank">2020/5/17 15:22:17</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">任意の（普通の）ラベルやgotoをサポートしてほしいという要望。<br/><br/><blockquote class="card card-default"><header><img  src="https://avatars3.githubusercontent.com/u/11578470?s=400&v=4" /><a href="https://github.com/WebAssembly/design/issues/796" target="_blank">Please Support Arbitrary Labels and Gotos. · Issue #796 · WebAssembly/design · GitHub</a></header><div>I&#39;d like to point out that I haven&#39;t been involved in the web assembly effort, and I&#39;m not maintaining any large or widely used compilers (just my own toy-ish language, minor contributi...</div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1261945985258799104"
+            target="_blank">2020/5/17 18:05:43</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ブロックとループのパラメータ指定はこんな感じになっている。。ブレス{}の最後に;を入れるとステートメント、そうじゃないと式としてパースされる。つまりブロック系のものは式内に突っ込める。 https://t.co/Yr6nRgbKN9</p>
+        
+        <img  class="tweet-img" src="https://pbs.twimg.com/media/EYNUxvXU8AAgdJ8.png" />
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1261952298126696448"
+            target="_blank">2020/5/17 18:30:48</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">どういう利点があるかというとよくわからない（笑）<br/>ブロックを混ぜた式というのは以下みたいな感じになる。この式やloopパラメータはまったくのデタラメ。文法的にOKだけどセマンティック的なチェックはまだまだこれから。とりあえず一通りpegで文法を定義してめどがついたら次のステップに進むつもり https://t.co/2XzOetkCMQ</p>
+        
+        <img  class="tweet-img" src="https://pbs.twimg.com/media/EYNaZKhUYAAX0q3.png" />
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1261952868266852353"
+            target="_blank">2020/5/17 18:33:04</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ブロックを式として使えるようにするので、ステートメントかどうかの判定は';'で厳密に行う。つまりブロックの終端が式の終端である場合はそこにかならず';'を入れなければならない。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1261959047919497216"
+            target="_blank">2020/5/17 18:57:37</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">for/while/do whileなどのメジャーなループ構文はメタ言語（今のところJS）による記述によって実現したいところだけど、そこまでできるかどうかは正直わからん。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1261959434097442818"
+            target="_blank">2020/5/17 18:59:09</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ああ、それでSSA形式の話でできるΦ関数についてはこのドキュメントで理解できたな。。<br/><br/><a href="http://coins-compiler.osdn.jp/050303/ssa/ssa-nyumon.pdf" target="_blank">coins-compiler.osdn.jp/050303/ssa/ssa…</a> https://t.co/Ae3nAIkvLw</p>
+        
+        <img  class="tweet-img" src="https://pbs.twimg.com/media/EYNhagQU8AIJ2Ab.png" />
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1261959668718428160"
+            target="_blank">2020/5/17 19:00:05</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">スタックマシンだと確かにΦ関数不要になるケースが大半になりそうな気がするなあ。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1261960224249794567"
+            target="_blank">2020/5/17 19:02:18</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">今作ってる言語では自前で最適化はやるつもりはないので知識として持っておくレベルで置いとこう。とはいえ完全に理解しているレベルではまるでないので、置いとくと全部忘れてしまう可能性が高いけど（笑）</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1261960529775489025"
+            target="_blank">2020/5/17 19:03:31</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">というのもbinaryenが持つ最適化機能もなかなかいい感じなのでね。前試した感じでは。最適化としてどのようなことを行ってくれるかはわかってないけど。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1261986795140476928"
+            target="_blank">2020/5/17 20:47:53</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">前にオレオレ言語を作りかけて途中で放置してしまったが、あれからもう２年近く経ってるのか。まあこの時と比べると知識は多少レベルアップした気がする。ただこのオレオレ言語のほうがまともそうな仕様ですな（笑）<br/><br/><blockquote class="card card-large"><header><img  src="https://qiita-user-contents.imgix.net/https%3A%2F%2Fcdn.qiita.com%2Fassets%2Fpublic%2Farticle-ogp-background-1150d8b18a7c15795b701a55ae908f94.png?ixlib=rb-1.2.2&w=1200&mark=https%3A%2F%2Fqiita-user-contents.imgix.net%2F~text%3Fixlib%3Drb-1.2.2%26w%3D840%26h%3D380%26txt%3D%25E3%2582%25AA%25E3%2583%25AC%25E3%2582%25AA%25E3%2583%25AC%25E8%25A8%2580%25E8%25AA%259E%25E3%2582%2592%25E4%25BD%259C%25E3%2581%25A3%25E3%2581%25A6%25E3%2581%2584%25E3%2582%258B%26txt-color%3D%2523333%26txt-font%3DHiragino%2520Sans%2520W6%26txt-size%3D54%26txt-clip%3Dellipsis%26txt-align%3Dcenter%252Cmiddle%26s%3D1c1d049ca8701125667e889f6666512d&mark-align=center%2Cmiddle&blend=https%3A%2F%2Fqiita-user-contents.imgix.net%2F~text%3Fixlib%3Drb-1.2.2%26w%3D840%26h%3D500%26txt%3D%2540SFPGMR%26txt-color%3D%2523333%26txt-font%3DHiragino%2520Sans%2520W6%26txt-size%3D45%26txt-align%3Dright%252Cbottom%26s%3Dc23b0952f5b9bbd73a7e2c18c323897d&blend-align=center%2Cmiddle&blend-mode=normal&s=06de4557010bf4fe07231f49870d8952" /><a href="https://qiita.com/SFPGMR/items/97a21a694286a4688d17" target="_blank">オレオレ言語を作っている - Qiita</a></header><div><br/><br/>動機<br/><br/><br/>JSで素のWebGLをいじってゲームを作ろうとしていた。<br/>GLSLで静的型付け言語の良さを再認識する。<br/>JSからWebGLをいじってると、型変換のオーバーヘッドがちょっと気になってくる。<br/>JSでのベクトルと行列の演算処理...</div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1261987900155031552"
+            target="_blank">2020/5/17 20:52:16</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">あとパーサとしては<br/><br/>１．Fixed SIMDの構文<br/>２．線形メモリにアサインする変数・構造体などの構文<br/>３．モジュール構造・インポート・エクスポート構文<br/><br/>をやってパースできるようになったらコード生成に移るとするか。。プリプロセスはそのあとかな。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1262126985658036225"
+            target="_blank">2020/5/18 6:04:57</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">いやいや、宣言子のあたりがまだ全然できてないや。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1262675361751379968"
+            target="_blank">2020/5/19 18:24:00</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">declaration部分の構文を考えながらpeg.jsでインプリしてるところ。今日もうんうん唸っていた。wasmの構文に沿っているからそんなに悩まなくてススーって行けるかと思ったけど甘かったね。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1262676837919932416"
+            target="_blank">2020/5/19 18:29:52</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">peg.jsでのエラー処理だけど、このような書き方もできるみたい。予約語以外の識別子を期待していて、予約語がマッチした場合expectedエラーを出す。 https://t.co/GngjSVitJA</p>
+        
+        <img  class="tweet-img" src="https://pbs.twimg.com/media/EYXtc7NUwAEvEeE.png" />
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1262678952411230209"
+            target="_blank">2020/5/19 18:38:16</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">グローバル変数の宣言文とかはこんな感じ。 https://t.co/TqQSNsgKxe</p>
+        
+        <img  class="tweet-img" src="https://pbs.twimg.com/media/EYXvytFVcAEzrjP.png" />
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1262679520655503362"
+            target="_blank">2020/5/19 18:40:31</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">関数宣言。なかなかおかしな構文。。 https://t.co/IEsDAoUu5d</p>
+        
+        <img  class="tweet-img" src="https://pbs.twimg.com/media/EYXwVBZVcAclEXL.png" />
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1262680408862232576"
+            target="_blank">2020/5/19 18:44:03</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">func a ($l:i32)/* 引数*/:($j:i32) /* 戻り値*/:($k:i32)/*ローカル変数*/ {<br/>  //関数本体<br/>};<br/><br/>こういう構造。なんと変数のスコープがない（笑）。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1262680785196388352"
+            target="_blank">2020/5/19 18:45:33</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">変数のスコープがないというかwasmのスコープと同じ。つまり宣言時にローカル変数はすべて定義しなくてはならない。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1262681522462580736"
+            target="_blank">2020/5/19 18:48:29</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ブロック・スコープできるようにしてもいいんだけど、wasmにコンパイルしたときに結局変数名を衝突しないようにマングル化してすべて文頭に持ってきて定義するような感じになるんだよね。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1262682042019377152"
+            target="_blank">2020/5/19 18:50:32</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">複数の戻り値は,outputのフィールド部分に区切りで書く感じ。<br/> export start func a  ($l:i32):($j:i32):($k1:i32,$k2:i32,$k3:f64) {}; https://t.co/9I78UiRlmu</p>
+        
+        <img  class="tweet-img" src="https://pbs.twimg.com/media/EYXyanJUcAE_Yrd.png" />
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1262683256526233600"
+            target="_blank">2020/5/19 18:55:22</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">この言語で特徴的なところは、代入式でない式の結果はスタックに積まれるというところかなあと思っている。別に意図があってそうしたわけじゃない。なりゆき（笑）<br/><br/>$i + $k; //加算の値をスタックに積む<br/>15i; //定数15をi32値としてスタックに積む</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1262684090815283201"
+            target="_blank">2020/5/19 18:58:41</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">こうなってくるとインストラクションを直に書けるようにしたくなってくる。<br/><br/>$i + $k;<br/>15i;<br/>add;//スタックに積まれた内容を加算してスタックに積む<br/>10i;<br/>mul;// addしたものと10を乗算してスタックに積む</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1262684780174258177"
+            target="_blank">2020/5/19 19:01:25</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">定数のポストフィックスも一応考えたんだよね。。<br/>b ... i8;<br/>w ... i16;<br/>i ... i32;<br/>l ... i64;<br/>f ... f32;<br/>d ... f64;<br/><br/>u ... unsigned<br/>s ... signed</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1262685479532544000"
+            target="_blank">2020/5/19 19:04:12</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">10iu ... i32の符号なし<br/>10is ... i32符号あり（指定なしは符号あり）</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1262686444335665154"
+            target="_blank">2020/5/19 19:08:02</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">しかしこんなにスタック・マシンを意識した仕様にしてしまうと、VMがレジスタマシンになったときはどうなってしまうんだろうと思うね（笑）</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1262687570716024832"
+            target="_blank">2020/5/19 19:12:31</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">今回の言語は定数に関しても型を明示できるようにして、意図しない自動キャストを抑止しようと思うんだよなあ。放っておいたら自動キャストを挟むようにするつもりではある。そして型推論の技術もちょっとかじっておきたいところ。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1262856875722158080"
+            target="_blank">2020/5/20 6:25:16</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">線形メモリ周りの構文を考え中。。 https://t.co/JhB9kxp1ia</p>
+        
+        <img  class="tweet-img" src="https://pbs.twimg.com/media/EYaRoRvVAAULoEg.png" />
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1262876914911334400"
+            target="_blank">2020/5/20 7:44:54</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">FIXED SIMDの構文検討状況。。 https://t.co/TWmNYkk4f4</p>
+        
+        <img  class="tweet-img" src="https://pbs.twimg.com/media/EYaj2ypUwAca_Ko.png" />
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1263380578126065664"
+            target="_blank">2020/5/21 17:06:16</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">配列メンバアクセス構文の検討。 https://t.co/Fz7Gbe89sl</p>
+        
+        <img  class="tweet-img" src="https://pbs.twimg.com/media/EYht7eKUYAA9HZh.png" />
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1263382381727117313"
+            target="_blank">2020/5/21 17:13:26</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">構文がある程度完成してからコード生成を作ろうと思ってやってるがなかなか「ある程度」までいかないな。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1263384104189321216"
+            target="_blank">2020/5/21 17:20:17</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">今はまだ構文を検討してpeg.jsで書いてみて、それがきちんと意図したようなASTになるか、他の構文と矛盾したりしていないかという部分をチェックしているんだよね。「変数は２回定義できない」とか、「定義していない変数は使用できない」とかなどのチェックはまだこれから。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1263386144865005568"
+            target="_blank">2020/5/21 17:28:24</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">というのも、前回オレオレ言語を作ったときは、少しずつ構文を足しながら、コード生成部分も並行して書いて動くものを作り、それを積み重ねていくやり方で進めていた。しかしこれはとても効率が悪い。あたりまえといえばあたりまえかもしれない。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1263386767782080514"
+            target="_blank">2020/5/21 17:30:52</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">構文を変えると、コード生成部分のコードはほぼスクラッチで書くので、その場しのぎのつぎはぎなコードになってしまいがちだ。それが積み重なってくるとコードが汚れてきて、手を触れたくなくなってくるのである（笑）</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1263387498626998272"
+            target="_blank">2020/5/21 17:33:46</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">構文を変えると構文上の矛盾が発生したりするし、そもそも構文設計がまずくて大きく変えたくもなってくる。そうなってくるとコード生成コードを捨てなくてはいけなくなってくる。再利用できる部分もあるにはあるが。大きく手を入れるのが難しくなってくる。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1263388086391549952"
+            target="_blank">2020/5/21 17:36:07</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">効率が悪いので、凡庸な私はどうしてもスクラッチの部分を手抜きしたくなってくるわけ。そして手抜きコードを書いて、そのコードを後で自分で見て腹が立ってくる（笑）し、結構意味を把握するのに骨が折れたりする。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1263388527527473153"
+            target="_blank">2020/5/21 17:37:52</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">特に再帰なコードは、コードの記述量に比べ意味が大きかったりするので、いったん忘れてしまうと思い出すのに非常に苦労する。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1263389287271108608"
+            target="_blank">2020/5/21 17:40:53</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">なので今回は構文をある程度完成させてから、ルールチェックやコード生成部分を作ろうと思ってやってるんだよね。しかし凡庸な私にとってはこの「ある程度完成したかどうか」の判断が難しいんだな。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1263389571460370432"
+            target="_blank">2020/5/21 17:42:01</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">一応wasmのモジュール定義ができるレベルまでの構文を作るという目標は掲げてはいますがね。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1263400665272877057"
+            target="_blank">2020/5/21 18:26:06</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">配列は多次元配列も表現できるようにしようかなと思っている。<br/><br/>a:i32[8];// １次元<br/>b:i32[8,8];// 2次元<br/>c:i32[8,8,8];// 3次元<br/><br/>// 代入<br/>a[1] = 1;<br/>b[0,1]  = 1;<br/>c[0,0,1] = 2;<br/><br/>// 参照してスタックに積む<br/>a[1];<br/>b[0,0];<br/>add; //イントリンシック（検討中）<br/><br/>$a = a[1] + b[1,1];</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1263401080957747200"
+            target="_blank">2020/5/21 18:27:45</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">しかし配列って次数が増えてくるとどうメモリに配置するのか直感的にわからんな。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1263424232387567616"
+            target="_blank">2020/5/21 19:59:44</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">考えているのが配列の配置。例えばこういう構造体<br/><br/>struct ToneGenerator {<br/>  volume:f32;<br/>  freq:f32;<br/>};<br/><br/>// 並列配置<br/>tone:ToneGenerator[parallel:4];<br/>// 直列配置<br/>tone:ToneGenerator[serial:4];</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1263424727202148352"
+            target="_blank">2020/5/21 20:01:42</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">serialだと構造体が不通に配置されるだけだけど、parallelだとこういうイメージの配置になるというもの。<br/><br/>ToneGenerator {<br/>  volume:f32[4];<br/>  freq:f32[4];<br/>};</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1263427092105973760"
+            target="_blank">2020/5/21 20:11:06</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">あんまり深くは考えてないけど、こういう配置だとSIMDにフィットしやすい気がしてね。たとえば音源を4CH同時にSIMDで処理するときとか。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1263427790667345920"
+            target="_blank">2020/5/21 20:13:53</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">配列の構文はBASICのが一番よい気がしてねえ。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1263431188934344710"
+            target="_blank">2020/5/21 20:27:23</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">コンパイラにおける意味（セマンティック）解析というのは、さっきの「変数は2回宣言できない」とか「宣言のない変数は使用できない。」とか、そういうのだ。peg.jsができるのは基本構文解析までである。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1263432782824345600"
+            target="_blank">2020/5/21 20:33:43</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">なのでルールがシンタックスなのかセマンティクスなのかをきちんと整理しとかないといけない。これが私のようなコンパイラ素人はうまく仕分けできんかったりする。peg.jsはJSでコードをインラインで書けたりするから、セマンティック・チェックするコードを突っ込んでたりするんだよなあ。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1263433469515816960"
+            target="_blank">2020/5/21 20:36:27</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">それでもいいのか、それじゃダメなのか。今のレベルではダメっぽいなあと思うくらい。ダメだという明確な理由を語ることはできない。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1263586441721835521"
+            target="_blank">2020/5/22 6:44:18</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">というわけで今朝テストしてたらやはり矛盾する部分が出てきて構文を修正中。やはり意味解析的な処理はpegのレベルではやらないほうがいいのかもしれんな。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1263957511775744002"
+            target="_blank">2020/5/23 7:18:48</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">配列と構造体の初期値設定の構文はこんな感じかなあ。。 https://t.co/pU38L2hadF</p>
+        
+        <img  class="tweet-img" src="https://pbs.twimg.com/media/EYp6pB2UcAASDN5.png" />
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1264068469743480833"
+            target="_blank">2020/5/23 14:39:43</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">あとはtableだなあ。。これいわゆる関数ポインタを収めるテーブルなんだよね。関数の間接コールを実現するための仕組み。むかしむかしだとジャンプ・テーブルですな。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1264068967150182401"
+            target="_blank">2020/5/23 14:41:41</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">線形メモリ上に関数のアドレスを置くというのはセキュリティ上の考慮からNGとなっていて、関数への参照をこのテーブルにセットするんだよね。そしてこのテーブルへのインデックスと関数の型(type)を指定して間接コールを実現する。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1264312227777007616"
+            target="_blank">2020/5/24 6:48:19</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">tableの構文検討が終わりpeg.jsへの実装が完了。あとは間接関数呼び出し構文を検討・実装すればいちおう構文検討・実装フェーズは終わりかなあ。 https://t.co/bhv0JngSLr</p>
+        
+        <img  class="tweet-img" src="https://pbs.twimg.com/media/EYu9QV-VAAYT2uv.png" />
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1264312663493894144"
+            target="_blank">2020/5/24 6:50:03</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">いろいろおかしなところはまだあるだろうけどね。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1264328858938953728"
+            target="_blank">2020/5/24 7:54:24</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">間接関数呼び出しもこれでいいかな。。 https://t.co/jLdm3zOh96</p>
+        
+        <img  class="tweet-img" src="https://pbs.twimg.com/media/EYvMZF3VcAIubLo.png" />
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1264331087666311169"
+            target="_blank">2020/5/24 8:03:16</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ASTをJSONで出力したもので構文が正しく解析されているかチェックしてるんだけどこれが結構面倒くさいんだよね。 https://t.co/R4y99QdHQ7</p>
+        
+        <img  class="tweet-img" src="https://pbs.twimg.com/media/EYvOH_pUMAA1w9u.png" />
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1264332386197622785"
+            target="_blank">2020/5/24 8:08:25</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">適切なエラーメッセージの出力の問題はまだ残ってるんだよね。例えば以下の関数があるとする。<br/><br/>func a {<br/>// 間接関数呼び出し<br/>elma[0](10);<br/>};<br/>'[' ']'の中はテーブルのインデックスを指定する式が入るんだけど、ここに式が入っていない場合は「間接関数呼び出し」のエラーとしたい。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1264332859826819072"
+            target="_blank">2020/5/24 8:10:18</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">こういうのだけど<br/>elma[](10);<br/><br/>これをパースすると今もエラーは出るんだけど、以下のようなエラーになるんだな。<br/><br/>line:1 column:1-line:1 column:2 Expected Comment, Module Declaration, end of input, end of line, or whitespace but "m" found.<br/><br/>なんだこりゃと。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1264336653935448064"
+            target="_blank">2020/5/24 8:25:23</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">全体のソースはこんな感じなんだけど、先ほどのエラーは１行目についてのエラーになっちゃってるんだよね。なぜこうなるのか。27行目の間接関数呼び出しのエラーによってモジュールのパース全体がキャンセルされてしまうからなんだよね。 https://t.co/z2EH3Kw75G</p>
+        
+        <img  class="tweet-img" src="https://pbs.twimg.com/media/EYvTd9bUYAAXykb.png" />
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1264338185103892481"
+            target="_blank">2020/5/24 8:31:28</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">間接関数呼び出しの構文定義はこう書いてある。tableのindexを指定するところはExpressionとなっていて、ここにはindexを指定する式が入るわけ。構文ではindex指定は必須になっているので、ここに式が入らないと構文として成立しないのでエラーとなる。 https://t.co/leHwLmYkMl</p>
+        
+        <img  class="tweet-img" src="https://pbs.twimg.com/media/EYvT-YGU4AAVOeN.png" />
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1264339757057708033"
+            target="_blank">2020/5/24 8:37:43</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ここはエラーでパースを停止してほしいけど、pegの場合このパースをキャンセルして、次の構文のパースに進んでいくんだよね。結果この構文はどの構文にも当てはまらないのでエラーとなるんだけど、エラーの内容が「どの構文にも当てはまらない」地点でのエラーとなってしまうんだな。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1264340146867986432"
+            target="_blank">2020/5/24 8:39:15</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">pegのこの動きは正常・正当なものでおかしいわけではない。構文実装者がここでパースを停止するように工夫する必要があるんだな。たぶん。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1264342187254272001"
+            target="_blank">2020/5/24 8:47:22</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">しかしこれを行うのはなかなか難しいんだな。。ひょっとしたら私の構文記法になにか誤りがあるのかもしれないが。ここが今のところ一番の悩みどころである。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1264676420187336704"
+            target="_blank">2020/5/25 6:55:29</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ようやくエラー処理およびセマンティックチェックを実装し始めた。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1264676788296269824"
+            target="_blank">2020/5/25 6:56:57</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ちょっと悩みすぎてセミコロン抜けのエラーさえ検出できんというアホな境地に達していた（笑）</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1264677352384024576"
+            target="_blank">2020/5/25 6:59:12</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ちょっとわかったことは、文脈において確定的なものはpeg.js側でエラー検出構文を書くことで対応できるということ。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1264690543759507457"
+            target="_blank">2020/5/25 7:51:37</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ここには必ずこのトークンが来る。来ないとおかしいという部分とか。ここまでパースできれば文脈上このステートメントであることは確定してるとか。それ以降そのステートメントを否定するようなトークンは全てエラーとみなせるとか。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1264691249052741632"
+            target="_blank">2020/5/25 7:54:25</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">まあなんかそういうことを頭の片隅に置きながらルールを書いていかんということですわな。ある構文をパースするルールは何通りもあるけど、そういう制約を課して書く必要がある。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1264691870325592064"
+            target="_blank">2020/5/25 7:56:53</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">適当にルール書いてパースできたあぁぁ！と喜んでたらいかんわな。。それがここ数日で学んだ部分。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1264882106540294144"
+            target="_blank">2020/5/25 20:32:49</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">さて明日からは構文を一つ一つを確認して、セマンティックをチェックするコードを書きながら、エラー処理を考えていくことにしよう。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1264882998991708160"
+            target="_blank">2020/5/25 20:36:22</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">プリプロセッサはトークン分割フェーズがあったほうが実装しやすい気がするね。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1264884667997581312"
+            target="_blank">2020/5/25 20:42:59</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">プリプロセスによって何ができるかを今一度考えておきたいところですな。。プリプロセスというよりはメタ言語でできることを今一度考えるということかな。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1265222979899686914"
+            target="_blank">2020/5/26 19:07:19</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">構文エラーを発生させる構文の書き方がようやく身に付き始めた。構文記述量は1.5倍以上増えそうだな。こりゃ。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1265536276045991942"
+            target="_blank">2020/5/27 15:52:15</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">構文エラーを考慮したルール実装が一通り終わった。まだ漏れはあるあろうけどね。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1265537583532199938"
+            target="_blank">2020/5/27 15:57:27</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">結果、割とまともなエラーが返るようになった。前はひどかった。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1265540808167559172"
+            target="_blank">2020/5/27 16:10:15</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">この後セマンティック・チェックのコードを書いて、いったんコード生成までを作ってみようと思っていた。が、その前にプリプロセスというか、メタ・プログラミングの仕様をどうするか考えることにした。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1265605996287717376"
+            target="_blank">2020/5/27 20:29:17</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">まだ頭の中だけの話だけど。以下は線形メモリ上に配列aを宣言して、そこを初期化するコードである。#{で始まるブロックは、コンパイル時に実行される。 https://t.co/3PkB8bq8FI</p>
+        
+        <img  class="tweet-img" src="https://pbs.twimg.com/media/EZBV8VfUwAAUwKT.png" />
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1265607950350946305"
+            target="_blank">2020/5/27 20:37:03</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">コンパイルに実行されると結果どうなるのか。aのメモリ・オフセットの先頭から10個のi32の「10」という値をセットするwasm dataセグメントが生成される。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1265608482876583941"
+            target="_blank">2020/5/27 20:39:10</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">少し前はこれをJSで書けるようにするつもりだった。実はこの前作ったwasm用のプリプロセッサはそうしていた。<br/><blockquote class="card card-large"><header><img  src="https://qiita-user-contents.imgix.net/https%3A%2F%2Fcdn.qiita.com%2Fassets%2Fpublic%2Farticle-ogp-background-1150d8b18a7c15795b701a55ae908f94.png?ixlib=rb-1.2.2&w=1200&mark=https%3A%2F%2Fqiita-user-contents.imgix.net%2F~text%3Fixlib%3Drb-1.2.2%26w%3D840%26h%3D380%26txt%3Dmwasm%2528webassembly%25E3%2583%2586%25E3%2582%25AD%25E3%2582%25B9%25E3%2583%2588%25E3%2583%2595%25E3%2582%25A9%25E3%2583%25BC%25E3%2583%259E%25E3%2583%2583%25E3%2583%2588%25E7%2594%25A8%25E3%2583%2597%25E3%2583%25AA%25E3%2583%2597%25E3%2583%25AD%25E3%2582%25BB%25E3%2583%2583%25E3%2582%25B5%2529%2520%25E3%2581%25AE%25E8%25A3%25BD%25E4%25BD%259C%26txt-color%3D%2523333%26txt-font%3DHiragino%2520Sans%2520W6%26txt-size%3D54%26txt-clip%3Dellipsis%26txt-align%3Dcenter%252Cmiddle%26s%3D846ff3530045c7501e8d635fec3bd030&mark-align=center%2Cmiddle&blend=https%3A%2F%2Fqiita-user-contents.imgix.net%2F~text%3Fixlib%3Drb-1.2.2%26w%3D840%26h%3D500%26txt%3D%2540SFPGMR%26txt-color%3D%2523333%26txt-font%3DHiragino%2520Sans%2520W6%26txt-size%3D45%26txt-align%3Dright%252Cbottom%26s%3Dc23b0952f5b9bbd73a7e2c18c323897d&blend-align=center%2Cmiddle&blend-mode=normal&s=4aae7106376f4b9b10c798eea0556b21" /><a href="https://qiita.com/SFPGMR/items/427a0ac38338e659fe4a#js%E3%82%B3%E3%83%BC%E3%83%89%E3%83%96%E3%83%AD%E3%83%83%E3%82%AF%E3%81%AB%E3%82%88%E3%82%8B%E3%83%97%E3%83%AA%E3%83%97%E3%83%AD%E3%82%BB%E3%82%B9%E6%99%82%E3%81%AE%E3%83%97%E3%83%AD%E3%82%B0%E3%83%A9%E3%83%9F%E3%83%B3%E3%82%B0%E3%83%A1%E3%82%BF%E3%83%97%E3%83%AD%E3%82%B0%E3%83%A9%E3%83%9F%E3%83%B3%E3%82%B0" target="_blank">mwasm(webassemblyテキストフォーマット用プリプロセッサ) の製作 - Qiita</a></header><div><br/><br/>mwasm(wasmテキストフォーマット用プリプロセッサ) の製作<br/><br/><br/>はじめに<br/><br/>mwasmはWebAssesembly Text Format （S式）用のプリプロセッサである。<br/>独自仕様+JavaScriptの構文を採用し、...</div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1265609155663941633"
+            target="_blank">2020/5/27 20:41:51</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">まあこのプリプロセッサの場合、ソースコードをコンパイル時にJSで生成できるようにしたので、データ・セグメントを生成することも容易にできた。しかしこれはあくまでwatベースの上に作ったプリプロセッサだからこそできたことである。今回のようなオレオレ言語では通用しない。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1265610076380753921"
+            target="_blank">2020/5/27 20:45:30</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">通用しないというのは適切でないな。使いずらくなりそうと言ったほうがいいのかな。。別言語やマクロでなくてC++のconstexprのようなものが望ましいと思ってるんだよな。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1265611150043086848"
+            target="_blank">2020/5/27 20:49:46</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">あと定数（const）に関しての仕様検討も忘れてて、この件と一緒に考えようとしてるところなんだよね。まあちょっとこのへんはいろいろな言語に探りを入れて考えようと思う。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1265611831483097094"
+            target="_blank">2020/5/27 20:52:29</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">今のところはっきりしてるのは<br/><br/>・コンパイル時におけるメモリへの書き込みとはデータセグメントの生成を行うことである<br/><br/>だけ（笑）。このような感じで「コンパイル時における○○とはXXである」みたいなものをいろいろ考えて、メタ・プログラミングの仕様を考えようと思う。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1265612809221468160"
+            target="_blank">2020/5/27 20:56:22</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">コンパイル時関数はコンパイル時インタプリタに渡して実行させようと今のところ考えている。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1265613793096134656"
+            target="_blank">2020/5/27 21:00:16</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">あとはなあ。。文字列をどうするかだよなあ。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1265766376393723904"
+            target="_blank">2020/5/28 7:06:35</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">たとえ自分用であっても、実用に耐えるプログラミング言語にするにはかなり高い壁がある。まだ乗り越えるには経験と知識が足りていないと思う。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1265766940707971072"
+            target="_blank">2020/5/28 7:08:50</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">エラー処理のめどがついたので、エラー処理の検証＆セマンティック・チェックのコードを書きながら、メタ・プログラミングの仕様も考えていくことにする。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1266113709664907264"
+            target="_blank">2020/5/29 6:06:46</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">今、式がコンパイル時に計算できるものかどうか（定数式）を判定する関数を作っている。数値リテラルのみを受け付けるパラメータに定数式を記述できるようにするため。ASTを探って実行時に変化するもの（変数）にぶちあたったら例外を投げる。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1266114374264995840"
+            target="_blank">2020/5/29 6:09:24</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">これを作ってみて、それから定数式を評価し計算するコードを書いてみようと思っている。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1266329521432588295"
+            target="_blank">2020/5/29 20:24:19</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">定数評価のコードを書きつつ、おかしなところの修正とか識別子の重複チェックをするコードを書いている。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1266335517408235522"
+            target="_blank">2020/5/29 20:48:09</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ここまでをまとめておいた。。<br/><br/><blockquote class="card card-default"><header><img  src="https://pimg.togetter.com/small_light(sx=0.0p,sy=8.7p,sw=100.0p,sh=82.3p,dw=1212.0,dh=636.3,cw=1200.0,ch=630.0,p=default,da=l,ds=s)/ad3f2fd296c450147daf73a1dfc85411dc14945f/68747470733a2f2f7062732e7477696d672e636f6d2f6d656469612f455a764d3978675663414952747a422e706e67" /><a href="https://togetter.com/li/1266927" target="_blank">オレオレ言語 - Togetter</a></header><div>node.jsでWASMを吐くコンパイラを作っています。まだ完成には至っていません。少々放置していましたがまた新たな言語を作り始めてます。■オレオレ言語の中間成果物として作ったもの■過去の遺物リポ..</div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1266489969079496704"
+            target="_blank">2020/5/30 7:01:53</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">定数式かどうかの評価関数を作ったけど、同時に演算しても問題ない気がしてきたな。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1266497801380171776"
+            target="_blank">2020/5/30 7:33:00</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">というのも、Int64の計算がnodeのBigIntサポートによって可能となったし、TypedArray/DataViewもBigInt64/BigUint64のサポートされるみたいだしね。。これはECMAのどのエディションでサポートされるんだったっけ。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1266498306630316032"
+            target="_blank">2020/5/30 7:35:01</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">以前も64ビットの整数演算は2つの32ビット値とすることでなんとか可能にしてた。というか演算をwasmにやらせて2つの32ビット値として返すようなことをやってたね。確か。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1266502468914999296"
+            target="_blank">2020/5/30 7:51:33</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">違うな。ソースレベルでのプリプロセスだから演算まではやってないね。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1266502865603842048"
+            target="_blank">2020/5/30 7:53:08</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">いずれにしろJS側で64bitの整数演算まで行って、wasm側に10進定数として引き渡すことはかなり容易になってるな。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1266503041194160128"
+            target="_blank">2020/5/30 7:53:50</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">確かwasmのproposalにもこの辺関連のものがあった気がするね。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1266504074523901952"
+            target="_blank">2020/5/30 7:57:56</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">これですな。<br/><blockquote class="card card-default"><header><img  src="https://avatars3.githubusercontent.com/u/11578470?s=400&v=4" /><a href="https://github.com/WebAssembly/JS-BigInt-integration" target="_blank">GitHub - WebAssembly/JS-BigInt-integration: JavaScript BigInt to WebAssembly i64 integration</a></header><div>JavaScript BigInt to WebAssembly i64 integration. Contribute to WebAssembly/JS-BigInt-integration development by creating an account on GitHub.</div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1266505429510545408"
+            target="_blank">2020/5/30 8:03:19</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">数値演算に関しては、暗黙な型変換はやらないでエラーにしようかなと思う気持ちもある。とするとリテラルは必ず型指定しないといけなくなる。aがi32という型を持つ場合、以下の式をエラーとするかどうかという話<br/><br/>a * 1; // Error<br/>a * 1i;// ok</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1266534437312884736"
+            target="_blank">2020/5/30 9:58:35</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">コンパイル時に定数式を実行する関数を作成中。。これを実装してみることによって、コンパイル時のメタ関数の実行・実装方法の検討を深めることができるのではないかと。。 https://t.co/M2xIJoEY9r</p>
+        
+        <img  class="tweet-img" src="https://pbs.twimg.com/media/EZOhrHFUMAAgDeZ.png" />
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1266534801059659777"
+            target="_blank">2020/5/30 10:00:02</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">整数定数はとりあえずBigIntのインスタンスにして最後にi32かi64にまとめるようにすれば簡単に実装できそうな気もするな。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1266644776356478976"
+            target="_blank">2020/5/30 17:17:02</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">JSで8bit右ビット・ローテートをエミュレートする。<br/>おお、確かに回転しとるな。。 https://t.co/XlgjENVEVN</p>
+        
+        <img  class="tweet-img" src="https://pbs.twimg.com/media/EZQGqV6UwAERJES.png" />
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1266645319082639360"
+            target="_blank">2020/5/30 17:19:11</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">つい最近までべき乗演算子の存在を知らんかった（笑）<br/>Math.pow()でやってたよ。。 https://t.co/m3m8p6DGzT</p>
+        
+        <img  class="tweet-img" src="https://pbs.twimg.com/media/EZQHJh2VcAArj4s.png" />
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1266645856750415873"
+            target="_blank">2020/5/30 17:21:20</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ローテートの元ネタはこれ。これをBigIntでやってるだけ。<br/><br/><blockquote class="card card-default"><header><img  src="https://avatars0.githubusercontent.com/u/2488926?s=400&v=4" /><a href="https://github.com/dfrankland/bitwise-rotation/blob/master/src/index.js" target="_blank">bitwise-rotation/index.js at master · dfrankland/bitwise-rotation · GitHub</a></header><div>🔄 Rotate values with a bitwise rotation. Contribute to dfrankland/bitwise-rotation development by creating an account on GitHub.</div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1266646360125607936"
+            target="_blank">2020/5/30 17:23:20</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ビット演算のハックも面白い世界である。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1266647136151584770"
+            target="_blank">2020/5/30 17:26:25</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ビットの並びを反転させるというのも最初見たときは？？？だった。理解できたときは嬉しかったのでQiitaに書いたほどだった。<br/><br/><blockquote class="card card-large"><header><img  src="https://qiita-user-contents.imgix.net/https%3A%2F%2Fcdn.qiita.com%2Fassets%2Fpublic%2Farticle-ogp-background-1150d8b18a7c15795b701a55ae908f94.png?ixlib=rb-1.2.2&w=1200&mark=https%3A%2F%2Fqiita-user-contents.imgix.net%2F~text%3Fixlib%3Drb-1.2.2%26w%3D840%26h%3D380%26txt%3D1%25E3%2583%2590%25E3%2582%25A4%25E3%2583%2588%25E4%25B8%25AD%25E3%2581%25AE0-7%25E3%2583%2593%25E3%2583%2583%25E3%2583%2588%25E3%2581%25AE%25E5%2586%2585%25E5%25AE%25B9%25E3%2582%25927-0%25E3%2583%2593%25E3%2583%2583%25E3%2583%2588%25E3%2581%25AB%25E5%258F%258D%25E8%25BB%25A2%25E3%2581%2595%25E3%2581%259B%25E3%2582%258B%25E3%2583%25A1%25E3%2582%25BD%25E3%2583%2583%25E3%2583%2589%26txt-color%3D%2523333%26txt-font%3DHiragino%2520Sans%2520W6%26txt-size%3D54%26txt-clip%3Dellipsis%26txt-align%3Dcenter%252Cmiddle%26s%3D336928cfdaed6deebdc8ce5cadde2923&mark-align=center%2Cmiddle&blend=https%3A%2F%2Fqiita-user-contents.imgix.net%2F~text%3Fixlib%3Drb-1.2.2%26w%3D840%26h%3D500%26txt%3D%2540SFPGMR%26txt-color%3D%2523333%26txt-font%3DHiragino%2520Sans%2520W6%26txt-size%3D45%26txt-align%3Dright%252Cbottom%26s%3Dc23b0952f5b9bbd73a7e2c18c323897d&blend-align=center%2Cmiddle&blend-mode=normal&s=3c8937457dbcb72c03917150eaea74d3" /><a href="https://qiita.com/SFPGMR/items/4eaaa70681d868918402" target="_blank">1バイト中の0-7ビットの内容を7-0ビットに反転させるメソッド - Qiita</a></header><div>標題を実現するメソッドを考えていたが、ちょっと面倒だと思った。<br/>ググると素晴らしいメソッドを発見した。<br/><br/>http://graphics.stanford.edu/~seander/bithacks.html#ReverseParal...</div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1266647570228506624"
+            target="_blank">2020/5/30 17:28:08</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">このあたりを読むと結構面白いと思う。<br/><br/><blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="https://graphics.stanford.edu/~seander/bithacks.html" target="_blank">Bit Twiddling Hacks</a></header><div></div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1266654458848534528"
+            target="_blank">2020/5/30 17:55:30</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">式を処理する関数は、関数を再帰的に呼び出しながら式ツリーを辿っていき、値（変数の値やリテラル）に到達したら計算しながら戻る感じなんだよね。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1266655275559211009"
+            target="_blank">2020/5/30 17:58:45</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">これは結局式の中置記法を逆ポーランド記法に変換しながら計算するということになるんだよな。確か。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1266656271416963073"
+            target="_blank">2020/5/30 18:02:43</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">wasm S式で式を書くとポーランド記法になる。LISPもそうなるのかな。同じS式だからね。。 https://t.co/te1MIrzotM</p>
+        
+        <img  class="tweet-img" src="https://pbs.twimg.com/media/EZQRFXWUYAERpFW.png" />
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1266658012619354112"
+            target="_blank">2020/5/30 18:09:38</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">違うか。ASTの時点で式ツリーはポーランド記法で書いた式と等価な内容になっているのかな。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1266658892030701568"
+            target="_blank">2020/5/30 18:13:07</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">しかしwasmのフラットモードだと式は逆ポーランド記法っぽくなるよな。<br/><br/>i32.const 1 ;; スタックに積む<br/>i32.const 2 ;; スタックに積む<br/>i32.add ;; スタックから左辺値・右辺値を取り出して加算し、スタックに積む<br/><br/>まあ、どうでもいいことだが。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1266659236919914496"
+            target="_blank">2020/5/30 18:14:30</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">これがS式だと<br/><br/>(i32.add <br/>  (i32.const 1)<br/>  (i32.const 2)<br/>)<br/><br/>とこうなって演算子が先に来る。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1266661424958369792"
+            target="_blank">2020/5/30 18:23:11</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">LispというかS式にある種の美しさを感じるのは私だけではないはず。そんなに知らないのにこう言うのは何だが。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1266667855455510528"
+            target="_blank">2020/5/30 18:48:44</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">これは式の記法になるというよりは、記法に近い（似ている）並びというか実装になるということですな。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1266994061400928256"
+            target="_blank">2020/5/31 16:24:58</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">定数式処理を実装している。今は型変換をどうしようか考えているところ。定数式であっても型チェックを行い、型が異なる場合はエラーとするつもりである。暗黙変換は行わない方向で進めているから、型変換の構文は必要である。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1266998729267011584"
+            target="_blank">2020/5/31 16:43:31</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">wasmは型変換のインストラクションがある。これをまんま構文に当てはめていこうと当初考えていた。<br/><br/>1.整数&lt;--&gt;実数の変換<br/>・convert_u/s,trunc_u/s<br/>2.bit幅の変換(32bit &lt;--&gt; 64bit)<br/>・wrap,extend_u/s,demote,promote<br/>3.破壊的変換（reinterpret type conversion)<br/>・reinterpret</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1267003222067052544"
+            target="_blank">2020/5/31 17:01:22</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">型変換構文はTypeScript風である。<br/>a:i64;<br/>b:f32<br/><br/>&lt;i32&gt;a;// wrap<br/>&lt;f64&gt;b;// promote<br/>reinterpret &lt;i64&gt;b; // reinterpret<br/><br/>型変換構文がどの命令を選ぶのかは変換先と変換元の型で決まる。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1267012293507706882"
+            target="_blank">2020/5/31 17:37:25</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">reinterpretというのは同じビット幅を持つ整数と実数をビット列はそのままに型変換するというやつ。<br/><br/>f32.const 1<br/>i32.reinterpret_f32<br/><br/>これを実行するとスタックにはi32の0x3F800000が入る。wasmのスタックに入ってる値は型情報を持っているということですわな。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1267013293471752192"
+            target="_blank">2020/5/31 17:41:23</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">対して<br/><br/>f32.const 1<br/>i32.trunc_s<br/><br/>はスタックにi32型の値「1」がセットされる。少数以下は切り捨てになる。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1267017956384337920"
+            target="_blank">2020/5/31 17:59:55</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">定数式の場合、この型変換はコンパイル時にJSでエミュレートする必要がある。が、reinterpretの処理が結構面倒である。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1267018673564217356"
+            target="_blank">2020/5/31 18:02:46</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">簡単にやるにはwasmでreinterpretを行う関数を作ってJSで実行するのがよいと思う。ほかの変換もそれでいいかもしれないな。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1267030556451078145"
+            target="_blank">2020/5/31 18:49:59</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">というわけでwatでヘルパライブラリを書いている。簡単ではありますが。 https://t.co/TM1PN4PejI</p>
+        
+        <img  class="tweet-img" src="https://pbs.twimg.com/media/EZVlgqxUYAAMJVd.png" />
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1267031422398676992"
+            target="_blank">2020/5/31 18:53:26</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">型変換に関して、FIXED SIMDのことすっかり忘れとるなあ（笑）</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1267032199854841858"
+            target="_blank">2020/5/31 18:56:31</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">あとはPseudo Typeの型変換をどう考えるかですな。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1267187909536346113"
+            target="_blank">2020/6/1 5:15:15</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">type conversionのwasm instructionをJSで使えるようにしてみた。全部使うかわからんけどね。 https://t.co/chtdeWp3Mx</p>
+        
+        <img  class="tweet-img" src="https://pbs.twimg.com/media/EZX0e74UEAE0Pnh.png" />
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1267214084530831360"
+            target="_blank">2020/6/1 6:59:16</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">型に応じたデータ変換のうち、reintepretはちょっとJSでは難しいかなと思ったけど、TypedArrayとDataView使って簡単にできたんだった。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1267214321886482432"
+            target="_blank">2020/6/1 7:00:12</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">データ型としてunsignedを追加するかどうか迷ってきた。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1267221367138611200"
+            target="_blank">2020/6/1 7:28:12</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">こんなのあるんだなあ。。<br/><blockquote class="card card-default"><header><img  src="https://avatars3.githubusercontent.com/u/11578470?s=400&v=4" /><a href="https://github.com/WebAssembly/simd/blob/master/test/js-api/wasm-module-builder.js" target="_blank">simd/wasm-module-builder.js at master · WebAssembly/simd · GitHub</a></header><div>Branch of the spec repo scoped to discussion of SIMD in WebAssembly  - WebAssembly/simd</div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1267228914822209537"
+            target="_blank">2020/6/1 7:58:11</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">あとあれだなあ、定数の宣言も必要ですな。コンパイル時には変数で利用可能なね。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1267752721714540545"
+            target="_blank">2020/6/2 18:39:37</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ビルトイン型としてu8/u16/u32/u64を追加した。何かの言語に近づいてるきもしないでもない。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1267753361987657728"
+            target="_blank">2020/6/2 18:42:09</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">そして何かにとりつかれたようにwasmインストラクションをJSで実行するwasmモジュールを作り始めてるという。。インタプリタ実装に役に立つかなあと思って。。 https://t.co/8wFk3Yxh6W</p>
+        
+        <img  class="tweet-img" src="https://pbs.twimg.com/media/EZf2vPGUwAMFq_r.png" />
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1267753466094424064"
+            target="_blank">2020/6/2 18:42:34</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">なんかちょっと方向性がおかしくなってきてる気もしないでもない。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1267754554109509632"
+            target="_blank">2020/6/2 18:46:54</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">floatのビットパターン文字列をJSで得るのってArrayBufferとDataView使えば簡単でしたな。。<br/><br/>let view = new DataView(new ArrayBuffer(4));<br/>view.setFloat32(0,-10);<br/>view.getUint32(0).toString(2).padStart(32,'0');<br/>'11000001001000000000000000000000'</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1267755019031310336"
+            target="_blank">2020/6/2 18:48:44</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">つまりこれはreinterpret命令のエミュレーションでもある。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1267910366362660864"
+            target="_blank">2020/6/3 5:06:02</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">8bit/16bitの疑似型の演算をどうしようか考えている。wasmではi32のみなので、8/16bitの演算はi32のインストラクションを使ってそのビット幅での演算となるようにしなければならない。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1267912394493227008"
+            target="_blank">2020/6/3 5:14:06</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">8bit幅だと、8-31bitまでの空きビットの取り扱いを考える必要がある。演算を32bit幅で行い、その結果が8bit幅で考えた場合におかしくなるかもしれないので。まずは8-31bitはそのまま放っておくことを考える。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1267916352364265472"
+            target="_blank">2020/6/3 5:29:49</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">8bit整数演算の場合、意図的に8-31bitに何か値を入れない限りはビット・ローテーション以外は演算結果が不正になることはなさそうな気がする。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1267917288440598530"
+            target="_blank">2020/6/3 5:33:32</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">-1をi32に代入すると、全部のビットが１となる。<br/><br/>11111111111111111111111111111111<br/><br/>これはi8で考えても-1である。<br/><br/>11111111</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1267918540197117954"
+            target="_blank">2020/6/3 5:38:31</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">(2)これに1を加算すると0となる。これはi8で考えても結果は同じ。また0から1を減算すると-1となってすべてのビットが１となるがこれは最初に検証した結果と同じ。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1267923152819990528"
+            target="_blank">2020/6/3 5:56:51</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">i32での255はi8であれば-1である。これに1を加算するとi32では<br/><br/>1 0000 0000<br/><br/>256となる。この状態で他の値を比較するとi8で見た場合結果がおかしくなる。この値と0を等価比較した場合、i8では8bit以降は無効であるから等しいが、i32の比較命令では有効であるので結果偽になってしまう。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1267923862378831872"
+            target="_blank">2020/6/3 5:59:40</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">よって比較命令を実施する場合は事前に8-31bitをクリアしておく必要がある。<br/><br/>a &amp; 0xff;</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1267925176391356416"
+            target="_blank">2020/6/3 6:04:53</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">しかしこれでは負の数と正の数との比較が正しくなくなってしまう。0xffと1の比較はi8で見れば1のほうが大きくなければならないが、i32の比較命令では先ほどのビットクリアしただけでは大小関係が逆転してしまうということ。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1267925618328350720"
+            target="_blank">2020/6/3 6:06:38</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">考えると、未使用ビットは0クリアするのではなくi8の符号ビットで埋めなくてはならないようだ。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1267927751740145664"
+            target="_blank">2020/6/3 6:15:07</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">つまりi8の要件として<br/><br/>1. 0-255以外の代入は許さない<br/>2.演算のあと8-31bitは符号ビットで埋める<br/><br/>としておけばビット・ローテート以外は問題なさそうですな。なかなかコストが高いですな。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1267929023713165312"
+            target="_blank">2020/6/3 6:20:10</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">1.はコンパイル時のチェックである程度は防げるかな。2.はどっか端折れるとこを探すくらいかな。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1267932605489442816"
+            target="_blank">2020/6/3 6:34:24</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">引数を8/16ビット数値とみなして符号ビットで埋める命令はwasm 1.1で追加されとるな。。<br/><br/>i32.extend8_s<br/>i32.extend16_s<br/>i64.extend8_s<br/>i64.extend16_s<br/>i64.extend32_s<br/><br/>やったああ！！ https://t.co/k9HuFpDLHV</p>
+        
+        <img  class="tweet-img" src="https://pbs.twimg.com/media/EZiZzZSU0AAFGN7.png" />
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1267933066300780544"
+            target="_blank">2020/6/3 6:36:14</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">符号ビットで埋めるのは結構面倒くさいし、コストがかかるもんな。いうてもコスト面はこのインストラクションがどうネイティブに変換されるのにもよるけどね。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1267933735128674305"
+            target="_blank">2020/6/3 6:38:54</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">まあしかしこの命令があるおかげでi8/i16の演算はかなり楽にできると思われる。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1267934807712923649"
+            target="_blank">2020/6/3 6:43:09</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">しかしあれですな、wasmで8bit PCのエミュレータ作るのは結構高くつくのかもしれんね。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1267935474993123328"
+            target="_blank">2020/6/3 6:45:48</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">このu8/i8/u16/i16は文字列の処理を行うに必要な型でもある。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1267935503430479873"
+            target="_blank">2020/6/3 6:45:55</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">定数式を計算するコードも完成させないとね。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1267948057737322496"
+            target="_blank">2020/6/3 7:35:48</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">符号拡張というのは整数の計算においては念頭に置いておいて当たり前の話だと思うのだが、私は忘却の彼方であった（笑）</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1267948289690746880"
+            target="_blank">2020/6/3 7:36:44</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ちなみに符号拡張のHackというのもある。こういうHackがあるというのだけは記憶にあった（笑）。<br/><br/><blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="https://graphics.stanford.edu/~seander/bithacks.html#FixedSignExtend" target="_blank">Bit Twiddling Hacks</a></header><div></div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1267951284327333889"
+            target="_blank">2020/6/3 7:48:38</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">JSで符号拡張をまねるとこんな感じだろうか。。<br/><br/>(符号拡張したい数値 &lt;&lt; (型のビット長-符号拡張した数値のビット長)) &gt;&gt; (型のビット長-符号拡張した数値のビット長)<br/><br/>(0x80 &lt;&lt; (32-8)) &gt;&gt; (32-8)<br/>// -128<br/><br/>(0x7f &lt;&lt; (32-8)) &gt;&gt; (32-8)<br/>// 127</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1267951707092217856"
+            target="_blank">2020/6/3 7:50:19</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ムムム。。整数演算も奥が深いわ。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1268833513245032450"
+            target="_blank">2020/6/5 18:14:18</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">定数式を処理するのに、wasmでインストラクションを1個ずつエクスポートするモジュールを作って処理すれば楽で正確なのでは？ということでやり始めたが結構面倒くさくてかえって大がかりになってしまった...。 https://t.co/jODXpAb9Dj</p>
+        
+        <img  class="tweet-img" src="https://pbs.twimg.com/media/EZvM9xgVcAIRtzB.png" />
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1268834706507718656"
+            target="_blank">2020/6/5 18:19:02</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">まあしかし定数式に取り組むことによって足りない仕様がいくつか判明したのでよかったけど。あ、そういえば定数宣言まだできてないな。これは型付きの定数のエイリアスみたいなもの。実行時は完全に定数となる。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1268834882475573248"
+            target="_blank">2020/6/5 18:19:44</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">またコンパイル時インタプリタへの道筋が見えてきたような気がしないでもない。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1268835472098291713"
+            target="_blank">2020/6/5 18:22:05</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">しかしconst 変数って変な言葉だよなあ。内容が変わるから「変数」というのにそれに「定数」というお冠をつけるんだもんなあ。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1268836169548095488"
+            target="_blank">2020/6/5 18:24:51</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">意味としてはreadonlyだよな。そういう属性をつけることができる言語もたしかあったなあ。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269401656459882497"
+            target="_blank">2020/6/7 7:51:53</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">constキーワードの意味合いを考えながら、データ変換（キャスト）のコードを書いているところ、ようやく定数式の処理もめどがつきそうなところまできた。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269403050801676288"
+            target="_blank">2020/6/7 7:57:26</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">constキーワードを付与する変数や関数は<br/><br/>・実行時には定数になる<br/>・コンパイル時に実行される<br/>・コンパイル時に評価できないものはエラーになる<br/>・処理による結果（成果物）は実行時とは異なる</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269403975322759169"
+            target="_blank">2020/6/7 8:01:06</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">処理による結果が異なるというのは、例えば関数があるメモリに内容を書き込む処理を実行した場合、実行時には言葉通りの処理となるが、constキーワードをつけるとメモリのdata segmentを生成する処理になるということ。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269404429335183360"
+            target="_blank">2020/6/7 8:02:55</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">そしてスコープ付きのローカル変数を導入しようかなあと思う。これは糖衣構文といっていいものだが。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269405467266039808"
+            target="_blank">2020/6/7 8:07:02</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">wasm関数はローカル変数を関数宣言時にすべて列挙しなくてはいけないので、関数本体のステートメントからローカル変数の宣言を抜き出して、変数名が衝突したら回避するように名前を変えてwasm関数の構文に変換するだけどね。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269405959736066048"
+            target="_blank">2020/6/7 8:08:59</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ローカル変数宣言時にも同じスコープでは変数名は重複できないようにするとか必要になるけどね。これないと処理の流れがわかりずらいような気がするんだよね。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269406543604101120"
+            target="_blank">2020/6/7 8:11:19</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">今のところの考えでいくと変数は<br/><br/>・グローバル変数<br/>・スコープ付きローカル変数<br/>・メモリ変数<br/><br/>この3種類になるということですな。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269764335494000640"
+            target="_blank">2020/6/8 7:53:03</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">昔話に花を咲かせすぎて土日をつぶしてしまった（笑）今書いてる型変換（いわゆるキャスト）のコードはwasmが持っている型変換命令へのマッピングは終わった。あとは疑似型やポインタの変換をどうするかだなあ。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269764765808615424"
+            target="_blank">2020/6/8 7:54:45</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">今のところポインタの仕様は単なる型つきのメモリ・オフセットなんだよね。つまりi32(u32)の値。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269767675577659392"
+            target="_blank">2020/6/8 8:06:19</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">型変換に関してもポインタToポインタの変換はメモリ・オフセットなのでそのまま型情報を置き換えるだけで済む。これはほぼCのポインタ・キャストとほぼ等価な処理。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269768619300446214"
+            target="_blank">2020/6/8 8:10:04</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ポインタはi32値なのでふつうに整数演算可能。ちょっと今考えてるのが、i64/f32/f64への変換。なんとなくi64に変換できるのは使うケースがあるような気もするけど、f32/f64の変換って必要なのかなあ、と。ここはエラーで落とすべきなんじゃないのかなあと。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269769792812007424"
+            target="_blank">2020/6/8 8:14:44</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ビット幅が大きい型から、小さい型への変換も実装内容に迷いがあった。これはwasmのi64 -&gt; i32の変換仕様に従おうということにした。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269770262657916928"
+            target="_blank">2020/6/8 8:16:36</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">違うな。どっちかというとこっちに迷いがあったんだった。<br/><br/>f32/f64 -&gt; i8/i16</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1270464461434806275"
+            target="_blank">2020/6/10 6:15:06</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ようやく定数式ツリーの葉っぱとなる部分、数値リテラルの処理が終わりそうだ。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1270464778230620162"
+            target="_blank">2020/6/10 6:16:21</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">twitterはほぼ備忘録と化している。若い時と違って書いとかないとすぐ忘れちゃうからね。。書いたことも忘れちゃうけど（笑）</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1270466124551872512"
+            target="_blank">2020/6/10 6:21:42</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">このあたり面倒で地味な部分だから異様に手が動くのが遅い。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1270466211571052544"
+            target="_blank">2020/6/10 6:22:03</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">なかなかconstに手を出せないでいる。。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1097900569287569409/4ItOsMkQ_normal.png" />
+        <p class="tweet-user-name">和田ラヂヲ@radiowada</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/radiowada/status/1270304911847116800"
+            target="_blank">2020/6/9 19:41:06</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ロックの日なので久しぶりにどうぞ。 https://t.co/6yx3ykMYdx</p>
+        
+        <img  class="tweet-img" src="https://pbs.twimg.com/media/EaEHhrZUcAAzxo_.png" />
+        
+        <img  class="tweet-img" src="https://pbs.twimg.com/media/EaEHkKyUcAAb1_4.png" />
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1265517189194559489/xQfmTlpf_normal.png" />
+        <p class="tweet-user-name">忍者犬☆乳丸@opaimar</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/opaimar/status/1270370581767090178"
+            target="_blank">2020/6/10 0:02:03</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ということで、マイコンBASICマガジンは1982年6月10日にラジオの製作の付録から独立創刊したそうです。<br/>6月10日を #ベーマガの日 として、皆さんのエピソードを聞かせてください。よろしくお願いします。 https://t.co/pLbNVNbX3w</p>
+        
+        <img  class="tweet-img" src="https://pbs.twimg.com/media/EaFDTX1VAAMb105.jpg" />
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/604577289/clock_normal.jpg" />
+        <p class="tweet-user-name">Katsumi (電子工作好き)@kats_me</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/kats_me/status/1270044730508767240"
+            target="_blank">2020/6/9 2:27:14</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">巷では今、6502が密かに流行しているのか？Apple IをMachiKaniaに移植しようかな。Apple ][は、ROMの著作権の問題があって無理。 <a href="https://twitter.com/wakwak_akizuki/status/1269790345102888960" target="_blank">twitter.com/wakwak_akizuki…</a></p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1115134657010384897/6AU_raOS_normal.png" />
+        <p class="tweet-user-name">MickyAlbert@MickyAlbert</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/MickyAlbert/status/1270111764600872960"
+            target="_blank">2020/6/9 6:53:36</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">昨日の小沢純子さんの生誕を祝い、２９年ぶりに小沢さんが全曲を担当されたエイリアンフィールドを５０％オフセールを開始しました！<br/><a href="https://store.steampowered.com/app/926350/ALIEN_FIELD/" target="_blank">store.steampowered.com/app/926350/ALI…</a><br/>充実のパッケージ版、Ｂ５サイズ７８ページのブックレットが付くサントラについてはこちらをご覧ください。<br/><a href="http://pinball.co.jp/games/AF/" target="_blank">pinball.co.jp/games/AF/</a></p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1212701145379946496/pSDVrvWj_normal.png" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1270111599592800256"
+            target="_blank">2020/6/9 6:52:57</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">BigIntって便利だなあ。。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1212701145379946496/pSDVrvWj_normal.png" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1270088498469457920"
+            target="_blank">2020/6/9 5:21:09</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">まとめを更新しました。「オレオレ言語」 <blockquote class="card card-default"><header><img  src="https://pimg.togetter.com/small_light(sx=0.0p,sy=8.7p,sw=100.0p,sh=82.3p,dw=1212.0,dh=636.3,cw=1200.0,ch=630.0,p=default,da=l,ds=s)/ad3f2fd296c450147daf73a1dfc85411dc14945f/68747470733a2f2f7062732e7477696d672e636f6d2f6d656469612f455a764d3978675663414952747a422e706e67" /><a href="https://togetter.com/li/1266927" target="_blank">オレオレ言語 - Togetter</a></header><div>node.jsでWASMを吐くコンパイラを作っています。まだ完成には至っていません。少々放置していましたがまた新たな言語を作り始めてます。■オレオレ言語の中間成果物として作ったもの■過去の遺物リポ..</div></blockquote></p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1179747158230102017/WTR9tI3P_normal.jpg" />
+        <p class="tweet-user-name">しょーけん@SHOKEN4</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SHOKEN4/status/1269917327295823874"
+            target="_blank">2020/6/8 18:00:59</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">あのグラディウスがアーケード版とほぼ同じ環境でできる事を知ってゲットした68，沙羅曼蛇もグラディウスⅡもアーケード版とほぼ同じなので遊びまくった！素晴らしいマシン！ありがとう68！ #X68の日 https://t.co/uZu56tzDkC</p>
+        
+        <img  class="tweet-img" src="https://pbs.twimg.com/media/EZ-nErHUEAArz25.jpg" />
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1291901811910045696/QMKBM-AO_normal.jpg" />
+        <p class="tweet-user-name">ノズ@halrud</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/halrud/status/1269743780871065600"
+            target="_blank">2020/6/8 6:31:22</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">本日06/08はマイコンBASICマガジンの創刊日らしいですね。懐かしい。<br/>お世話になったなぁ https://t.co/jlypIt4aoh</p>
+        
+        <img  class="tweet-img" src="https://pbs.twimg.com/media/EZ8JPIbUYAAm8hR.jpg" />
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1212701145379946496/pSDVrvWj_normal.png" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269937971932721153"
+            target="_blank">2020/6/8 19:23:01</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">思い出話まとめたらなぜか編集部イチオシになり私にとっては想像を超えるアクセスがあってちょっとビックリした。ようやく落ち着いたみたい。それと30年前以上前の話だという前置きを忘れてました。。</p>
+        
+      </section>
+      
+    </article>
+    
+  </div>
+  <footer>
+    CopyLight 2019 Satoshi Fujiwara
+  </footer>
+  <script async src="https://platform.twitter.com/widgets.js"></script>
+
+  <script async src="./index.js"></script>
+
+</body>
+
+</html>

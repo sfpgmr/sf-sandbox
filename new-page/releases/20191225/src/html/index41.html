@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+
+<html lang="ja" prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb# article: http://ogp.me/ns/article#">
+
+<head>
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-15457703-9"></script>
+  <script>
+    if (!location.hostname.match(/localhost/)) {
+      window.dataLayer = window.dataLayer || [];
+      function gtag() { dataLayer.push(arguments); }
+      gtag('js', new Date());
+      gtag('config', 'UA-15457703-9');
+    }
+  </script>
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>トップページをリニューアルする</title>
+  <meta name="description" content="リニューアル用のトップページデザインを考えて実装する" />
+  <meta name="keywords" content="Programming,Music,HTML5,WebGL,javascript,WebAudio" /> 	
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <meta itemprop="image" content="https://www.sfpgmr.net/img/sfweb.png" />
+  <meta itemprop="name" content="S.F. Web" />
+  
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:site" content="S.F. Web" />
+  <meta name="twitter:url" content="./index41.html" />
+  <meta name="twitter:title" content="リニューアル用のトップページデザイン" />
+  <meta name="twitter:description" content="リニューアル用のトップページデザインを考えて実装する" />
+  <meta name="twitter:image" content="https://www.sfpgmr.net/img/sfweb.png" />
+  
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="./index41.html" />
+  <meta property="og:title" content="リニューアル用のトップページデザイン"/>
+  <meta property="og:site_name" content="S.F. Web" />
+  <meta property="og:description" content="Programming,Music,HTML5,WebGL,javascript,WebAudio">
+  <meta property="og:image" content="https://www.sfpgmr.net/img/sfweb.png">
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    html {
+      margin: 0;
+      padding: 0;
+      font-size:10px;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      background: black;
+      color: white;
+    }
+
+    .top-nav {
+      position:fixed;
+      z-index:99999;
+      background: rgba(0,0,0,0.5);
+      display: block;
+      width:100%;
+      height:32px;
+      color:white;
+    }
+    #sentinel {
+      width:0px;
+      height:0px;
+    }
+    .contents {
+      padding-top:32px;
+      width: 100%;
+      position: relative;
+      content: strict;
+    }
+
+    @keyframes blinking {
+      0% {
+        color: black;
+      }
+
+      50% {
+        color: white;
+      }
+
+      100% {
+        color: black;
+      }
+    }
+
+    .loading {
+      font-family: monospace;
+      font-size: 24px;
+      position: fixed;
+      width: 100vw;
+      height: 100vh;
+      text-align: center;
+      padding-top: 50vh;
+      z-index: 32768;
+      background: black;
+      animation: blinking 2s infinite;
+      content: strict;
+    }
+
+
+    .contents > article {
+      background: #f0f0f0;
+      color: #202020;
+      position: absolute;
+      max-height: 960px;
+      overflow: auto;
+      border-radius: 3px;
+     /* transition: opacity 1s linear;*/
+      opacity: 1.0;
+    }
+
+    .tweet-header {
+      display: grid;
+      align-items: end;
+      grid-template-columns: 40px 2fr 1fr;
+      grid-template-rows: 1fr;
+      font-size: 12px;
+      font-weight: bold;
+    }
+
+
+    .tweet-img {
+      width: 100%;
+      object-fit: cover;
+    }
+
+    .youtube {
+      position: relative;
+      cursor: pointer;
+    }
+
+    .youtube > img {
+      width: 100%;
+      object-fit: cover;
+    }
+
+    .youtube > svg.player-play {
+      width:64px;
+      height:64px;
+      left:calc(50% - 32px);
+      top:calc(50% - 32px);
+      position:absolute;
+      z-index: 1000;
+      opacity: 0.5;
+    }
+    
+    .youtube:hover > svg.player-play {
+      opacity: 1.0;
+    }
+
+    .youtube:hover .player-play-1 {
+      stroke:#80808080;
+    }
+
+    
+    .youtube > div.yt-title {
+      /*text-shadow: #fff 1px 1px 0;*/
+      font-size: 1.2rem;
+      color:white;
+      background:rgba(0, 0,0,0.5);
+      position:absolute;
+      left:0;
+      top:0;
+      overflow: auto;
+      z-index:998;
+    }
+
+
+    .tweet-profile-img {
+      grid-column: 1/2;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+    }
+
+    .tweet-user-name {
+      grid-column: 2/3;
+    }
+
+    .tweet-date {
+      font-size: 8px;
+      text-align: right;
+      grid-column: 3/4;
+    }
+
+    .contents>twitter-widget {
+      overflow: auto;
+      max-height: 960px;
+      position: absolute;
+    }
+
+    .contents>article>section>.tweet-text {
+      display: block;
+      padding: 4px;
+      word-break: break-all;
+      font-size: 12px;
+    }
+
+    .contents>article>h3 {
+      font-size: 12px;
+    }
+
+    blockquote.card {
+      margin:4px;
+      padding:4px;
+      font-size:12px;
+      background:white;
+      border-radius: 4px;
+    }
+
+    blockquote.card > header {
+      display:grid;
+      grid-gap:4px;
+      gap:4px;
+    }
+
+    blockquote.card-default > header {
+      grid-template-columns:64px 1fr;
+    }
+
+    blockquote.card-large > header {
+      grid-template-columns:1fr;
+    }
+
+    blockquote.card > header > img {
+      width:100%;
+    }
+
+
+    div.no-image {
+      display: block;
+      width:64px;
+      height:64px;
+      background:gray;
+      color:white;
+      text-align: center;
+      line-height: 64px;
+    }
+
+  </style>
+</head>
+
+<body>
+  <div class="loading" id="loading">Loading</div>
+  <header class="top-nav">
+    <h1>S.F. Info.</h1>
+  </header>
+  <div class="contents" id="contents" rendersubtree="invisible skip-activation"> 
+    
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1167370094483107840/aPj7Nmwa_normal.jpg" />
+        <p class="tweet-user-name">浪士@roushi2018</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/roushi2018/status/1104341839253925889"
+            target="_blank">2019/3/9 20:23:06</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">初の動画投稿です！<br/>これがApple II版ウィザードリィのオープニングです！<br/>音楽等は一切ありません(;^_^A<br/>#ウィザードリィⅠ<br/>#ウィザードリィ愛好会 https://t.co/hUtQfqTkdX</p>
+        
+        <video class="tweet-img" controls src="https://video.twimg.com/ext_tw_video/1104341461150007296/pu/vid/1040x720/r0g-QCXAwF0j61nJ.mp4?tag=8" />
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1104518609152307200"
+            target="_blank">2019/3/10 8:05:32</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">まとめを更新しました。「オレオレ言語を作る」 <blockquote class="card card-default"><header><img  src="https://pimg.togetter.com/c5f6d97ea69f2fcf2cc20bd4924645c864ea1c3c/68747470733a2f2f7062732e7477696d672e636f6d2f6d656469612f44696d73492d4f57734141393232492e6a70673a6c61726765" /><a href="https://togetter.com/li/1266927" target="_blank">オレオレ言語を作る - Togetter</a></header><div>node.jsでWASMを吐くコンパイラを作っています。まだ完成には至っていません。。リポジトリ</div></blockquote></p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1104514406547746816"
+            target="_blank">2019/3/10 7:48:50</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ブログを投稿<br/><br/><blockquote class="card card-default"><header><img  src="https://www.sfpgmr.net/img/sf.png" /><a href="https://www.sfpgmr.net/blog/entry/2019/03/62dfcd28966939b2a628ba7b5102ac03.html" target="_blank">S.F. Blog:binarien/binaryen.jsのwasm化やwasmのテキストフォーマット変更対応。- オレオレ言語を作る -</a></header><div>はじめに少し前にwasm版 binaryen.jsを再ビルドしたときにオレオレ言語のコードジェネレータが動かなくなってハマった。原因はwasmのテキストフォーマットでのインストラクションの記述フォーマットが変わったためだった。binaryen.jsオレオレ言語はwasmバイナリ出力をbinaryen.jsというライブラリに依存している。binaryen.jsはbinaryenをemscripten...</div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1104517305390686208"
+            target="_blank">2019/3/10 8:00:21</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">今後はtypeブランチをいじっていこうと思ってるんだけど、途中で放置したせいかコードが動かなくなってるんだよなあ。コミット・ログを追っていこうかと思ってるけどいい加減なコメント入れてるからなあ。。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1104515842451005440"
+            target="_blank">2019/3/10 7:54:32</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">@RE_DO ありがとうございます。<br/>ちなみに私はリットーミュージックのコードに関する古い書籍と「サルでもわかる音楽理論」上巻・下巻を一応持ってます。最後まで読んでないですけど。その時思ったのは「音楽理論」は理論とはいえ感覚的な要素も含んでいて、そこが音楽的・芸術的だなあと思いました。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1104468536372518912"
+            target="_blank">2019/3/10 4:46:33</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">@RE_DO ありがとうございます。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1104460083063283713"
+            target="_blank">2019/3/10 4:12:58</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">@RE_DO よろしければご紹介いただけばればと思います。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1104458284977672193"
+            target="_blank">2019/3/10 4:05:49</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">@RE_DO 音楽理論に関してはほぼゼロです。ミキシングも我流です。譜面がなんとか読めるレベルです。作曲に向かうモチベーションは今はないですね。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1104383027310845952"
+            target="_blank">2019/3/9 23:06:46</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">@RE_DO 作曲は段違いに難しいです。。その素養は私にはどうもないようで。。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1104275663530254336"
+            target="_blank">2019/3/9 16:00:09</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">2分ほどウッドデッキに出ただけでもう目がかゆい。。今日はどれだけ飛んでるんだ。と思ったら今日非常に多いですがな。。 https://t.co/aVy2IczwEK</p>
+        
+        <img  class="tweet-img" src="https://pbs.twimg.com/media/D1Ms2pCVsAEejId.png" />
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1104276325500518403"
+            target="_blank">2019/3/9 16:02:47</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">午前中はよかったけど午後は胃腸の調子がすごく悪いや。。下る下る。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1104276888288034817"
+            target="_blank">2019/3/9 16:05:01</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">花粉の量は関西にいたときにくらべて関東のほうがすごい気がするんだよな。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1104276986568957953"
+            target="_blank">2019/3/9 16:05:24</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">これでは外には出れんわ。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1104278154384830464"
+            target="_blank">2019/3/9 16:10:03</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">しかし家にいるときはそんなに痒くならんということは、家の中はそんなに花粉がないということなんだよな。でもマスクはしてますが。。マスクも普通のやつだから遮断効果はあまり期待できない。がプラセボ的な効果は期待できる。安心するんだよな。マスクすると。。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1104215899895033857"
+            target="_blank">2019/3/9 12:02:40</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">@syntaxerrors72 うーむ。なるほどぉ。。冷えの改善はなかなか手ごわいですね。。</p>
+        
+      </section>
+      
+    </article>
+    
+  </div>
+  <footer>
+    CopyLight 2019 Satoshi Fujiwara
+  </footer>
+  <script async src="https://platform.twitter.com/widgets.js"></script>
+
+  <script async src="./index.js"></script>
+
+</body>
+
+</html>

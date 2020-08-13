@@ -1,0 +1,2212 @@
+<!DOCTYPE html>
+<html lang="ja" prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb# article: http://ogp.me/ns/article#">
+
+<head>
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-15457703-9"></script>
+  <script>
+    if (!location.hostname.match(/localhost/)) {
+      window.dataLayer = window.dataLayer || [];
+      function gtag() { dataLayer.push(arguments); }
+      gtag('js', new Date());
+      gtag('config', 'UA-15457703-9');
+    }
+  </script>
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>トップページをリニューアルする</title>
+  <meta name="description" content="リニューアル用のトップページデザインを考えて実装する" />
+  <meta name="keywords" content="Programming,Music,HTML5,WebGL,javascript,WebAudio" /> 	
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <meta itemprop="image" content="https://www.sfpgmr.net/img/sfweb.png" />
+  <meta itemprop="name" content="S.F. Web" />
+  
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:site" content="S.F. Web" />
+  <meta name="twitter:url" content="./index20.html" />
+  <meta name="twitter:title" content="リニューアル用のトップページデザイン" />
+  <meta name="twitter:description" content="リニューアル用のトップページデザインを考えて実装する" />
+  <meta name="twitter:image" content="https://www.sfpgmr.net/img/sfweb.png" />
+  
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="./index20.html" />
+  <meta property="og:title" content="リニューアル用のトップページデザイン"/>
+  <meta property="og:site_name" content="S.F. Web" />
+  <meta property="og:description" content="Programming,Music,HTML5,WebGL,javascript,WebAudio">
+  <meta property="og:image" content="https://www.sfpgmr.net/img/sfweb.png">
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    html {
+      margin: 0;
+      padding: 0;
+      font-size:10px;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      background: black;
+      color: white;
+    }
+
+    #sentinel {
+      width:1px;
+      height:1px;
+    }
+    .contents {
+      width: 100%;
+      position: relative;
+      content: strict;
+    }
+
+    @keyframes blinking {
+      0% {
+        color: black;
+      }
+
+      50% {
+        color: white;
+      }
+
+      100% {
+        color: black;
+      }
+    }
+
+    .loading {
+      font-family: monospace;
+      font-size: 24px;
+      position: fixed;
+      width: 100vw;
+      height: 100vh;
+      text-align: center;
+      padding-top: 50vh;
+      z-index: 32768;
+      background: black;
+      animation: blinking 2s infinite;
+      content: strict;
+    }
+
+
+    .contents>article {
+      background: #f0f0f0;
+      color: #202020;
+      position: absolute;
+      max-height: 960px;
+      overflow: auto;
+      border-radius: 3px;
+    }
+
+    .tweet-header {
+      display: grid;
+      align-items: end;
+      grid-template-columns: 40px 2fr 1fr;
+      grid-template-rows: 1fr;
+      font-size: 12px;
+      font-weight: bold;
+    }
+
+
+    .tweet-img {
+      width: 100%;
+      object-fit: cover;
+    }
+
+    .youtube {
+      position: relative;
+      cursor: pointer;
+    }
+
+    .youtube > img {
+      width: 100%;
+      object-fit: cover;
+    }
+
+    .youtube > svg.player-play {
+      width:64px;
+      height:64px;
+      left:calc(50% - 32px);
+      top:calc(50% - 32px);
+      position:absolute;
+      z-index: 1000;
+      opacity: 0.5;
+    }
+    
+    .youtube:hover > svg.player-play {
+      opacity: 1.0;
+    }
+
+    .youtube:hover .player-play-1 {
+      stroke:#80808080;
+    }
+
+    
+    .youtube > div.yt-title {
+      /*text-shadow: #fff 1px 1px 0;*/
+      font-size: 1.2rem;
+      color:white;
+      background:rgba(0, 0,0,0.5);
+      position:absolute;
+      left:0;
+      top:0;
+      overflow: auto;
+      z-index:998;
+    }
+
+
+    .tweet-profile-img {
+      grid-column: 1/2;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+    }
+
+    .tweet-user-name {
+      grid-column: 2/3;
+    }
+
+    .tweet-date {
+      font-size: 8px;
+      text-align: right;
+      grid-column: 3/4;
+    }
+
+    .contents>twitter-widget {
+      overflow: auto;
+      max-height: 960px;
+      position: absolute;
+    }
+
+    .contents>article>section>.tweet-text {
+      display: block;
+      padding: 4px;
+      word-break: break-all;
+      font-size: 12px;
+    }
+
+    .contents>article>h3 {
+      font-size: 12px;
+    }
+
+    blockquote.card {
+      margin:4px;
+      padding:4px;
+      font-size:12px;
+      background:white;
+      border-radius: 4px;
+    }
+
+    blockquote.card > header {
+      display:grid;
+      grid-gap:4px;
+      gap:4px;
+    }
+
+    blockquote.card-default > header {
+      grid-template-columns:64px 1fr;
+    }
+
+    blockquote.card-large > header {
+      grid-template-columns:1fr;
+    }
+
+    blockquote.card > header > img {
+      width:100%;
+    }
+
+
+    div.no-image {
+      display: block;
+      width:64px;
+      height:64px;
+      background:gray;
+      color:white;
+      text-align: center;
+      line-height: 64px;
+    }
+
+  </style>
+</head>
+
+<body>
+  <div class="loading" id="loading">Loading</div>
+  <header class="top-nav">
+    <h1>S.F. Info.</h1>
+  </header>
+  <div class="contents" id="contents" rendersubtree="invisible skip-activation"> 
+    
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/1105330577513693184/ANt8Vmfg_normal.png" />
+        <p class="tweet-user-name">Naohiro Kimura-木村直広@knaohiro1</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/knaohiro1/status/1092602835160621057"
+            target="_blank">2019/2/5 10:56:30</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">中国深センの年越し<br/>深セン人才公園にて600機のドローンで新年を演出<br/><a href="https://m.weibo.cn/status/4336021552356513" target="_blank">m.weibo.cn/status/4336021…</a>? https://t.co/PDf90hoFQ2</p>
+        
+        <video class="tweet-img" controls src="https://video.twimg.com/ext_tw_video/1092602559922003968/pu/vid/638x360/myIdcVotk95AarzG.mp4?tag=6" />
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1092891268663799808"
+            target="_blank">2019/2/6 6:02:38</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">Firebaseかあ。。<br/><blockquote class="card card-default"><header><img loading="lazy" src="https://cdn.qiita.com/assets/qiita-fb-2887e7b4aad86fd8c25cea84846f2236.png" /><a href="https://qiita.com/owen/items/c51c6ec27c9e2f5804b0" target="_blank">Firebaseを使い始めたら人生が変わった(ような気がした) - Qiita</a></header><div></div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1092903553671213057"
+            target="_blank">2019/2/6 6:51:27</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">vue.jsもちょっと見てみるか。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1092904144380153856"
+            target="_blank">2019/2/6 6:53:47</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">vue.jsって「ビュー」って読むんだな。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1092906280543350784"
+            target="_blank">2019/2/6 7:02:17</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">これを読んでいる。<br/><br/><blockquote class="card card-default"><header><img loading="lazy" src="https://jp.vuejs.org/images/logo.png" /><a href="https://jp.vuejs.org/v2/guide/index.html" target="_blank">はじめに — Vue.js</a></header><div>Vue.js - The Progressive JavaScript Framework</div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1092906734337683456"
+            target="_blank">2019/2/6 7:04:05</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">Web Componentsって仕様が確定してたんだな。。<br/><br/><blockquote class="card card-default"><header><img loading="lazy" src="https://jp.vuejs.org/images/logo.png" /><a href="https://jp.vuejs.org/v2/guide/index.html#" target="_blank">はじめに — Vue.js</a></header><div>Vue.js - The Progressive JavaScript Framework</div></blockquote>カスタム要素との関係</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1092890531716186112"
+            target="_blank">2019/2/6 5:59:42</a></p>
+      </header>
+      <section>
+        <p class="tweet-text"><blockquote class="card card-default"><header><img loading="lazy" src="https://cdn.qiita.com/assets/qiita-fb-2887e7b4aad86fd8c25cea84846f2236.png" /><a href="https://qiita.com/yuneco/items/b14a695a060c96309239" target="_blank">VueとFirebaseの基本機能全部使ってぬるぬる動くポートフォリオサイトを作ったのでソースと解説 - Qiita</a></header><div></div></blockquote></p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1092712788626046976"
+            target="_blank">2019/2/5 18:13:25</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">expressで大きいデータをポストすると413エラーが出る件。結局この情報で解決した。<br/><br/><blockquote class="card card-default"><header><img loading="lazy" src="https://cdn.sstatic.net/Sites/stackoverflow/img/apple-touch-icon@2.png?v=73d79a89bded" /><a href="https://stackoverflow.com/a/54178086" target="_blank">javascript - Error: request entity too large - Stack Overflow</a></header><div></div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1092712790299537408"
+            target="_blank">2019/2/5 18:13:25</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">これ。<br/>app.use(express.json({limit: '50mb'}))<br/><br/>body-parserを使うのはもう古いのかね。。<br/><br/>いずれにしろこれでこの問題はクリアした。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1092715564559003649"
+            target="_blank">2019/2/5 18:24:26</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">が今度はx-hub-signatureで問題発生<br/><br/>{"error":"No X-Hub Signature."}<br/><br/><blockquote class="card card-default"><header><img loading="lazy" src="https://og.github.com/octocat/github-octocat@1200x630.png" /><a href="https://developer.github.com/webhooks/securing/" target="_blank">Securing your webhooks | GitHub Developer Guide</a></header><div></div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1092715835955699712"
+            target="_blank">2019/2/5 18:25:31</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ペイロードのサイズが大きいと出るんだな。これがなぜか。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1092725711821918208"
+            target="_blank">2019/2/5 19:04:46</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">原因はミドルウェアのuseの順序だった。。凡ミスだった。。<br/><br/> It needs to be one of the first and before bodyParser().<br/><br/><blockquote class="card card-default"><header><img loading="lazy" src="https://static.npmjs.com/338e4905a2684ca96e08c7780fc68412.png" /><a href="https://www.npmjs.com/package/express-x-hub" target="_blank">express-x-hub - npm</a></header><div>X-Hub-Signature Express Middleware</div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1092726582219661312"
+            target="_blank">2019/2/5 19:08:13</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">かえりの電車の中で一個バグを潰せたわ。。termux恐るべし。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1092727527808761858"
+            target="_blank">2019/2/5 19:11:59</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">x-hub-signatureのチェックは自前でチェックしてもおそらく数行で済むから自前実装でもいいような気もするな。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1092757673051709440"
+            target="_blank">2019/2/5 21:11:46</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">とりあえず一歩前進ですわ。あとはコンテンツを生成するテンプレートをアップデートしないといけない。あとは技術的なアップデートもせんといかんなあ。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1092883683042684928"
+            target="_blank">2019/2/6 5:32:29</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ページ・デザインももうちょっと頑張るか。。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1086925783967313920"
+            target="_blank">2019/1/20 18:57:55</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">下のページが例なんだけど、Texの部分はMathJaxを使ってプリレンダリングしてるんだよね。つまりHTMLページを表示する前にsvg化されてるわけ。<br/><br/><blockquote class="card card-default"><header><img loading="lazy" src="https://www.sfpgmr.net/img/sf.png" /><a href="https://www.sfpgmr.net/blog/entry/2016/05/06/173430.html" target="_blank">S.F. Blog:ブレゼンハム・アルゴリズムの原典を読み、理解する - WebGLでレトロPCグラフィックスを楽しむ（２３）</a></header><div>さて、ブレゼンハム・アルゴリズムである。ブレゼンハム・アルゴリズムは整数化・加減算およびシフト演算のみで実装できるということでよく紹介されているけれども、ブレゼンハム・アルゴリズムやDDAの文献を読んでみて、実はそこがポイントではないのではないかと考えるようになった。離散座標系において理想直線に最も近い描画点を求めることができる点が、ブレゼンハム・アルゴリズムの優れたところなのだろうと今は思ってい...</div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1086926372323258368"
+            target="_blank">2019/1/20 19:00:15</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">こうするとまあページ表示は早くなる。んだけどTexはHTML化したときに失われるので、テキストとしてのTexの意味合いは（つまりここは式だよという意味合い）は失われてしまうという欠点（かな？）があるかなあとか思ったりもする。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1086926842567680000"
+            target="_blank">2019/1/20 19:02:08</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">とは言えTeXも式の見た目を整えるものなので、式としての意味をあらわしているかというと違うとは思う。なのでSVGにしたところで失うものはないといえなくもない。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1086928147621146629"
+            target="_blank">2019/1/20 19:07:19</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">が今やTeXは数式を表現する言語の側面も持っていなくもないかなあとも思う。ただ装飾とごちゃまぜな構文となるからそこから意味を取り出すのはちょっと面倒化もしれんが、いまどきだとそれもたやすくできるかもしれん。検索されたときに数式としてみなされそうなのはTeX表記なのかなと。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1086928148418056192"
+            target="_blank">2019/1/20 19:07:19</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">コンテンツ中ではTeXのままにしておけば検索エンジンが「ここはTeXで書いとるな」と認識される可能性を残すことができるということですわな。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1086931094803369984"
+            target="_blank">2019/1/20 19:19:01</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">しかしよく見ると（見なくても。。）TeX部分のレンダリング結果ちとおかしいなあ。<br/><blockquote class="card card-default"><header><img loading="lazy" src="https://www.sfpgmr.net/img/sf.png" /><a href="https://www.sfpgmr.net/blog/entry/2016/05/06/173430.html" target="_blank">S.F. Blog:ブレゼンハム・アルゴリズムの原典を読み、理解する - WebGLでレトロPCグラフィックスを楽しむ（２３）</a></header><div>さて、ブレゼンハム・アルゴリズムである。ブレゼンハム・アルゴリズムは整数化・加減算およびシフト演算のみで実装できるということでよく紹介されているけれども、ブレゼンハム・アルゴリズムやDDAの文献を読んでみて、実はそこがポイントではないのではないかと考えるようになった。離散座標系において理想直線に最も近い描画点を求めることができる点が、ブレゼンハム・アルゴリズムの優れたところなのだろうと今は思ってい...</div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1086931169818554368"
+            target="_blank">2019/1/20 19:19:19</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">特に日本語の文字間隔とか。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1086932620045250561"
+            target="_blank">2019/1/20 19:25:05</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ただTeXそのまま書いてもMathJaxではだめだったりしたから、もしKaTexに乗り換えても数式の修正が必要になりそうなだなあ。。それはちょっと面倒だ。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1087089535781982208"
+            target="_blank">2019/1/21 5:48:37</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">KaTexを追加インストールして、katexというタグを新たに作ろうかな。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1087090714159153152"
+            target="_blank">2019/1/21 5:53:18</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">markdownのパーサはmarked.jsを改造して使ってる。TeX拡張とか独自記法をサポートするためだけど、中身見るとpegで書き直したくなってきたな。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1087091310433992704"
+            target="_blank">2019/1/21 5:55:40</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">今もバージョンアップされてるんだな。。<br/><br/><blockquote class="card card-default"><header><img loading="lazy" src="https://avatars2.githubusercontent.com/u/19886934?s=400&v=4" /><a href="https://github.com/markedjs/marked" target="_blank">GitHub - markedjs/marked: A markdown parser and compiler. Built for speed.</a></header><div>A markdown parser and compiler. Built for speed. Contribute to markedjs/marked development by creating an account on GitHub.</div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1087093490595422208"
+            target="_blank">2019/1/21 6:04:20</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">私の改造版はこちら。独自拡張と同時にes6のclassとか使って書き直したんだよなあ。。確か。<br/><blockquote class="card card-default"><header><img loading="lazy" src="https://avatars0.githubusercontent.com/u/3806814?s=400&v=4" /><a href="https://github.com/sfpgmr/webservices/blob/master/wwwmaker/commands/marked.js" target="_blank">webservices/marked.js at master · sfpgmr/webservices · GitHub</a></header><div>node.jsで作ったWebサービスたち. Contribute to sfpgmr/webservices development by creating an account on GitHub.</div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1087094605927960576"
+            target="_blank">2019/1/21 6:08:45</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">いわゆる正規表現使うタイプのパーサなんだけど、正規表現も凝ってくると書いてあることを理解するのにものすごく苦労するんだな。私の正規表現力は並み以下だから理解できないのはそれも大きいが。pegで書き直すとかなりすっきりするかもしれないなあと。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1087119811404939264"
+            target="_blank">2019/1/21 7:48:55</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">とりあえず修正版のコードをデプロイした。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1087120228734066688"
+            target="_blank">2019/1/21 7:50:34</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">とりあえず動いてはいる。<br/><blockquote class="card card-default"><header><img loading="lazy" src="https://www.sfpgmr.net/img/sf.png" /><a href="https://www.sfpgmr.net/blog/" target="_blank">S.F. Blog:S.F. Blog</a></header><div>IT技術や音楽に関する制作物の公開、情報発信を行っています。</div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1087841129620398082"
+            target="_blank">2019/1/23 7:35:11</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">あとはコンテンツをデプロイするところの不具合潰しですな。。gitでコンテンツをpush→webhookで更新をホストに通知→それを受けてpullして更新部分のコンテンツをgzipで圧縮する部分ですわ。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1087842551183302656"
+            target="_blank">2019/1/23 7:40:49</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ホスト側はnginx+nodeからnodeのみに去年移行したんだよね。expressでコンテンツをserveしてる。プロトコルはHTTP/2をサポートしてて、gzip圧縮転送も対応した。というよりそれができることがわかったのでnginxをやめたんだけどね。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1087843979935199232"
+            target="_blank">2019/1/23 7:46:30</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">nodeだけでコンテンツを配信したかったからね。そこでちょっと構成も見直したんだけどそれが尾を引いてるという。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1088052149781594118"
+            target="_blank">2019/1/23 21:33:42</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">とりあえずコンテンツをデプロイできるところまで修正して、あとは成り行きだなあ。PEGちょっと理解したからそれ使ってmarkdownパーサを作ってみたい気もするし。今ならもう少し自由度の高い構文が作れるんじゃないかなーとか思ったりしてる。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1088052799164710913"
+            target="_blank">2019/1/23 21:36:17</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">あとはAMPページのおかしなところの見直しとか。katexの導入とかね。デザインもリフレッシュしたいよなあ。。ああ、post-cssの件もあるよなあ。。うーむ。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1088180826817216512"
+            target="_blank">2019/1/24 6:05:01</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">うーむ。webhookの受け側で413エラーが勃発。どうもデータサイズが100kbを超えてるからのよう。まあそれはそうか。<br/><br/><blockquote class="card card-default"><header><img loading="lazy" src="https://cdn.sstatic.net/Sites/stackoverflow/img/apple-touch-icon@2.png?v=73d79a89bded" /><a href="https://stackoverflow.com/questions/19917401/error-request-entity-too-large" target="_blank">javascript - Error: request entity too large - Stack Overflow</a></header><div></div></blockquote><br/><br/>しかし上記のコメントをためしてみても解決できていない。。むむう。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1088186545717141504"
+            target="_blank">2019/1/24 6:27:44</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">limitを増やす設定しても全然反映されてないかのようですな。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1088186712134541313"
+            target="_blank">2019/1/24 6:28:24</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">うーん。。<br/><br/><blockquote class="card card-default"><header><img loading="lazy" src="https://avatars3.githubusercontent.com/u/5658226?s=400&v=4" /><a href="https://github.com/expressjs/body-parser/issues/235" target="_blank">HTTP:413 Request Entity Too Large · Issue #235 · expressjs/body-parser · GitHub</a></header><div>app.use(bodyParser.json({limit: '50mb'})); app.use(bodyParser.urlencoded({limit: '50mb', extended: true})); i post more data,but happen error:HTTP:413 Request Entity Too Large. ps: node version : v5.1.1 body-parser: 1.17.1</div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1088406961895272450"
+            target="_blank">2019/1/24 21:03:35</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ちゅうかexpressの理解度が低いなあ。。わたしって。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1090601560864784384"
+            target="_blank">2019/1/30 22:24:09</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">うーむ。HTTP 413 Errorの件はテスト環境（ちゅうかローカルWSL環境）では413にならんなあ。なぜかVPSの環境だけでなっちゃうみたいだ。さらに謎が深まった。でもまあそのあとのコードも動かんのだけど。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1090938957288722432"
+            target="_blank">2019/1/31 20:44:50</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">うーむ。非同期コードを書き直してたらますますExpressがわからなくなってきた。もう一回勉強しなおそう。これは。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1090941141262843905"
+            target="_blank">2019/1/31 20:53:31</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">なんか手を入れるとエラーがまたポコって出てきて、今まで動いてたのが不思議。。みたいな感じに今なってる。async/awaitを入れ込みたいんだがなんかうまくいかんのよね。。<br/><br/>この辺とかも見てるんだけど。。<br/><blockquote class="card card-default"><header><img loading="lazy" src="https://1.cms.s81c.com/sites/default/files/2018-12-04/4_1.png" /><a href="https://strongloop.com/strongblog/async-error-handling-expressjs-es7-promises-generators/" target="_blank">StrongLoop - Asynchronous Error Handling in Express with Promises, Generators and ES7</a></header><div></div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1090941749663395841"
+            target="_blank">2019/1/31 20:55:56</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">そもそもExpressについてモヤっとした理解しかしとらんのがいかんのよ。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1090942935707709440"
+            target="_blank">2019/1/31 21:00:39</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">nginxのコンフィグのほうがわかりやすい気がしないでもない。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1091061629070893056"
+            target="_blank">2019/2/1 4:52:17</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">nginxのコンフィグとくらべるのはおかしいか。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1091079798305124353"
+            target="_blank">2019/2/1 6:04:29</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">このエラーが発生してたんだよな。。<br/><blockquote class="card card-default"><header><img loading="lazy" src="https://cdn.qiita.com/assets/qiita-fb-2887e7b4aad86fd8c25cea84846f2236.png" /><a href="https://qiita.com/kukimo/items/e686d480209464c6372f" target="_blank">Can&#39;t set headers after they are sent.で怒られた - Qiita</a></header><div></div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1091080326720278528"
+            target="_blank">2019/2/1 6:06:35</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">この情報で直りました。なんで今まで動いてたんだろうなと考えてたら、webhookのコードはExpressルータに改造する前はExpress使わず単独サービスとして動かしてたからだな。。ということはExpressにしてから一度も動いてないということですわ。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1091081054834765825"
+            target="_blank">2019/2/1 6:09:29</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">でまあwebhookのリクエストを受けて、シーケンシャルにアップデートする処理を書くのにqueueないとだめだなあと思って実装しようかなと思ったけど、ちょっとググったらasync.queueを見つけてこれを使うことにした。このasyncというモジュールすごいな。。<br/><blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="https://caolan.github.io/async/docs.html#queue" target="_blank">Page not found · GitHub Pages</a></header><div></div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1091081420733263872"
+            target="_blank">2019/2/1 6:10:56</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">このqueueのインターフェースというかキューの実装の仕方がなんかすごいエレガントさを感じますわ。。自分で実装したらひどい代物になるところだった。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1091083282060460032"
+            target="_blank">2019/2/1 6:18:20</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ちょっとだけwebhookのコードがきれいになったわ。。<br/><br/><blockquote class="card card-default"><header><img loading="lazy" src="https://avatars0.githubusercontent.com/u/3806814?s=400&v=4" /><a href="https://github.com/sfpgmr/webservices/blob/62714daf748543ebe440869c408ff0bf40c00702/webserver/routes/webhook.mjs" target="_blank">webservices/webhook.mjs at 62714daf748543ebe440869c408ff0bf40c00702 · sfpgmr/webservices · GitHub</a></header><div>node.jsで作ったWebサービスたち. Contribute to sfpgmr/webservices development by creating an account on GitHub.</div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1091083723846500352"
+            target="_blank">2019/2/1 6:20:05</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">次はこのエラーをつぶさないとけいけない。。<br/><br/>RangeError [ERR_CHILD_PROCESS_STDIO_MAXBUFFER]: stderr maxBuffer length exceeded</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1091102500751474688"
+            target="_blank">2019/2/1 7:34:42</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">このエラーはchild_process.execのmaxBufferの値を調整すればよさそうなんだけど、この値を指定してもエラーがなくならないんだよなあ。。<br/><br/><blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="https://nodejs.org/api/child_process.html#child_process_child_process_exec_command_options_callback" target="_blank">Child Process | Node.js v13.2.0 Documentation</a></header><div></div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1091116336036499456"
+            target="_blank">2019/2/1 8:29:41</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">よく見るとstdoutじゃなくてstderr のバッファだな。maxBuffer<br/>はstderrのバッファサイズには影響しないのではというのがいまいまの推測。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1091116611270991873"
+            target="_blank">2019/2/1 8:30:46</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">とするとここはspawnを使うのが正解かもな。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1091265081944338433"
+            target="_blank">2019/2/1 18:20:44</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">いやいや、nodeのドキュメントには<br/><br/>maxBuffer &lt;number&gt; Largest amount of data in bytes allowed on stdout or stderr.<br/><br/>と書いてあって、stderrも対象になっとるな。そりゃそうだわな。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1091475303468167169"
+            target="_blank">2019/2/2 8:16:05</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">どうもパーミッションのせいでコマンドがうまく動作しなくてエラーが発生してstderrに吐こうと<br/>したところでバッファがいっぱいとなってしまったようだ。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1091476161169743872"
+            target="_blank">2019/2/2 8:19:30</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">公開しているディレクトリのパーミッションを適切なものに修正することで、コード自体は動くようになったが。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1091476915070750720"
+            target="_blank">2019/2/2 8:22:29</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">しかしandroidタブのおかげで、というかtermuxというアプリのおかげで外出先でもコード修正してタブレットのローカル環境でExpress動かして確認できるというのはほんとすごいな。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1091477717738901505"
+            target="_blank">2019/2/2 8:25:41</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">あとはペイロードの更新情報が大量であった場合に設定したバッファサイズ(limit)が有効になるかどうかだな。。ローカルの環境では有効であったが、果たしてVPSの環境ではどうなるだろうか。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1091499881317814272"
+            target="_blank">2019/2/2 9:53:45</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">config周りもかなりいい加減だから、node-configでも使ってみることにするか。。<br/><br/><blockquote class="card card-default"><header><img loading="lazy" src="https://avatars1.githubusercontent.com/u/373538?s=400&v=4" /><a href="https://github.com/lorenwest/node-config" target="_blank">GitHub - lorenwest/node-config: Node.js Application Configuration</a></header><div>Node.js Application Configuration. Contribute to lorenwest/node-config development by creating an account on GitHub.</div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1091565358614437889"
+            target="_blank">2019/2/2 14:13:56</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">github webhook のペイロードが巨大な場合も受け取ることができるか試してみたが、うまくいかないな。。やっぱり413エラーがでてしまう。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1091693042661093376"
+            target="_blank">2019/2/2 22:41:18</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">413エラー以外にもamp html対応のコードのところでバグを見つけて直してるところ。ついでにkatex対応もやっておこう。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1091832661096583169"
+            target="_blank">2019/2/3 7:56:06</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">katexとMathJaxの差が思いのほか無くて、そんなに手をかけずに移行できそうな気がしてきたわ。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1092018270092193797"
+            target="_blank">2019/2/3 20:13:38</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">いや、オフラインで吐くコード見比べたら全然違うわ。katexはwebfontとcssで数式作るんだなあ。&lt;span&gt;タグの入れ子がすごいぜ。。かたやMathJaxはsvgを吐く。svgを吐くというか吐かしてるんだっけかな。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1092151716894539776"
+            target="_blank">2019/2/4 5:03:55</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ほお。AMPでも@font-face使えるのですな。とするとkatexはAMPページでもいけるんじゃないかなあ。たぶん。やってみるか。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1092151823446626304"
+            target="_blank">2019/2/4 5:04:20</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">これね<br/><blockquote class="card card-large"><header><img loading="lazy" src="https://amp.dev/static/img/sharing/docs-guide-600x314.png" /><a href="https://www.ampproject.org/ja/docs/design/responsive/custom_fonts" target="_blank">カスタム フォントの追加 - amp.dev</a></header><div>AMP pages can't include external stylesheets, with the exception of custom fonts. You can embed custom fonts into your page in two ways ...</div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1092159624726306816"
+            target="_blank">2019/2/4 5:35:20</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">と思ったがMathJaxでしばらくいこうかな。実はコンテンツを吐くところで遅くなる主原因が判明したのでね。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1092170477517164544"
+            target="_blank">2019/2/4 6:18:28</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ちなみにMathJaxで静的にレンダリングした結果例はこれ。<br/><br/><blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="https://www.sfpgmr.net/blog/entry/2016/11/06/095327" target="_blank"></a></header><div></div></blockquote><br/><br/>静的にレンダリングしてもsvgのtitleに元のtexが保存されてるところがちょっといいかなあと。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1091948257083715585"
+            target="_blank">2019/2/3 15:35:26</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ちょっとRYDEENカバーをアップデートしようかなと思ったが、リード音の音色がおかしいことに気づきちょっとこのバージョンはお蔵入りにした。もうちょっと元曲を聴き直して音色をちゃんとアップデートしてからにしよう。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1091949135576481792"
+            target="_blank">2019/2/3 15:38:56</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">1-2年ほど前だけどオーディオ・インターフェースはUR22mkIIに変えたんだけど、ヘッドフォンのモニターアウトの出力がちょっと小さいんだよなあ。。フル・ボリュームで聴いてもだいじょうぶなくらい。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1091951271584555009"
+            target="_blank">2019/2/3 15:47:25</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">それはそれとしてこの間とか今日とかYouTubeにアップしたら音量が半分くらいに落ちてしまう問題に遭遇した。2年前にアップしたのと比べるとかなり小さくなってしまう。どうもこれによってノーマライズされてしまうようなんだな。。<br/><br/><blockquote class="card card-default"><header><img loading="lazy" src="https://www.g200kg.com" /><a href="https://www.g200kg.com/archives/2015/03/youtube.html" target="_blank">YouTubeがラウドネス規格を導入したらしい | g200kg Music & Software</a></header><div></div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1091951992384118784"
+            target="_blank">2019/2/3 15:50:17</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">私の作ってるやつも全部のパートができる限り聞こえるようにと頑張ってたらどうも出力データが「海苔」のような波形になってしまったようだ。。うう。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1091954469418364930"
+            target="_blank">2019/2/3 16:00:07</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">あと今更だが、聴感上小さい音量しかなっていないようにしか聞こえないパート、今回だとライディーンの右の「タッタカタッタカ」パーカッションの音量がやたらでかい音になっちゃってたりしてるのに気づいた。これなんだけどね。<br/><br/><div class="youtube" data-type="yt" id="mkn_wAA15-k"><div class="yt-title">Youtube - Rydeenの右チャンネルのパーカッション</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/mkn_wAA15-k" class="youtube" src="https://i.ytimg.com/vi/mkn_wAA15-k/hqdefault.jpg" /></div>   <br/><br/><br/>+4.8dbとかなっちゃってる。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1091955144831320064"
+            target="_blank">2019/2/3 16:02:48</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">これなんの音量がでかいかというと重低音の音域なんだよね。多分いいヘッドフォンとかでかいスピーカーでないと聞こえない（というか圧として感じる）やつが音量を食ってしまってるんだな。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1091955492161634304"
+            target="_blank">2019/2/3 16:04:11</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">よく聴くと耳を圧迫するような音が鳴ってるような気がするんだけど、まあこのパートにはそのような役割は期待していないので、この周波数帯域はカットすべきだわな。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1091956578981269506"
+            target="_blank">2019/2/3 16:08:30</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">それでカットしたのが下なんだな。。<br/><div class="youtube" data-type="yt" id="wIFOWLCSUSA"><div class="yt-title">Youtube - Rydeenのパーカッション（右）修正後</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/wIFOWLCSUSA" class="youtube" src="https://i.ytimg.com/vi/wIFOWLCSUSA/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1091956978929217536"
+            target="_blank">2019/2/3 16:10:06</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">イコライジングはちょっといじりすぎたので違う感じの音になっちゃってますが。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1091957923582857216"
+            target="_blank">2019/2/3 16:13:51</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">で左右のパーカッションを鳴らすとまあこんな感じになるんですわ。。<br/><blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="https://www.youtube.com/watch?v=f6_P3Ye8TM8&feature=youtu.be" target="_blank">Rydeenのパーカッション（右・左） - YouTube</a></header><div>YouTube でお気に入りの動画や音楽を楽しみ、オリジナルのコンテンツをアップロードして友だちや家族、世界中の人たちと共有しましょう。</div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1091958492347260929"
+            target="_blank">2019/2/3 16:16:06</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">左のパーカッションは8分のウラだけが鳴ってるように聴こえるのだが、原盤をよく聴くとうっすら16分で小さく鳴ってる音もあると思うのでそれを再現しようとしてるんですな。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1091958699692777472"
+            target="_blank">2019/2/3 16:16:56</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ただこの音色もまだまだ手を入れなくてはいけないんですわ。。実際。。言うたら全部のパートですけどね。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1091960974192521216"
+            target="_blank">2019/2/3 16:25:58</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ライディーンのあの特徴的なシーケンスパートも難しいものの一つですわ。。これがいまいまのバージョンなんだけど。。このパートを苦悩してる割にはなかなか近づかないパートの一つなんですわ。。<br/><br/><div class="youtube" data-type="yt" id="mYoTJTmGQSc"><div class="yt-title">Youtube - Rydeen シーケンス・パート（苦悩のシーケンス）</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/mYoTJTmGQSc" class="youtube" src="https://i.ytimg.com/vi/mYoTJTmGQSc/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1091961913502650369"
+            target="_blank">2019/2/3 16:29:42</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">これはどうも本物のマルチトラックのシーケンスパートのようなんだけど。<br/><a href="https://youtu.be/IPNReZK-XIk" target="_blank">youtu.be/IPNReZK-XIk</a><br/>違いは一聴してわかるよね。裏打ちするシーケンスの音色がすごいパーカッシブで厚い音をしてるんですわ。。<br/>あとなんか妙なモタリがあるような気もするし。。聴けば聞くほどわからなくなってくる。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1091962967749419009"
+            target="_blank">2019/2/3 16:33:53</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">これはひょっとしてMC-8の特性なのかなとか勝手な想像して楽しんどるわけですよ。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1091963631737069568"
+            target="_blank">2019/2/3 16:36:32</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ただこれ多分ちょっと音が悪い気もするので、Giga Capsuleのかな？とか思うけどね。本物のマルチトラックテープを直に聴いてみたいわ。ほんとに。。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/1246875230/ryutorion_result_normal.png" />
+        <p class="tweet-user-name">M.K@ryutorion</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/ryutorion/status/1091030113481682944"
+            target="_blank">2019/2/1 2:47:04</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">HLSLでのfloat2x3はGLSLのmat3x2，とGLSLで列行の順で数を指定していたのね･･････正方行列しか使ってなかったから，気にしたことなかった</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/1150913195898310656/7k5VZqZ__normal.jpg" />
+        <p class="tweet-user-name">坂内綾花(21歳起業家)@FortuneFactory1</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/FortuneFactory1/status/1090391669634002945"
+            target="_blank">2019/1/30 8:30:07</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">昔ある経営コンサルに「席数減らしたら店外に行列できて人気店に見える。待ちスペースも狭くするように」と指導され、高齢のお客様やお子様連れも多いのでイヤだと言うと「そんな甘い考えだから儲からないんだ」と怒られたのでコンサル契約を解除したのは奈良の繁盛とんかつ店まるかつの店長さんです。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1091092926266978304"
+            target="_blank">2019/2/1 6:56:39</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">この自機のシステムいいアイデアですね。 <blockquote class="card card-default"><header><img loading="lazy" src="https://pbs.twimg.com/ext_tw_video_thumb/1090901256682401792/pu/img/2R35NOK8KHYk9mIA.jpg" /><a href="https://twitter.com/in_7010/status/1090902035552063490" target="_blank">えれのあ / Atelier Shinosさんのツイート: "最近は、こんな感じのゲームを作ってました。 まだまだ調整が足りない感じですが、一段落。… "</a></header><div></div></blockquote></p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1090910423975571458"
+            target="_blank">2019/1/31 18:51:27</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">サン電子ってPCも作ってたんですね！ <blockquote class="card card-default"><header><img loading="lazy" src="https://pbs.twimg.com/profile_images/3278079864/a2bbf72808271b9bc221cefa15ddbd29_400x400.jpeg" /><a href="https://twitter.com/syntaxerrors72/status/1090788853290430465" target="_blank">なるおさんのツイート: "サン電子、今年はじめに本社をでっかいビルに移転してたのだねー。でもおなじみの江南市の社屋も残ってるみたいで良かった。いちど見に行ってみたい。https://t.co/Qup5d4CT70"</a></header><div></div></blockquote></p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1090909831685271552"
+            target="_blank">2019/1/31 18:49:06</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">@syntaxerrors72 ありがとうございます。まあでもこの方でしたら個人でゲーム作って生きてけそうですよね。。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1090598107455250434"
+            target="_blank">2019/1/30 22:10:25</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">近年一番面白いというか、いわゆる「ゲーム性」っちゅうのを感じたのはこのゲームなのですわ。。レトロな感じのグラフィックもすごくいい。この2色の色使いがなんともいえない。私はSTEAMでPC版で遊んだクチですが。。 <blockquote class="card card-default"><header><img loading="lazy" src="https://pbs.twimg.com/tweet_video_thumb/DyHxbp5VAAEMI5f.jpg" /><a href="https://twitter.com/moppppin/status/1090425827777339393" target="_blank">もっぴんさんのツイート: "Downwellが明日1/31にNintendo Switchで配信開始します。足から弾を撃ちながら井戸を降りていくゲームです。ぜひ遊んでみてくださいね！よろしくお願いします。… "</a></header><div></div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1090598241333174272"
+            target="_blank">2019/1/30 22:10:57</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">まあ、思わず買ってしまいました。これは。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1090599465931628544"
+            target="_blank">2019/1/30 22:15:49</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">こういう「ゲームとして楽しめる」デザイン力と個人的なリソースと折り合いをつけて完成させることができる「リソース管理能力」を合わせ持ってる感じが、ほんとリスペクトだよなあ。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1090599621003337728"
+            target="_blank">2019/1/30 22:16:26</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">任天堂の人になってしまったようですが。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1090717118583037952"
+            target="_blank">2019/1/31 6:03:20</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">任天堂はやめてしまったとのこと。。それはそれとして任天堂Switchって個人がゲームを発表できるようなプラットフォームになりそうなこと言ってたけど、今どうなってんだろうな。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1090717513191645184"
+            target="_blank">2019/1/31 6:04:54</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ああ、個人でも登録はできるんだな。。<br/><br/><blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="https://developer.nintendo.com/ja/home" target="_blank">Homepage - Nintendo Developer Portal</a></header><div></div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1090717773519511552"
+            target="_blank">2019/1/31 6:05:56</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">いや、でもSwitchは対象に入ってないよな。これ。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1090718893398667264"
+            target="_blank">2019/1/31 6:10:23</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">この状況は今も継続中なのかな。。<br/><blockquote class="card card-large"><header><img loading="lazy" src="https://cdn-ak.f.st-hatena.com/images/fotolife/r/rgamebox/20180605/20180605230327.png" /><a href="http://www.unitygamebox.com/entry/2018/06/05/232727" target="_blank">一個人としてswitch開発機材を購入しようとしたお話 - gamebox</a></header><div>unityを使えば、Nintendo Switchの開発もする事ができます。 unityが使えるなら俺でも開発できる！どこにだって翔べる！どこへだって行ける！という事で個人用のswitch開発機が欲しくなりました。 Switch Development Units SDEV and EDEV | WiiUbrU & SwitchbrU Forums 高いと噂のsdev(↑写真)と、安いedevの２種類の開発機材がある様です。 edevなら市販のswitchに毛が生えた程度の価格なので自分でも買えるなー、家でswitchを舐り倒してやりたいなーと考え個人的に入手する為に動きはじめました。 いざ任…</div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1090719780393312256"
+            target="_blank">2019/1/31 6:13:54</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">このまとめなかなか濃いな。。<br/><blockquote class="card card-large"><header><img loading="lazy" src="https://i0.wp.com/xn--eckybzahmsm43ab5g5336c9iug.com/wp-content/uploads/2017/04/Unreal-4.jpg?fit=939%2C530" /><a href="http://xn--eckybzahmsm43ab5g5336c9iug.com/chat/will-individuals-easily-develop-games-once-the-game-engine-develops/" target="_blank">【議論】ゲームエンジンが発達したら、個人でも簡単にゲーム開発が出来るようになるのか？ | ニンテンドースイッチ速報</a></header><div>元スレ: </div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1090720425045221377"
+            target="_blank">2019/1/31 6:16:28</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">今の段階ではまだ個人開発はできんということかな。。<br/>Switchは子供が買ったこともあってちょっと興味が出て来てる。<br/>今どきのゲームコンソールを直に触ってみたいなあと。でも任天堂のことだからある程度のハードルは課してくるんだろうなあ。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1090720976113811456"
+            target="_blank">2019/1/31 6:18:39</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">そんなこと言ってないで、とりあえず静的ブログシステムの不具合を直すか。。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1090666689132343296"
+            target="_blank">2019/1/31 2:42:56</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">@syntaxerrors72 なんと。。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1090370843677323264"
+            target="_blank">2019/1/30 7:07:21</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">昔のアーケードゲームハードはv-sync割り込み一回分の1フレーム分の処理をしてたんだよな。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1090374092337831936"
+            target="_blank">2019/1/30 7:20:16</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">でまあ、割り込みがかかったら割り込みの再入を防ぐために割り込み禁止にするので、次のv-syncまでに処理が追いつかない場合はその割り込みはスキップされるんだよね。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1090374946654580736"
+            target="_blank">2019/1/30 7:23:40</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">これがいわゆる「処理落ち」と言われるもの。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1090376667351048192"
+            target="_blank">2019/1/30 7:30:30</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">大量の敵が出た時に出現するので私のようなゲームが上手くない人にとっては嬉しかったりする。難しいシーンがスローモーションのようになるわけだからね。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1090376670907748352"
+            target="_blank">2019/1/30 7:30:31</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">この「処理落ち」対策を当時どうしてたかというと、一つのやり方としては1フレーム分の処理を分割して処理するというアプローチですわな。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1090377566370689024"
+            target="_blank">2019/1/30 7:34:04</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">1 v-syncで半分の処理を行って、次のv-syncでもう半分の処理を行うのである。こうすると敵の動きのスピードは1/2になってしまうので、移動速度は2倍にしてバランスをとるんですな。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1090378837873971200"
+            target="_blank">2019/1/30 7:39:07</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">これは実質的なフレームレートが1/30秒になるということでもある。ちょっとカクついた動きになるのがイマイチなんですなあ。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1090379284898664448"
+            target="_blank">2019/1/30 7:40:54</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">コードの最適化についてはコードの自己書き換え以外はほぼ行われてたので、そこはもう私レベルでは手をつけるところはなかったんだよねえ。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1090380242085064705"
+            target="_blank">2019/1/30 7:44:42</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">アーケードゲーム用のプログラムがコードの自己書き換えを使えないのは、コード自体をROMに収めることを想定してるから。当時のアーケードゲームの基板はRAMが極端に少なかったんだよね。4kとか8kあればいい方だった気がするな。いやもうちょっとあったかな。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1090380638220279809"
+            target="_blank">2019/1/30 7:46:17</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">そこに敵やら自機の移動情報を収めると空きもほとんどないんだよな。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1090381574225313792"
+            target="_blank">2019/1/30 7:50:00</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">とあるゲームでv-sync割り込みはスプライト用のRAMへのデータ送りだけして、それ以外の処理は割り込み外で処理するようなこともやってみたような気がするな。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1090382067550941184"
+            target="_blank">2019/1/30 7:51:57</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">まあ当時はRAMが高価だったのでコストダウンのためにできるかぎりRAMの量を減らす目的もあっだと思うなあ。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1090384641607888896"
+            target="_blank">2019/1/30 8:02:11</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">座標とキャラの番号を指定するだけで、最大128x128pxのサイズのスプライトがポコンと表示出来るようなすごいハードでしたが、それ以外の処理が追いつかないんだよな。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1090575094768779264"
+            target="_blank">2019/1/30 20:38:59</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">私が最初にかかわったCPUはHD63C09だった。これはモトローラ6809の日立版である。CMOSでクロックが3MHzだった。つまり通常の6809より1.5倍高速な代物だった。ということでいわゆるパソコンよりは速いCPUを積んではいたんだけどね。<br/><br/><blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="http://www.st.rim.or.jp/~nkomatsu/hitachi/HD6309.html" target="_blank">Hitachi HD6309</a></header><div></div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1090575653722705920"
+            target="_blank">2019/1/30 20:41:12</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">6809というのは究極の8ビットCPUと言われただけあって、やっぱりすごいんですよ。何がっていうと半分忘れたけど、思い出してみよう。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1090576352250552320"
+            target="_blank">2019/1/30 20:43:58</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">あのーこれはまあ、趣味プログラマーから「プロ」のプログラマーになってから最初に触れたCPUがということね。それまでは趣味でZ80と6809のアセンブラは理解してたんだよな。命令が両方とも簡素なので頭に入ったんだな。私のようなボンクラでもね。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1090590060636823552"
+            target="_blank">2019/1/30 21:38:27</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">だがまあ、このアセンブラを駆使してゲームを完成させることはできなかったですな。趣味プロのころは。私にとっては第一次趣味プロ時代とでも言おうか。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1090590061664526336"
+            target="_blank">2019/1/30 21:38:27</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">何が足りなかったかというと、やっぱりアルゴリズム的な知識なのかなあ。。2Dアクションゲームを作るには固定小数点の知識はまず必要だろうなあと今になって思う。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1090590062582976513"
+            target="_blank">2019/1/30 21:38:27</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">なぜかこの「固定小数点によるアバウトな小数点演算」というアイデアは全然思いつかないし、外部ソースから得ることもできなかったんだな。おそらく当時のゲームのソースコードを逆アセンブルしたりすれば知るチャンスはいくらでもあったと思うのだが。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1090590858879979521"
+            target="_blank">2019/1/30 21:41:37</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">おそらくはブレゼンハム・アルゴリズムよりもゲームを作るうえでは必要な知識だと思う。これは「プロ」のプログラマになってから得た知識の１つでもある。あとはsin/cosとatanのテーブルルックアップによる高速実装だよなあ。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1090594729228623875"
+            target="_blank">2019/1/30 21:57:00</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">それで6809のことだけど、これの何がすごかったかというと、アドレッシング・モードが豊富だったということと、乗算命令があったことなんだな。<br/>詳しくはここを読めばわかると思う。。<br/><blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="http://www.st.rim.or.jp/~nkomatsu/mc680x/MC6809.html" target="_blank">Motorola MC6809</a></header><div></div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1090594730105171968"
+            target="_blank">2019/1/30 21:57:00</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">レジスタの数はA,B,(A+Bで)D,U,X,Y,Sと少なかった。ああ、DPとかフラグ・レジスタ・PCもあったな。。この少ないレジスタ数をアドレッシング・モードが補ってた感じ。命令の直行性が高いというのもいいところだよなあ。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1090595820611588096"
+            target="_blank">2019/1/30 22:01:20</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">そういう特徴がコーディングをすごく楽にしてくれたんだと思うな。Z80もそうややこしいものではないんだけど、やっぱりちょっと癖のあるCPUである（逆にいうと可愛がり甲斐があるともいえる）。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1090595821425328128"
+            target="_blank">2019/1/30 22:01:20</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">そのせいか、かかわった期間は6809系が一番長いはずなのに、なぜか思い出すのはZ80のザイログ・ニーモニックだという不思議。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1090596648948912128"
+            target="_blank">2019/1/30 22:04:38</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">今頃発見したんだけど、63C09は日立の独自拡張が入ってたんだなあ。。<br/>16ビットアキュムレータが1個（8bitアキュムレータ2個）、Vと０というレジスタが追加されとるな。<br/><blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="http://www.st.rim.or.jp/~nkomatsu/hitachi/HD6309.html" target="_blank">Hitachi HD6309</a></header><div></div></blockquote><br/><br/>0レジスタってなんやねん。。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1090383323514327041"
+            target="_blank">2019/1/30 7:56:57</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">グラIIとグラIIIって確か開発メンバーが変わったと思うんだよな。そのせいかゲーム性がかなり変わった印象があるんだな。ちなみに私はグラIIが最高だと思ってる。。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/502198382853500928/gU-9VqSU_normal.jpeg" />
+        <p class="tweet-user-name">Jr200Okada@Jr200Okada</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/Jr200Okada/status/1090240371391574018"
+            target="_blank">2019/1/29 22:28:54</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">X68000でグラディウスIII:泡。スプレッドボムも追加して思い切り負荷をかけてみましたが…なかなか厳しい。スプライトも瞬間的に200に近く、10MHzモードではこれが限界かも。<br/>また、泡の挙動の再現も多くの要素が絡むので試行錯誤してます。 https://t.co/d6Tzlm7yfN</p>
+        
+        <video class="tweet-img" controls src="https://video.twimg.com/ext_tw_video/1090238630981918720/pu/vid/248x180/U-eynYw3CwfrfV3r.mp4?tag=6" />
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1090184594719047681"
+            target="_blank">2019/1/29 18:47:16</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ここ2-3日風邪で寝込んでいた。ようやく楽になった。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1090185014489210880"
+            target="_blank">2019/1/29 18:48:56</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">歳のせいか、いったん風邪をひくとまず1日では回復しない。インフルではなかったからよかったが、インフルだともう2週間は体がガタガタになる。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1089333081083850754"
+            target="_blank">2019/1/27 10:23:40</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">久しぶりにREAPERをアップデートした。<br/><blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="https://www.reaper.fm/" target="_blank">REAPER | Audio Production Without Limits</a></header><div></div></blockquote><br/><br/>アップデートしたあとほんとひさしぶりにRYDEENのプロジェクトファイルを開いてちょっといじってみてる。 https://t.co/GP1xkkxOlk</p>
+        
+        <img loading="lazy" class="tweet-img" src="https://pbs.twimg.com/media/Dx4Wn-sUwAAa4Fx.jpg" />
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1089334021677506562"
+            target="_blank">2019/1/27 10:27:24</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">私は音楽的な知識はまるでなく、譜面をなんとか読める程度である。コードとかもまったくわからない。コード理論や音楽理論の本も読んではみたがすべて忘れてしまってる。というより理解自体あまりできてない。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1089334662881730560"
+            target="_blank">2019/1/27 10:29:57</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">だがYMOのカバー曲（コピー曲）つくりには異様な熱意があった時期があって、YouTubeに連投してた時期もあった。10代のころからYMOの曲をPCでカバーするという野望があり、それはまだ消えてはいないのである。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1089337237953687553"
+            target="_blank">2019/1/27 10:40:11</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">最初はYMOの譜面を買って、X-1というPCにMMLで打ち込んだのが最初である。譜面をBASICのMMLデータに落とし、それを演奏するのである。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1089337238868058113"
+            target="_blank">2019/1/27 10:40:11</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">カバーしようとしたのはRYDEENである。が、パート数が多くて当時のパソコンが持つPSG3音では全然足りない。さてどうしたらいいものかと考えた結果、思いついたのはダブル・ラジカセを使ったピンポン録音である。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1089337239719432192"
+            target="_blank">2019/1/27 10:40:11</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">もちろん当時はMTRなんちゅうものの存在は知らなかった。１つのパートをガイドに録音して、それを再生しながら次のパートをもう1つのカセットテープにミックスしながら録音するのである。そうすればパートを増やすことができる。しかしピンポンを繰り返すとどんどん音が悪くなっていく。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1089338004458487808"
+            target="_blank">2019/1/27 10:43:13</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">そんなことよりも問題は各パートの同期である。アタマがずれたりするのはもちろん、微妙にテンポがずれてきて最後のほうになると16分音符ぐらいずれてしまってもうお話にならないのである。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1089338943613558784"
+            target="_blank">2019/1/27 10:46:57</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">原因はテープの録音時・再生時のスピードが微妙に異なってしまうのと、PC自体のテンポが演奏データ量によって狂ってしまうことだろうと思う。なので各パート打ち込んでもどうしてもずれてしまう。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1089338944615899136"
+            target="_blank">2019/1/27 10:46:57</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">MTRやシーケンサーなんかだと、シーケンサーが出すタイミング信号をまず録音して、それで同期するらしいんだけど、まあ普通のダブルラジカセとPCじゃあそんなことはできんわね。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1089340077891772417"
+            target="_blank">2019/1/27 10:51:28</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">でどうしたかというと、最初のパートはデータを曲の最初から最後まで演奏して録音してガイドとする。２つめ以降のパートは何小節分かに区切って演奏できるようにして、手動でタイミングを合わせるようにした。Aメロはキーボードの「１」を押したら再生、Bメロは「２」を押すと再生するとかね（笑）。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1089341273431957504"
+            target="_blank">2019/1/27 10:56:13</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">あとはベースパートとかは簡単なフレーズなので、BASICで簡単なキーボードを作ってそれで演奏して重ねた。3音使えるのでデチューンしたりとかユニゾンしたりすると結構いい音がしたんだよな。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1089341274388279296"
+            target="_blank">2019/1/27 10:56:13</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">その方法でRYDEENと東風をなんとか作って友達に聞かせたりしていたのだ。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1089342853833056256"
+            target="_blank">2019/1/27 11:02:30</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">当時の譜面は今でも持ってて、BASICの変数の書き込みなんかしてたりするのを見て「懐かしいなあ。。」とか思ったりしてる。 https://t.co/mEomaAo1lG</p>
+        
+        <img loading="lazy" class="tweet-img" src="https://pbs.twimg.com/media/Dx4fTBhUcAAx6Jm.jpg" />
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1089343398262190081"
+            target="_blank">2019/1/27 11:04:39</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ただまあこの譜面、ブロックコードのパートはちょっと不正確というか間違ってるところがあるんだよな。確か。採譜が難しいのかな。やっぱり。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1089344540635553792"
+            target="_blank">2019/1/27 11:09:12</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">作成環境はかなりの変遷を経て今はREAPERを使ってデータつくりをしてるわけである。その前はBuzzトラッカーを使って作ってた。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1089417785078206464"
+            target="_blank">2019/1/27 16:00:15</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">REAPERではWAVEファイルにレンダリングして、それを動画化するための仕組みをelectronで作り、公開したのが以下の動画。かなり前（2017年）になるが。。<br/><br/><div class="youtube" data-type="yt" id="IYoslHDmXnY"><div class="yt-title">Youtube - YMO - RYDEEN (67)</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/IYoslHDmXnY" class="youtube" src="https://i.ytimg.com/vi/IYoslHDmXnY/hqdefault.jpg" /></div>   <br/><br/><br/>動画はthree.jsで作り、音楽と同期するようにしている。動画とWAVEファイルはffmpegで合体している。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1089417996492169216"
+            target="_blank">2019/1/27 16:01:05</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">この仕組みを久しぶりに動かしてみようとしたら、まったく動かんわけですよ。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1089426641770602496"
+            target="_blank">2019/1/27 16:35:26</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">どうもいろいろなものがバージョンアップしてるかららしい。。まずelectronが4.0.1になってた。。<br/><br/><blockquote class="card card-large"><header><img loading="lazy" src="https://repository-images.githubusercontent.com/9384267/479d2500-5c54-11e9-8b67-65ac52c9b3f3" /><a href="https://github.com/electron/electron" target="_blank">GitHub - electron/electron: Build cross-platform desktop apps with JavaScript, HTML, and CSS</a></header><div>:electron: Build cross-platform desktop apps with JavaScript, HTML, and CSS - electron/electron</div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1089426642630373376"
+            target="_blank">2019/1/27 16:35:26</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">そしてビルドに使ってたgulpが4になってタスクの書き方がえらい変わっとる。。<br/><br/><blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="https://gulpjs.com/" target="_blank">gulp.js - The streaming build system</a></header><div></div></blockquote><br/><br/>gulpは最近使ってないんだよなあ。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1089426643553144832"
+            target="_blank">2019/1/27 16:35:27</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">このあたりはアップデートして何とかしたのだが、次はこれに引っかかって動かない。。<br/><br/><blockquote class="card card-default"><header><img loading="lazy" src="https://avatars1.githubusercontent.com/u/210965?s=400&v=4" /><a href="https://github.com/lovell/sharp/issues/1522" target="_blank">The specified module could not be found, with electron v4.0.0. · Issue #1522 · lovell/sharp · GitHub</a></header><div>With electron 3.0.12 everything seems to work fine. Changed version to 4.0.0, removed node_modules, did npm i, all ok. If I run electron-rebuild, the command runs, but it does not rebuild the sharp module, does not seem it's picking it u...</div></blockquote><br/><br/>sharpという画像処理用のモジュールを使ってて、それのネイティブ・モジュールが見つからんというエラーが出てしまってる。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1089430156396003330"
+            target="_blank">2019/1/27 16:49:24</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">The specified module could not be found.<br/><br/>うむむ。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1089438181416554496"
+            target="_blank">2019/1/27 17:21:17</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">electronを2までに落としたところ動くようになった。しかし、今度はthree.jsが動かない。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1089438641401651200"
+            target="_blank">2019/1/27 17:23:07</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">three.jsもちょっと見ぬうちにr100になっとるな！これを作ってるときはr81だったのだが。。<br/><br/><blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="https://threejs.org/" target="_blank">three.js – JavaScript 3D library</a></header><div></div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1089449807213604864"
+            target="_blank">2019/1/27 18:07:29</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">three.js関連コードもなんとかアップデートしたらなんとか動いたわ。。 https://t.co/ZaUmqeRzrQ</p>
+        
+        <img loading="lazy" class="tweet-img" src="https://pbs.twimg.com/media/Dx6A0X_UcAEDXMy.jpg" />
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1089449965791830016"
+            target="_blank">2019/1/27 18:08:07</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ひぃー。過去に作ったコードほとんど動かくなってるなあ。。この分だと。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1089495519066390528"
+            target="_blank">2019/1/27 21:09:08</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">three.jsもJSON形式のモデルデータって廃止の方向っぽいなあ。gltfっていうフォーマットに移行しつつあるのかな。。追っかけてないからよくわかんないや。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1089495918787751938"
+            target="_blank">2019/1/27 21:10:43</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">でまあ今のレベルで非公開でYouTubeにアップしたらこれまた音が小さく再生されてしまうなあ。。なんでだ？</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1089496036198965253"
+            target="_blank">2019/1/27 21:11:11</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">知らぬ間にいろいろ変わっちゃってるよ。。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1088687514867556353"
+            target="_blank">2019/1/25 15:38:25</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">習志野選抜出場決定！！</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/1133311013552443392/1rtE34oU_normal.png" />
+        <p class="tweet-user-name">おごちゃん™ / 香港加油@ogochan</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/ogochan/status/1088043717338910721"
+            target="_blank">2019/1/23 21:00:11</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">「COBOLは難解な言語」「理解できる人が少ない」というのは、悪意のあるデマ。他の言語が使える奴なら1日も講義受けたら書けるようになるし、85以後のCOBOLは構造化もされていてそんなに酷い仕様でもない。クソコードであっても、モダンな言語のクソコードよりはずっと読みやすい。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1087999036672618497"
+            target="_blank">2019/1/23 18:02:39</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">COBOLのソースコードは読みやすいほうですけどね。。 <blockquote class="card card-default"><header><img loading="lazy" src="https://pbs.twimg.com/profile_images/1001451987634864128/fciv0VL6_400x400.jpg" /><a href="https://twitter.com/rioriost/status/1087958988233342976" target="_blank">カーボンさんのツイート: "「これはCOBOLで書かれた特殊なプログラムなので高齢者しか読めず、そのミスがチェックできない」、読むだけなら難しくないだろ、別に...。 勤労統計問題の原因は「COBOLプログラムのバグ」　-　アゴラ https://t.co/sN5ZPITiwX"</a></header><div></div></blockquote></p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/1115465658723000320/5VUk-9Ot_normal.png" />
+        <p class="tweet-user-name">梅田ミックスジュース@mixjuice_UMEDA</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/mixjuice_UMEDA/status/1087598913463283714"
+            target="_blank">2019/1/22 15:32:42</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">初めまして。<br/>阪神梅田駅　東口改札すぐにあるジュースバー【梅田ジュースコーナー】です。<br/>ミックスジュースを販売して、今年で創業50周年。<br/>ついに、Twitterをはじめました。<br/>どうぞよろしくお願いします。#はじめてのツイート https://t.co/Lp0hWGvSGG</p>
+        
+        <img loading="lazy" class="tweet-img" src="https://pbs.twimg.com/media/DxftWxrVYAEUwmw.jpg" />
+        
+        <img loading="lazy" class="tweet-img" src="https://pbs.twimg.com/media/Dxftaz9UUAAkSt4.jpg" />
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1087819649738133505"
+            target="_blank">2019/1/23 6:09:49</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">将来のことを考えると、副業やマネタイズなど副収入の手段も検討しとかんといかんなあと思うようになった。このままだと60歳でリタイアできんもんな。。やばいんですよ。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1087820090211356672"
+            target="_blank">2019/1/23 6:11:34</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">70歳まで現役とかいう話あるけど、私はあり得ない。。しんどいもんなあ。。体力的に。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1087820617548673025"
+            target="_blank">2019/1/23 6:13:40</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">今の時点でそれなりのポジションにつければあまり心配はなかったんだけど、人付き合いの悪さ等の理由により、そういうラインからは完全に外れちゃてるんだよね。。まあ望んだ結果なんだけど。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1087468236327739392"
+            target="_blank">2019/1/22 6:53:26</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">そろそろデスクトップのOSもlinuxをメインにすべしかなあ。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1087797268156018688"
+            target="_blank">2019/1/23 4:40:53</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">というのも、VS CodeでuseWSL:trueでデバッグしようとしたら、こんなエラーがでたからなんだな。。<br/><br/>Error: ENOENT: no such file or directory, open '/home/sfpg/www/node/keys/wwwmaker/xxxxx.json'<br/><br/>このファイルは確実に存在するし、bash上で手動実行すると動くので、？？である。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1087797919292346368"
+            target="_blank">2019/1/23 4:43:28</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ちなみにVS CodeはWin10で動かしてる。デバッガは以下のコマンドを発行してWSL上でコードを動かしてくれるのだが。<br/><br/>C:\WINDOWS\System32\bash.exe -ic 'node --inspect-brk=38994 commands/build-blog.js update'</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1087813486053224449"
+            target="_blank">2019/1/23 5:45:20</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ちなみにwsl上で「node --inspect-brk=38994 commands/build-blog.js update」をたたくとちゃんとデバッグできた。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1087813486854385664"
+            target="_blank">2019/1/23 5:45:20</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">まあなんちゅうか、実質linux onllyで実装を進めてて、こういうwin10/wsl間の些末な問題にかまってるっちゅうのもなんだかなあ。。と思ったりするんだよな。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1087815152685088768"
+            target="_blank">2019/1/23 5:51:57</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">まあでももちょっと頑張って使わせてもらうとするか。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1087819182492798977"
+            target="_blank">2019/1/23 6:07:58</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ノートにlinux mint入れてあっていつでもいじれるし。。とこれはこれでちょっと挙動的に？？なところがあるのだが。。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/603918430639521792/zZNtUnXN_normal.png" />
+        <p class="tweet-user-name">Hideyuki Tanaka@tanakh</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/tanakh/status/1087772331127140352"
+            target="_blank">2019/1/23 3:01:48</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">いやそれより僕が疑問なのは、コーディングができなくてなんでソフトの設計ができると思う人がいるのかって所なんだけども。(´･_･`)</p>
+        
+      </section>
+      
+    </article>
+    
+  </div>
+  <footer>
+    CopyLight 2019 Satoshi Fujiwara
+  </footer>
+  <script async src="https://platform.twitter.com/widgets.js"></script>
+
+  <script async src="./index.js"></script>
+
+</body>
+
+</html>
