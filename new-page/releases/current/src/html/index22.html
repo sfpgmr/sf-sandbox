@@ -17,8 +17,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <title>トップページをリニューアルする</title>
-  <meta name="description" content="リニューアル用のトップページデザインを考えて実装する" />
+  <title>Twitter Viewer</title>
+  <meta name="description" content="自作Twitter Viewerによる自分のつぶやきの記録。Programming,Music,HTML5,WebGL,javascript,WebAudio,Gameなど" />
   <meta name="keywords" content="Programming,Music,HTML5,WebGL,javascript,WebAudio" /> 	
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
@@ -28,13 +28,13 @@
   <meta name="twitter:card" content="summary" />
   <meta name="twitter:site" content="S.F. Web" />
   <meta name="twitter:url" content="./index22.html" />
-  <meta name="twitter:title" content="リニューアル用のトップページデザイン" />
-  <meta name="twitter:description" content="リニューアル用のトップページデザインを考えて実装する" />
+  <meta name="twitter:title" content="Twitter Viewer" />
+  <meta name="twitter:description" content="自作Twitter Viewerによる自分のつぶやきの記録。Programming,Music,HTML5,WebGL,javascript,WebAudio,Gameなど" />
   <meta name="twitter:image" content="https://www.sfpgmr.net/img/sfweb.png" />
   
   <meta property="og:type" content="article">
   <meta property="og:url" content="./index22.html" />
-  <meta property="og:title" content="リニューアル用のトップページデザイン"/>
+  <meta property="og:title" content="Twitter Viewer"/>
   <meta property="og:site_name" content="S.F. Web" />
   <meta property="og:description" content="Programming,Music,HTML5,WebGL,javascript,WebAudio">
   <meta property="og:image" content="https://www.sfpgmr.net/img/sfweb.png">
@@ -43,21 +43,19 @@
   * {
   margin: 0;
   padding: 0;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-}
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
 
 html {
   margin: 0;
   padding: 0;
-  font-size: 10px;
-}
+  font-size: 10px; }
 
 body {
   margin: 0;
-  padding: 0;
+  padding-left: 8px;
+  padding-right: 8px;
   background: black;
-  color: white;
-}
+  color: white; }
 
 .top-nav {
   position: fixed;
@@ -66,44 +64,25 @@ body {
   display: block;
   width: 100%;
   height: 32px;
-  color: white;
-}
+  color: white; }
 
 #sentinel {
   width: 0px;
-  height: 0px;
-}
+  height: 0px; }
 
 .contents {
   padding-top: 32px;
   width: 100%;
   position: relative;
-  content: strict;
-}
-
-@-webkit-keyframes blinking {
-  0% {
-    color: black;
-  }
-  50% {
-    color: white;
-  }
-  100% {
-    color: black;
-  }
-}
+  content: strict; }
 
 @keyframes blinking {
   0% {
-    color: black;
-  }
+    color: black; }
   50% {
-    color: white;
-  }
+    color: white; }
   100% {
-    color: black;
-  }
-}
+    color: black; } }
 
 .loading {
   font-family: monospace;
@@ -115,10 +94,8 @@ body {
   padding-top: 50vh;
   z-index: 32768;
   background: black;
-  -webkit-animation: blinking 2s infinite;
-          animation: blinking 2s infinite;
-  content: strict;
-}
+  animation: blinking 2s infinite;
+  content: strict; }
 
 .contents > article {
   background: #f0f0f0;
@@ -128,39 +105,27 @@ body {
   overflow: auto;
   border-radius: 3px;
   /* transition: opacity 1s linear;*/
-  opacity: 1.0;
-}
+  opacity: 1.0; }
 
 .tweet-header {
-  display: -ms-grid;
   display: grid;
-  -webkit-box-align: end;
-      -ms-flex-align: end;
-          align-items: end;
-  -ms-grid-columns: 40px 2fr 1fr;
-      grid-template-columns: 40px 2fr 1fr;
-  -ms-grid-rows: 1fr;
-      grid-template-rows: 1fr;
+  align-items: end;
+  grid-template-columns: 40px 2fr 1fr;
+  grid-template-rows: 1fr;
   font-size: 12px;
-  font-weight: bold;
-}
+  font-weight: bold; }
 
 .tweet-img {
   width: 100%;
-  -o-object-fit: cover;
-     object-fit: cover;
-}
+  object-fit: cover; }
 
 .youtube {
   position: relative;
-  cursor: pointer;
-}
+  cursor: pointer; }
 
 .youtube > img {
   width: 100%;
-  -o-object-fit: cover;
-     object-fit: cover;
-}
+  object-fit: cover; }
 
 .youtube > svg.player-play {
   width: 64px;
@@ -169,16 +134,13 @@ body {
   top: calc(50% - 32px);
   position: absolute;
   z-index: 1000;
-  opacity: 0.5;
-}
+  opacity: 0.5; }
 
 .youtube:hover > svg.player-play {
-  opacity: 1.0;
-}
+  opacity: 1.0; }
 
 .youtube:hover .player-play-1 {
-  stroke: #80808080;
-}
+  stroke: #80808080; }
 
 .youtube > div.yt-title {
   /*text-shadow: #fff 1px 1px 0;*/
@@ -189,77 +151,56 @@ body {
   left: 0;
   top: 0;
   overflow: auto;
-  z-index: 998;
-}
+  z-index: 998; }
 
 .tweet-profile-img {
-  -ms-grid-column: 1;
-  -ms-grid-column-span: 1;
   grid-column: 1/2;
   width: 32px;
   height: 32px;
-  border-radius: 50%;
-}
+  border-radius: 50%; }
 
 .tweet-user-name {
-  -ms-grid-column: 2;
-  -ms-grid-column-span: 1;
-  grid-column: 2/3;
-}
+  grid-column: 2/3; }
 
 .tweet-date {
   font-size: 8px;
   text-align: right;
-  -ms-grid-column: 3;
-  -ms-grid-column-span: 1;
-  grid-column: 3/4;
-}
+  grid-column: 3/4; }
 
 .contents > twitter-widget {
   overflow: auto;
   max-height: 960px;
-  position: absolute;
-}
+  position: absolute; }
 
 .contents > article > section > .tweet-text {
   display: block;
   padding: 4px;
   word-break: break-all;
-  font-size: 12px;
-}
+  font-size: 12px; }
 
 .contents > article > h3 {
-  font-size: 12px;
-}
+  font-size: 12px; }
 
 blockquote.card {
   margin: 4px;
   padding: 4px;
   font-size: 12px;
   background: white;
-  border-radius: 4px;
-}
+  border-radius: 4px; }
 
 blockquote.card > header {
-  display: -ms-grid;
   display: grid;
   grid-gap: 4px;
-  gap: 4px;
-}
+  gap: 4px; }
 
 blockquote.card-default > header {
-  -ms-grid-columns: 64px 1fr;
-      grid-template-columns: 64px 1fr;
-}
+  grid-template-columns: 64px 1fr; }
 
 blockquote.card-large > header {
-  -ms-grid-columns: 1fr;
-      grid-template-columns: 1fr;
-}
+  grid-template-columns: 1fr; }
 
 blockquote.card > header > img {
-  width: 100%;
-}
+  width: 100%; }
 
 div.no-image {
   display: block;
@@ -268,9 +209,8 @@ div.no-image {
   background: gray;
   color: white;
   text-align: center;
-  line-height: 64px;
-}
-/*# sourceMappingURL=style.css.map */ 
+  line-height: 64px; }
+ 
   </style>
 </head>
 
@@ -281,6 +221,134 @@ div.no-image {
   </header>
   <div class="contents" id="contents" rendersubtree="invisible skip-activation"> 
     
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1709281035/P1030575_normal.JPG" />
+        <p class="tweet-user-name">shinyaman@shinyaman2</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/shinyaman2/status/1254986166908026880"
+            target="_blank">2020/4/28 13:09:53</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">1980年の今日、任天堂のゲーム＆ウォッチが発売になったようです。<br/>このCMが録画されたビデオテープも40周年なわけですよ。<br/>ノイズはあるけどいまだにカビてなくて再生出来るのも凄い。<br/><br/>@retoro_mode https://t.co/HhuW2bdZVn</p>
+        
+        <video class="tweet-img" controls src="https://video.twimg.com/ext_tw_video/1254985312096276481/pu/vid/480x360/ul26j-V7fJmRUXoM.mp4?tag=10" />
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1212701145379946496/pSDVrvWj_normal.png" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1255095666734321664"
+            target="_blank">2020/4/28 20:25:00</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">肺炎にかかるとつらい。それは40代で経験したのでわかる。私の場合細菌性肺炎で、ジスロマックという抗生物質がものすごく効いたから大事にならなくて済んだけど。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1255096495826558977"
+            target="_blank">2020/4/28 20:28:17</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">風邪と違う点は、熱が午前中は少し下がるのに夕方になるとまた上がるのが数日以上続いてすごく消耗するし、何より息切れがひどくて階段のぼると窒息しそうなほどだった。これはただの風邪ではないな。。とその時思ったね。そしてレントゲン撮ると真っ白だったという。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1255097771352141824"
+            target="_blank">2020/4/28 20:33:21</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">そのとき抗生物質が効かなかったらどうなってただろうと今になってちょっと思う。今のコロナには食い止めるワクチンやインフルエンザのような抗ウィルス薬がないわけだからね。今の私に肺炎にかかって自然治癒まで体力が持つ自信があるかというとちょっとないな。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1255099386096308224"
+            target="_blank">2020/4/28 20:39:46</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">それくらいきつかったんだよね。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1255101639238676480"
+            target="_blank">2020/4/28 20:48:44</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">コロナが起こす肺炎はいわゆる間質性肺炎というやつなんだな。。後遺症残るかもしれないやつだよな。恐ろしいわ。。<br/><br/><blockquote class="card card-default"><header><img  src="https://www.katoiin.info/asset/IP1.JPG" /><a href="https://www.katoiin.info/blog/2020/03/post-85-727079.html" target="_blank">新型コロナウイルスによる肺炎とは？他の肺炎と何が違うの？ | 医師ブログ</a></header><div>新型コロナウイルスについての話題でほぼ占められている昨今、メディアには様々な情報が伝えられています。特に最近は、世間がよく知っている有名人の方が罹患したというニュースが次々と取り上げられるようになっており、その症状について皆さんの関心が寄せ...</div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1255107488271097857"
+            target="_blank">2020/4/28 21:11:58</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">私ができることは<br/><br/>１．このウィルスは不顕性の人も多いので、無自覚にうつしてしまうリスクを下げるために常にマスクをする。<br/>２．石鹸で手洗いをして除ウィルスに努め、口腔内・鼻腔内に入るウィルスの数を減らす。<br/>３．できる限り人と接触しない<br/><br/>だよなあ。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1273893604637896705/dGaMqg94_normal.png" />
+        <p class="tweet-user-name">ライブドアニュース@livedoornews</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/livedoornews/status/1254940480762085376"
+            target="_blank">2020/4/28 10:08:20</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">【嬉しい】北海道の人気土産「じゃがポックル」オンライン販売を開始<br/><a href="https://news.livedoor.com/article/detail/18181606/" target="_blank">news.livedoor.com/article/detail…</a><br/><br/>北海道に来るのが難しい人たちにも楽しんでもらおうと販売を開始。公式ショップ「グラノライフ」内で購入できます。 https://t.co/Yhzekf6equ</p>
+        
+        <img  class="tweet-img" src="https://pbs.twimg.com/media/EWpxjZ3U4AAaYxl.jpg" />
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1232909058786484224/X8-z940J_normal.png" />
+        <p class="tweet-user-name">NHKニュース@nhk_news</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/nhk_news/status/1254914377452584960"
+            target="_blank">2020/4/28 8:24:37</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">アメリカ国防総省は、高速で上空を移動するＵＦＯ＝未確認飛行物体だとする映像を公開しました。写っている物体が何なのかはわかっていないとしています。<br/><a href="https://www3.nhk.or.jp/news/html/20200428/k10012408331000.html" target="_blank">www3.nhk.or.jp/news/html/2020…</a><br/>#nhk_news https://t.co/RtPPvFwTQK</p>
+        
+        <video class="tweet-img" controls src="https://video.twimg.com/ext_tw_video/1254914333060009986/pu/vid/640x360/pq2kJW5J8ARUBBtR.mp4?tag=10" />
+        
+      </section>
+      
+    </article>
     
     <article>
       
@@ -595,90 +663,6 @@ div.no-image {
       </header>
       <section>
         <p class="tweet-text">ライブだと全部808っぽいね。。<br/><div class="youtube" data-type="yt" id="HpN4bdyqHeI"><div class="yt-title">Youtube - Friday Night Plans - "Plastic Love" (Live at Studio Tanta)</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img  data-href="https://youtu.be/HpN4bdyqHeI" class="youtube" src="https://i.ytimg.com/vi/HpN4bdyqHeI/hqdefault.jpg" /></div>   <br/></p>
-        
-      </section>
-      
-    </article>
-    
-    <article>
-      
-      
-      <header class="tweet-header">
-        
-        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1234085532314943488/8ngIxxaB_normal.jpg" />
-        <p class="tweet-user-name">Shaara_q@Shaara_q</p>
-        
-        <p class="tweet-date"><a href="https://twitter.com/Shaara_q/status/1253710504184307712"
-            target="_blank">2020/4/25 0:40:51</a></p>
-      </header>
-      <section>
-        <p class="tweet-text">以前 mmldrvでコピったグラディウス。OPNAモジュールと SPW使用。昨年11月に開催された MI68の会場で鳴らしてました…何もかも懐かしい…。中途半端に長くなったので3分割・その1です https://t.co/cl1zs1C2cc</p>
-        
-        <video class="tweet-img" controls src="https://video.twimg.com/ext_tw_video/1253710368892874752/pu/vid/480x270/hBCCAOgDIcFDW50h.mp4?tag=10" />
-        
-      </section>
-      
-    </article>
-    
-    <article>
-      
-      
-      <header class="tweet-header">
-        
-        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1118324284/_______normal.jpg" />
-        <p class="tweet-user-name">ぜくう@ Mr.ドットマン 本 ドットワークス@Area51_zek</p>
-        
-        <p class="tweet-date"><a href="https://twitter.com/Area51_zek/status/1253630065851523072"
-            target="_blank">2020/4/24 19:21:13</a></p>
-      </header>
-      <section>
-        <p class="tweet-text">スーパー魂斗羅もやっぱりCなわけだけど、バックに居る天王鬼ギャバという存在はファミコン（NES）版のキャラクターでアーケード版は魔㢓頭ガイラギウスだったのですよね。触手の名前はヘビワラバグデッセ。あとから全部ギャバになっちゃったけど、ガイラギウスちゃんの人権も声高に叫んでいきたい。✊ https://t.co/cDqThB5ljd</p>
-        
-        <img  class="tweet-img" src="https://pbs.twimg.com/media/EWXJRjyU8AIwsUt.jpg" />
-        
-        <img  class="tweet-img" src="https://pbs.twimg.com/media/EWXJTYAU8AAfM_V.png" />
-        
-      </section>
-      
-    </article>
-    
-    <article>
-      
-      
-      <header class="tweet-header">
-        
-        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1050411381369929728/BtqZX2ZX_normal.jpg" />
-        <p class="tweet-user-name">特殊映画研究室 Panorama Effect Laboratory@tokuken20091</p>
-        
-        <p class="tweet-date"><a href="https://twitter.com/tokuken20091/status/1253821069795840000"
-            target="_blank">2020/4/25 8:00:12</a></p>
-      </header>
-      <section>
-        <p class="tweet-text">ハイルーフの写真いろいろです。<br/>自販機ミニチュアも新規で製作しました！<br/>→<a href="https://minne.com/@tokuken" target="_blank">minne.com/@tokuken</a><br/><br/>#エアハンドメイドマルシェ<br/>#特殊映画研究室<br/>#サントスバーガー https://t.co/bRpH2Wre1g</p>
-        
-        <img  class="tweet-img" src="https://pbs.twimg.com/media/EWZ3YNHUcAAn4VE.jpg" />
-        
-        <img  class="tweet-img" src="https://pbs.twimg.com/media/EWZ3bYBUEAAP9kx.jpg" />
-        
-        <img  class="tweet-img" src="https://pbs.twimg.com/media/EWZ3hy5UwAA5vAp.jpg" />
-        
-      </section>
-      
-    </article>
-    
-    <article>
-      
-      
-      <header class="tweet-header">
-        
-        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/731335621789147137/bWURa4wY_normal.jpg" />
-        <p class="tweet-user-name">トモカズ@tomo0354</p>
-        
-        <p class="tweet-date"><a href="https://twitter.com/tomo0354/status/1253767208443850755"
-            target="_blank">2020/4/25 4:26:11</a></p>
-      </header>
-      <section>
-        <p class="tweet-text">すごい。イナブキさんがX1でフル画面2ドットスクロールを実現している。<br/><br/>[SHARP X1] Vertical 2-dot scroll test (Xevious)<br/><a href="https://youtu.be/m0Zoe1c7I08" target="_blank">youtu.be/m0Zoe1c7I08</a></p>
         
       </section>
       

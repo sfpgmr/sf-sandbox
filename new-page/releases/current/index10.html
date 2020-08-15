@@ -17,8 +17,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <title>トップページをリニューアルする</title>
-  <meta name="description" content="リニューアル用のトップページデザインを考えて実装する" />
+  <title>Twitter Viewer</title>
+  <meta name="description" content="自作Twitter Viewerによる自分のつぶやきの記録。Programming,Music,HTML5,WebGL,javascript,WebAudio,Gameなど" />
   <meta name="keywords" content="Programming,Music,HTML5,WebGL,javascript,WebAudio" /> 	
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
@@ -28,13 +28,13 @@
   <meta name="twitter:card" content="summary" />
   <meta name="twitter:site" content="S.F. Web" />
   <meta name="twitter:url" content="./index10.html" />
-  <meta name="twitter:title" content="リニューアル用のトップページデザイン" />
-  <meta name="twitter:description" content="リニューアル用のトップページデザインを考えて実装する" />
+  <meta name="twitter:title" content="Twitter Viewer" />
+  <meta name="twitter:description" content="自作Twitter Viewerによる自分のつぶやきの記録。Programming,Music,HTML5,WebGL,javascript,WebAudio,Gameなど" />
   <meta name="twitter:image" content="https://www.sfpgmr.net/img/sfweb.png" />
   
   <meta property="og:type" content="article">
   <meta property="og:url" content="./index10.html" />
-  <meta property="og:title" content="リニューアル用のトップページデザイン"/>
+  <meta property="og:title" content="Twitter Viewer"/>
   <meta property="og:site_name" content="S.F. Web" />
   <meta property="og:description" content="Programming,Music,HTML5,WebGL,javascript,WebAudio">
   <meta property="og:image" content="https://www.sfpgmr.net/img/sfweb.png">
@@ -43,21 +43,19 @@
   * {
   margin: 0;
   padding: 0;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-}
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
 
 html {
   margin: 0;
   padding: 0;
-  font-size: 10px;
-}
+  font-size: 10px; }
 
 body {
   margin: 0;
-  padding: 0;
+  padding-left: 8px;
+  padding-right: 8px;
   background: black;
-  color: white;
-}
+  color: white; }
 
 .top-nav {
   position: fixed;
@@ -66,44 +64,25 @@ body {
   display: block;
   width: 100%;
   height: 32px;
-  color: white;
-}
+  color: white; }
 
 #sentinel {
   width: 0px;
-  height: 0px;
-}
+  height: 0px; }
 
 .contents {
   padding-top: 32px;
   width: 100%;
   position: relative;
-  content: strict;
-}
-
-@-webkit-keyframes blinking {
-  0% {
-    color: black;
-  }
-  50% {
-    color: white;
-  }
-  100% {
-    color: black;
-  }
-}
+  content: strict; }
 
 @keyframes blinking {
   0% {
-    color: black;
-  }
+    color: black; }
   50% {
-    color: white;
-  }
+    color: white; }
   100% {
-    color: black;
-  }
-}
+    color: black; } }
 
 .loading {
   font-family: monospace;
@@ -115,10 +94,8 @@ body {
   padding-top: 50vh;
   z-index: 32768;
   background: black;
-  -webkit-animation: blinking 2s infinite;
-          animation: blinking 2s infinite;
-  content: strict;
-}
+  animation: blinking 2s infinite;
+  content: strict; }
 
 .contents > article {
   background: #f0f0f0;
@@ -128,39 +105,27 @@ body {
   overflow: auto;
   border-radius: 3px;
   /* transition: opacity 1s linear;*/
-  opacity: 1.0;
-}
+  opacity: 1.0; }
 
 .tweet-header {
-  display: -ms-grid;
   display: grid;
-  -webkit-box-align: end;
-      -ms-flex-align: end;
-          align-items: end;
-  -ms-grid-columns: 40px 2fr 1fr;
-      grid-template-columns: 40px 2fr 1fr;
-  -ms-grid-rows: 1fr;
-      grid-template-rows: 1fr;
+  align-items: end;
+  grid-template-columns: 40px 2fr 1fr;
+  grid-template-rows: 1fr;
   font-size: 12px;
-  font-weight: bold;
-}
+  font-weight: bold; }
 
 .tweet-img {
   width: 100%;
-  -o-object-fit: cover;
-     object-fit: cover;
-}
+  object-fit: cover; }
 
 .youtube {
   position: relative;
-  cursor: pointer;
-}
+  cursor: pointer; }
 
 .youtube > img {
   width: 100%;
-  -o-object-fit: cover;
-     object-fit: cover;
-}
+  object-fit: cover; }
 
 .youtube > svg.player-play {
   width: 64px;
@@ -169,16 +134,13 @@ body {
   top: calc(50% - 32px);
   position: absolute;
   z-index: 1000;
-  opacity: 0.5;
-}
+  opacity: 0.5; }
 
 .youtube:hover > svg.player-play {
-  opacity: 1.0;
-}
+  opacity: 1.0; }
 
 .youtube:hover .player-play-1 {
-  stroke: #80808080;
-}
+  stroke: #80808080; }
 
 .youtube > div.yt-title {
   /*text-shadow: #fff 1px 1px 0;*/
@@ -189,77 +151,56 @@ body {
   left: 0;
   top: 0;
   overflow: auto;
-  z-index: 998;
-}
+  z-index: 998; }
 
 .tweet-profile-img {
-  -ms-grid-column: 1;
-  -ms-grid-column-span: 1;
   grid-column: 1/2;
   width: 32px;
   height: 32px;
-  border-radius: 50%;
-}
+  border-radius: 50%; }
 
 .tweet-user-name {
-  -ms-grid-column: 2;
-  -ms-grid-column-span: 1;
-  grid-column: 2/3;
-}
+  grid-column: 2/3; }
 
 .tweet-date {
   font-size: 8px;
   text-align: right;
-  -ms-grid-column: 3;
-  -ms-grid-column-span: 1;
-  grid-column: 3/4;
-}
+  grid-column: 3/4; }
 
 .contents > twitter-widget {
   overflow: auto;
   max-height: 960px;
-  position: absolute;
-}
+  position: absolute; }
 
 .contents > article > section > .tweet-text {
   display: block;
   padding: 4px;
   word-break: break-all;
-  font-size: 12px;
-}
+  font-size: 12px; }
 
 .contents > article > h3 {
-  font-size: 12px;
-}
+  font-size: 12px; }
 
 blockquote.card {
   margin: 4px;
   padding: 4px;
   font-size: 12px;
   background: white;
-  border-radius: 4px;
-}
+  border-radius: 4px; }
 
 blockquote.card > header {
-  display: -ms-grid;
   display: grid;
   grid-gap: 4px;
-  gap: 4px;
-}
+  gap: 4px; }
 
 blockquote.card-default > header {
-  -ms-grid-columns: 64px 1fr;
-      grid-template-columns: 64px 1fr;
-}
+  grid-template-columns: 64px 1fr; }
 
 blockquote.card-large > header {
-  -ms-grid-columns: 1fr;
-      grid-template-columns: 1fr;
-}
+  grid-template-columns: 1fr; }
 
 blockquote.card > header > img {
-  width: 100%;
-}
+  width: 100%; }
 
 div.no-image {
   display: block;
@@ -268,9 +209,8 @@ div.no-image {
   background: gray;
   color: white;
   text-align: center;
-  line-height: 64px;
-}
-/*# sourceMappingURL=style.css.map */ 
+  line-height: 64px; }
+ 
   </style>
 </head>
 
@@ -281,6 +221,120 @@ div.no-image {
   </header>
   <div class="contents" id="contents" rendersubtree="invisible skip-activation"> 
     
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/991683511571529728/3OdRbxPj_normal.jpg" />
+        <p class="tweet-user-name">日間 陣@HimaDjinn</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/HimaDjinn/status/1270633723575205888"
+            target="_blank">2020/6/10 17:27:41</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">@_lll_ll_l_ 参考になるかは別で放流してみます。自分が聞いた某フライトアクションで東京を作った際の話では、描画負荷等の低減のため、似た建物ばかりに見えない程度に形状を統合したそうです。建物の地域性(湾岸に倉庫やクレーン、オフィス街にビル群など)とランドマークに注意して配置すると「らしく」なるとか</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/943526062905991168/qR5QkENd_normal.jpg" />
+        <p class="tweet-user-name">昭和スポット巡り@showaspotmegri</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/showaspotmegri/status/1272150957174865921"
+            target="_blank">2020/6/14 21:56:38</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">昭和44年　神戸　三ノ宮駅　（絵葉書） https://t.co/67zP30epyk</p>
+        
+        <img  class="tweet-img" src="https://pbs.twimg.com/media/EaeWibmUcAAL9fW.jpg" />
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/460353474174009344/UEB6ADr3_normal.png" />
+        <p class="tweet-user-name">g200kg@g200kg</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/g200kg/status/1271376708776558592"
+            target="_blank">2020/6/12 18:40:03</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">Web Audio API が更新: 昨日6月11日に W3C で公開されている WebAudio API が「W3C Candidate Recommendation, 11 June 2020」として更新されました。 Web Audio API 前回の更新で Working Draft (草案) から初めて Candidate Recommendation (勧告候補)… <a href="http://dlvr.it/RYTxW6" target="_blank">dlvr.it/RYTxW6</a> https://t.co/JAilmdVAEd</p>
+        
+        <img  class="tweet-img" src="https://pbs.twimg.com/media/EaTWYQ2U8AILIBV.png" />
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1289776876815187968/k8NUU0gS_normal.png" />
+        <p class="tweet-user-name">ヤギの人（お盆）@yusai00</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/yusai00/status/1270661483806863360"
+            target="_blank">2020/6/10 19:18:00</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">「急な壁を登るヤギ」<br/>Goats going up a steep wall<br/><a href="https://www.reddit.com/r/blackmagicfuckery/comments/h051qc/goats_going_up_a_steep_wall/?utm_source=share&utm_medium=web2x" target="_blank">reddit.com/r/blackmagicfu…</a><br/>ヤギにとっては、これが楽な近道なんだろうなぁ…<br/><br/>もっと急な壁を登るヤギが見たい方はこちら。こちらはダムの壁に染み出すミネラルを求めて壁を登るヤギ。ヤギの登坂力はハンパないのだ。<br/><a href="https://youtu.be/RG9TMn1FJzc" target="_blank">youtu.be/RG9TMn1FJzc</a> https://t.co/pRy0DqtQg4</p>
+        
+        <video class="tweet-img" controls src="https://video.twimg.com/ext_tw_video/1270660624628908032/pu/vid/344x432/_EKfGr4VDVuFC0UP.mp4?tag=10" />
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/931137746936086529/74wzjygZ_normal.jpg" />
+        <p class="tweet-user-name">うつぼかずら@vstcpp</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/vstcpp/status/1270720489392992258"
+            target="_blank">2020/6/10 23:12:28</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">VSTプラグイン開発の本を執筆させていただきました。<br/>工学社様( @kohgaku )より6月25日発売予定となっております。<br/><br/>内容としてはC++を使って初めてVST開発をする方にむけたものとなっております。<br/><br/><a href="https://www.kohgakusha.co.jp/books/detail/978-4-7775-2108-1" target="_blank">kohgakusha.co.jp/books/detail/9…</a><br/><br/>#VST #開発 #Cpp #工学社</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1212701145379946496/pSDVrvWj_normal.png" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1270702456087777280"
+            target="_blank">2020/6/10 22:00:48</a></p>
+      </header>
+      <section>
+        <p class="tweet-text"><div class="youtube" data-type="yt" id="fI569nw0YUQ"><div class="yt-title">Youtube - Cheryl Lynn - Got To Be Real (Audio)</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img  data-href="https://youtu.be/fI569nw0YUQ" class="youtube" src="https://i.ytimg.com/vi/fI569nw0YUQ/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+    </article>
     
     <article>
       
@@ -415,250 +469,6 @@ div.no-image {
       </header>
       <section>
         <p class="tweet-text">【注意とお願い】 迎霧狼慢の特性上、飲酒時及び過度ストレス時には心の声が駄々漏れなため、公式な見解とは必ずしも一致するものではありません。またコミュ能力が欠如しており、言葉遊びが度を越す場合があるため、全てのユーザにご納得いただけない場合がございますのでご了承の上ご利用ください。</p>
-        
-      </section>
-      
-    </article>
-    
-    <article>
-      
-      
-      <header class="tweet-header">
-        
-        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1193899326/gorry5_normal.jpg" />
-        <p class="tweet-user-name">後藤 浩昭 / GORRY@gorry5</p>
-        
-        <p class="tweet-date"><a href="https://twitter.com/gorry5/status/1270397549053018112"
-            target="_blank">2020/6/10 1:49:13</a></p>
-      </header>
-      <section>
-        <p class="tweet-text">うちの初ベーマガ（と初Oh!MZ）、83/02。MZ-700を手に入れてふた月、本屋でMZ-700を扱っている雑誌を…と思い立って買ったのがこの２冊。そして４年半後に記事を書くことになるとは… #ベーマガの日 https://t.co/wZhp65QIaP</p>
-        
-        <img  class="tweet-img" src="https://pbs.twimg.com/media/EaFb0_1U0AEtNr3.jpg" />
-        
-      </section>
-      
-    </article>
-    
-    <article>
-      
-      
-      <header class="tweet-header">
-        
-        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1283707172027686913/MtlI_F84_normal.jpg" />
-        <p class="tweet-user-name">きじとら猫と暮らしたい人@_lll_ll_l_</p>
-        
-        <p class="tweet-date"><a href="https://twitter.com/_lll_ll_l_/status/1270292817890275328"
-            target="_blank">2020/6/9 18:53:03</a></p>
-      </header>
-      <section>
-        <p class="tweet-text">知ってる人向けに書くと，QGISとかを使って，DSMの高さ情報を，基盤地図情報の建物shapeファイルにぺったんこすれば良いだけだったりします．<br/><br/>知らない人向けには，雑誌の記事にわりとちゃんと手順を書くので，出る頃にまた紹介します．</p>
-        
-      </section>
-      
-    </article>
-    
-    <article>
-      
-      
-      <header class="tweet-header">
-        
-        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1283707172027686913/MtlI_F84_normal.jpg" />
-        <p class="tweet-user-name">きじとら猫と暮らしたい人@_lll_ll_l_</p>
-        
-        <p class="tweet-date"><a href="https://twitter.com/_lll_ll_l_/status/1270289385020219393"
-            target="_blank">2020/6/9 18:39:24</a></p>
-      </header>
-      <section>
-        <p class="tweet-text">JAXAのALOS衛星のDSMデータと国土地理院の基盤地図情報を組み合わせれば，日本全国のそれっぽい3D都市モデルがどこでも無料で作れてしまう事に気が付いてしまった．．．<br/><br/>データソースも書きやすくて，論文とかにも使いやすそうでなかなか良い気がする． https://t.co/2HiTBKTSvg</p>
-        
-        <img  class="tweet-img" src="https://pbs.twimg.com/media/EaD2yTIU8AAi6gh.jpg" />
-        
-      </section>
-      
-    </article>
-    
-    <article>
-      
-      
-      <header class="tweet-header">
-        
-        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/632182757041401856/mKjQFh9u_normal.png" />
-        <p class="tweet-user-name">たかぼー@takabosoft</p>
-        
-        <p class="tweet-date"><a href="https://twitter.com/takabosoft/status/1270503415391465473"
-            target="_blank">2020/6/10 8:49:53</a></p>
-      </header>
-      <section>
-        <p class="tweet-text">❌手で開けられます。<br/>⭕️手で開けられる人もいます。 https://t.co/G7NOzW1kAI</p>
-        
-        <img  class="tweet-img" src="https://pbs.twimg.com/media/EaG8HvPUMAYkwJl.jpg" />
-        
-      </section>
-      
-    </article>
-    
-    <article>
-      
-      
-      <header class="tweet-header">
-        
-        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1022150732634419200/yZg4xLsO_normal.jpg" />
-        <p class="tweet-user-name">mattn@mattn_jp</p>
-        
-        <p class="tweet-date"><a href="https://twitter.com/mattn_jp/status/1270379179582779394"
-            target="_blank">2020/6/10 0:36:13</a></p>
-      </header>
-      <section>
-        <p class="tweet-text">最近の C++ コンパイラは速いなぁ。僕が若かった頃にこの速さが出てたらもっと早く家に帰れていた。</p>
-        
-      </section>
-      
-    </article>
-    
-    <article>
-      
-      
-      <header class="tweet-header">
-        
-        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1212701145379946496/pSDVrvWj_normal.png" />
-        <p class="tweet-user-name">S.F.@SFPGMR</p>
-        
-        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1270481567672983553"
-            target="_blank">2020/6/10 7:23:04</a></p>
-      </header>
-      <section>
-        <p class="tweet-text">中学生あたりで相当ハマったゲームとしてこのゲームが挙げられる。連射ができてストレスがないかわり、敵が地下に潜って下から突いてくる。当時このようなギャラクシアンの改良版のようなゲーム多くリリースされてた。動きが直線的でなく自然？な感じ。<br/><br/>銀河帝国の逆襲<br/><div class="youtube" data-type="yt" id="LImiuqCFLhg"><div class="yt-title">Youtube - [AC] 銀河帝国の逆襲 Ginga Teikoku no Gyakushu</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img  data-href="https://youtu.be/LImiuqCFLhg" class="youtube" src="https://i.ytimg.com/vi/LImiuqCFLhg/hqdefault.jpg" /></div>   <br/></p>
-        
-      </section>
-      
-      <header class="tweet-header">
-        
-        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1270482015607914499"
-            target="_blank">2020/6/10 7:24:51</a></p>
-      </header>
-      <section>
-        <p class="tweet-text">中学生くらいの時はスーパー（私の地元の近辺だとダイエー）の屋上にゲームコーナーがあって、そこに結構な数のゲーム機かおいてあったんだよね。１プレイ=50円くらいのレートで遊ぶことができた。</p>
-        
-      </section>
-      
-      <header class="tweet-header">
-        
-        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1270482183539486721"
-            target="_blank">2020/6/10 7:25:31</a></p>
-      </header>
-      <section>
-        <p class="tweet-text">このメーカーはアイレムですな。アイレムも老舗ですなあ。。</p>
-        
-      </section>
-      
-      <header class="tweet-header">
-        
-        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1270482496946180099"
-            target="_blank">2020/6/10 7:26:46</a></p>
-      </header>
-      <section>
-        <p class="tweet-text">繁華街に行かなくとも駄菓子屋の店先にも小さなアップライト筐体が２-３台あって、そこでもゲームすることができた。</p>
-        
-      </section>
-      
-      <header class="tweet-header">
-        
-        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1270483194693873666"
-            target="_blank">2020/6/10 7:29:32</a></p>
-      </header>
-      <section>
-        <p class="tweet-text">ビデオ・ゲームが出てきたのは小学校高学年くらいから。駄菓子屋の店先でブロック崩しを遊んだのが最初。モノクロなんだけど、カラーに見えるようにセロファン（わかる？）みたいなの貼り付けたモニターだった。</p>
-        
-      </section>
-      
-      <header class="tweet-header">
-        
-        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1270483689328132097"
-            target="_blank">2020/6/10 7:31:30</a></p>
-      </header>
-      <section>
-        <p class="tweet-text">友達が任天堂のブロック崩しを買ってたりして、家庭でもビデオゲームが楽しめることができるようにはなってたね。これは中学生のころかなあ。<br/><br/><div class="youtube" data-type="yt" id="0FVHG6KmFV4"><div class="yt-title">Youtube - 1979 任天堂 ブロック崩し</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img  data-href="https://youtu.be/0FVHG6KmFV4" class="youtube" src="https://i.ytimg.com/vi/0FVHG6KmFV4/hqdefault.jpg" /></div>   <br/></p>
-        
-      </section>
-      
-      <header class="tweet-header">
-        
-        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1270490867543891970"
-            target="_blank">2020/6/10 8:00:02</a></p>
-      </header>
-      <section>
-        <p class="tweet-text">あとゲームウォッチもそうだよね。身近なゲーム機としては。私もファイヤーともう１つくらい持ってた気がしないでもない。<br/><br/><div class="youtube" data-type="yt" id="cwhU1qVXuXY"><div class="yt-title">Youtube - 任天堂 ゲーム＆ウォッチ CM 1980年 　ジャッジ、ボール、バーミン、ファイヤー</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img  data-href="https://youtu.be/cwhU1qVXuXY" class="youtube" src="https://i.ytimg.com/vi/cwhU1qVXuXY/hqdefault.jpg" /></div>   <br/></p>
-        
-      </section>
-      
-      <header class="tweet-header">
-        
-        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1270491162910941184"
-            target="_blank">2020/6/10 8:01:12</a></p>
-      </header>
-      <section>
-        <p class="tweet-text">ゲーム機というと野球盤とかもゲーム機っちゃぁゲーム機だけど、「電子的な何かに投影してボタンを押して遊ぶゲーム」という定義にしておこうか。このスレッドはね。</p>
-        
-      </section>
-      
-      <header class="tweet-header">
-        
-        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1270491313058676737"
-            target="_blank">2020/6/10 8:01:48</a></p>
-      </header>
-      <section>
-        <p class="tweet-text">しかしゲームウォッチは時計としてはかなり精度が悪かった気がする。時刻がしょっちゅうずれてた記憶が。</p>
-        
-      </section>
-      
-      <header class="tweet-header">
-        
-        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1270492024819421184"
-            target="_blank">2020/6/10 8:04:37</a></p>
-      </header>
-      <section>
-        <p class="tweet-text">もうひとつはLSIの野球ゲームというのも我々の田舎では流行ったね。友達の家にテントを設営して、テントの中で夜通しこのゲームをやり気が付くと寝落ちしていたのも懐かしい思い出ですな。<br/><br/><div class="youtube" data-type="yt" id="jOw2PNUF5E4"><div class="yt-title">Youtube - バンダイLSI ベースボール</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img  data-href="https://youtu.be/jOw2PNUF5E4" class="youtube" src="https://i.ytimg.com/vi/jOw2PNUF5E4/hqdefault.jpg" /></div>   <br/></p>
-        
-      </section>
-      
-      <header class="tweet-header">
-        
-        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1270492555050795008"
-            target="_blank">2020/6/10 8:06:44</a></p>
-      </header>
-      <section>
-        <p class="tweet-text">ゲーム・コーナーでビデオ・ゲームを遊び倒したいのはやまやまだけど、小遣いの範囲でしか遊べないからそうそうできるものではないんだよね。１回のプレイにかける真剣さはそりゃ相当なもの（笑）</p>
-        
-      </section>
-      
-      <header class="tweet-header">
-        
-        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1270493251103940610"
-            target="_blank">2020/6/10 8:09:30</a></p>
-      </header>
-      <section>
-        <p class="tweet-text">当時はナムコがメイン、あとはタイトー、セガ、コナミ、SNK、任天堂、DECO、UPL、アイレム、ニチブツ（笑）、サン電子、カプコンとかまあいろいろなゲームメーカーがいたような気もするなあ。全部のメーカーのがあるわけじゃなかったと思うんだけどね。</p>
-        
-      </section>
-      
-      <header class="tweet-header">
-        
-        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1270493595561193472"
-            target="_blank">2020/6/10 8:10:52</a></p>
-      </header>
-      <section>
-        <p class="tweet-text">タイトーのスペース・インベーダーは私が小学４年くらいのときだったね。少しだけ遊んだ記憶があるけど、その流行の時にはあまり遊んではいなかったね。大人のゲームっていう感じだったんだよな。私の感覚としては。</p>
-        
-      </section>
-      
-      <header class="tweet-header">
-        
-        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1270493765124231168"
-            target="_blank">2020/6/10 8:11:32</a></p>
-      </header>
-      <section>
-        <p class="tweet-text">ゲーセンのゲームコーナーにもインベーダーは置いてあったけど、もう廃れ気味な状況だった。</p>
         
       </section>
       

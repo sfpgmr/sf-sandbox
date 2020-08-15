@@ -43,7 +43,7 @@ let ct = 0;
 const masonry = new MiniMasonry({
   container: '.contents',
   minimize: false,
-  gutter: 4,
+  gutter: 16,
   baseWidth: 320
 });
 
@@ -150,40 +150,40 @@ window.addEventListener('load', () => {
     if (c.isIntersecting) {
       isIntersecting = true;
       (async () => {
-          while (isIntersecting) {
-            let { articles ,yts } = await cacheArticles;
-            //
-            if (articles && articles.length) {
-              yts && yts.length && yts.forEach(setYTPlayer);
-              document.getElementById('contents').append(...articles);
-              articles.forEach(a=>{
-                masonry.resizeObserver.observe(a);
-              });
-//              articles.forEach(a => { a.getBoundingClientRect(); a.style.opacity = 1.0; });
-            } 
-
-            if(cacheContentNo > MaxContents){
-              //masonry.layout();
-              observer.unobserve(sentinel);
-              isIntersecting = false;
-              return;
-            } else {
-              //masonry.layout();
-              cacheArticles = fetchArticles();
-            }
-            //少しスリープする
-            // await new Promise((resolve, reject) => {
-            //   setTimeout(() => {
-            //     resolve();
-            //   }, 0);
-            // });
+        while (isIntersecting) {
+          let { articles, yts } = await cacheArticles;
+          //
+          if (articles && articles.length) {
+            yts && yts.length && yts.forEach(setYTPlayer);
+            document.getElementById('contents').append(...articles);
+            articles.forEach(a => {
+              masonry.resizeObserver.observe(a);
+            });
+            //              articles.forEach(a => { a.getBoundingClientRect(); a.style.opacity = 1.0; });
           }
+
+          if (cacheContentNo > MaxContents) {
+            //masonry.layout();
+            observer.unobserve(sentinel);
+            isIntersecting = false;
+            return;
+          } else {
+            //masonry.layout();
+            cacheArticles = fetchArticles();
+          }
+          //少しスリープする
+          // await new Promise((resolve, reject) => {
+          //   setTimeout(() => {
+          //     resolve();
+          //   }, 0);
+          // });
+        }
       })();
     } else {
       //masonry.layout();
       isIntersecting = false;
     }
-   // console.log(c.boundingClientRect.height, c.intersectionRect.height, c.rootBounds.height, c.intersectionRatio, c.isIntersecting, c.isVisible);
+    // console.log(c.boundingClientRect.height, c.intersectionRect.height, c.rootBounds.height, c.intersectionRatio, c.isIntersecting, c.isVisible);
   }, {
     root: null,
     rootMargin: Math.round(window.innerHeight * 1.2) + 'px'/*,threshold:[0.0,0.5,1.0]*/
@@ -193,17 +193,17 @@ window.addEventListener('load', () => {
   sentinel.id = 'sentinel';
   document.body.append(sentinel);
   observer.observe(sentinel);
-  document.querySelectorAll('.contents > article').forEach(s=>{
+  document.querySelectorAll('.contents > article').forEach(s => {
     s.style.opacity = 1;
   });
 
-  document.querySelector('body > header').addEventListener('click',()=>{
+  document.querySelector('body > header').addEventListener('click', () => {
     masonry.layout();
-   });
+  });
 
-   window.addEventListener('resize',()=>{
-     masonry.layout();
-   })
+  window.addEventListener('resize', () => {
+    masonry.layout();
+  })
   //masonry.layout();
   //twttr.events.bind('rendered',masonry.layout.bind(masonry));
 

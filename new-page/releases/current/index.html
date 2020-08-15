@@ -17,8 +17,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <title>トップページをリニューアルする</title>
-  <meta name="description" content="リニューアル用のトップページデザインを考えて実装する" />
+  <title>Twitter Viewer</title>
+  <meta name="description" content="自作Twitter Viewerによる自分のつぶやきの記録。Programming,Music,HTML5,WebGL,javascript,WebAudio,Gameなど" />
   <meta name="keywords" content="Programming,Music,HTML5,WebGL,javascript,WebAudio" /> 	
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
@@ -28,13 +28,13 @@
   <meta name="twitter:card" content="summary" />
   <meta name="twitter:site" content="S.F. Web" />
   <meta name="twitter:url" content="./index.html" />
-  <meta name="twitter:title" content="リニューアル用のトップページデザイン" />
-  <meta name="twitter:description" content="リニューアル用のトップページデザインを考えて実装する" />
+  <meta name="twitter:title" content="Twitter Viewer" />
+  <meta name="twitter:description" content="自作Twitter Viewerによる自分のつぶやきの記録。Programming,Music,HTML5,WebGL,javascript,WebAudio,Gameなど" />
   <meta name="twitter:image" content="https://www.sfpgmr.net/img/sfweb.png" />
   
   <meta property="og:type" content="article">
   <meta property="og:url" content="./index.html" />
-  <meta property="og:title" content="リニューアル用のトップページデザイン"/>
+  <meta property="og:title" content="Twitter Viewer"/>
   <meta property="og:site_name" content="S.F. Web" />
   <meta property="og:description" content="Programming,Music,HTML5,WebGL,javascript,WebAudio">
   <meta property="og:image" content="https://www.sfpgmr.net/img/sfweb.png">
@@ -43,21 +43,19 @@
   * {
   margin: 0;
   padding: 0;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-}
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
 
 html {
   margin: 0;
   padding: 0;
-  font-size: 10px;
-}
+  font-size: 10px; }
 
 body {
   margin: 0;
-  padding: 0;
+  padding-left: 8px;
+  padding-right: 8px;
   background: black;
-  color: white;
-}
+  color: white; }
 
 .top-nav {
   position: fixed;
@@ -66,44 +64,25 @@ body {
   display: block;
   width: 100%;
   height: 32px;
-  color: white;
-}
+  color: white; }
 
 #sentinel {
   width: 0px;
-  height: 0px;
-}
+  height: 0px; }
 
 .contents {
   padding-top: 32px;
   width: 100%;
   position: relative;
-  content: strict;
-}
-
-@-webkit-keyframes blinking {
-  0% {
-    color: black;
-  }
-  50% {
-    color: white;
-  }
-  100% {
-    color: black;
-  }
-}
+  content: strict; }
 
 @keyframes blinking {
   0% {
-    color: black;
-  }
+    color: black; }
   50% {
-    color: white;
-  }
+    color: white; }
   100% {
-    color: black;
-  }
-}
+    color: black; } }
 
 .loading {
   font-family: monospace;
@@ -115,10 +94,8 @@ body {
   padding-top: 50vh;
   z-index: 32768;
   background: black;
-  -webkit-animation: blinking 2s infinite;
-          animation: blinking 2s infinite;
-  content: strict;
-}
+  animation: blinking 2s infinite;
+  content: strict; }
 
 .contents > article {
   background: #f0f0f0;
@@ -128,39 +105,27 @@ body {
   overflow: auto;
   border-radius: 3px;
   /* transition: opacity 1s linear;*/
-  opacity: 1.0;
-}
+  opacity: 1.0; }
 
 .tweet-header {
-  display: -ms-grid;
   display: grid;
-  -webkit-box-align: end;
-      -ms-flex-align: end;
-          align-items: end;
-  -ms-grid-columns: 40px 2fr 1fr;
-      grid-template-columns: 40px 2fr 1fr;
-  -ms-grid-rows: 1fr;
-      grid-template-rows: 1fr;
+  align-items: end;
+  grid-template-columns: 40px 2fr 1fr;
+  grid-template-rows: 1fr;
   font-size: 12px;
-  font-weight: bold;
-}
+  font-weight: bold; }
 
 .tweet-img {
   width: 100%;
-  -o-object-fit: cover;
-     object-fit: cover;
-}
+  object-fit: cover; }
 
 .youtube {
   position: relative;
-  cursor: pointer;
-}
+  cursor: pointer; }
 
 .youtube > img {
   width: 100%;
-  -o-object-fit: cover;
-     object-fit: cover;
-}
+  object-fit: cover; }
 
 .youtube > svg.player-play {
   width: 64px;
@@ -169,16 +134,13 @@ body {
   top: calc(50% - 32px);
   position: absolute;
   z-index: 1000;
-  opacity: 0.5;
-}
+  opacity: 0.5; }
 
 .youtube:hover > svg.player-play {
-  opacity: 1.0;
-}
+  opacity: 1.0; }
 
 .youtube:hover .player-play-1 {
-  stroke: #80808080;
-}
+  stroke: #80808080; }
 
 .youtube > div.yt-title {
   /*text-shadow: #fff 1px 1px 0;*/
@@ -189,77 +151,56 @@ body {
   left: 0;
   top: 0;
   overflow: auto;
-  z-index: 998;
-}
+  z-index: 998; }
 
 .tweet-profile-img {
-  -ms-grid-column: 1;
-  -ms-grid-column-span: 1;
   grid-column: 1/2;
   width: 32px;
   height: 32px;
-  border-radius: 50%;
-}
+  border-radius: 50%; }
 
 .tweet-user-name {
-  -ms-grid-column: 2;
-  -ms-grid-column-span: 1;
-  grid-column: 2/3;
-}
+  grid-column: 2/3; }
 
 .tweet-date {
   font-size: 8px;
   text-align: right;
-  -ms-grid-column: 3;
-  -ms-grid-column-span: 1;
-  grid-column: 3/4;
-}
+  grid-column: 3/4; }
 
 .contents > twitter-widget {
   overflow: auto;
   max-height: 960px;
-  position: absolute;
-}
+  position: absolute; }
 
 .contents > article > section > .tweet-text {
   display: block;
   padding: 4px;
   word-break: break-all;
-  font-size: 12px;
-}
+  font-size: 12px; }
 
 .contents > article > h3 {
-  font-size: 12px;
-}
+  font-size: 12px; }
 
 blockquote.card {
   margin: 4px;
   padding: 4px;
   font-size: 12px;
   background: white;
-  border-radius: 4px;
-}
+  border-radius: 4px; }
 
 blockquote.card > header {
-  display: -ms-grid;
   display: grid;
   grid-gap: 4px;
-  gap: 4px;
-}
+  gap: 4px; }
 
 blockquote.card-default > header {
-  -ms-grid-columns: 64px 1fr;
-      grid-template-columns: 64px 1fr;
-}
+  grid-template-columns: 64px 1fr; }
 
 blockquote.card-large > header {
-  -ms-grid-columns: 1fr;
-      grid-template-columns: 1fr;
-}
+  grid-template-columns: 1fr; }
 
 blockquote.card > header > img {
-  width: 100%;
-}
+  width: 100%; }
 
 div.no-image {
   display: block;
@@ -268,9 +209,8 @@ div.no-image {
   background: gray;
   color: white;
   text-align: center;
-  line-height: 64px;
-}
-/*# sourceMappingURL=style.css.map */ 
+  line-height: 64px; }
+ 
   </style>
 </head>
 
@@ -281,6 +221,1006 @@ div.no-image {
   </header>
   <div class="contents" id="contents" rendersubtree="invisible skip-activation"> 
     
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1212701145379946496/pSDVrvWj_normal.png" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1293800652557058048"
+            target="_blank">2020/8/13 15:44:47</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">なんか気が付くと、nodeのrequestという超有名モジュールが2020/02でdeprecateになっとるな。こりゃ知らんかった。。<br/><br/><blockquote class="card card-default"><header><img  src="https://avatars1.githubusercontent.com/u/730467?s=400&v=4" /><a href="https://github.com/request/request/issues/3142" target="_blank">Request’s Past, Present and Future · Issue #3142 · request/request · GitHub</a></header><div>Before I go into the details and reasoning I’ll get straight to the point. The most valuable thing request can do for the JavaScript ecosystem is to go into maintenance mode and stop considering ne...</div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1293801007441276928"
+            target="_blank">2020/8/13 15:46:12</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">うむむ。。<br/><br/>「requestがJavaScriptのエコシステムにとって最も価値のあることは、メンテナンスモードに入り、新機能やメジャーリリースの検討をやめることです。<br/>リクエストの他のコミッターの方々には事前に謝罪しておきますが、それが最善の方法だと思います。」</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1293801599291146242"
+            target="_blank">2020/8/13 15:48:33</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">requestに依存しまくっている私にとってはいささかショックである。がこのIssueを読んでるとなるほどなあ。。と思ったりもする。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1293806372937535491"
+            target="_blank">2020/8/13 16:07:31</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">代替モジュールの情報はこれになるのかな。<br/><br/><blockquote class="card card-default"><header><img  src="https://avatars1.githubusercontent.com/u/730467?s=400&v=4" /><a href="https://github.com/request/request/issues/3143" target="_blank">Alternative libraries to request · Issue #3143 · request/request · GitHub</a></header><div>Since the announcement of request going into &quot;maintenance mode&quot; (full details in #3142) I&#39;d like to collect a list of alternative libraries to use. Please comment below and I&#39;ll u...</div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1293806990657851392"
+            target="_blank">2020/8/13 16:09:59</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">とりあえずnode-fetch使ってみよう。<br/><br/><blockquote class="card card-large"><header><img  src="https://repository-images.githubusercontent.com/29849956/ff287000-30dc-11ea-92f3-ac90e90eb823" /><a href="https://github.com/node-fetch/node-fetch" target="_blank">GitHub - node-fetch/node-fetch: A light-weight module that brings window.fetch to Node.js</a></header><div>A light-weight module that brings window.fetch to Node.js - node-fetch/node-fetch</div></blockquote></p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1212701145379946496/pSDVrvWj_normal.png" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1293422518884130819"
+            target="_blank">2020/8/12 14:42:13</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ちょっとまた作りかけのTwitter Viewerをいじってみてる。ある程度スレッドでまとまる感じ＋Infinite Scrollなやつを志向している。<br/><br/><div class="youtube" data-type="yt" id="Kr4l1FVWxlE"><div class="yt-title">Youtube - Twitter Viewerを作る</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img  data-href="https://youtu.be/Kr4l1FVWxlE" class="youtube" src="https://i.ytimg.com/vi/Kr4l1FVWxlE/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1293794499508879360"
+            target="_blank">2020/8/13 15:20:20</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">Twitter API V2がリリースされたのもあるしね。少し進めようかなと。<br/><br/><blockquote class="card card-default"><header><img  src="https://blog.twitter.com/content/dam/blog-twitter/developer/en_us/tools/2020/TwitterAPIGalaxy.png" /><a href="https://blog.twitter.com/developer/en_us/topics/tools/2020/introducing_new_twitter_api.html" target="_blank">Introducing a new and improved Twitter API</a></header><div>Introducing the new Twitter API - rebuilt from the ground up to deliver new features faster so developers can help the world connect to the public conversation happening on Twitter. <br/></div></blockquote></p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/197947176/face_normal.jpg" />
+        <p class="tweet-user-name">柳井政和@小説家、ゲーム開発者（Switch/Steam）@ruten</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/ruten/status/1293423260709711873"
+            target="_blank">2020/8/12 14:45:10</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">昨夜公開した「アスキーアートの図をSVGに変換」。こういう文字の図をSVGやPNGに変換できます。 <a href="https://crocro.com/tools/item/ascii_figure_to_svg.html" target="_blank">crocro.com/tools/item/asc…</a> #JavaScript https://t.co/3soaRr6ElY</p>
+        
+        <img  class="tweet-img" src="https://pbs.twimg.com/media/EfMpTKIVAAAC4sz.png" />
+        
+        <img  class="tweet-img" src="https://pbs.twimg.com/media/EfMpVtQU4AAUzIf.png" />
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1212701145379946496/pSDVrvWj_normal.png" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1293399350467411971"
+            target="_blank">2020/8/12 13:10:10</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">プリンス・オブ・ペルシャ話はまとめておいた。<br/><blockquote class="card card-default"><header><img  src="https://pimg.togetter.com/small_light(sx=0.0p,sy=0.0p,sw=100.0p,sh=70.1p,dw=1212.0,dh=636.3,cw=1200.0,ch=630.0,p=default,da=l,ds=s)/f97c81638f6cdf3ed4fbe170b0ed60f3e3e4cb02/68747470733a2f2f7062732e7477696d672e636f6d2f6d656469612f4564706a4c743655384145554c4e6c2e706e67" /><a href="https://togetter.com/li/1575042" target="_blank">プリンス・オブ・ペルシャに関する四方山話 - Togetter</a></header><div>プリンス・オブ・ペルシャの現状や思い出について。</div></blockquote></p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1212701145379946496/pSDVrvWj_normal.png" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1286449773340315648"
+            target="_blank">2020/7/24 8:55:01</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">今頃気づいたが、Win10だと「プリンス・オブ・ペルシャ」無料で遊べるんだなあ。どうりでSTEAMで探してもないはずですわ。。しかしキー操作忘れたわ。。 https://t.co/56MZdzxMZe</p>
+        
+        <img  class="tweet-img" src="https://pbs.twimg.com/media/EdpjLt6U8AEULNl.png" />
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1286451868990705665"
+            target="_blank">2020/7/24 9:03:21</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">fan madeも含めてこれだけバリエーションがあるんだなあ。。 https://t.co/Px6Hp2e42p</p>
+        
+        <img  class="tweet-img" src="https://pbs.twimg.com/media/EdplJs0UEAAh2eG.png" />
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1286452047160602624"
+            target="_blank">2020/7/24 9:04:03</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">でもAdがはいっちゃうね。外すのは230円か。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1286453408711360512"
+            target="_blank">2020/7/24 9:09:28</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">このゲームもさんざんやったはずなんだけど、記憶に全然ないのはどういうことか。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1286454041183051776"
+            target="_blank">2020/7/24 9:11:59</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">当時キャラの動きの滑らかさとリアルさに衝撃を受けたんだよね。さすがブローダーバンド社だなと。アクションに加えて若干のパズル要素もあってね。こういうたぐいのゲームにハマってしまうんだよね。Half-LifeなんかもFPS+若干のパズル的（謎解き）要素があって、もちろんハマりましたわ。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1286480692524662784"
+            target="_blank">2020/7/24 10:57:53</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ようやくレベル１クリア。。<br/><div class="youtube" data-type="yt" id="Nn2PFGiic6w"><div class="yt-title">Youtube - Prince Of Persiaで遊ぶ</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img  data-href="https://youtu.be/Nn2PFGiic6w" class="youtube" src="https://i.ytimg.com/vi/Nn2PFGiic6w/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1286481026244468736"
+            target="_blank">2020/7/24 10:59:12</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">しかし面白いなあ。。このゲーム。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1286481433721094144"
+            target="_blank">2020/7/24 11:00:50</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">このOPL丸出しのBGMもいいわ。。Ad Libサウンド全開ですぜ。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1286502964870307848"
+            target="_blank">2020/7/24 12:26:23</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">無料だとセーブできんのですな。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1286506485325807616"
+            target="_blank">2020/7/24 12:40:22</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">しかしこのゲーム、セーブできないと相当つらい。セーブできるようにするにはさらに600円ほど追加が必要かあ。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1286509300592939010"
+            target="_blank">2020/7/24 12:51:34</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">セーブ・ロードはどうしても欲しいので580円払いました😅</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1286516247002148865"
+            target="_blank">2020/7/24 13:19:10</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">なんかこのセーブ・ロード機能って思ったのと違うみたいですな。。無料でもセーブ・ロードできそうな雰囲気もある。よくわからんですわ🤔</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1286524598452854784"
+            target="_blank">2020/7/24 13:52:21</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">やっぱり無料ではできないみたいね。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1286525682189660162"
+            target="_blank">2020/7/24 13:56:39</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">1990年前半に使用してたPCは98ではなく、AXもしくはPC/AT、まれにMacという具合だったので、自然とゲームもAX（EGA)もしくはVGAで動くもので遊んでた。当時大阪だったので日本橋で輸入ソフトウェアを扱っている店で買ったりしてたな。結構安く買えたんだよね。当時は。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1286526572913074176"
+            target="_blank">2020/7/24 14:00:12</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ただこの「Prince of Persia」はなぜかPC98版で遊んでた。たまたま転がってたものがあったのでね。PC98版もよくできてたよ。でもこのゲームもともとはApple II用だったよなあ。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1286529855530496001"
+            target="_blank">2020/7/24 14:13:14</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">これこれ。<br/>アルシスとリバーヒルソフトが移植してたのか。。キャラがよりリアルだったんだよな。確かね。<br/><br/><div class="youtube" data-type="yt" id="8r6-NxxEju4"><div class="yt-title">Youtube - [PC98] Prince of Persia (1990) (Arsys / Riverhillsoft)</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img  data-href="https://youtu.be/8r6-NxxEju4" class="youtube" src="https://i.ytimg.com/vi/8r6-NxxEju4/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1286532567177392128"
+            target="_blank">2020/7/24 14:24:01</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">AXパソコンってグラフィックだけ特殊（JEGAとか言ってたなあ。。）なAT互換機だったんだよな。PC98みたく漢字用のVRAMも持ってたんだよね。ベースはEGAだけど、640x480というビデオ・モードを追加してたな。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1286532940256616448"
+            target="_blank">2020/7/24 14:25:30</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">なんとかLEVEL2をクリア。LEVEL3からセーブ・ロードが使えるみたい。実際使えた。<br/><br/><div class="youtube" data-type="yt" id="6H_c4IH_Rmo"><div class="yt-title">Youtube - Prince of Persia level 2</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img  data-href="https://youtu.be/6H_c4IH_Rmo" class="youtube" src="https://i.ytimg.com/vi/6H_c4IH_Rmo/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1286564063191814146"
+            target="_blank">2020/7/24 16:29:10</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">LEVEL3クリア。難しいわ。。そうか骸骨って死ななかったよな。落とすしかないんだよな。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1286564393635913731"
+            target="_blank">2020/7/24 16:30:29</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ゲームの腕は相当鈍っているのは間違いない。こまめなセーブ・ロードを駆使してようやくですよ。ちょっと情けないな🥲</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1286579733681995776"
+            target="_blank">2020/7/24 17:31:26</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">今LEVEL4をやってるんだけど死ぬと急にコピープロテクト対策用のキーコード入力を求められるんだよね😂<br/>マニュアルはオンラインなのでもちろんついてない。これどうしたらいいんだろう。ちなみにこのままだと初期画面かLEVELに戻る。一応Ad外しとロード・セーブのコストは支払ったんだけどね。。 https://t.co/qDgWSSoz0K</p>
+        
+        <img  class="tweet-img" src="https://pbs.twimg.com/media/EdrYrG5VoAMCIxw.png" />
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1286579833401520128"
+            target="_blank">2020/7/24 17:31:50</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">こういうの昔よくあったなあ。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1286596876725137408"
+            target="_blank">2020/7/24 18:39:33</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">まあちょっとこのアプリは少し？？な気がする。なのでこのPrince of Persia（ファンの間ではPoPと呼ばれているらしい）というソフトウェアの現在の状況についてすこし調べてみることにする。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1286596966768447491"
+            target="_blank">2020/7/24 18:39:55</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">Wikipediaの情報ソースになってしまうんだけども、正式なリリースとしてWindows用のPoPは存在しない😅<br/>UnofficialなものとしてPoPSDLというのが存在している。これはPoPをリバース・エンジニアリングしてSDLで再構築したものだそうだ。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1286597299242561537"
+            target="_blank">2020/7/24 18:41:14</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">そして作者のJordan Mechnerさんは、オリジナル（Apple IIのソースコード）を2012年にgithubに公開している。<br/><blockquote class="card card-default"><header><img  src="https://avatars3.githubusercontent.com/u/1650049?s=400&v=4" /><a href="https://github.com/jmechner/Prince-of-Persia-Apple-II" target="_blank">GitHub - jmechner/Prince-of-Persia-Apple-II: A running-jumping-swordfighting game I made on the Apple II from 1985-89</a></header><div>A running-jumping-swordfighting game I made on the Apple II from 1985-89 - jmechner/Prince-of-Persia-Apple-II</div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1286597529107234817"
+            target="_blank">2020/7/24 18:42:09</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">そして今Readmeを読んでいる。。<br/><blockquote class="card card-default"><header><img  src="https://avatars3.githubusercontent.com/u/1650049?s=400&v=4" /><a href="https://github.com/jmechner/Prince-of-Persia-Apple-II/blob/master/README.md" target="_blank">Prince-of-Persia-Apple-II/README.md at master · jmechner/Prince-of-Persia-Apple-II · GitHub</a></header><div>A running-jumping-swordfighting game I made on the Apple II from 1985-89 - jmechner/Prince-of-Persia-Apple-II</div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1286598572511645698"
+            target="_blank">2020/7/24 18:46:18</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">Readme読むと２０１２年の時点ではPoPの版権はUBIソフトにあったんだね。確かに最近までPoPの名前でいくつかゲームがリリースされてるもんなあ。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1286598817534468097"
+            target="_blank">2020/7/24 18:47:16</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ついでにJordan Mechnerさんのtwitterアカウントがあったのでフォローしておこう😄<br/><blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="https://twitter.com/jmechner" target="_blank">Twitter</a></header><div></div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1286600466441179137"
+            target="_blank">2020/7/24 18:53:49</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ソースコードチラ見したけど6502のアセンブラソースコードですわ。そりゃまあそうか。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1286609191256301570"
+            target="_blank">2020/7/24 19:28:29</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">PoP unofficial websiteにはPoPの初版が「Abandonware」としてダウンロード可能になっている。Abandonwareってなんぞや？「放棄されたソフトウェア」って🤔<br/><br/><blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="https://www.popuw.com/" target="_blank">Prince of Persia Unofficial Website</a></header><div></div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1286618476107333632"
+            target="_blank">2020/7/24 20:05:23</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">おそらくPoP1,2についてはベンダによるサポートが終了している。また作者もそのソフトウェアに対して著作権侵害の申し立てを現時点では行っていない（そもそも行使自体を放棄しているかもであるがそのような記述を見つけることはできなかった）。モヤっとした状態にあるようだ。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1286618972662542336"
+            target="_blank">2020/7/24 20:07:21</a></p>
+      </header>
+      <section>
+        <p class="tweet-text"><blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="http://popuw.com" target="_blank">Prince of Persia Unofficial Website</a></header><div></div></blockquote>や<blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="http://popot.org" target="_blank">News · Prince of Persia: Original Trilogy</a></header><div></div></blockquote>でダウンロードできるpop1/2は製品そのもののバイナリで放棄ソフトウェアの状態で提供されている。さらにそれをリバースエンジニアリングしてSDLにポートしたバージョンがあるというわけですな。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1286619599098671104"
+            target="_blank">2020/7/24 20:09:51</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">PoPの作者とアンオフィシャルなPoPコミュニティは良好な関係にあるようだ。いや、良好なのかどうかはわからんが係争状態にはない状態がもう何年も続いているようだ。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1286619858642169856"
+            target="_blank">2020/7/24 20:10:53</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">このようなレジェンドなソフトウェアがこのような状態にあるというのは驚きだが、まあそういう状態のソフトウェアって星の数ほどあるんだろうな。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1286622097838546945"
+            target="_blank">2020/7/24 20:19:47</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">まあそういうわけでPoP1のSDL版を動かしてみると普通に動きますな。MS Storeのアプリは不要ですわ。結論から言うとね。 https://t.co/YR0Fg37dnL</p>
+        
+        <img  class="tweet-img" src="https://pbs.twimg.com/media/Edr_pgOUwAACRIO.png" />
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1286622833540358145"
+            target="_blank">2020/7/24 20:22:42</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">MS StoreにあるPoP PCというのはDOS BOXで原版を動かしているようである。なのであのライセンス認証のような画面が出てきたのですわ。おそらく。だがこのアプリはグレーではあるがPoP1/2がAbandanwareの状態なので問題があるのかないのかは微妙である。がこのアプリにお金を払った私はアホである😅</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1286623741833707521"
+            target="_blank">2020/7/24 20:26:19</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ちなみにSDLポート版ではセーブ・ロードも１面からできるようである。すばらしい😄 https://t.co/V6PjhwpPkh</p>
+        
+        <img  class="tweet-img" src="https://pbs.twimg.com/media/EdsBOy0UEAE3_0l.png" />
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1286624187222601728"
+            target="_blank">2020/7/24 20:28:05</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">なのでこれからはこのSDLPoPで遊ばせていただくことにする。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1286626173875675138"
+            target="_blank">2020/7/24 20:35:58</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">このPoPの作者のJordan Mechnerさんはソースコードに始まり、開発情報などをコミュニティに対して積極的に開示しているようだ。「いい人」だと思うな。<br/><br/><blockquote class="card card-default"><header><img  src="https://external-preview.redd.it/xQK5t2Q70CJ9yY46xZQCbHzRZdpExQLyXnqJtCDqyVs.jpg?auto=webp&s=81a098e975bcba3a49e6da31bb1766cfc2ebbad1" /><a href="https://www.reddit.com/r/IAmA/comments/gaxsgh/im_jordan_mechner_thirty_years_ago_i_made_a_game/" target="_blank">I'm Jordan Mechner. Thirty years ago, I made a game called Prince of Persia. Now I'm releasing my 1980s game-dev journals as a book. AMA! : IAmA</a></header><div>46,608 votes and 2,315 comments so far on Reddit</div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1286626818989019137"
+            target="_blank">2020/7/24 20:38:32</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">PoPのこのリアルなキャラクタは「ロトスコーピング」という手法で作成されたとのこと。<br/><br/><blockquote class="card card-default"><header><img  src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/43/Tantalizing_Fly_1919.AVI.025q6a4mono.ogv/480px--Tantalizing_Fly_1919.AVI.025q6a4mono.ogv.jpg" /><a href="https://ja.wikipedia.org/wiki/%E3%83%AD%E3%83%88%E3%82%B9%E3%82%B3%E3%83%BC%E3%83%97" target="_blank">ロトスコープ - Wikipedia</a></header><div></div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1286637948230746117"
+            target="_blank">2020/7/24 21:22:46</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">PoPの開発ドキュメント。移植開発者向けに作られたようだ。<br/><a href="https://www.jordanmechner.com/downloads/popsource.pdf" target="_blank">jordanmechner.com/downloads/pops…</a></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1286639989321695234"
+            target="_blank">2020/7/24 21:30:52</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">こういう「放棄ソフトウェア」ってほかにもあるのかなあ。。「4-D Boxing」なんて今どのような状態にあるんだろう。。これもものすごく面白かったんだよね。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1286643293623705600"
+            target="_blank">2020/7/24 21:44:00</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">というわけでSDLPoPでLEVEL3までプレイしてみた。<br/><div class="youtube" data-type="yt" id="xxmfLTstmL8"><div class="yt-title">Youtube - Prince of Persia で遊ぶ (LEVEL3)</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img  data-href="https://youtu.be/xxmfLTstmL8" class="youtube" src="https://i.ytimg.com/vi/xxmfLTstmL8/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1286768305034809345"
+            target="_blank">2020/7/25 6:00:45</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">Abandonwareは「著作権者が既に販売を中止したりサポートを終了したソフトウェアや、著作権者が不明なソフトウェア」。グレーなカテゴリですわ。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1286771987415588864"
+            target="_blank">2020/7/25 6:15:23</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">Abandonewareのポータルもあるね。これはdosboxをemscriptenでビルドしてブラウザ上でもプレイできるようにしているな。。<br/><blockquote class="card card-default"><header><img  src="https://www.myabandonware.com/media/img/facebook/logo-v2.png" /><a href="https://www.myabandonware.com/" target="_blank">My Abandonware - Download Old Video Games</a></header><div>Database of 15900 abandonware games free. One of the most complete video games museum. Take a trip down Memory Lane now! Warning: whole weekends can be lost.</div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1286774564953808896"
+            target="_blank">2020/7/25 6:25:38</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">おそらくこのような類のポータルは、権利関係が明確になったり、申立てがあったソフトウェアを逐次削除することで問題回避を行っているものと思われる。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1286781699888562178"
+            target="_blank">2020/7/25 6:53:59</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">話をPoPに戻す。ソースコードをよくよく見ると、キャラクタデータやレベルマップなども公開してるなあ。ふつうはソースコードだけだったりすることも多いんだけどね。<br/><br/><blockquote class="card card-default"><header><img  src="https://avatars3.githubusercontent.com/u/1650049?s=400&v=4" /><a href="https://github.com/jmechner/Prince-of-Persia-Apple-II" target="_blank">GitHub - jmechner/Prince-of-Persia-Apple-II: A running-jumping-swordfighting game I made on the Apple II from 1985-89</a></header><div>A running-jumping-swordfighting game I made on the Apple II from 1985-89 - jmechner/Prince-of-Persia-Apple-II</div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1286784152524558337"
+            target="_blank">2020/7/25 7:03:43</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">Readmeを読むと、このソースコードの利用に関しては以下としている。<br/><br/>「このソースコードの作者であり著作権者である私は、だれもがこのソースコードを研究したり、修正したり、実行してみることに個人的には何の問題もありません。」<br/><br/><blockquote class="card card-default"><header><img  src="https://avatars3.githubusercontent.com/u/1650049?s=400&v=4" /><a href="https://github.com/jmechner/Prince-of-Persia-Apple-II/blob/master/README.md" target="_blank">Prince-of-Persia-Apple-II/README.md at master · jmechner/Prince-of-Persia-Apple-II · GitHub</a></header><div>A running-jumping-swordfighting game I made on the Apple II from 1985-89 - jmechner/Prince-of-Persia-Apple-II</div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1286785506416590849"
+            target="_blank">2020/7/25 7:09:06</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">個人の範囲内でこのソースコードを使って楽しむ分には何をしてもいいよと作者自身は言ってるんだな。<br/><br/>でもPoPの製作や配布する権利を持っているのはUBIであると続けている。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1286798063059705856"
+            target="_blank">2020/7/25 7:59:00</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">Jordan Mechnerさんの「The Making of Prince of Persia: Journals 1985 - 1993 」をポチってしまった。Kindle版で600円くらいだったので😅<br/><br/><blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="https://amzn.to/2WTHBJI" target="_blank">警告：アダルトコンテンツ</a></header><div></div></blockquote> @amazonより</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1286948949459210242"
+            target="_blank">2020/7/25 17:58:34</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">この動画も観た。最初は敵キャラのとの格闘はAPPLE Ⅱのメモリの都合で仕様になかった。まずメインキャラを１ビットシフトしてXORすることでキャラデータを増やさずにシャドウ・マンを実現。そして拡張メモリの隠しメモリ12Kを使う方法を編み出して敵キャラを登場させた。<br/><br/><div class="youtube" data-type="yt" id="sw0VfmXKq54"><div class="yt-title">Youtube - How Prince of Persia Defeated Apple II's Memory Limitations | War Stories | Ars Technica</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img  data-href="https://youtu.be/sw0VfmXKq54" class="youtube" src="https://i.ytimg.com/vi/sw0VfmXKq54/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1286950261097771008"
+            target="_blank">2020/7/25 18:03:47</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ゲームのアイデアは映画「レイダース・失われたアーク」、「ロード・ランナー」、「The Castle of Dr. Creep」から着想したそうだ。確かに言われてみればそうだなあ。「The Castle of Dr. Creep」というゲームは知らんなあ。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1286953225854148609"
+            target="_blank">2020/7/25 18:15:34</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">「The Castle of Dr. Creep」もロード・ランナーっぽいゲームなんだなあ。クリアの時にトンネルの中の階段を上がってくところは確かにPoPにもあるね。。<br/><div class="youtube" data-type="yt" id="mi2dvxcioBw"><div class="yt-title">Youtube - C64 Longplay - Castles Of Dr.Creep</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img  data-href="https://youtu.be/mi2dvxcioBw" class="youtube" src="https://i.ytimg.com/vi/mi2dvxcioBw/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1286956499609108481"
+            target="_blank">2020/7/25 18:28:34</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">キャラ作成は以下の手番で行われたようだ。<br/><br/>１．VHSビデオカメラで撮影<br/>２．それをコマ送りで再生してカメラで撮影<br/>３．それをハンドメイドで簡略化<br/>４.   ビデオ・デジタイザで取り込み<br/><br/>ビデオ・デジタイザはDS65というオプション・カードを使用していた模様<br/><br/><blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="http://www.vintagecomputing.com/wp-content/images/retroscan/apple_ds65_digisector_large.jpg" target="_blank">apple_ds65_digisector_large.jpg (1000×515)</a></header><div></div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1286956641032630274"
+            target="_blank">2020/7/25 18:29:08</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">デジタイズした後は自作のエディタで編集したようですな。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1287189328460824578"
+            target="_blank">2020/7/26 9:53:45</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">Apple Ⅱのグラフィックって面白いなあ。。特にハイレゾモードが。<br/><br/><blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="https://en.wikipedia.org/wiki/Apple_II_graphics#High-Resolution_(Hi-Res)_graphics" target="_blank">Apple II graphics - Wikipedia</a></header><div></div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1287189641574023168"
+            target="_blank">2020/7/26 9:55:00</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">Apple IIのあの独特の色使いはハードウェアの仕様によるものなんだなあ。。 https://t.co/BwkqgK7ls6</p>
+        
+        <img  class="tweet-img" src="https://pbs.twimg.com/media/Ed0EHy9VoAA_RrA.png" />
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1287323448574763008"
+            target="_blank">2020/7/26 18:46:42</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">Apple IIのカラーのしくみを学んだので、ソースコードレポジトリに入っているキャラクタデータの一部をmatplotlibを使って表示してみた。が、ちょっと色がおかしいな。。 https://t.co/jqODWDm14n</p>
+        
+        <img  class="tweet-img" src="https://pbs.twimg.com/media/Ed19vbpU0AEh2rs.png" />
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1287324203436318721"
+            target="_blank">2020/7/26 18:49:42</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">横に１ビットずれてるから皮膚の色がおかしくなってるんだと思う。ゲーム中でそれを補正してるような気もするし、私のApple IIのハイレゾ・モードの理解度がまだ足りてない気もする。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1287331443354419200"
+            target="_blank">2020/7/26 19:18:28</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">骸骨くんもなんか頭が欠けてる気がしないでもないね。。 https://t.co/Bhe86qTc5R</p>
+        
+        <img  class="tweet-img" src="https://pbs.twimg.com/media/Ed2FHWSU8AAZzzo.png" />
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1287332025314054146"
+            target="_blank">2020/7/26 19:20:46</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">しかし少ないデータであの滑らかな動きを実現しているのはほんとにすごいな。48Kですからな。Apple IIってね。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1287332819727859712"
+            target="_blank">2020/7/26 19:23:56</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">横2ピクセルのビットバターンでその2ピクセルの色が決まるんだよね。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1287333099613728768"
+            target="_blank">2020/7/26 19:25:03</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">1バイト7ピクセルという特殊なVRAM配置ですわ。しかしこのVRAMもウォズの魔法がかかっとるわ。間違いなく。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1287333696878415873"
+            target="_blank">2020/7/26 19:27:25</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">お姫様が起き上がって抱きつくシーンだな。いやー素晴らしいドット絵ですわ。この色ずれの問題なんとかしたいなあ。。どこがおかしいのか。。 https://t.co/zY4CLmLgJT</p>
+        
+        <img  class="tweet-img" src="https://pbs.twimg.com/media/Ed2G-U2U0AMBw9G.png" />
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1287343882410156033"
+            target="_blank">2020/7/26 20:07:53</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">起き上がるんじゃなくて振り返って抱きつくんだった。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1287357191775690754"
+            target="_blank">2020/7/26 21:00:47</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">6502のソースコードを見てる。やはりキャラはオフセット足しとるよなあ。Fcheckの下位5ビットにキャラの左端からのピクセルオフセットが入っている。それを符号反転したものとFdxを足してオフセットを求める。これにキャラの現在位置を足して描画位置とするようだ。 https://t.co/rfhY7pbLfA</p>
+        
+        <img  class="tweet-img" src="https://pbs.twimg.com/media/Ed2bqq9UwAEU8TR.png" />
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1287358338133417984"
+            target="_blank">2020/7/26 21:05:20</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">6502だと符号反転（NEG）命令がないんだった。なので$ffとeor(xor)とって1足しているのか。。さらにADDもないんだった。ADCのみだった。それでCLCをADCの前に入れとるんだなあ。。なんか思い出してきたぞ😄</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1287358590156550144"
+            target="_blank">2020/7/26 21:06:20</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">キャラごとに補正するためのテーブルってやっぱりこれみたいだなあ。。 https://t.co/mYvxL28u0k</p>
+        
+        <img  class="tweet-img" src="https://pbs.twimg.com/media/Ed2dzudVAAIzv0H.png" />
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1287359156995764229"
+            target="_blank">2020/7/26 21:08:35</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">しかし一体私は何をやっているんだか。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1287367458358038529"
+            target="_blank">2020/7/26 21:41:34</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">手っ取り早く色がおかしいキャラは1列0ビットを挿入して直してしまった😅 https://t.co/pGzm9gMlrm</p>
+        
+        <img  class="tweet-img" src="https://pbs.twimg.com/media/Ed2l3qyUEAAxzjX.png" />
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1287367804870471682"
+            target="_blank">2020/7/26 21:42:57</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">お姫様もちゃんとした色になった😄 https://t.co/xL3J5qKFo2</p>
+        
+        <img  class="tweet-img" src="https://pbs.twimg.com/media/Ed2mMGiUEAAWHOn.png" />
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1287367952900059136"
+            target="_blank">2020/7/26 21:43:32</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">直ったから何がどうなるというのではないのだが😅</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1287368764036485121"
+            target="_blank">2020/7/26 21:46:46</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">キャラってHigh Bitの4色で作ってるんだなあ。よくできるわあ。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1287369115129114625"
+            target="_blank">2020/7/26 21:48:09</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">とりあえずmatplotlibの勉強にはなった。Appleのハイレゾモードでの描画エミュレートもできたし😅</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1287515742192013312"
+            target="_blank">2020/7/27 7:30:48</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">matplotlibが便利すぎてたまらん感じになっている😄<br/>これ会社でも使おうと思う😅</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1287516196347105282"
+            target="_blank">2020/7/27 7:32:36</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">今のところPoP+python+matplotlibで幸せな時を過ごせている👍</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1287685110980947968"
+            target="_blank">2020/7/27 18:43:49</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">10代のころApple IIにあこがれてた時期があってね。大阪の日本橋にある電気屋さんに実機がショーウィンドウの中に飾ってあって、それをしばらく眺めてるような時期があったんだよね。買うなんていうのはとんでもない。当時モニターやらなにやら買いそろえると60万くらいしたからね😅</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1287686422523023360"
+            target="_blank">2020/7/27 18:49:01</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">当時Apple IIの互換機みたいなものも売ってたんだよな。それってほんとの意味での互換機だったのか謎だけど、セミキットのような感じで本物の半分くらいの価格で変えたような気がする。共立電子の古い店舗で見かけたんだよな。それ。それもショーウィンドウで飾られたな。確か。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1287687008744173568"
+            target="_blank">2020/7/27 18:51:21</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">PoPもそうなんだけど、革新的なゲームはApple IIから生まれてきてる感じもしてた。アドベンチャーゲームとかロールプレイングゲームとかね。Apple IIから生まれたのではないのかもしれないけれど、有名どころはまずApple IIからのリリースだったもんね。「ウィザードリィ」とかね。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1287687367071997954"
+            target="_blank">2020/7/27 18:52:47</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">そして当時にしては精細なグラフィック機能であったり、そのパッケージのデザインとかちょっと他のPCと一線を画してたのは間違いないよな。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1287687946636673024"
+            target="_blank">2020/7/27 18:55:05</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ベーマガなんかでもApple IIのゲームを紹介するコーナーがあったと思うんだよね。そこでのゲーム紹介を読んで、憧れをさらに強くしたもんですよ。実際に触ったことないのにね😅</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1287688084193067008"
+            target="_blank">2020/7/27 18:55:38</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ウィザードリィなんてプレイしたことなんて1回もないよ😅</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1287688655075602432"
+            target="_blank">2020/7/27 18:57:54</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ロードランナーとかも何かのパソコンの移植だったような気もするんだよなあ。X1かなあ。。ブローダーバンド社というのが一時代を築いた時期でしたな。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1293358299161583617"
+            target="_blank">2020/8/12 10:27:02</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ようやくLEVEL4をクリア。<br/><div class="youtube" data-type="yt" id="YlYsXUnkXMI"><div class="yt-title">Youtube - Prince Of Persia LEVEL 4</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img  data-href="https://youtu.be/YlYsXUnkXMI" class="youtube" src="https://i.ytimg.com/vi/YlYsXUnkXMI/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+    </article>
     
     <article>
       
@@ -307,1462 +1247,6 @@ div.no-image {
         
         <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1212701145379946496/pSDVrvWj_normal.png" />
         <p class="tweet-user-name">S.F.@SFPGMR</p>
-        
-        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1274473948822925312"
-            target="_blank">2020/6/21 7:47:22</a></p>
-      </header>
-      <section>
-        <p class="tweet-text">しかし考えると、ベクトルタイルからデータ取得しなくても基盤地図情報はXML形式（GML？）でデータ塊を取得できるからそれに基づいてもいいんだな。</p>
-        
-      </section>
-      
-      <header class="tweet-header">
-        
-        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1274474288028897280"
-            target="_blank">2020/6/21 7:48:43</a></p>
-      </header>
-      <section>
-        <p class="tweet-text">この基盤地図情報ダウンロードデータだと道路とか建物が分離されたデータとなってるから取り扱いもしやすそうだしね。</p>
-        
-      </section>
-      
-      <header class="tweet-header">
-        
-        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1274474485609947137"
-            target="_blank">2020/6/21 7:49:30</a></p>
-      </header>
-      <section>
-        <p class="tweet-text">国土地理院に対してはリスペクトしかないね。。</p>
-        
-      </section>
-      
-      <header class="tweet-header">
-        
-        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1274475241104764929"
-            target="_blank">2020/6/21 7:52:30</a></p>
-      </header>
-      <section>
-        <p class="tweet-text">でこの手のデータを取り扱うにはGDALという有名なライブラリがあるのも知った。って今ごろかい😅</p>
-        
-      </section>
-      
-      <header class="tweet-header">
-        
-        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1274475343508680709"
-            target="_blank">2020/6/21 7:52:55</a></p>
-      </header>
-      <section>
-        <p class="tweet-text">これのnode bindingがあることも知ったのですわ。。<br/><blockquote class="card card-default"><header><img  src="https://avatars1.githubusercontent.com/u/6006167?s=400&v=4" /><a href="https://github.com/naturalatlas/node-gdal" target="_blank">GitHub - naturalatlas/node-gdal: Node.js bindings for GDAL (Geospatial Data Abstraction Library)</a></header><div>Node.js bindings for GDAL (Geospatial Data Abstraction Library) - naturalatlas/node-gdal</div></blockquote></p>
-        
-      </section>
-      
-      <header class="tweet-header">
-        
-        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1274590140032118785"
-            target="_blank">2020/6/21 15:29:04</a></p>
-      </header>
-      <section>
-        <p class="tweet-text">こういうのもあるんだなあ。。<br/><blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="https://maps.gsi.go.jp/3d/" target="_blank">立体地図（地理院地図3D・触地図）</a></header><div></div></blockquote></p>
-        
-      </section>
-      
-      <header class="tweet-header">
-        
-        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1274635760474263552"
-            target="_blank">2020/6/21 18:30:21</a></p>
-      </header>
-      <section>
-        <p class="tweet-text">いろいろ堂々巡りを繰り返してる気がしないでもない。考えを整理しないといかんわ。。</p>
-        
-      </section>
-      
-      <header class="tweet-header">
-        
-        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1274816241052446720"
-            target="_blank">2020/6/22 6:27:31</a></p>
-      </header>
-      <section>
-        <p class="tweet-text">分割された建築物の結合方法を考えているところ。私のしょぼい頭で今思いついてるのは、<br/><br/>１．頂点をとりあえずまとめる<br/>２．重心を求める<br/>３．各頂点を重心からの角度と距離でソート<br/><br/>みたいな感じでやればそこそこいけるのではという推測。</p>
-        
-      </section>
-      
-      <header class="tweet-header">
-        
-        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1274818622720888832"
-            target="_blank">2020/6/22 6:36:59</a></p>
-      </header>
-      <section>
-        <p class="tweet-text">指定したルート沿いにベクトル・タイルデータを取り出すのはまあできた。 https://t.co/xOeKbzTRxP</p>
-        
-        <img  class="tweet-img" src="https://pbs.twimg.com/media/EbEQxtuUwAAGtL1.png" />
-        
-      </section>
-      
-      <header class="tweet-header">
-        
-        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1274845036841021442"
-            target="_blank">2020/6/22 8:21:56</a></p>
-      </header>
-      <section>
-        <p class="tweet-text">断片化された建物のLineStringをつぶさに観察すると、結合するのは比較的簡単だということが分かった。今日はこれで時間切れ。建物データが結合すればあとは多角形に内接する直方体を求めることができれば所望の情報となる。それでいいかはよくわからんが。</p>
-        
-      </section>
-      
-      <header class="tweet-header">
-        
-        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1274846931131367425"
-            target="_blank">2020/6/22 8:29:28</a></p>
-      </header>
-      <section>
-        <p class="tweet-text">直方体に建物形状を簡略化してしまった場合、形状面での街区のリアルさがどの程度失われるかがよくわからないので。。</p>
-        
-      </section>
-      
-      <header class="tweet-header">
-        
-        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1275160759983620103"
-            target="_blank">2020/6/23 5:16:31</a></p>
-      </header>
-      <section>
-        <p class="tweet-text">ちょっとBabylon.js使ってみようかなあと思う。<br/><blockquote class="card card-default"><header><img  src="https://www.babylonjs.com/assets/logo-babylonjs-social-twitter.png" /><a href="https://www.babylonjs.com/" target="_blank">Babylon.js: Powerful, Beautiful, Simple, Open - Web-Based 3D At Its Best</a></header><div>Babylon.js is one of the world's leading WebGL-based graphics engines. From a new visual scene inspector, best-in-class physically-based rendering, countless performance optimizations, and much more, Babylon.js brings powerful, beautiful, simple, and open 3D to everyone on the web.</div></blockquote></p>
-        
-      </section>
-      
-      <header class="tweet-header">
-        
-        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1275350466335870976"
-            target="_blank">2020/6/23 17:50:20</a></p>
-      </header>
-      <section>
-        <p class="tweet-text">経路上のベクトル・マップデータをbabylonjsで表示できた。 https://t.co/uXxjyiSFIp</p>
-        
-        <img  class="tweet-img" src="https://pbs.twimg.com/media/EbL0ew8UEAA-l0-.png" />
-        
-      </section>
-      
-      <header class="tweet-header">
-        
-        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1275350954481573889"
-            target="_blank">2020/6/23 17:52:17</a></p>
-      </header>
-      <section>
-        <p class="tweet-text">おお、御堂筋が。。 https://t.co/spA15vA9MK</p>
-        
-        <img  class="tweet-img" src="https://pbs.twimg.com/media/EbL07eGUwAozy5J.png" />
-        
-      </section>
-      
-      <header class="tweet-header">
-        
-        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1275530521817182208"
-            target="_blank">2020/6/24 5:45:49</a></p>
-      </header>
-      <section>
-        <p class="tweet-text">canvasのサイズを3:4で固定するようにした。縦シューのフォーマット。。 https://t.co/zTifcao5fM</p>
-        
-        <img  class="tweet-img" src="https://pbs.twimg.com/media/EbOYPjXUYAA3Zs3.png" />
-        
-      </section>
-      
-      <header class="tweet-header">
-        
-        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1275533508945956864"
-            target="_blank">2020/6/24 5:57:41</a></p>
-      </header>
-      <section>
-        <p class="tweet-text">babylonjsもなかなかいいね。。</p>
-        
-      </section>
-      
-      <header class="tweet-header">
-        
-        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1275535831596281856"
-            target="_blank">2020/6/24 6:06:55</a></p>
-      </header>
-      <section>
-        <p class="tweet-text">いうても<br/><br/>・シーン<br/>・カメラ<br/>・ライト<br/>・メッシュ<br/>・マテリアル<br/>・レンダラ<br/><br/>というのは3Dのライブラリのフレームとして何十年もほぼ固定されているものだからね。</p>
-        
-      </section>
-      
-      <header class="tweet-header">
-        
-        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1275536099469717505"
-            target="_blank">2020/6/24 6:07:59</a></p>
-      </header>
-      <section>
-        <p class="tweet-text">babylonもthreeもそのフレームからは外れてないからね。</p>
-        
-      </section>
-      
-      <header class="tweet-header">
-        
-        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1275876938079330304"
-            target="_blank">2020/6/25 4:42:21</a></p>
-      </header>
-      <section>
-        <p class="tweet-text">自作のvoxelシェーダーを引っ張り出してきて解像度を調整。192x256だとやはり細かいなあ。。160x100との比較だけどね😄 https://t.co/ix1pzpy0u0</p>
-        
-        <img  class="tweet-img" src="https://pbs.twimg.com/media/EbTTG-RUMAAYx78.jpg" />
-        
-      </section>
-      
-      <header class="tweet-header">
-        
-        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1275880372962652160"
-            target="_blank">2020/6/25 4:56:00</a></p>
-      </header>
-      <section>
-        <p class="tweet-text">ちょっとまずは地図情報を単にプロットするシェーダーを書くことにしよう。glslも忘れてるので🥲</p>
-        
-      </section>
-      
-      <header class="tweet-header">
-        
-        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1275889918175145984"
-            target="_blank">2020/6/25 5:33:56</a></p>
-      </header>
-      <section>
-        <p class="tweet-text">1voxelを1ポイントスプライトに置き換えて描いてるんだけど、ポイントスプライトの拡縮がちょっとおかしいんだよね。ちょっと抜けが発生する。 https://t.co/NSsWFDt9oI</p>
-        
-        <img  class="tweet-img" src="https://pbs.twimg.com/media/EbTfFiRU8AEuyPI.png" />
-        
-      </section>
-      
-      <header class="tweet-header">
-        
-        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1275890511258107904"
-            target="_blank">2020/6/25 5:36:17</a></p>
-      </header>
-      <section>
-        <p class="tweet-text">ちょっとチューブ・パニックっぽい世界観なんだけどね。<br/><div class="youtube" data-type="yt" id="q58XNh1Sm2o"><div class="yt-title">Youtube - Arcade Game: Tube Panic (1984 Nichibutsu / Fujitek)</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img  data-href="https://youtu.be/q58XNh1Sm2o" class="youtube" src="https://i.ytimg.com/vi/q58XNh1Sm2o/hqdefault.jpg" /></div>   <br/></p>
-        
-      </section>
-      
-      <header class="tweet-header">
-        
-        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1275892194532978689"
-            target="_blank">2020/6/25 5:42:58</a></p>
-      </header>
-      <section>
-        <p class="tweet-text">在籍してたときに、この基板をつないで見せてもらったんだけど、その時の衝撃といったらなかったな。こんなすごい拡縮機能を1984年に実現していたからね。どうなってるんだこの会社と思った😄</p>
-        
-      </section>
-      
-      <header class="tweet-header">
-        
-        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1275893035595776000"
-            target="_blank">2020/6/25 5:46:19</a></p>
-      </header>
-      <section>
-        <p class="tweet-text">で1988年当時開発に使用してた基板スペックはというとごくごくオーソドックスでスプライトや背景の拡縮・回転機能などはなかったから、どこかでこの技術が失われたんだよな。まあこのての機能ってゲームによって要不要があるんで、必ずしも必要ではないかもしれんけどね。</p>
-        
-      </section>
-      
-      <header class="tweet-header">
-        
-        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1275895345902313472"
-            target="_blank">2020/6/25 5:55:30</a></p>
-      </header>
-      <section>
-        <p class="tweet-text">このHWの開発はミヨシさんという方が担当したと聞いた。このミヨシさんというのも、お会いしたことはないが社内の会話のなかでちょくちょく出てきた人でしたな。伝説的な方だった。とにかくすごかったらしい。</p>
-        
-      </section>
-      
-      <header class="tweet-header">
-        
-        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1276076650359226368"
-            target="_blank">2020/6/25 17:55:56</a></p>
-      </header>
-      <section>
-        <p class="tweet-text">192x256px画面でcubeを回してみた。動画にすると汚いな。。<br/><div class="youtube" data-type="yt" id="Q0IGz7mVoKM"><div class="yt-title">Youtube - Voxelシェーダを作る</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img  data-href="https://youtu.be/Q0IGz7mVoKM" class="youtube" src="https://i.ytimg.com/vi/Q0IGz7mVoKM/hqdefault.jpg" /></div>   <br/></p>
-        
-      </section>
-      
-      <header class="tweet-header">
-        
-        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1276249654678532096"
-            target="_blank">2020/6/26 5:23:23</a></p>
-      </header>
-      <section>
-        <p class="tweet-text">復習がてら、ベクトルマップの緯度・経度情報をそのまま画面にプロットするシェーダをまず書こうとしている。ライブラリは行列のライブラリ以外は使わないつもり。この復習が大変ですわ😅</p>
-        
-      </section>
-      
-      <header class="tweet-header">
-        
-        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1276249825130852357"
-            target="_blank">2020/6/26 5:24:04</a></p>
-      </header>
-      <section>
-        <p class="tweet-text">マップに描いた軌跡どおりにスクロールして表示する感じ。</p>
-        
-      </section>
-      
-      <header class="tweet-header">
-        
-        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1276251807304441858"
-            target="_blank">2020/6/26 5:31:57</a></p>
-      </header>
-      <section>
-        <p class="tweet-text">あ、でもtwglは使うかもしれん<br/><blockquote class="card card-large"><header><img  src="http://twgljs.org/resources/images/twgljs.png" /><a href="https://twgljs.org/" target="_blank">TWGL.js, a tiny WebGL helper library</a></header><div>TWGL.js, a tiny WebGL helper library</div></blockquote></p>
-        
-      </section>
-      
-      <header class="tweet-header">
-        
-        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1276653568515162112"
-            target="_blank">2020/6/27 8:08:24</a></p>
-      </header>
-      <section>
-        <p class="tweet-text">ということで簡単なシェーダーを書いて地理院地図のベクトルタイルデータを描画・スクロールしてみた。<br/><div class="youtube" data-type="yt" id="PH9yBnlwrHM"><div class="yt-title">Youtube - webgl - 地理院ベクトルタイルデータをスクロール表示する</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img  data-href="https://youtu.be/PH9yBnlwrHM" class="youtube" src="https://i.ytimg.com/vi/PH9yBnlwrHM/hqdefault.jpg" /></div>   <br/></p>
-        
-      </section>
-      
-      <header class="tweet-header">
-        
-        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1276666680496672768"
-            target="_blank">2020/6/27 9:00:30</a></p>
-      </header>
-      <section>
-        <p class="tweet-text">一応RTX2060を積んでるんだけど宝の持ち腐れ感強し😄</p>
-        
-      </section>
-      
-      <header class="tweet-header">
-        
-        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1276667226058158081"
-            target="_blank">2020/6/27 9:02:40</a></p>
-      </header>
-      <section>
-        <p class="tweet-text">廉価版とはいえ恐ろしいスペックではある。。</p>
-        
-      </section>
-      
-      <header class="tweet-header">
-        
-        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1276668950521110529"
-            target="_blank">2020/6/27 9:09:31</a></p>
-      </header>
-      <section>
-        <p class="tweet-text">そのようなGPUを使って192x256の小さなフレームバッファに描画する醍醐味ときたら😄</p>
-        
-      </section>
-      
-      <header class="tweet-header">
-        
-        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1277014077538054145"
-            target="_blank">2020/6/28 8:00:56</a></p>
-      </header>
-      <section>
-        <p class="tweet-text">設定したルート沿いにスクロールするようにしてみた。ちょっとバグってるが。<br/><br/><div class="youtube" data-type="yt" id="3-LIx_Ai1Sc"><div class="yt-title">Youtube - 国土地理院ベクトルタイルデータを使用した背景スクロール</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img  data-href="https://youtu.be/3-LIx_Ai1Sc" class="youtube" src="https://i.ytimg.com/vi/3-LIx_Ai1Sc/hqdefault.jpg" /></div>   <br/></p>
-        
-      </section>
-      
-      <header class="tweet-header">
-        
-        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1277200356590538753"
-            target="_blank">2020/6/28 20:21:08</a></p>
-      </header>
-      <section>
-        <p class="tweet-text">さらにスクロールするベクトルに沿って回転するようにしてみた。なんかスクロールがカクカクしてみえますな。。<br/><div class="youtube" data-type="yt" id="zyAi5GXZD3k"><div class="yt-title">Youtube - 国土地理院ベクトルタイルデータを使用した背景スクロール（画面回転版）</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img  data-href="https://youtu.be/zyAi5GXZD3k" class="youtube" src="https://i.ytimg.com/vi/zyAi5GXZD3k/hqdefault.jpg" /></div>   <br/></p>
-        
-      </section>
-      
-      <header class="tweet-header">
-        
-        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1277566469069369345"
-            target="_blank">2020/6/29 20:35:56</a></p>
-      </header>
-      <section>
-        <p class="tweet-text">物体の属性ごとに色分けし、画面回転のアルゴリズムを変えてみた。<br/><div class="youtube" data-type="yt" id="r0sIWLlyBgw"><div class="yt-title">Youtube - 国土地理院ベクトルタイルデータを使用した背景スクロール（着色版）</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img  data-href="https://youtu.be/r0sIWLlyBgw" class="youtube" src="https://i.ytimg.com/vi/r0sIWLlyBgw/hqdefault.jpg" /></div>   <br/></p>
-        
-      </section>
-      
-      <header class="tweet-header">
-        
-        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1277899326551846914"
-            target="_blank">2020/6/30 18:38:36</a></p>
-      </header>
-      <section>
-        <p class="tweet-text">これをそろそろ3D化しないといかんな。まずはポリゴンでやってみるか。。しかしカクカクする不具合もなんとかしたいなあ。。高さデータはJAXAのものも併用してやろうかね。。今回は地上高のデータも取れるからうまいことできそうだ。</p>
-        
-      </section>
-      
-      <header class="tweet-header">
-        
-        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1278051598640361472"
-            target="_blank">2020/7/1 4:43:40</a></p>
-      </header>
-      <section>
-        <p class="tweet-text">地表の凹凸もきちんと表現したいね。。</p>
-        
-      </section>
-      
-      <header class="tweet-header">
-        
-        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1278059715864350720"
-            target="_blank">2020/7/1 5:15:56</a></p>
-      </header>
-      <section>
-        <p class="tweet-text">それには高さデータをちゃんと取得せんとな。。</p>
-        
-      </section>
-      
-      <header class="tweet-header">
-        
-        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1278264431131021318"
-            target="_blank">2020/7/1 18:49:24</a></p>
-      </header>
-      <section>
-        <p class="tweet-text">高さデータを取得してみた。かなりやっつけな手法だが😅<br/>一つの頂点の情報は経度・緯度・JAXAのDSMデータ（建物を含めた標高）・DEM10データ（標高）となっている。これは大阪市立美術館の建物情報らしい。建物の高さは8mくらいになってるな。そんな低い？ https://t.co/RJQqIPa245</p>
-        
-        <img  class="tweet-img" src="https://pbs.twimg.com/media/Eb1Nt5uU8AESOJV.png" />
-        
-        <img  class="tweet-img" src="https://pbs.twimg.com/media/Eb1OT42UMAIOhNZ.png" />
-        
-      </section>
-      
-      <header class="tweet-header">
-        
-        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1278265327416012812"
-            target="_blank">2020/7/1 18:52:57</a></p>
-      </header>
-      <section>
-        <p class="tweet-text">建物自体は地上3階となってるな。</p>
-        
-      </section>
-      
-      <header class="tweet-header">
-        
-        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1278266218571431941"
-            target="_blank">2020/7/1 18:56:30</a></p>
-      </header>
-      <section>
-        <p class="tweet-text">建物は簡略化のために直方体で置き換えようと思ってる。大阪の街をそのまま再現するわけではないけどね。高さもランダムに決めるよりはリアルじゃないかというくらいのものなので多少誤差があってもよい。</p>
-        
-      </section>
-      
-      <header class="tweet-header">
-        
-        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1278435174703865856"
-            target="_blank">2020/7/2 6:07:52</a></p>
-      </header>
-      <section>
-        <p class="tweet-text">建物の外周データを直方体で近似するのも私にとっては難しいことではある。</p>
-        
-      </section>
-      
-      <header class="tweet-header">
-        
-        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1278631127951880193"
-            target="_blank">2020/7/2 19:06:31</a></p>
-      </header>
-      <section>
-        <p class="tweet-text">直方体にできたらあとはgeometry instancingで建物を描いてみようと思う。。</p>
-        
-      </section>
-      
-      <header class="tweet-header">
-        
-        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1278795540063346688"
-            target="_blank">2020/7/3 5:59:50</a></p>
-      </header>
-      <section>
-        <p class="tweet-text">今分割されたfeatureをmergeする作業をやってるけど、いい加減なアルゴリズムなので相当実行コストかかってるはずなんだけど、ほんの数秒で処理が終わってしまう。すごい時代になったものだと思う。40年くらい前だったらout of memoryで一発アウトだろうし、下手すると数日以上かかってたと思うな。</p>
-        
-      </section>
-      
-      <header class="tweet-header">
-        
-        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1278796462676041728"
-            target="_blank">2020/7/3 6:03:30</a></p>
-      </header>
-      <section>
-        <p class="tweet-text">このfeatureのgeometryは種類としては「Point」と「LineString」があって、「Point」は三角点とかで使用されてて、建物や道路などの事物の外形は「LineString」で定義されてるんだよね。さらにgeometryにはcoordinatesとプロパティがあって、ここに経度・緯度の組み合わせの配列で格納されている。</p>
-        
-      </section>
-      
-      <header class="tweet-header">
-        
-        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1278796970904051712"
-            target="_blank">2020/7/3 6:05:31</a></p>
-      </header>
-      <section>
-        <p class="tweet-text">つまり外形の頂点情報はcoordinatesにある。ベクトルタイルでデータ取得するとベクトルの境界でfeatureが分割されてしまうので、それをくっつける必要が出てくるんだよね。</p>
-        
-      </section>
-      
-      <header class="tweet-header">
-        
-        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1278797300718944256"
-            target="_blank">2020/7/3 6:06:50</a></p>
-      </header>
-      <section>
-        <p class="tweet-text">でこのcoordinates内の頂点情報はある程度規則性があるので、それを使用すれば比較的簡単に頂点情報を統合できるのではないかというのが私の考えである。</p>
-        
-      </section>
-      
-      <header class="tweet-header">
-        
-        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1279233424889274368"
-            target="_blank">2020/7/4 10:59:50</a></p>
-      </header>
-      <section>
-        <p class="tweet-text">ポリゴンの簡略化みたいなことは誰かがやってそうだなあと思ってググってみたらあったみたい。<br/><blockquote class="card card-default"><header><img  src="https://cdn.sstatic.net/Sites/gis/Img/apple-touch-icon@2.png?v=54e3ab1edcf3" /><a href="https://gis.stackexchange.com/questions/3739/seeking-generalisation-strategies-for-building-outlines-in-postgis/3756#3756" target="_blank">geometry - Seeking Generalisation Strategies for Building Outlines in PostGIS? - Geographic Information Systems Stack Exchange</a></header><div>I have a dataset of building footprints vectorised from a raster dataset.  The dataset is currently just a vector representation of the raster data.  I would like a polygon dataset that only has ve...</div></blockquote></p>
-        
-      </section>
-      
-      <header class="tweet-header">
-        
-        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1279235595454173184"
-            target="_blank">2020/7/4 11:08:27</a></p>
-      </header>
-      <section>
-        <p class="tweet-text">polygon simplificationでググると結構あるわ。。</p>
-        
-      </section>
-      
-      <header class="tweet-header">
-        
-        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1279236992312602624"
-            target="_blank">2020/7/4 11:14:00</a></p>
-      </header>
-      <section>
-        <p class="tweet-text">やりたいことはまさにこれですわ。。<br/><blockquote class="card card-default"><header><img  src="https://cdn.sstatic.net/Sites/gis/Img/apple-touch-icon@2.png?v=54e3ab1edcf3" /><a href="https://gis.stackexchange.com/questions/273073/convert-n-sided-polygon-to-nearest-fitting-rectangle" target="_blank">python - Convert N-sided polygon to nearest fitting rectangle? - Geographic Information Systems Stack Exchange</a></header><div>I'm working with OSM data and many of my objects are simple 4-polygons (parallelograms), which can be expressed by 4 unique corner points. But the full OSM data has the shape represented by more th...</div></blockquote></p>
-        
-      </section>
-      
-      <header class="tweet-header">
-        
-        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1279510990514581504"
-            target="_blank">2020/7/5 5:22:46</a></p>
-      </header>
-      <section>
-        <p class="tweet-text">まあこれですわな。やはりこれって１つのテーマではあるんだな。建物の単純化っちゅうのはね。<br/><blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="https://desktop.arcgis.com/ja/arcmap/10.3/tools/coverage-toolbox/how-simplify-building-works.htm" target="_blank">建物ポリゴンの単純化 (Simplify Building) (カバレッジ) の仕組み—ヘルプ | ArcGIS for Desktop</a></header><div></div></blockquote></p>
-        
-      </section>
-      
-      <header class="tweet-header">
-        
-        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1279513039423672320"
-            target="_blank">2020/7/5 5:30:55</a></p>
-      </header>
-      <section>
-        <p class="tweet-text">処理についてはどうしたらよいかというのは分かった。<br/><br/>1. convex hullによる図形の単純化<br/>2. そこからminimum bounding rectangleを求める<br/>（各辺の軸に対する角度で回転させ、それでbounding boxを求めて最小の面積のものを採用する）</p>
-        
-      </section>
-      
-      <header class="tweet-header">
-        
-        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1279513468345843712"
-            target="_blank">2020/7/5 5:32:37</a></p>
-      </header>
-      <section>
-        <p class="tweet-text">convex hull関数についてはJSのコードが見つかったのでこれを少し改良して使おうと思う。改良つっても２次元ベクトル部分をglMatrixに変える程度だけどね。<br/><br/><blockquote class="card card-large"><header><img  src="https://github.githubassets.com/images/modules/gists/gist-og-image.png" /><a href="https://gist.github.com/robbykraft/5952f9d7c0e148a50d7e26f032ef57d5" target="_blank">convex hull in javascript · GitHub</a></header><div>convex hull in javascript. GitHub Gist: instantly share code, notes, and snippets.</div></blockquote></p>
-        
-      </section>
-      
-      <header class="tweet-header">
-        
-        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1279515001112244224"
-            target="_blank">2020/7/5 5:38:43</a></p>
-      </header>
-      <section>
-        <p class="tweet-text">minimum bounding rectを求める関数はpythonのコードがあったのでこれをjsに変換して利用しようと思う。しかしnumpyのこの配列への演算機能はなかなかすごいですな。<br/><br/><blockquote class="card card-default"><header><img  src="https://cdn.sstatic.net/Sites/gis/Img/apple-touch-icon@2.png?v=54e3ab1edcf3" /><a href="https://gis.stackexchange.com/a/169633" target="_blank">geometry - Finding minimum-area-rectangle for given points? - Geographic Information Systems Stack Exchange</a></header><div>As you see in the figure,  the question is:  <br/><br/>How to find the minimum-area-rectangle (MAR) fitted on the given points?  <br/><br/>and a supporting question is:  <br/><br/>Is there any analytical solution for the </div></blockquote></p>
-        
-      </section>
-      
-      <header class="tweet-header">
-        
-        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1279515316100280320"
-            target="_blank">2020/7/5 5:39:58</a></p>
-      </header>
-      <section>
-        <p class="tweet-text">このへんの理屈についえは非常に興味あるところだけど、真の理解をするには数年かかりそうなのでここはさらっと流すことにする😅</p>
-        
-      </section>
-      
-      <header class="tweet-header">
-        
-        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1279691246655533056"
-            target="_blank">2020/7/5 17:19:03</a></p>
-      </header>
-      <section>
-        <p class="tweet-text">minimum bounding rectを適用して建物を簡略化してみた結果。左が簡略化後、右が簡略化前。まだBugもありそうで意図したような感じにはなっていないが、確かに簡略化できている。 https://t.co/LZLhz0WRzt</p>
-        
-        <img  class="tweet-img" src="https://pbs.twimg.com/media/EcJfatgU4AA5gyz.png" />
-        
-        <img  class="tweet-img" src="https://pbs.twimg.com/media/EcJgChAUMAAvRVh.png" />
-        
-      </section>
-      
-      <header class="tweet-header">
-        
-        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1279691602974240768"
-            target="_blank">2020/7/5 17:20:28</a></p>
-      </header>
-      <section>
-        <p class="tweet-text">確かにできているともいえんな。。</p>
-        
-      </section>
-      
-      <header class="tweet-header">
-        
-        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1279692908602351623"
-            target="_blank">2020/7/5 17:25:39</a></p>
-      </header>
-      <section>
-        <p class="tweet-text">minimum bounding rectがもともとのpolygonに内接するようにしないとはみ出るよな。やっぱり。。歩道にはみでたり、建物に重なったりするよな。凸包ベースだとこうなるよなあ。。まあこれはわからないながら推測したとおりになっている。 https://t.co/5gg33UULih</p>
-        
-        <img  class="tweet-img" src="https://pbs.twimg.com/media/EcJhmq5VAAEaYrt.png" />
-        
-      </section>
-      
-      <header class="tweet-header">
-        
-        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1279704922733199362"
-            target="_blank">2020/7/5 18:13:24</a></p>
-      </header>
-      <section>
-        <p class="tweet-text">こういう論文があるなあ。これがまさにやりたいのだが。読むか。。もうちょっとググるか。<br/><br/>「多角形に内接するもっとも大きい長方形を見つけるアルゴリズム」<br/>Algorithm for finding the largest inscribed rectangle in<br/>polygon<br/><a href="https://pdfs.semanticscholar.org/701f/eacc257d10da846bd2825ffff2f3322a1d11.pdf?_ga=2.188887917.73390894.1593940215-1915349074.1593940215" target="_blank">pdfs.semanticscholar.org/701f/eacc257d1…</a></p>
-        
-      </section>
-      
-      <header class="tweet-header">
-        
-        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1279705420643344384"
-            target="_blank">2020/7/5 18:15:22</a></p>
-      </header>
-      <section>
-        <p class="tweet-text">こういうのCSのテーマとして過去から研究されたりしてるようだね。</p>
-        
-      </section>
-      
-      <header class="tweet-header">
-        
-        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1279712103427784705"
-            target="_blank">2020/7/5 18:41:56</a></p>
-      </header>
-      <section>
-        <p class="tweet-text">「the largest orthogonal rectangle in a convex polygon」とするほうがより正確なのか。。</p>
-        
-      </section>
-      
-      <header class="tweet-header">
-        
-        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1279712362816139264"
-            target="_blank">2020/7/5 18:42:57</a></p>
-      </header>
-      <section>
-        <p class="tweet-text">こういうのがあるなあ。<br/>「Computing the largest orthogonal rectangle in a convex polygon」<br/><blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="http://cgm.cs.mcgill.ca/~athens/cs507/Projects/2003/DanielSud/" target="_blank">Computing the largest orthogonal rectangle in a convex polygon</a></header><div></div></blockquote></p>
-        
-      </section>
-      
-      <header class="tweet-header">
-        
-        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1280060049813958656"
-            target="_blank">2020/7/6 17:44:32</a></p>
-      </header>
-      <section>
-        <p class="tweet-text">このアルゴリズムに極力深入りしないで、上澄みだけをちょこっと拝借する戦略で臨んでいたが、やはりそれは少し甘い考えのようである。</p>
-        
-      </section>
-      
-      <header class="tweet-header">
-        
-        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1280084917376790529"
-            target="_blank">2020/7/6 19:23:21</a></p>
-      </header>
-      <section>
-        <p class="tweet-text">これは少し古い論文(1994年)のようだが。「多角形中の最も領域が大きい軸に平行な長方形を探索する」<br/><br/>「Finding the largest area axis-parallel rectangle in a polygon」<br/><blockquote class="card card-default"><header><img  src="https://ars.els-cdn.com/content/image/S09257721.gif" /><a href="https://www.sciencedirect.com/science/article/pii/0925772195000410" target="_blank">Finding the largest area axis-parallel rectangle in a polygon - ScienceDirect</a></header><div>This paper considers the geometric optimization problem of finding the Largest area axis-parallel Rectangle (LR) in an n-vertex general polygon. We ch…</div></blockquote></p>
-        
-      </section>
-      
-      <header class="tweet-header">
-        
-        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1280085160088621056"
-            target="_blank">2020/7/6 19:24:19</a></p>
-      </header>
-      <section>
-        <p class="tweet-text">軸を辺に平行になるように回転させると、軸に並行でないそれなりな長方形も求められると思うね。</p>
-        
-      </section>
-      
-      <header class="tweet-header">
-        
-        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1280099546475819008"
-            target="_blank">2020/7/6 20:21:29</a></p>
-      </header>
-      <section>
-        <p class="tweet-text">ちょっとこのページのサンプルコードを移植してみようかなと思う。<br/><blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="http://cgm.cs.mcgill.ca/~athens/cs507/Projects/2003/DanielSud/" target="_blank">Computing the largest orthogonal rectangle in a convex polygon</a></header><div></div></blockquote></p>
-        
-      </section>
-      
-      <header class="tweet-header">
-        
-        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1280430877428682753"
-            target="_blank">2020/7/7 18:18:05</a></p>
-      </header>
-      <section>
-        <p class="tweet-text">移植してみたがよくよく見ると整数座標前提のコードだった。ぐはぁ。。😂</p>
-        
-      </section>
-      
-      <header class="tweet-header">
-        
-        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1280431322754736128"
-            target="_blank">2020/7/7 18:19:51</a></p>
-      </header>
-      <section>
-        <p class="tweet-text">この論文のやり方で自分でコード書いてみるか。。<br/><a href="https://pdfs.semanticscholar.org/701f/eacc257d10da846bd2825ffff2f3322a1d11.pdf?_ga=2.188887917.73390894.1593940215-1915349074.1593940215" target="_blank">pdfs.semanticscholar.org/701f/eacc257d1…</a></p>
-        
-      </section>
-      
-      <header class="tweet-header">
-        
-        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1280431582101123073"
-            target="_blank">2020/7/7 18:20:53</a></p>
-      </header>
-      <section>
-        <p class="tweet-text">いやあ。やはりドツボにはまってきたなあ😅</p>
-        
-      </section>
-      
-      <header class="tweet-header">
-        
-        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1280454773498458114"
-            target="_blank">2020/7/7 19:53:02</a></p>
-      </header>
-      <section>
-        <p class="tweet-text">このモデルの単純化がうまくいけば、geometry instancingによる建物描画の最適化に着手できるのだが。。</p>
-        
-      </section>
-      
-      <header class="tweet-header">
-        
-        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1280591718178369537"
-            target="_blank">2020/7/8 4:57:12</a></p>
-      </header>
-      <section>
-        <p class="tweet-text">この論文読んでるけど、このFigure 5と6の絵逆だよなあ。。<br/><a href="https://pdfs.semanticscholar.org/701f/eacc257d10da846bd2825ffff2f3322a1d11.pdf" target="_blank">pdfs.semanticscholar.org/701f/eacc257d1…</a> https://t.co/FaWoUpfBWZ</p>
-        
-        <img  class="tweet-img" src="https://pbs.twimg.com/media/EcWTHDOU4AEuuh3.jpg" />
-        
-      </section>
-      
-      <header class="tweet-header">
-        
-        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1280592757266907136"
-            target="_blank">2020/7/8 5:01:20</a></p>
-      </header>
-      <section>
-        <p class="tweet-text">このアプローチは<br/><br/>１.頂点から垂直線と水平線を引く<br/>２.垂直・水平線と辺の交点にさらに垂直・水平線を引く<br/>３.２.の線と辺の交点にさらに垂直・水平線を引く<br/><br/>ことでポリゴンを小さい長方形で分割して、それを結合してポリゴンに内接する最大の長方形を求めるというもの。</p>
-        
-      </section>
-      
-      <header class="tweet-header">
-        
-        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1280606806088146944"
-            target="_blank">2020/7/8 5:57:09</a></p>
-      </header>
-      <section>
-        <p class="tweet-text">一応読んだが、実装が面倒そうである。実装例が皆無なので。。</p>
-        
-      </section>
-      
-      <header class="tweet-header">
-        
-        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1280607072237703168"
-            target="_blank">2020/7/8 5:58:13</a></p>
-      </header>
-      <section>
-        <p class="tweet-text">でまたググって調べてるうちにCGALライブラリの存在を知った。<br/><br/><blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="https://www.cgal.org/" target="_blank">The Computational Geometry Algorithms Library</a></header><div></div></blockquote></p>
-        
-      </section>
-      
-      <header class="tweet-header">
-        
-        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1280607905062858753"
-            target="_blank">2020/7/8 6:01:31</a></p>
-      </header>
-      <section>
-        <p class="tweet-text">これもろに所望のやつそうではある。。pythonのバインディングもあるみたいですなあ。データの前処理自体はpythonでやるほうがいい気がしてきたなあ。。numpyとか見て配列の演算がすごくいい感じに書けるしね。<br/><br/><blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="https://doc.cgal.org/latest/Inscribed_areas/group__PkgInscribedAreasRef.html" target="_blank">CGAL 5.0.3 - Inscribed Areas: Inscribed Areas Reference</a></header><div></div></blockquote></p>
-        
-      </section>
-      
-      <header class="tweet-header">
-        
-        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1280608580995973120"
-            target="_blank">2020/7/8 6:04:12</a></p>
-      </header>
-      <section>
-        <p class="tweet-text">ちょっとpythonやってみるかあ。python勉強したかったしね。pythonはBlenderのアドオンでちょっと書いてみたくらいですわ。勉強しなおしですな。</p>
-        
-      </section>
-      
-      <header class="tweet-header">
-        
-        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1280632713498619906"
-            target="_blank">2020/7/8 7:40:06</a></p>
-      </header>
-      <section>
-        <p class="tweet-text">初歩的なところでつまずいている。。</p>
-        
-      </section>
-      
-      <header class="tweet-header">
-        
-        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1280653557557952512"
-            target="_blank">2020/7/8 9:02:56</a></p>
-      </header>
-      <section>
-        <p class="tweet-text">pip install cgal-bindings がビルド中にコケるという。swigというライブラリ関連部分のビルド中にコケる。</p>
-        
-      </section>
-      
-      <header class="tweet-header">
-        
-        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1280659207839117312"
-            target="_blank">2020/7/8 9:25:23</a></p>
-      </header>
-      <section>
-        <p class="tweet-text">そしてこれが片付いたらGDALいれて色々試すか。。</p>
-        
-      </section>
-      
-      <header class="tweet-header">
-        
-        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1280659357672194048"
-            target="_blank">2020/7/8 9:25:59</a></p>
-      </header>
-      <section>
-        <p class="tweet-text">最初からpythonでやればよかった気がしないでもない。。</p>
-        
-      </section>
-      
-      <header class="tweet-header">
-        
-        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1280663119597957121"
-            target="_blank">2020/7/8 9:40:55</a></p>
-      </header>
-      <section>
-        <p class="tweet-text">numpyってやっぱりすごいなあ。行列の計算がすごく楽にできるなあ。<br/><br/><blockquote class="card card-large"><header><img  src="https://i.gyazo.com/1f4c861fe34fa799bb08abef99ae85c2.png" /><a href="https://note.nkmk.me/python-numpy-matrix/" target="_blank">Python, NumPyで行列の演算（逆行列、行列式、固有値など） | note.nkmk.me</a></header><div>Pythonで行列の演算を行うにはNumPyを使うと便利。Python標準のリスト型でも2次元配列（リストのリスト）を実現できるが、NumPyを使うと行列の積や逆行列、行列式、固有値などを簡単に算出できる。NumPyには汎用的な多次元配列のクラスnumpy.ndarrayと、行列（2次元配列）に特化したクラスnumpy.matrixがある。numpy.ndarra...</div></blockquote></p>
-        
-      </section>
-      
-      <header class="tweet-header">
-        
-        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1280664470390333441"
-            target="_blank">2020/7/8 9:46:17</a></p>
-      </header>
-      <section>
-        <p class="tweet-text">swigってなんだ？って調べたら、これだった。c/c++ライブラリへのラッパー作成を容易にするライブラリなのね。。<br/><br/><blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="https://ja.m.wikipedia.org/wiki/SWIG" target="_blank">SWIG - Wikipedia</a></header><div></div></blockquote></p>
-        
-      </section>
-      
-      <header class="tweet-header">
-        
-        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1280946887646867456"
-            target="_blank">2020/7/9 4:28:31</a></p>
-      </header>
-      <section>
-        <p class="tweet-text">swigを最新版にして、cgal-bindingsのインストールにチャレンジしている。さてどうなるか。。🤔</p>
-        
-      </section>
-      
-      <header class="tweet-header">
-        
-        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1280947134485823488"
-            target="_blank">2020/7/9 4:29:30</a></p>
-      </header>
-      <section>
-        <p class="tweet-text">このあとGDALを入れればとりあえず環境としては準備完了かな。</p>
-        
-      </section>
-      
-      <header class="tweet-header">
-        
-        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1280968281340305408"
-            target="_blank">2020/7/9 5:53:32</a></p>
-      </header>
-      <section>
-        <p class="tweet-text">あかん cgal何をやってもビルドに失敗するな。さらにソースからビルドすると2.7バージョンでビルドされてしまうしな。。困った。。</p>
-        
-      </section>
-      
-      <header class="tweet-header">
-        
-        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1280968467911307264"
-            target="_blank">2020/7/9 5:54:16</a></p>
-      </header>
-      <section>
-        <p class="tweet-text">pythonのバージョン管理がややこしすぎてよくわからんな。。</p>
-        
-      </section>
-      
-      <header class="tweet-header">
-        
-        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1280997813388632064"
-            target="_blank">2020/7/9 7:50:53</a></p>
-      </header>
-      <section>
-        <p class="tweet-text">あきらめてGDALをインストールしようとしたけどGDALも死ぬな。。</p>
-        
-      </section>
-      
-      <header class="tweet-header">
-        
-        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1280997897555738624"
-            target="_blank">2020/7/9 7:51:13</a></p>
-      </header>
-      <section>
-        <p class="tweet-text">こりゃ私の環境がおかしいのかもしれんね。。</p>
-        
-      </section>
-      
-      <header class="tweet-header">
-        
-        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1281017393108545536"
-            target="_blank">2020/7/9 9:08:41</a></p>
-      </header>
-      <section>
-        <p class="tweet-text">いやあ。禁断の作業をやってしまったようだ。これを機会にubuntuをクリーンインストールするかな。。wsl2上の話だけどね。もちろん。。</p>
-        
-      </section>
-      
-      <header class="tweet-header">
-        
-        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1281017977064665089"
-            target="_blank">2020/7/9 9:11:00</a></p>
-      </header>
-      <section>
-        <p class="tweet-text">一応毎晩os丸ごとexportしてるからそれを戻してもいいけどね。いやーしかしちょっとpythonいじろうとしただけなんだけどなんでこんなことになったのか。。</p>
-        
-      </section>
-      
-      <header class="tweet-header">
-        
-        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1281332342003347457"
-            target="_blank">2020/7/10 6:00:10</a></p>
-      </header>
-      <section>
-        <p class="tweet-text">というわけでなりゆきでwsl2の仮想マシンにubuntu 20.04を追加して、そこに環境を移行中。。pythonのバージョンの混在も少ないし、こっちのほうがよさそうだし。</p>
-        
-      </section>
-      
-      <header class="tweet-header">
-        
-        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1281332761068896258"
-            target="_blank">2020/7/10 6:01:50</a></p>
-      </header>
-      <section>
-        <p class="tweet-text">まあデータを吹っ飛ばしたわけではないんだけどね。ubuntuではやっちゃいけないことをやっちゃっただけなんだけどね。pythonのインストールをやり直そうとして<br/><br/>apt remove python python3 python3.7 python 3.8<br/><br/>をやっちまったんだよね😅</p>
-        
-      </section>
-      
-      <header class="tweet-header">
-        
-        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1281333345356353536"
-            target="_blank">2020/7/10 6:04:10</a></p>
-      </header>
-      <section>
-        <p class="tweet-text">これやるとaptコマンドもなぜか意味不明のエラー頻発で再インストールもままならくなってしまった😂<br/>ubuntuってかなりの部分pythonに依存してるからだそう。<br/>知らんかった🥲</p>
-        
-      </section>
-      
-      <header class="tweet-header">
-        
-        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1281333840456241152"
-            target="_blank">2020/7/10 6:06:08</a></p>
-      </header>
-      <section>
-        <p class="tweet-text">pythonも３０年近い歴史があるもんね。いろいろなところで使われてて、AI関連でさらに脚光を浴びたということなんだよな。</p>
-        
-      </section>
-      
-      <header class="tweet-header">
-        
-        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1281334853363888128"
-            target="_blank">2020/7/10 6:10:09</a></p>
-      </header>
-      <section>
-        <p class="tweet-text">これは古い話かもしれないけどpythonをremoveしたらunityが消されてしまったとかいう話もある。<br/><br/><blockquote class="card card-large"><header><img  src="http://u.xgoo.jp/img/sns/blog.png" /><a href="https://blog.goo.ne.jp/field_light/e/9ce9e30c333d6eae8a8d88fa815902a3" target="_blank">Python3を削除からの復旧（UbuntuでPythonは削除してはいけない掟があるらしい） - パーソナルブログメモリ</a></header><div>Ubuntu16.04環境のPython3.5.2だったので3.6にアップデートしようとする。Python3.6を入れたのに$Python3--versionPython3.5.2わけがわからない。Python3.6でインストールしたので、Python3.5をremoveしてみた。すると...Unityまで削除されてしまった。UbuntuでPythonは削除してはいけない掟があるらしい。なに、その仕様起動してもウィンドウの枠がおかしくなりそれより右側のタスクバーがなくなり端末の起動ができなくなった。CTRL+ALT+Tもだめ。フォルダー右クリックでも端末で開くがなくなる。左上のUbuntuのマークはなくなっている。Ctrl+ALT+F6からF1を試してXWindowを終了させて$sudoapt-getinsta...Python3を削除からの復旧（UbuntuでPythonは削除してはいけない掟があるらしい）</div></blockquote></p>
-        
-      </section>
-      
-      <header class="tweet-header">
-        
-        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1281335125351870464"
-            target="_blank">2020/7/10 6:11:14</a></p>
-      </header>
-      <section>
-        <p class="tweet-text">ubuntuではnodeみたいなイメージで気軽にremoveしちゃあいかんのだな。python。。</p>
-        
-      </section>
-      
-      <header class="tweet-header">
-        
-        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1281336041576652800"
-            target="_blank">2020/7/10 6:14:53</a></p>
-      </header>
-      <section>
-        <p class="tweet-text">wsl2のイメージも<br/><br/>・python削除前<br/>・python削除後<br/><br/>も両方バックアップしてるのでまあ何かあったらもとに戻す感じですすめてる。</p>
-        
-      </section>
-      
-      <header class="tweet-header">
-        
-        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1281350466434035713"
-            target="_blank">2020/7/10 7:12:12</a></p>
-      </header>
-      <section>
-        <p class="tweet-text">とりあえずソースファイルを突っ込んでいるディレクトリを丸ごと移行している。41GBもあるな。。</p>
-        
-      </section>
-      
-      <header class="tweet-header">
-        
-        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1281350543022026752"
-            target="_blank">2020/7/10 7:12:30</a></p>
-      </header>
-      <section>
-        <p class="tweet-text">たいしたことやっていないというのに。。</p>
-        
-      </section>
-      
-      <header class="tweet-header">
-        
-        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1281514914503200768"
-            target="_blank">2020/7/10 18:05:39</a></p>
-      </header>
-      <section>
-        <p class="tweet-text">とりあえずubuntu 20.04 LTSで出直しである。pythonは3.6あたりでanacondaを使ってgdalとcgalをインストールした。今のところ。使い方は知らん😅</p>
-        
-      </section>
-      
-      <header class="tweet-header">
-        
-        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1281515072095784961"
-            target="_blank">2020/7/10 18:06:17</a></p>
-      </header>
-      <section>
-        <p class="tweet-text">データも移行しとりあえず引っ越しは完了。</p>
-        
-      </section>
-      
-      <header class="tweet-header">
-        
-        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1281530179521675264"
-            target="_blank">2020/7/10 19:06:19</a></p>
-      </header>
-      <section>
-        <p class="tweet-text">さて、何やるんだっけ😅</p>
-        
-      </section>
-      
-      <header class="tweet-header">
-        
-        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1281667545716584448"
-            target="_blank">2020/7/11 4:12:09</a></p>
-      </header>
-      <section>
-        <p class="tweet-text">もろにやりたいことができるライブラリを見つけたな。あとはもうコードを書くだけだ。nodeで書いたコードをpythonで書き直す。<br/><br/><blockquote class="card card-default"><header><img  src="https://pypi.org/static/images/twitter.90915068.jpg" /><a href="https://pypi.org/project/maxrect/" target="_blank">maxrect · PyPI</a></header><div>Find the maximal area rectangle from a polygon.</div></blockquote></p>
-        
-      </section>
-      
-      <header class="tweet-header">
-        
-        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1281762899959013376"
-            target="_blank">2020/7/11 10:31:04</a></p>
-      </header>
-      <section>
-        <p class="tweet-text">もうねえ。numpyにちょっと感動している。。</p>
-        
-      </section>
-      
-      <header class="tweet-header">
-        
-        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1281917143735394305"
-            target="_blank">2020/7/11 20:43:58</a></p>
-      </header>
-      <section>
-        <p class="tweet-text">ちょっと今日はだらだらして、numpyでちょこちょこいじるだけで終わってしまったなあ。。だらだらしてるのはいつものことだけど😅</p>
-        
-      </section>
-      
-      <header class="tweet-header">
-        
-        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1281917449080680448"
-            target="_blank">2020/7/11 20:45:11</a></p>
-      </header>
-      <section>
-        <p class="tweet-text">なんかそりゃみんなpython使うよなあ。。と思った１日であった。</p>
-        
-      </section>
-      
-      <header class="tweet-header">
-        
-        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1282273298143830017"
-            target="_blank">2020/7/12 20:19:12</a></p>
-      </header>
-      <section>
-        <p class="tweet-text">numpy勉強中。これちゃんと使いこなそうと思ったらそこそこ数学の知識必要そうだなあ。今はタイルデータの取得コードを書くところで停滞してる。まだまだちゃんとしたコードを書くには学習が必要ですな。</p>
-        
-      </section>
-      
-      <header class="tweet-header">
-        
-        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1282447295716311040"
-            target="_blank">2020/7/13 7:50:36</a></p>
-      </header>
-      <section>
-        <p class="tweet-text">shapelyというライブラリも見つけましたわ。。</p>
-        
-      </section>
-      
-      <header class="tweet-header">
-        
-        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1282447379094859776"
-            target="_blank">2020/7/13 7:50:56</a></p>
-      </header>
-      <section>
-        <p class="tweet-text">これですな。<br/><blockquote class="card card-default"><header><img  src="https://avatars1.githubusercontent.com/u/859968?s=400&v=4" /><a href="https://github.com/Toblerity/Shapely" target="_blank">GitHub - Toblerity/Shapely: Manipulation and analysis of geometric objects</a></header><div>Manipulation and analysis of geometric objects. Contribute to Toblerity/Shapely development by creating an account on GitHub.</div></blockquote></p>
-        
-      </section>
-      
-      <header class="tweet-header">
-        
-        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1282447442319818753"
-            target="_blank">2020/7/13 7:51:11</a></p>
-      </header>
-      <section>
-        <p class="tweet-text">もうどこへ私は向かおうとしているのか。。</p>
-        
-      </section>
-      
-      <header class="tweet-header">
-        
-        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1282447608313573376"
-            target="_blank">2020/7/13 7:51:51</a></p>
-      </header>
-      <section>
-        <p class="tweet-text">興味本位とはまさにこのこと。。</p>
-        
-      </section>
-      
-      <header class="tweet-header">
-        
-        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1283164984462065665"
-            target="_blank">2020/7/15 7:22:27</a></p>
-      </header>
-      <section>
-        <p class="tweet-text">慣れないpythonでようやく所望のコードが完成した。建物を長方形に簡略化できたせいかデータがかなり小さくなった。いや、まだ書き上げただけでデータがまともなのかのチェックはできてないけどね😅 https://t.co/NXvBGrl9Pv</p>
-        
-        <img  class="tweet-img" src="https://pbs.twimg.com/media/Ec63RUhVcAAGmsZ.png" />
-        
-      </section>
-      
-      <header class="tweet-header">
-        
-        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1283165614748471296"
-            target="_blank">2020/7/15 7:24:57</a></p>
-      </header>
-      <section>
-        <p class="tweet-text">内包表記とかnumpyとか、配列操作がやたら楽なんだよな。jsだとこうはいかないわ。。</p>
-        
-      </section>
-      
-      <header class="tweet-header">
-        
-        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1283168116487274497"
-            target="_blank">2020/7/15 7:34:53</a></p>
-      </header>
-      <section>
-        <p class="tweet-text">作ったデータで動かしてみたらなんだこりゃ。。建物も矩形になっとらん😅 https://t.co/suChkWziNo</p>
-        
-        <img  class="tweet-img" src="https://pbs.twimg.com/media/Ec66WQYU8AA3PXu.png" />
-        
-      </section>
-      
-      <header class="tweet-header">
-        
-        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1283175389137788928"
-            target="_blank">2020/7/15 8:03:47</a></p>
-      </header>
-      <section>
-        <p class="tweet-text">ちょっとだけ修正。しかし思ってたのとは違うな。。うーむ。。🤔 https://t.co/kRLXxRneVu</p>
-        
-        <img  class="tweet-img" src="https://pbs.twimg.com/media/Ec7BE5OUYAAczT_.png" />
-        
-      </section>
-      
-      <header class="tweet-header">
-        
-        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1283175440383741954"
-            target="_blank">2020/7/15 8:03:59</a></p>
-      </header>
-      <section>
-        <p class="tweet-text">というわけで今日はここまでか。。</p>
-        
-      </section>
-      
-      <header class="tweet-header">
-        
-        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1283195840215969793"
-            target="_blank">2020/7/15 9:25:03</a></p>
-      </header>
-      <section>
-        <p class="tweet-text">ポリゴンの長方形簡略化はshapelyを使ってる。MultiPointというオブジェクトに建物の外形データの座標を突っ込んでminimum_rotated_rectangleを求めてる。<blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="https://shapely.readthedocs.io/en/latest/manual.html#object.minimum_rotated_rectangle" target="_blank">The Shapely User Manual — Shapely 1.8dev documentation</a></header><div></div></blockquote></p>
-        
-      </section>
-      
-      <header class="tweet-header">
-        
-        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1283197345723641856"
-            target="_blank">2020/7/15 9:31:02</a></p>
-      </header>
-      <section>
-        <p class="tweet-text">ベクトルタイルの建物情報は断片化されてるものがあるので、それをマージしないといけないんだけど、結構面倒なのでMultiPointオブジェクトに断片化された建物データの座標を全部いれてminimum_rotated_rectangleを求めればいいと思ってたんだけどちょっと違った。</p>
-        
-      </section>
-      
-      <header class="tweet-header">
-        
-        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1283198823901196289"
-            target="_blank">2020/7/15 9:36:54</a></p>
-      </header>
-      <section>
-        <p class="tweet-text">つまり端折ろうとしたわけ。しかしこれでは建物に内接する最大の長方形にはならんよな。minimum bounding rectangleですわ。convex hullを求めてそのminimum_rotated_rectangleを求めた方が近いと思うので帰ったらそれを試そうと思う。</p>
-        
-      </section>
-      
-      <header class="tweet-header">
-        
-        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1283199799680876544"
-            target="_blank">2020/7/15 9:40:47</a></p>
-      </header>
-      <section>
-        <p class="tweet-text">ここはそんなに厳密性を求めてるわけではないので、このアプローチでいければそれでよしとしよう😅</p>
-        
-      </section>
-      
-      <header class="tweet-header">
-        
-        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1283200380403249158"
-            target="_blank">2020/7/15 9:43:06</a></p>
-      </header>
-      <section>
-        <p class="tweet-text">しかしこのshapelyというライブラリなかなか良いですわ。<br/><blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="https://shapely.readthedocs.io/en/latest/manual.html" target="_blank">The Shapely User Manual — Shapely 1.8dev documentation</a></header><div></div></blockquote></p>
-        
-      </section>
-      
-      <header class="tweet-header">
-        
-        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1283526635757596672"
-            target="_blank">2020/7/16 7:19:31</a></p>
-      </header>
-      <section>
-        <p class="tweet-text">もろもろのバグを直して、convex_hull -&gt; minimum_rotated_rectangle作戦で試してみたが、結果は同じだった😂<br/>minimum_rotated_rectangleのドキュメントを見ると<br/>「the general minimum bounding rectangle」て書いてあった。そりゃ結果は同じですわ😅<br/><blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="https://shapely.readthedocs.io/en/latest/manual.html#object.minimum_rotated_rectangle" target="_blank">The Shapely User Manual — Shapely 1.8dev documentation</a></header><div></div></blockquote> https://t.co/h1iB3R5DCX</p>
-        
-        <img  class="tweet-img" src="https://pbs.twimg.com/media/Ec__m3bVcAAOzN_.png" />
-        
-      </section>
-      
-      <header class="tweet-header">
-        
-        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1283526759971909632"
-            target="_blank">2020/7/16 7:20:01</a></p>
-      </header>
-      <section>
-        <p class="tweet-text">私が求めたいのは「Largest inscribed rectangles in convex polygons」ですからな。。</p>
-        
-      </section>
-      
-      <header class="tweet-header">
-        
-        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1283527413335392256"
-            target="_blank">2020/7/16 7:22:36</a></p>
-      </header>
-      <section>
-        <p class="tweet-text">建物のレンダリング結果も少しおかしい気がしてね。長方形のはずが平行四辺形っぽい感じに見えてしまう。基本的なアフィン変換もBugってるのでは。。🥲 https://t.co/zstr96nSE4</p>
-        
-        <img  class="tweet-img" src="https://pbs.twimg.com/media/EdAA_jBVAAAbVdK.png" />
-        
-      </section>
-      
-      <header class="tweet-header">
-        
-        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1283951630912634881"
-            target="_blank">2020/7/17 11:28:18</a></p>
-      </header>
-      <section>
-        <p class="tweet-text">これアスペクト比の考慮忘れてたせいかもしれんな。。</p>
-        
-      </section>
-      
-      <header class="tweet-header">
-        
-        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1284211336029696000"
-            target="_blank">2020/7/18 4:40:16</a></p>
-      </header>
-      <section>
-        <p class="tweet-text">やっぱりアスペクト比掛けるの忘れてただけだった。そしてmaxrectというライブラリを使ってconvex_hullからのlargest inscribe rectangle in convex polygonの取り出しができた。がこのライブラリだと軸平行、つまり緯度・経度平行に長方形が作られてしまう。惜しい。。 https://t.co/a5HVs1tfj6</p>
-        
-        <img  class="tweet-img" src="https://pbs.twimg.com/media/EdJugsbUEAElB83.png" />
-        
-      </section>
-      
-      <header class="tweet-header">
-        
-        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1284250744615395329"
-            target="_blank">2020/7/18 7:16:52</a></p>
-      </header>
-      <section>
-        <p class="tweet-text">このmaxrect、動かすにはライブラリのコードにバグがあり、修正する必要がある。そして実行にかなり時間がかかる。。むむう。。<br/><br/><blockquote class="card card-default"><header><img  src="https://avatars1.githubusercontent.com/u/5247016?s=400&v=4" /><a href="https://github.com/planetlabs/maxrect" target="_blank">GitHub - planetlabs/maxrect: Find the maximally inscribed, axis-aligned rectangle for a given polygon</a></header><div>Find the maximally inscribed, axis-aligned rectangle for a given polygon - planetlabs/maxrect</div></blockquote></p>
-        
-      </section>
-      
-      <header class="tweet-header">
-        
-        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1284251202444603394"
-            target="_blank">2020/7/18 7:18:41</a></p>
-      </header>
-      <section>
-        <p class="tweet-text">しかし軸平行でこの速度だから、これにさらに一番長い軸に平行にするなんて言う処理を加えたらどうなってしまうのか。。</p>
-        
-      </section>
-      
-      <header class="tweet-header">
-        
-        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1284251468145418240"
-            target="_blank">2020/7/18 7:19:44</a></p>
-      </header>
-      <section>
-        <p class="tweet-text">あ、間違えた。一番長い軸ではなくてポリゴンの中で一番長い辺だった。。</p>
-        
-      </section>
-      
-      <header class="tweet-header">
-        
-        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1284251916009041920"
-            target="_blank">2020/7/18 7:21:31</a></p>
-      </header>
-      <section>
-        <p class="tweet-text">時間がかかるという点はとりあえずおいておいて、一番長い辺を軸と並行となるように回転させて、内接長方形を求めてから逆回転する戦法でやってみようか。。</p>
-        
-      </section>
-      
-      <header class="tweet-header">
-        
-        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1284254917088047104"
-            target="_blank">2020/7/18 7:33:27</a></p>
-      </header>
-      <section>
-        <p class="tweet-text">pythonもいじったことのある言語リストに加えることにしよう。<br/><br/>・BASIC(BASIC/QB/VB/VBA/VBS/VB.NET)<br/>・WICS<br/>・ASM(Z80/6502/6809/80X86/68000/WASM)<br/>・C<br/>・COBOL<br/>・C++<br/>・Pascal<br/>・Java<br/>・Haskel<br/>・JS(JavaScript/JScript)<br/>・C#<br/>・PowerShell<br/>・Python<br/><br/>どれも中途半端だし忘れてるものも多いけど😅</p>
-        
-      </section>
-      
-      <header class="tweet-header">
-        
-        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1284255741600083968"
-            target="_blank">2020/7/18 7:36:43</a></p>
-      </header>
-      <section>
-        <p class="tweet-text">私が一番最初に覚えた言語はBASIC。そのおかげで他の言語も比較的容易に理解できるようになったんだよな。ただその言語の特徴的というか、ツボをおさえたプログラミングができてるかというと甚だ疑問である。各言語のトリビア的な知識もまるでないしね。。逆のそういうの知ると「おぉぉ」ってなる😄</p>
-        
-      </section>
-      
-      <header class="tweet-header">
-        
-        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1284303238355808256"
-            target="_blank">2020/7/18 10:45:27</a></p>
-      </header>
-      <section>
-        <p class="tweet-text">うーむ。むちゃくちゃ実行に時間がかかる。。これはひょっとして１時間の大台を超えるのか。。</p>
-        
-      </section>
-      
-      <header class="tweet-header">
-        
-        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1284609583609085952"
-            target="_blank">2020/7/19 7:02:46</a></p>
-      </header>
-      <section>
-        <p class="tweet-text">ポリゴンに内接する最大の長方形を探索するのって、意外に難しいね。。最大のbounding boxを求めるのは比較的簡単だけどね。</p>
-        
-      </section>
-      
-      <header class="tweet-header">
-        
-        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1284610328702054400"
-            target="_blank">2020/7/19 7:05:43</a></p>
-      </header>
-      <section>
-        <p class="tweet-text">ベクトル形式で地図や建物の外形データを作成する労力は途方もないだろうし、これを容易に利用できるように無償で公開している国土地理院にはリスペクトしかないな。。</p>
-        
-      </section>
-      
-      <header class="tweet-header">
-        
-        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1284616311989891072"
-            target="_blank">2020/7/19 7:29:30</a></p>
-      </header>
-      <section>
-        <p class="tweet-text">このmaxrectはポリゴンに内接する最大の軸並行な長方形を求めるものであるが、cvxpyというものを使って解いてるんだよな。このcvxpyちゅうのが全然わからんわけですな。<br/><blockquote class="card card-default"><header><img  src="https://avatars1.githubusercontent.com/u/5247016?s=400&v=4" /><a href="https://github.com/planetlabs/maxrect" target="_blank">GitHub - planetlabs/maxrect: Find the maximally inscribed, axis-aligned rectangle for a given polygon</a></header><div>Find the maximally inscribed, axis-aligned rectangle for a given polygon - planetlabs/maxrect</div></blockquote></p>
-        
-      </section>
-      
-      <header class="tweet-header">
-        
-        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1284617922376200193"
-            target="_blank">2020/7/19 7:35:54</a></p>
-      </header>
-      <section>
-        <p class="tweet-text">cvxpyというのは「最適化問題」を解くためのライブラリのようなんですな。Wikipediaによれば「最適化問題とは特定の集合上で定義された実数値関数または整数値関数についてその値が最小（もしくは最大）となる状態を解析する問題である」ということらしい。<br/><blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="https://www.cvxpy.org/" target="_blank">Welcome to CVXPY 1.1 — CVXPY 1.1.2 documentation</a></header><div></div></blockquote></p>
-        
-      </section>
-      
-      <header class="tweet-header">
-        
-        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1284618704412499969"
-            target="_blank">2020/7/19 7:39:00</a></p>
-      </header>
-      <section>
-        <p class="tweet-text">今回の場合は「ポリゴンに内接する最大の長方形を求める」ということで、最適化問題の１つであるととらえることができて、それを解くのにcvxpyを使っているんだよね。このcvxpy、頭の「cvx」は「convex」の略で凸最適化問題を解くためのものらしい。理解が乏しいので語尾に「らしい」は必須ですわ😅</p>
-        
-      </section>
-      
-      <header class="tweet-header">
-        
-        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1284620392208797696"
-            target="_blank">2020/7/19 7:45:43</a></p>
-      </header>
-      <section>
-        <p class="tweet-text">私は数学的アルゴリズムの知識に乏しく、その筋の人であればこの問題も一目でわかるようなものかもしれないね。しかしまあこのアプローチで進めるのは実行コストがかかりすぎるので、別の「らしく見えるアルゴリズム」も考えることにしようかなと思う😅</p>
-        
-      </section>
-      
-      <header class="tweet-header">
-        
-        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1284620898679455747"
-            target="_blank">2020/7/19 7:47:44</a></p>
-      </header>
-      <section>
-        <p class="tweet-text">ただまあこれはpythonで実行するためにコストがかかるだけかもしれず、例えばC/C++なんかで解くとそんなでもないのかもしれんけどね。</p>
-        
-      </section>
-      
-      <header class="tweet-header">
-        
-        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1284621875641868288"
-            target="_blank">2020/7/19 7:51:36</a></p>
-      </header>
-      <section>
-        <p class="tweet-text">現代のプログラマはある程度の数学的知識・アルゴリズムの知識は広く浅く知っておく必要があるだろうね。「この問題はこのアルゴリズムで解ける（そう）」ということが分かれば詳細は「ググれば」わかるようになってるからね。</p>
-        
-      </section>
-      
-      <header class="tweet-header">
         
         <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1284622559275700225"
             target="_blank">2020/7/19 7:54:19</a></p>
@@ -4537,152 +4021,6 @@ div.no-image {
         <img  class="tweet-img" src="https://pbs.twimg.com/media/Ee2S5QzU8AAzlmu.png" />
         
         <img  class="tweet-img" src="https://pbs.twimg.com/media/Ee2S-z0UwAAj8AX.png" />
-        
-      </section>
-      
-    </article>
-    
-    <article>
-      
-      
-      <header class="tweet-header">
-        
-        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1082744382585856001/rH_k3PtQ_normal.jpg" />
-        <p class="tweet-user-name">SpaceX@SpaceX</p>
-        
-        <p class="tweet-date"><a href="https://twitter.com/SpaceX/status/1290854457136181248"
-            target="_blank">2020/8/5 12:37:40</a></p>
-      </header>
-      <section>
-        <p class="tweet-text">Starship takes flight https://t.co/IWvwcA05hl</p>
-        
-        <video class="tweet-img" controls src="https://video.twimg.com/ext_tw_video/1290854200000167938/pu/vid/482x270/o2SNpfaL53UjgYYK.mp4?tag=10" />
-        
-      </section>
-      
-    </article>
-    
-    <article>
-      
-      
-      <header class="tweet-header">
-        
-        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/651952641/southpark_normal.jpg" />
-        <p class="tweet-user-name">依田四十郎@yorita3</p>
-        
-        <p class="tweet-date"><a href="https://twitter.com/yorita3/status/1290643474866417665"
-            target="_blank">2020/8/4 22:39:18</a></p>
-      </header>
-      <section>
-        <p class="tweet-text">「ねぇsiri、今日の予定を教えて。………あれ？siri？どこ行っちゃったの？！」<br/>siriにもたまには息抜きが必要なようです。<br/><br/>ということで、新作ジオラマ完成しました！<br/>とても可愛い感じに出来て満足です😁 https://t.co/2fM4gdtmCV</p>
-        
-        <video class="tweet-img" controls src="https://video.twimg.com/ext_tw_video/1290643416234242048/pu/vid/720x1280/CxdLBK2eIpBGXrot.mp4?tag=10" />
-        
-      </section>
-      
-    </article>
-    
-    <article>
-      
-      
-      <header class="tweet-header">
-        
-        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1158725431094235137/I88pVyAm_normal.jpg" />
-        <p class="tweet-user-name">小澤至論 Michinori Ozawa@oz_shiron</p>
-        
-        <p class="tweet-date"><a href="https://twitter.com/oz_shiron/status/1290760029243494403"
-            target="_blank">2020/8/5 6:22:26</a></p>
-      </header>
-      <section>
-        <p class="tweet-text">8月5日は #箱の日 でしたか。<br/><br/>スターフォックスのラスボス戦で顔の描かれた立方体が出てくるんですけど、この時代にこのスペックでテクスチャーが貼られたポリゴンを表示するのって凄くないですか！？初めて見た時は驚いたな〜。<br/><br/> https://t.co/Jtqxp2rBvG</p>
-        
-        <video class="tweet-img" controls src="https://video.twimg.com/ext_tw_video/1248538199896379399/pu/vid/1280x720/iw3KB4itGStKv60i.mp4?tag=10" />
-        
-      </section>
-      
-    </article>
-    
-    <article>
-      
-      
-      <header class="tweet-header">
-        
-        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1212701145379946496/pSDVrvWj_normal.png" />
-        <p class="tweet-user-name">S.F.@SFPGMR</p>
-        
-        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1289865830969139200"
-            target="_blank">2020/8/2 19:09:13</a></p>
-      </header>
-      <section>
-        <p class="tweet-text">このツールすげえなあ。。<br/><br/><blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="https://ephtracy.github.io/index.html?page=aerialod" target="_blank">MagicaVoxel</a></header><div></div></blockquote> https://t.co/NdwZ3zOR9L</p>
-        
-        <img  class="tweet-img" src="https://pbs.twimg.com/media/EeaGIgVU0AEatp5.jpg" />
-        
-      </section>
-      
-      <header class="tweet-header">
-        
-        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1289878860360585217"
-            target="_blank">2020/8/2 20:00:59</a></p>
-      </header>
-      <section>
-        <p class="tweet-text">四国側から広島を望む。。 https://t.co/P1nHjl0jva</p>
-        
-        <img  class="tweet-img" src="https://pbs.twimg.com/media/EeaR6ZMU8AUtxMe.png" />
-        
-      </section>
-      
-      <header class="tweet-header">
-        
-        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1289886601753931776"
-            target="_blank">2020/8/2 20:31:45</a></p>
-      </header>
-      <section>
-        <p class="tweet-text">福岡 https://t.co/GLYkxGtBMY</p>
-        
-        <img  class="tweet-img" src="https://pbs.twimg.com/media/EeaY_y6VoAAP9cC.jpg" />
-        
-      </section>
-      
-      <header class="tweet-header">
-        
-        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1289886750492332032"
-            target="_blank">2020/8/2 20:32:20</a></p>
-      </header>
-      <section>
-        <p class="tweet-text">岐阜～富山～長野あたり https://t.co/i0FMMlX2nj</p>
-        
-        <img  class="tweet-img" src="https://pbs.twimg.com/media/EeaZEEgVAAAzcZ_.jpg" />
-        
-      </section>
-      
-      <header class="tweet-header">
-        
-        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1289886987281813504"
-            target="_blank">2020/8/2 20:33:17</a></p>
-      </header>
-      <section>
-        <p class="tweet-text">岩木山 https://t.co/xk7dD2BME2</p>
-        
-        <img  class="tweet-img" src="https://pbs.twimg.com/media/EeaZP1SUwAAnYFi.png" />
-        
-      </section>
-      
-    </article>
-    
-    <article>
-      
-      
-      <header class="tweet-header">
-        
-        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1212701145379946496/pSDVrvWj_normal.png" />
-        <p class="tweet-user-name">S.F.@SFPGMR</p>
-        
-        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1289477538754916352"
-            target="_blank">2020/8/1 17:26:17</a></p>
-      </header>
-      <section>
-        <p class="tweet-text"><blockquote class="card card-large"><header><img  src="https://www.4gamer.net/games/464/G046401/20200730052/SS/004.jpg" /><a href="https://www.4gamer.net/games/464/G046401/20200730052/" target="_blank">地球をまるごとAIで再現。「Microsoft Flight Simulator」プレス向けプレゼンテーションから最新作の技術面に迫る</a></header><div>　Microsoftから2020年8月18日にリリースされる人気フライトシムシリーズの最新作「Microsoft Flight Simulator」。その発売に先駆けて先日，プレス向けのプレゼンテーションがオンラインで実施された。本稿ではその模様をまとめてレポートしよう。</div></blockquote></p>
         
       </section>
       

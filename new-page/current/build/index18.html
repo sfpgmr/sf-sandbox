@@ -18,7 +18,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <title>Twitter Viewer</title>
-  <meta name="description" content="リニューアル用のトップページデザインを考えて実装する" />
+  <meta name="description" content="自作Twitter Viewerによる自分のつぶやきの記録。Programming,Music,HTML5,WebGL,javascript,WebAudio,Gameなど" />
   <meta name="keywords" content="Programming,Music,HTML5,WebGL,javascript,WebAudio" /> 	
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
@@ -28,13 +28,13 @@
   <meta name="twitter:card" content="summary" />
   <meta name="twitter:site" content="S.F. Web" />
   <meta name="twitter:url" content="./index18.html" />
-  <meta name="twitter:title" content="リニューアル用のトップページデザイン" />
-  <meta name="twitter:description" content="リニューアル用のトップページデザインを考えて実装する" />
+  <meta name="twitter:title" content="Twitter Viewer" />
+  <meta name="twitter:description" content="自作Twitter Viewerによる自分のつぶやきの記録。Programming,Music,HTML5,WebGL,javascript,WebAudio,Gameなど" />
   <meta name="twitter:image" content="https://www.sfpgmr.net/img/sfweb.png" />
   
   <meta property="og:type" content="article">
   <meta property="og:url" content="./index18.html" />
-  <meta property="og:title" content="リニューアル用のトップページデザイン"/>
+  <meta property="og:title" content="Twitter Viewer"/>
   <meta property="og:site_name" content="S.F. Web" />
   <meta property="og:description" content="Programming,Music,HTML5,WebGL,javascript,WebAudio">
   <meta property="og:image" content="https://www.sfpgmr.net/img/sfweb.png">
@@ -43,21 +43,19 @@
   * {
   margin: 0;
   padding: 0;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-}
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
 
 html {
   margin: 0;
   padding: 0;
-  font-size: 10px;
-}
+  font-size: 10px; }
 
 body {
   margin: 0;
-  padding: 0;
+  padding-left: 8px;
+  padding-right: 8px;
   background: black;
-  color: white;
-}
+  color: white; }
 
 .top-nav {
   position: fixed;
@@ -66,44 +64,25 @@ body {
   display: block;
   width: 100%;
   height: 32px;
-  color: white;
-}
+  color: white; }
 
 #sentinel {
   width: 0px;
-  height: 0px;
-}
+  height: 0px; }
 
 .contents {
   padding-top: 32px;
   width: 100%;
   position: relative;
-  content: strict;
-}
-
-@-webkit-keyframes blinking {
-  0% {
-    color: black;
-  }
-  50% {
-    color: white;
-  }
-  100% {
-    color: black;
-  }
-}
+  content: strict; }
 
 @keyframes blinking {
   0% {
-    color: black;
-  }
+    color: black; }
   50% {
-    color: white;
-  }
+    color: white; }
   100% {
-    color: black;
-  }
-}
+    color: black; } }
 
 .loading {
   font-family: monospace;
@@ -115,10 +94,8 @@ body {
   padding-top: 50vh;
   z-index: 32768;
   background: black;
-  -webkit-animation: blinking 2s infinite;
-          animation: blinking 2s infinite;
-  content: strict;
-}
+  animation: blinking 2s infinite;
+  content: strict; }
 
 .contents > article {
   background: #f0f0f0;
@@ -128,39 +105,27 @@ body {
   overflow: auto;
   border-radius: 3px;
   /* transition: opacity 1s linear;*/
-  opacity: 1.0;
-}
+  opacity: 1.0; }
 
 .tweet-header {
-  display: -ms-grid;
   display: grid;
-  -webkit-box-align: end;
-      -ms-flex-align: end;
-          align-items: end;
-  -ms-grid-columns: 40px 2fr 1fr;
-      grid-template-columns: 40px 2fr 1fr;
-  -ms-grid-rows: 1fr;
-      grid-template-rows: 1fr;
+  align-items: end;
+  grid-template-columns: 40px 2fr 1fr;
+  grid-template-rows: 1fr;
   font-size: 12px;
-  font-weight: bold;
-}
+  font-weight: bold; }
 
 .tweet-img {
   width: 100%;
-  -o-object-fit: cover;
-     object-fit: cover;
-}
+  object-fit: cover; }
 
 .youtube {
   position: relative;
-  cursor: pointer;
-}
+  cursor: pointer; }
 
 .youtube > img {
   width: 100%;
-  -o-object-fit: cover;
-     object-fit: cover;
-}
+  object-fit: cover; }
 
 .youtube > svg.player-play {
   width: 64px;
@@ -169,16 +134,13 @@ body {
   top: calc(50% - 32px);
   position: absolute;
   z-index: 1000;
-  opacity: 0.5;
-}
+  opacity: 0.5; }
 
 .youtube:hover > svg.player-play {
-  opacity: 1.0;
-}
+  opacity: 1.0; }
 
 .youtube:hover .player-play-1 {
-  stroke: #80808080;
-}
+  stroke: #80808080; }
 
 .youtube > div.yt-title {
   /*text-shadow: #fff 1px 1px 0;*/
@@ -189,77 +151,56 @@ body {
   left: 0;
   top: 0;
   overflow: auto;
-  z-index: 998;
-}
+  z-index: 998; }
 
 .tweet-profile-img {
-  -ms-grid-column: 1;
-  -ms-grid-column-span: 1;
   grid-column: 1/2;
   width: 32px;
   height: 32px;
-  border-radius: 50%;
-}
+  border-radius: 50%; }
 
 .tweet-user-name {
-  -ms-grid-column: 2;
-  -ms-grid-column-span: 1;
-  grid-column: 2/3;
-}
+  grid-column: 2/3; }
 
 .tweet-date {
   font-size: 8px;
   text-align: right;
-  -ms-grid-column: 3;
-  -ms-grid-column-span: 1;
-  grid-column: 3/4;
-}
+  grid-column: 3/4; }
 
 .contents > twitter-widget {
   overflow: auto;
   max-height: 960px;
-  position: absolute;
-}
+  position: absolute; }
 
 .contents > article > section > .tweet-text {
   display: block;
   padding: 4px;
   word-break: break-all;
-  font-size: 12px;
-}
+  font-size: 12px; }
 
 .contents > article > h3 {
-  font-size: 12px;
-}
+  font-size: 12px; }
 
 blockquote.card {
   margin: 4px;
   padding: 4px;
   font-size: 12px;
   background: white;
-  border-radius: 4px;
-}
+  border-radius: 4px; }
 
 blockquote.card > header {
-  display: -ms-grid;
   display: grid;
   grid-gap: 4px;
-  gap: 4px;
-}
+  gap: 4px; }
 
 blockquote.card-default > header {
-  -ms-grid-columns: 64px 1fr;
-      grid-template-columns: 64px 1fr;
-}
+  grid-template-columns: 64px 1fr; }
 
 blockquote.card-large > header {
-  -ms-grid-columns: 1fr;
-      grid-template-columns: 1fr;
-}
+  grid-template-columns: 1fr; }
 
 blockquote.card > header > img {
-  width: 100%;
-}
+  width: 100%; }
 
 div.no-image {
   display: block;
@@ -268,9 +209,8 @@ div.no-image {
   background: gray;
   color: white;
   text-align: center;
-  line-height: 64px;
-}
-/*# sourceMappingURL=style.css.map */ 
+  line-height: 64px; }
+ 
   </style>
 </head>
 
@@ -281,6 +221,96 @@ div.no-image {
   </header>
   <div class="contents" id="contents" rendersubtree="invisible skip-activation"> 
     
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1212701145379946496/pSDVrvWj_normal.png" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1261232126466256897"
+            target="_blank">2020/5/15 18:49:06</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">これをちょっと読もうとしている。。<br/><blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="http://troubles.md/posts/wasm-is-not-a-stack-machine/" target="_blank">WebAssembly Troubles part 1: WebAssembly Is Not a Stack Machine</a></header><div></div></blockquote></p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1212701145379946496/pSDVrvWj_normal.png" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1261231266914955265"
+            target="_blank">2020/5/15 18:45:41</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">なんかちょっと、rustに興味がわいてきたなあ。前から興味がなかったかといえばそうではないけど。denoがrustで作られてると聞いたりbinaryenもrustのbindingがあると聞くとねえ。。<br/><br/><blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="https://deno.land/" target="_blank">Deno</a></header><div></div></blockquote></p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1212701145379946496/pSDVrvWj_normal.png" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1261038007856984064"
+            target="_blank">2020/5/15 5:57:44</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">deno 1.0かあ。これ面白いよなあ。<br/><br/><blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="https://deno.land/" target="_blank">Deno</a></header><div></div></blockquote></p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1212701145379946496/pSDVrvWj_normal.png" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1260839103429373952"
+            target="_blank">2020/5/14 16:47:22</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">この曲のサンプリング・ボイスはコルグSDD 1000あたりが使われてるらしいね。これはデジタル・ディレイで２秒くらいサンプリングできるもの。トリガーで鳴らすことができたようだ。<br/><br/>Haruomi Hosono - S-F-X - 01 - Body Snatchers<br/><div class="youtube" data-type="yt" id="d4gypiuQt5E"><div class="yt-title">Youtube - Haruomi Hosono - S-F-X - 01 - Body Snatchers</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img  data-href="https://youtu.be/d4gypiuQt5E" class="youtube" src="https://i.ytimg.com/vi/d4gypiuQt5E/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1267819337026420739/GBuq7wjs_normal.jpg" />
+        <p class="tweet-user-name">Deno@deno_land</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/deno_land/status/1260199156037169153"
+            target="_blank">2020/5/12 22:24:26</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">v1.0.0-rc3 released with some last minute changes. v1.0.0 will be released tomorrow.<br/><a href="https://github.com/denoland/deno/releases/tag/v1.0.0-rc3" target="_blank">github.com/denoland/deno/…</a></p>
+        
+      </section>
+      
+    </article>
     
     <article>
       
@@ -585,116 +615,6 @@ div.no-image {
       </header>
       <section>
         <p class="tweet-text">この曲は少しそういうファンク臭を感じるんだな。なぜか。林立夫さんと細野さんという強力なリズム隊のせいなのか。。<br/><br/>Haruomi Hosono - 薔薇と野獣<br/><div class="youtube" data-type="yt" id="MjcwyLQbH-o"><div class="yt-title">Youtube - Haruomi Hosono - 薔薇と野獣</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img  data-href="https://youtu.be/MjcwyLQbH-o" class="youtube" src="https://i.ytimg.com/vi/MjcwyLQbH-o/hqdefault.jpg" /></div>   <br/></p>
-        
-      </section>
-      
-    </article>
-    
-    <article>
-      
-      
-      <header class="tweet-header">
-        
-        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1212701145379946496/pSDVrvWj_normal.png" />
-        <p class="tweet-user-name">S.F.@SFPGMR</p>
-        
-        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1259411210677612545"
-            target="_blank">2020/5/10 18:13:26</a></p>
-      </header>
-      <section>
-        <p class="tweet-text">heroku使うとgithubと連携して自動デプロイとか普通にできるんだなあ。私は全部自前でやってたけど、hobbyプランとかで自分の環境もそっちに引っ越そうかなと思ったな。</p>
-        
-      </section>
-      
-      <header class="tweet-header">
-        
-        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1259431069545193473"
-            target="_blank">2020/5/10 19:32:20</a></p>
-      </header>
-      <section>
-        <p class="tweet-text">しかし息子にgitによるソースコード管理の方法を教えることになるとは。。いうても私もそんなに詳しくないし、ローカルとリモートリポジトリの関係と、commitしてリモートにpushするやり方を教えただけだけどね。</p>
-        
-      </section>
-      
-    </article>
-    
-    <article>
-      
-      
-      <header class="tweet-header">
-        
-        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1247390378635845632/-ltyS1Gy_normal.jpg" />
-        <p class="tweet-user-name">すぴかあやか（角田綾佳）＠キテレツ@spicagraph</p>
-        
-        <p class="tweet-date"><a href="https://twitter.com/spicagraph/status/1259316806755348485"
-            target="_blank">2020/5/10 11:58:18</a></p>
-      </header>
-      <section>
-        <p class="tweet-text">映画でもデザインでも、なんでもこれだと思います https://t.co/GOKlyUY0hm</p>
-        
-        <img  class="tweet-img" src="https://pbs.twimg.com/media/EXn93xRVAAEfC6d.jpg" />
-        
-      </section>
-      
-    </article>
-    
-    <article>
-      
-      
-      <header class="tweet-header">
-        
-        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1212701145379946496/pSDVrvWj_normal.png" />
-        <p class="tweet-user-name">S.F.@SFPGMR</p>
-        
-        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1259288928038731776"
-            target="_blank">2020/5/10 10:07:31</a></p>
-      </header>
-      <section>
-        <p class="tweet-text">構文を考えながらこれをぼちぼち読んでる。<br/><br/>低レイヤを知りたい人のためのCコンパイラ作成入門<br/><blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="https://www.sigbus.info/compilerbook" target="_blank">低レイヤを知りたい人のためのCコンパイラ作成入門</a></header><div></div></blockquote></p>
-        
-      </section>
-      
-    </article>
-    
-    <article>
-      
-      
-      <header class="tweet-header">
-        
-        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/858198338444836864/OFlImt8f_normal.jpg" />
-        <p class="tweet-user-name">V@voluntas</p>
-        
-        <p class="tweet-date"><a href="https://twitter.com/voluntas/status/1259147784948559872"
-            target="_blank">2020/5/10 0:46:40</a></p>
-      </header>
-      <section>
-        <p class="tweet-text">時雨堂を支えるマネージメント <a href="https://gist.github.com/voluntas/fa1a3c50ce988b5c187e5036419b145a" target="_blank">gist.github.com/voluntas/fa1a3…</a> 更新した。</p>
-        
-      </section>
-      
-    </article>
-    
-    <article>
-      
-      
-      <header class="tweet-header">
-        
-        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/731335621789147137/bWURa4wY_normal.jpg" />
-        <p class="tweet-user-name">トモカズ@tomo0354</p>
-        
-        <p class="tweet-date"><a href="https://twitter.com/tomo0354/status/1253509971951497218"
-            target="_blank">2020/4/24 11:24:01</a></p>
-      </header>
-      <section>
-        <p class="tweet-text">SHARP ポケコン PC-G850Vの液晶に縦線が入ってしまった。<br/>※写真では2本だけですが電源投入直後は4本でした<br/><br/>同様の症状で修理している方も多くいらっしゃるようで、私も同様の処置をしたら直りました。<br/><br/>現在、ポケコンの使途は（プログラミングでは無く）主に電卓としてなのですが、無いと不便です。 https://t.co/IRVNNJcp3t</p>
-        
-        <img  class="tweet-img" src="https://pbs.twimg.com/media/EWVZPeAUEAEfPf_.jpg" />
-        
-        <img  class="tweet-img" src="https://pbs.twimg.com/media/EWVZRNpUEAIZ0zt.jpg" />
-        
-        <img  class="tweet-img" src="https://pbs.twimg.com/media/EWVZSWXU4AAeDjQ.jpg" />
-        
-        <img  class="tweet-img" src="https://pbs.twimg.com/media/EWVZTzgUMAA5C3l.jpg" />
         
       </section>
       

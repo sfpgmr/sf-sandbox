@@ -23,7 +23,6 @@ const lazyLoading = '';
   <title>Twitter Viewer</title>
   <meta name="description" content="<%=meta.description%>" />
   <meta name="keywords" content="<%=meta.keywords%>" /> 	
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
   <meta itemprop="image" content="<%-meta.imageUrl%>" />
   <meta itemprop="name" content="<%=meta.siteName%>" />
@@ -86,7 +85,7 @@ const lazyLoading = '';
                   //   || (meta.json_lds && ((meta.json_lds[0].image instanceof Array) ? meta.json_lds[0].image[0] : meta.json_lds[0].image));
                   // const desc = meta.description || (meta.twitter && meta.twitter.description) || (meta.json_lds && meta.json_lds[0].description);
                   const desc = meta.description || (meta.og && meta.og.description) || '';
-                  console.log(desc);
+                  //console.log(desc);
                   let img = (meta.twitter && meta.twitter.image && (meta.twitter.image.src || meta.twitter.image)) || (meta.og && meta.og.image);
                   img = img ? `<img ${lazyLoading} src="${img}" />`:'<div class="no-image" >No Image</div>';  
                   

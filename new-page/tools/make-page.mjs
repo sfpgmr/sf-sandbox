@@ -1,22 +1,29 @@
 
 import fs from 'fs';
 import ejs from 'ejs';
+import Database from 'better-sqlite3';
 
 
 (async () => {
-  const tweetsOriginal =
-    JSON.parse(await fs.promises.readFile('./data/tweet2.json', 'utf8'))
-      .sort((a, b) => {
-        const ad = a.id, bd = b.id;
 
-        if (ad < bd) {
-          return -1;
-        }
-        if (ad > bd) {
-          return 1;
-        }
-        return 0;
-      });
+  const db = new Database('../data/tweets.db');
+  const stmt = db.prepare('select tweet from tweets order by id');
+  let tweetsOriginal = stmt.all();
+  tweetsOriginal = tweetsOriginal.map(d=>JSON.parse(d.tweet));
+ 
+  // const tweetsOriginal =
+  //   JSON.parse(await fs.promises.readFile('./data/tweet2.json', 'utf8'))
+  //     .sort((a, b) => {
+  //       const ad = a.id, bd = b.id;
+
+  //       if (ad < bd) {
+  //         return -1;
+  //       }
+  //       if (ad > bd) {
+  //         return 1;
+  //       }
+  //       return 0;
+  //     });
   const tweets = [];
   tweetsOriginal.forEach(tweet => {
     if (!tweet.in_reply_to_status_id) {
@@ -68,7 +75,7 @@ import ejs from 'ejs';
     const tweetFragments = tweets.splice(0,10);
     const fname = `index${!page?'':page}.html`;
     const url = "./" + fname;
-    const html = await ejs.renderFile('./current/src/ejs/index.ejs', 
+    const html = await ejs.renderFile('../current/src/ejs/index.ejs', 
     { tweets: tweetFragments,
       meta:{
         title:'Twitter Viewer',
@@ -81,7 +88,7 @@ import ejs from 'ejs';
       }
   
     });
-    await fs.promises.writeFile(`./current/src/html/${fname}`, html, 'utf8');
+    await fs.promises.writeFile(`../current/src/html/${fname}`, html, 'utf8');
     ++page;
   }
 })();

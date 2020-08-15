@@ -1,13 +1,13 @@
 export default {
   "buildCommands":[
-    "node --experimental-modules ./tools/make-page.mjs",
+    "node-sass ./current/src/css/style.scss > ./current/src/css/style.css",
+    "cd ~/pj/sandbox/new-page/tools && node ./make-page.mjs",
     "rollup -c ./rollup.config.js"
   ],
   "copyFiles":[
   "./current/src/html",
-  "./current/src/js/minimasonry.min.js",
   "./current/src/css/style.css",
-  "./current/src/css/style-masonry.css",
+  "./current/src/css/style.css.map",
   "./current/build/index.js"
   ],
   "symlinkFiles":[],

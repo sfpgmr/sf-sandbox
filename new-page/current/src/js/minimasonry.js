@@ -12,7 +12,7 @@ export default class MiniMasonry {
 
       this.conf = {
         baseWidth: 255,
-        gutter: 10,
+        gutter: 4,
         container: null,
         minify: true
       };

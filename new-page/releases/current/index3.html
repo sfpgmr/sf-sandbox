@@ -17,8 +17,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <title>トップページをリニューアルする</title>
-  <meta name="description" content="リニューアル用のトップページデザインを考えて実装する" />
+  <title>Twitter Viewer</title>
+  <meta name="description" content="自作Twitter Viewerによる自分のつぶやきの記録。Programming,Music,HTML5,WebGL,javascript,WebAudio,Gameなど" />
   <meta name="keywords" content="Programming,Music,HTML5,WebGL,javascript,WebAudio" /> 	
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
@@ -28,13 +28,13 @@
   <meta name="twitter:card" content="summary" />
   <meta name="twitter:site" content="S.F. Web" />
   <meta name="twitter:url" content="./index3.html" />
-  <meta name="twitter:title" content="リニューアル用のトップページデザイン" />
-  <meta name="twitter:description" content="リニューアル用のトップページデザインを考えて実装する" />
+  <meta name="twitter:title" content="Twitter Viewer" />
+  <meta name="twitter:description" content="自作Twitter Viewerによる自分のつぶやきの記録。Programming,Music,HTML5,WebGL,javascript,WebAudio,Gameなど" />
   <meta name="twitter:image" content="https://www.sfpgmr.net/img/sfweb.png" />
   
   <meta property="og:type" content="article">
   <meta property="og:url" content="./index3.html" />
-  <meta property="og:title" content="リニューアル用のトップページデザイン"/>
+  <meta property="og:title" content="Twitter Viewer"/>
   <meta property="og:site_name" content="S.F. Web" />
   <meta property="og:description" content="Programming,Music,HTML5,WebGL,javascript,WebAudio">
   <meta property="og:image" content="https://www.sfpgmr.net/img/sfweb.png">
@@ -43,21 +43,19 @@
   * {
   margin: 0;
   padding: 0;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-}
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
 
 html {
   margin: 0;
   padding: 0;
-  font-size: 10px;
-}
+  font-size: 10px; }
 
 body {
   margin: 0;
-  padding: 0;
+  padding-left: 8px;
+  padding-right: 8px;
   background: black;
-  color: white;
-}
+  color: white; }
 
 .top-nav {
   position: fixed;
@@ -66,44 +64,25 @@ body {
   display: block;
   width: 100%;
   height: 32px;
-  color: white;
-}
+  color: white; }
 
 #sentinel {
   width: 0px;
-  height: 0px;
-}
+  height: 0px; }
 
 .contents {
   padding-top: 32px;
   width: 100%;
   position: relative;
-  content: strict;
-}
-
-@-webkit-keyframes blinking {
-  0% {
-    color: black;
-  }
-  50% {
-    color: white;
-  }
-  100% {
-    color: black;
-  }
-}
+  content: strict; }
 
 @keyframes blinking {
   0% {
-    color: black;
-  }
+    color: black; }
   50% {
-    color: white;
-  }
+    color: white; }
   100% {
-    color: black;
-  }
-}
+    color: black; } }
 
 .loading {
   font-family: monospace;
@@ -115,10 +94,8 @@ body {
   padding-top: 50vh;
   z-index: 32768;
   background: black;
-  -webkit-animation: blinking 2s infinite;
-          animation: blinking 2s infinite;
-  content: strict;
-}
+  animation: blinking 2s infinite;
+  content: strict; }
 
 .contents > article {
   background: #f0f0f0;
@@ -128,39 +105,27 @@ body {
   overflow: auto;
   border-radius: 3px;
   /* transition: opacity 1s linear;*/
-  opacity: 1.0;
-}
+  opacity: 1.0; }
 
 .tweet-header {
-  display: -ms-grid;
   display: grid;
-  -webkit-box-align: end;
-      -ms-flex-align: end;
-          align-items: end;
-  -ms-grid-columns: 40px 2fr 1fr;
-      grid-template-columns: 40px 2fr 1fr;
-  -ms-grid-rows: 1fr;
-      grid-template-rows: 1fr;
+  align-items: end;
+  grid-template-columns: 40px 2fr 1fr;
+  grid-template-rows: 1fr;
   font-size: 12px;
-  font-weight: bold;
-}
+  font-weight: bold; }
 
 .tweet-img {
   width: 100%;
-  -o-object-fit: cover;
-     object-fit: cover;
-}
+  object-fit: cover; }
 
 .youtube {
   position: relative;
-  cursor: pointer;
-}
+  cursor: pointer; }
 
 .youtube > img {
   width: 100%;
-  -o-object-fit: cover;
-     object-fit: cover;
-}
+  object-fit: cover; }
 
 .youtube > svg.player-play {
   width: 64px;
@@ -169,16 +134,13 @@ body {
   top: calc(50% - 32px);
   position: absolute;
   z-index: 1000;
-  opacity: 0.5;
-}
+  opacity: 0.5; }
 
 .youtube:hover > svg.player-play {
-  opacity: 1.0;
-}
+  opacity: 1.0; }
 
 .youtube:hover .player-play-1 {
-  stroke: #80808080;
-}
+  stroke: #80808080; }
 
 .youtube > div.yt-title {
   /*text-shadow: #fff 1px 1px 0;*/
@@ -189,77 +151,56 @@ body {
   left: 0;
   top: 0;
   overflow: auto;
-  z-index: 998;
-}
+  z-index: 998; }
 
 .tweet-profile-img {
-  -ms-grid-column: 1;
-  -ms-grid-column-span: 1;
   grid-column: 1/2;
   width: 32px;
   height: 32px;
-  border-radius: 50%;
-}
+  border-radius: 50%; }
 
 .tweet-user-name {
-  -ms-grid-column: 2;
-  -ms-grid-column-span: 1;
-  grid-column: 2/3;
-}
+  grid-column: 2/3; }
 
 .tweet-date {
   font-size: 8px;
   text-align: right;
-  -ms-grid-column: 3;
-  -ms-grid-column-span: 1;
-  grid-column: 3/4;
-}
+  grid-column: 3/4; }
 
 .contents > twitter-widget {
   overflow: auto;
   max-height: 960px;
-  position: absolute;
-}
+  position: absolute; }
 
 .contents > article > section > .tweet-text {
   display: block;
   padding: 4px;
   word-break: break-all;
-  font-size: 12px;
-}
+  font-size: 12px; }
 
 .contents > article > h3 {
-  font-size: 12px;
-}
+  font-size: 12px; }
 
 blockquote.card {
   margin: 4px;
   padding: 4px;
   font-size: 12px;
   background: white;
-  border-radius: 4px;
-}
+  border-radius: 4px; }
 
 blockquote.card > header {
-  display: -ms-grid;
   display: grid;
   grid-gap: 4px;
-  gap: 4px;
-}
+  gap: 4px; }
 
 blockquote.card-default > header {
-  -ms-grid-columns: 64px 1fr;
-      grid-template-columns: 64px 1fr;
-}
+  grid-template-columns: 64px 1fr; }
 
 blockquote.card-large > header {
-  -ms-grid-columns: 1fr;
-      grid-template-columns: 1fr;
-}
+  grid-template-columns: 1fr; }
 
 blockquote.card > header > img {
-  width: 100%;
-}
+  width: 100%; }
 
 div.no-image {
   display: block;
@@ -268,9 +209,8 @@ div.no-image {
   background: gray;
   color: white;
   text-align: center;
-  line-height: 64px;
-}
-/*# sourceMappingURL=style.css.map */ 
+  line-height: 64px; }
+ 
   </style>
 </head>
 
@@ -281,6 +221,120 @@ div.no-image {
   </header>
   <div class="contents" id="contents" rendersubtree="invisible skip-activation"> 
     
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1212701145379946496/pSDVrvWj_normal.png" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1287344791865323520"
+            target="_blank">2020/7/26 20:11:30</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">@voyetrasyn 私もApple IIは詳しくないのですが、色ずれがないとApple IIらしさがなくなる気がしますね。。あの色のあの感じが独特でしたからね。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1212701145379946496/pSDVrvWj_normal.png" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1286615706033823745"
+            target="_blank">2020/7/24 19:54:23</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">@akune69 昔のゲームの大半はアセンブラ・ベースでしたね。パソコン用のコンパイラもまだ黎明期で今のような最適化機能はありませんでしたし、PCの処理速度も厳しくアセンブラで書かざるを得なかったという側面はありましたね。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1280826850923560962/f2OS7f9p_normal.jpg" />
+        <p class="tweet-user-name">ざきち@zakichi_</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/zakichi_/status/1286220155391860736"
+            target="_blank">2020/7/23 17:42:36</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">#4連休だ俺のフリゲを遊んでくれ<br/><br/>VASTYNEX<br/><br/>#サンダーフォース 関連の動画を見ていたらなぜか急にやる気が出てそれまでいくつか温めていたネタがあったので勢いで作った #STG<br/><br/>他にもあれやこれやが登場するかもしれません<br/><br/>DL:<a href="http://zakichi.ojaru.jp/vastynex.html" target="_blank">zakichi.ojaru.jp/vastynex.html</a> https://t.co/z4jiUNv0EO</p>
+        
+        <video class="tweet-img" controls src="https://video.twimg.com/ext_tw_video/1286219926529650688/pu/vid/432x270/oK4uMgWcS2aeMQaA.mp4?tag=10" />
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1212701145379946496/pSDVrvWj_normal.png" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1286229208046252032"
+            target="_blank">2020/7/23 18:18:34</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">オールアバウトナムコかあ。。持ってたなあ。。XEVIOUSのSEの譜面とかこれに載ってたんだっけかな。。<br/><br/><blockquote class="card card-default"><header><img  src="https://www.dempa.co.jp/img_sns.png" /><a href="https://www.dempa.co.jp/latest_information_2.php" target="_blank">最新情報</a></header><div>株式会社電波新聞社</div></blockquote></p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1235296417650003968/COXanqez_normal.jpg" />
+        <p class="tweet-user-name">p@p_no_shogeki</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/p_no_shogeki/status/1285911112832057344"
+            target="_blank">2020/7/22 21:14:35</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">SS『テラクレスタ3D』<br/>今日のこんばんはSTGは、1997年日本物産より発売、日本物産開発のセガサターン向け縦スクロールSTG！<br/>こんなに迫力のあるテラクレスタはこれだけだ！ https://t.co/y8WAzhka5C</p>
+        
+        <video class="tweet-img" controls src="https://video.twimg.com/ext_tw_video/1285910794190721025/pu/vid/350x270/7ANYvtA5k8y_nC9Y.mp4?tag=10" />
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1212701145379946496/pSDVrvWj_normal.png" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1286118064421888000"
+            target="_blank">2020/7/23 10:56:56</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">マジなのか。。<br/>私のコードも北極の地下に保存されとるわ。 https://t.co/ysEHM51SDG</p>
+        
+        <img  class="tweet-img" src="https://pbs.twimg.com/media/Edk1HEVUwAAu1wU.png" />
+        
+      </section>
+      
+    </article>
     
     <article>
       
@@ -351,134 +405,6 @@ div.no-image {
       </header>
       <section>
         <p class="tweet-text">10円玉を鏡面仕上げにすると… <a href="https://twitter.com/CrezyScience/status/1283702475917332481/video/1" target="_blank">twitter.com/CrezyScience/s…</a></p>
-        
-      </section>
-      
-    </article>
-    
-    <article>
-      
-      
-      <header class="tweet-header">
-        
-        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1212701145379946496/pSDVrvWj_normal.png" />
-        <p class="tweet-user-name">S.F.@SFPGMR</p>
-        
-        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1285157537029877761"
-            target="_blank">2020/7/20 19:20:08</a></p>
-      </header>
-      <section>
-        <p class="tweet-text">@nico_shindannin ヒントありがとうございます。山登り法ですか。。</p>
-        
-      </section>
-      
-    </article>
-    
-    <article>
-      
-      
-      <header class="tweet-header">
-        
-        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/846106819391115264/iZAxk4qr_normal.jpg" />
-        <p class="tweet-user-name">🔎Julia Evans🔍@b0rk</p>
-        
-        <p class="tweet-date"><a href="https://twitter.com/b0rk/status/1284528767151611904"
-            target="_blank">2020/7/19 1:41:38</a></p>
-      </header>
-      <section>
-        <p class="tweet-text">inline vs block https://t.co/acvb0XTedG</p>
-        
-        <img  class="tweet-img" src="https://pbs.twimg.com/media/EdOQGgTXgAE5QdB.jpg" />
-        
-      </section>
-      
-    </article>
-    
-    <article>
-      
-      
-      <header class="tweet-header">
-        
-        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/875830041849905153/r416xJk5_normal.jpg" />
-        <p class="tweet-user-name">ユリグミ@BitbltRilo</p>
-        
-        <p class="tweet-date"><a href="https://twitter.com/BitbltRilo/status/1284750486487220225"
-            target="_blank">2020/7/19 16:22:40</a></p>
-      </header>
-      <section>
-        <p class="tweet-text">アンドアジェネシス、出るだけなら...(^^;) https://t.co/S7YHbkTZZP</p>
-        
-        <video class="tweet-img" controls src="https://video.twimg.com/ext_tw_video/1284750115467476993/pu/vid/474x270/V4SCaphpW7WXwEbc.mp4?tag=10" />
-        
-      </section>
-      
-    </article>
-    
-    <article>
-      
-      
-      <header class="tweet-header">
-        
-        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1212701145379946496/pSDVrvWj_normal.png" />
-        <p class="tweet-user-name">S.F.@SFPGMR</p>
-        
-        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1284761911423168512"
-            target="_blank">2020/7/19 17:08:04</a></p>
-      </header>
-      <section>
-        <p class="tweet-text">.@AGE43 さんのコメント「SMC-777、ナ△コでもグラフィックにつかっていました。　色数・カラーパレットが多数使えるのが強みだったようで。ディスクドライブでのデーター受け渡しも楽だし、売り場から消えても、そのあと長く開発で使用してたデベ..」にいいね！しました。 <blockquote class="card card-default"><header><img  src="https://pimg.togetter.com/small_light(sx=0.0p,sy=14.7p,sw=100.0p,sh=70.0p,dw=1212.0,dh=636.3,cw=1200.0,ch=630.0,p=default,da=l,ds=s)/d1c1d2b1a95d2ec1062041c4945eed4ea07291c2/68747470733a2f2f692e7974696d672e636f6d2f76692f395f475238734c38386a412f687164656661756c742e6a7067" /><a href="https://togetter.com/li/1537668#c7827099" target="_blank">ゲーム開発の思い出 - Togetter</a></header><div>3年ほどアーケード・ゲーム開発をしてた時の思い出話です。30年以上前の話です。加齢による忘却の前に記録しておこうと（笑）</div></blockquote></p>
-        
-      </section>
-      
-      <header class="tweet-header">
-        
-        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1284762832681054209"
-            target="_blank">2020/7/19 17:11:43</a></p>
-      </header>
-      <section>
-        <p class="tweet-text">そうかあ・・。ナ△コでもつかってたのかあ。。SMC..。SMCがアーケード・ゲームの開発に果たした役割というのは意外と大きいのかもしれんなあ。。</p>
-        
-      </section>
-      
-    </article>
-    
-    <article>
-      
-      
-      <header class="tweet-header">
-        
-        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1212701145379946496/pSDVrvWj_normal.png" />
-        <p class="tweet-user-name">S.F.@SFPGMR</p>
-        
-        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1284761722478182400"
-            target="_blank">2020/7/19 17:07:19</a></p>
-      </header>
-      <section>
-        <p class="tweet-text">.@end22nd さんのコメント「一時ビデオシステムの広告に「SMC-777求む」って掲載されててへーって思った記憶が」にいいね！しました。 <blockquote class="card card-default"><header><img  src="https://pimg.togetter.com/small_light(sx=0.0p,sy=14.7p,sw=100.0p,sh=70.0p,dw=1212.0,dh=636.3,cw=1200.0,ch=630.0,p=default,da=l,ds=s)/d1c1d2b1a95d2ec1062041c4945eed4ea07291c2/68747470733a2f2f692e7974696d672e636f6d2f76692f395f475238734c38386a412f687164656661756c742e6a7067" /><a href="https://togetter.com/li/1537668#c7871802" target="_blank">ゲーム開発の思い出 - Togetter</a></header><div>3年ほどアーケード・ゲーム開発をしてた時の思い出話です。30年以上前の話です。加齢による忘却の前に記録しておこうと（笑）</div></blockquote></p>
-        
-      </section>
-      
-    </article>
-    
-    <article>
-      
-      
-      <header class="tweet-header">
-        
-        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1062300964483325952/y0AE1mIu_normal.jpg" />
-        <p class="tweet-user-name">えふえむ@fm_77av</p>
-        
-        <p class="tweet-date"><a href="https://twitter.com/fm_77av/status/1284703883797737472"
-            target="_blank">2020/7/19 13:17:29</a></p>
-      </header>
-      <section>
-        <p class="tweet-text">PC-8001　TINY MAPY<br/><br/>ベーマガ掲載作品。ショートプログラムながらマッピーをうまく再現している。3ステージ用意されており、敵はご先祖様のみだがトランポリンが点滅するアイデアでバランスをとっている。タイトルはMAPYでも画面ではMAPPYと表記されている。 https://t.co/xRsBBtZ3ys</p>
-        
-        <img  class="tweet-img" src="https://pbs.twimg.com/media/EdQvOBmVcAEi0rs.png" />
-        
-        <img  class="tweet-img" src="https://pbs.twimg.com/media/EdQvO0FUMAIujTC.png" />
-        
-        <img  class="tweet-img" src="https://pbs.twimg.com/media/EdQvPiqUMAUnOgP.png" />
         
       </section>
       

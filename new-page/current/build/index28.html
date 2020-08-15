@@ -18,7 +18,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <title>Twitter Viewer</title>
-  <meta name="description" content="リニューアル用のトップページデザインを考えて実装する" />
+  <meta name="description" content="自作Twitter Viewerによる自分のつぶやきの記録。Programming,Music,HTML5,WebGL,javascript,WebAudio,Gameなど" />
   <meta name="keywords" content="Programming,Music,HTML5,WebGL,javascript,WebAudio" /> 	
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
@@ -28,13 +28,13 @@
   <meta name="twitter:card" content="summary" />
   <meta name="twitter:site" content="S.F. Web" />
   <meta name="twitter:url" content="./index28.html" />
-  <meta name="twitter:title" content="リニューアル用のトップページデザイン" />
-  <meta name="twitter:description" content="リニューアル用のトップページデザインを考えて実装する" />
+  <meta name="twitter:title" content="Twitter Viewer" />
+  <meta name="twitter:description" content="自作Twitter Viewerによる自分のつぶやきの記録。Programming,Music,HTML5,WebGL,javascript,WebAudio,Gameなど" />
   <meta name="twitter:image" content="https://www.sfpgmr.net/img/sfweb.png" />
   
   <meta property="og:type" content="article">
   <meta property="og:url" content="./index28.html" />
-  <meta property="og:title" content="リニューアル用のトップページデザイン"/>
+  <meta property="og:title" content="Twitter Viewer"/>
   <meta property="og:site_name" content="S.F. Web" />
   <meta property="og:description" content="Programming,Music,HTML5,WebGL,javascript,WebAudio">
   <meta property="og:image" content="https://www.sfpgmr.net/img/sfweb.png">
@@ -43,21 +43,19 @@
   * {
   margin: 0;
   padding: 0;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-}
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
 
 html {
   margin: 0;
   padding: 0;
-  font-size: 10px;
-}
+  font-size: 10px; }
 
 body {
   margin: 0;
-  padding: 0;
+  padding-left: 8px;
+  padding-right: 8px;
   background: black;
-  color: white;
-}
+  color: white; }
 
 .top-nav {
   position: fixed;
@@ -66,44 +64,25 @@ body {
   display: block;
   width: 100%;
   height: 32px;
-  color: white;
-}
+  color: white; }
 
 #sentinel {
   width: 0px;
-  height: 0px;
-}
+  height: 0px; }
 
 .contents {
   padding-top: 32px;
   width: 100%;
   position: relative;
-  content: strict;
-}
-
-@-webkit-keyframes blinking {
-  0% {
-    color: black;
-  }
-  50% {
-    color: white;
-  }
-  100% {
-    color: black;
-  }
-}
+  content: strict; }
 
 @keyframes blinking {
   0% {
-    color: black;
-  }
+    color: black; }
   50% {
-    color: white;
-  }
+    color: white; }
   100% {
-    color: black;
-  }
-}
+    color: black; } }
 
 .loading {
   font-family: monospace;
@@ -115,10 +94,8 @@ body {
   padding-top: 50vh;
   z-index: 32768;
   background: black;
-  -webkit-animation: blinking 2s infinite;
-          animation: blinking 2s infinite;
-  content: strict;
-}
+  animation: blinking 2s infinite;
+  content: strict; }
 
 .contents > article {
   background: #f0f0f0;
@@ -128,39 +105,27 @@ body {
   overflow: auto;
   border-radius: 3px;
   /* transition: opacity 1s linear;*/
-  opacity: 1.0;
-}
+  opacity: 1.0; }
 
 .tweet-header {
-  display: -ms-grid;
   display: grid;
-  -webkit-box-align: end;
-      -ms-flex-align: end;
-          align-items: end;
-  -ms-grid-columns: 40px 2fr 1fr;
-      grid-template-columns: 40px 2fr 1fr;
-  -ms-grid-rows: 1fr;
-      grid-template-rows: 1fr;
+  align-items: end;
+  grid-template-columns: 40px 2fr 1fr;
+  grid-template-rows: 1fr;
   font-size: 12px;
-  font-weight: bold;
-}
+  font-weight: bold; }
 
 .tweet-img {
   width: 100%;
-  -o-object-fit: cover;
-     object-fit: cover;
-}
+  object-fit: cover; }
 
 .youtube {
   position: relative;
-  cursor: pointer;
-}
+  cursor: pointer; }
 
 .youtube > img {
   width: 100%;
-  -o-object-fit: cover;
-     object-fit: cover;
-}
+  object-fit: cover; }
 
 .youtube > svg.player-play {
   width: 64px;
@@ -169,16 +134,13 @@ body {
   top: calc(50% - 32px);
   position: absolute;
   z-index: 1000;
-  opacity: 0.5;
-}
+  opacity: 0.5; }
 
 .youtube:hover > svg.player-play {
-  opacity: 1.0;
-}
+  opacity: 1.0; }
 
 .youtube:hover .player-play-1 {
-  stroke: #80808080;
-}
+  stroke: #80808080; }
 
 .youtube > div.yt-title {
   /*text-shadow: #fff 1px 1px 0;*/
@@ -189,77 +151,56 @@ body {
   left: 0;
   top: 0;
   overflow: auto;
-  z-index: 998;
-}
+  z-index: 998; }
 
 .tweet-profile-img {
-  -ms-grid-column: 1;
-  -ms-grid-column-span: 1;
   grid-column: 1/2;
   width: 32px;
   height: 32px;
-  border-radius: 50%;
-}
+  border-radius: 50%; }
 
 .tweet-user-name {
-  -ms-grid-column: 2;
-  -ms-grid-column-span: 1;
-  grid-column: 2/3;
-}
+  grid-column: 2/3; }
 
 .tweet-date {
   font-size: 8px;
   text-align: right;
-  -ms-grid-column: 3;
-  -ms-grid-column-span: 1;
-  grid-column: 3/4;
-}
+  grid-column: 3/4; }
 
 .contents > twitter-widget {
   overflow: auto;
   max-height: 960px;
-  position: absolute;
-}
+  position: absolute; }
 
 .contents > article > section > .tweet-text {
   display: block;
   padding: 4px;
   word-break: break-all;
-  font-size: 12px;
-}
+  font-size: 12px; }
 
 .contents > article > h3 {
-  font-size: 12px;
-}
+  font-size: 12px; }
 
 blockquote.card {
   margin: 4px;
   padding: 4px;
   font-size: 12px;
   background: white;
-  border-radius: 4px;
-}
+  border-radius: 4px; }
 
 blockquote.card > header {
-  display: -ms-grid;
   display: grid;
   grid-gap: 4px;
-  gap: 4px;
-}
+  gap: 4px; }
 
 blockquote.card-default > header {
-  -ms-grid-columns: 64px 1fr;
-      grid-template-columns: 64px 1fr;
-}
+  grid-template-columns: 64px 1fr; }
 
 blockquote.card-large > header {
-  -ms-grid-columns: 1fr;
-      grid-template-columns: 1fr;
-}
+  grid-template-columns: 1fr; }
 
 blockquote.card > header > img {
-  width: 100%;
-}
+  width: 100%; }
 
 div.no-image {
   display: block;
@@ -268,9 +209,8 @@ div.no-image {
   background: gray;
   color: white;
   text-align: center;
-  line-height: 64px;
-}
-/*# sourceMappingURL=style.css.map */ 
+  line-height: 64px; }
+ 
   </style>
 </head>
 
@@ -281,6 +221,402 @@ div.no-image {
   </header>
   <div class="contents" id="contents" rendersubtree="invisible skip-activation"> 
     
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1212701145379946496/pSDVrvWj_normal.png" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1237867793975881728"
+            target="_blank">2020/3/12 7:27:35</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">transition:left 0.5s;でメニューのトランジションを試してみると、なぜかchromeでは文字が表示されない問題が発生。firefoxでは問題ない。。 https://t.co/8cAbZhJSUn</p>
+        
+        <img  class="tweet-img" src="https://pbs.twimg.com/media/ES3KG-bUcAIP9ty.jpg" />
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1237868172608323585"
+            target="_blank">2020/3/12 7:29:05</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">動画だとこんな感じ。 https://t.co/L1ektbT9qx</p>
+        
+        <video class="tweet-img" controls src="https://video.twimg.com/ext_tw_video/1237868086516056068/pu/vid/1280x720/gisl5P9nW4zX7LOG.mp4?tag=10" />
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1237868689342390272"
+            target="_blank">2020/3/12 7:31:08</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ちなみにtransition:all 0.5s;とすると回避できる。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1237870966530666497"
+            target="_blank">2020/3/12 7:40:11</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">どうもpositionプロパティのtransitionは避けたほうがいいようですな。今回のケースだとtransition:transform 0.5s;として、leftをいじるのではなくtransform:translateX()で動かしたほうがパフォーマンスもよいとのこと。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1237870967667322880"
+            target="_blank">2020/3/12 7:40:11</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">実際やってみると問題解消。これでもchromeの不具合だよね。。 https://t.co/UiYQQKVpPG</p>
+        
+        <video class="tweet-img" controls src="https://video.twimg.com/ext_tw_video/1237870814273261568/pu/vid/640x360/wXSNL5KO-vxU-ITV.mp4?tag=10" />
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1237872986679472128"
+            target="_blank">2020/3/12 7:48:13</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">とりあえずメニューのアニメーションはこんな感じでいいわな。。 https://t.co/VpBNihXPX0</p>
+        
+        <video class="tweet-img" controls src="https://video.twimg.com/ext_tw_video/1237872943108993029/pu/vid/640x360/O8iiug3OZRIYIESv.mp4?tag=10" />
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1237875017473376257"
+            target="_blank">2020/3/12 7:56:17</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">メニューの全般的な動きを試す。とりあえずメニューの動きはこんな感じでいいわな。。しかしちょっとCSS見ないうちに、こういうのJSなしでCSSだけできるようになってるんだな。すごい進化だ。。 https://t.co/9xhahKpgda</p>
+        
+        <video class="tweet-img" controls src="https://video.twimg.com/ext_tw_video/1237874842193391618/pu/vid/640x360/_Dwq23xS9QnO_sbB.mp4?tag=10" />
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1237875398559424512"
+            target="_blank">2020/3/12 7:57:48</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">おっちゃんがついてくのは大変ですな。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1237878980427972614"
+            target="_blank">2020/3/12 8:12:02</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">もっと大きな問題としてデザインをどうするかちゅうのがあるのだが、これはとりあえずさておいてフォントを削るやつやろう。。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1212701145379946496/pSDVrvWj_normal.png" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1235692834138640384"
+            target="_blank">2020/3/6 7:25:04</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ブログを更新。ejsのincludeの謎仕様？でハマってしまった。<br/><br/><blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="https://www.sfpgmr.net/blog/entry/2020/03/28696cde9d102e61bd6f471b756a585f.amp.html" target="_blank">S.F. Blog:ejsのincludeにおける不可解なエラー</a></header><div>ビルド環境を構築中に、ejsのコンパイルのテストしていたところ、includeで不可解なエラーに遭遇した。&lt;!-- index.ejs --&gt;&lt;% data = {title:&ීlogin&ී};-%&gt;&lt;!DOCTYPE html&gt;&lt;html lang="ja"&gt;&lt;head&gt;    &lt;%...</div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1235693834962481152"
+            target="_blank">2020/3/6 7:29:02</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">しかし今までejsを使ってこのようなハマりを経験したことはなかったんだけどな。。includeなんて割と使ってるしね。何か凡ミスが潜んでいる気がしないでもない。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1235694266472517632"
+            target="_blank">2020/3/6 7:30:45</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">まあしかしようやくejs/riot/koa/postcssを使ったcmsのビルド環境ができましたわ。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1235701666793443329"
+            target="_blank">2020/3/6 8:00:10</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ejs-cliもちょっと微妙な動きをするのでちとハマってた。結局自分でビルドスクリプト作ることにしたのでまあいいんだけど。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1235702972845133824"
+            target="_blank">2020/3/6 8:05:21</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">index.ejsをビルドして./public/html/内に入れようと思って以下のコマンドをたたくと、実際には./public/html/src/ejs/index.htmlに入ってしまう。。<br/><br/>ejs-cli './src/ejs/index.ejs' --out ./public/html/</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1235703208292446208"
+            target="_blank">2020/3/6 8:06:17</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">これを意図したように動かすには以下のようにしないといけない。<br/><br/>ejs-cli --base-dir src/ejs/ 'index.ejs' --out ./public/html/</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1235703585695870977"
+            target="_blank">2020/3/6 8:07:47</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">この動きは私にとっては不思議には思えるんだけど、ひょっとしたらこのほうが自然と思える人のほうが多いのかもなあ・・とか思ったりしてた。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1235703673914679296"
+            target="_blank">2020/3/6 8:08:08</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">よくわからんが。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1236259319856771073"
+            target="_blank">2020/3/7 20:56:05</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">riot.jsをいじくっているがなかなか面白い。今はSPAの方向にいっている。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1236259702884798465"
+            target="_blank">2020/3/7 20:57:36</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">しかしなんかこう、ライブラリのイメージがうまくつかめなくて四苦八苦している。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1236260845002166274"
+            target="_blank">2020/3/7 21:02:08</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">Bulmaのドキュメントのコード・スニペットをベースにriot.jsでコンポーネント化してページに配置してみた結果。 https://t.co/lgZdLV7Jrm</p>
+        
+        <img  class="tweet-img" src="https://pbs.twimg.com/media/ESgUhtTVAAAIcWk.png" />
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1236262041591013377"
+            target="_blank">2020/3/7 21:06:54</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">以下のプロセスでページを作っている。<br/>1. rollup で.riotコンポーネントのビルトとJSのバンドル<br/>2. ejsでページ・テンプレートを作りそこにriotタグとコード、cssをインクルードしてページを生成<br/>3. postcss でcssをビルド。PurgeCSSを使って使用しているセレクタのみに最適化</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1236262524095361024"
+            target="_blank">2020/3/7 21:08:49</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ビルドの成果物としては<br/><br/>・静的なHTML<br/>・バンドルJS<br/>・CSS<br/><br/>の3つのファイルが生成される。この３つのファイルをkoa.jsでサーブしている。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1236263098731782144"
+            target="_blank">2020/3/7 21:11:06</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">確かホームページデザインのリニューアルだけをするつもりだったが流れ流れてSPAに今いたるという。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1236565191376044032"
+            target="_blank">2020/3/8 17:11:30</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">cssによるページデザインは結局フルスクラッチでいくことにしようと思う。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1236583734914060289"
+            target="_blank">2020/3/8 18:25:11</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">CSS Grid使えばそんなにレイアウトも難しくないしね。。といいつつ忘れてしまってるが。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1237512002152497152"
+            target="_blank">2020/3/11 7:53:47</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">そういうわけでCSSのみでレスポンシブなメニューを作ってみた。一度JSなしで作ってみたかった。<br/><br/><div class="youtube" data-type="yt" id="9bavrj17UQU"><div class="yt-title">Youtube - レスポンシブなメニューを作る</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img  data-href="https://youtu.be/9bavrj17UQU" class="youtube" src="https://i.ytimg.com/vi/9bavrj17UQU/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1237512413726928896"
+            target="_blank">2020/3/11 7:55:25</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">完成させるにはあとアニメーションつけたり、デザインをまともにしたりとかが必要だが。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1237512851461300224"
+            target="_blank">2020/3/11 7:57:10</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">今回:target疑似クラスを使って実現している。<br/><blockquote class="card card-default"><header><img  src="https://developer.mozilla.org/static/img/opengraph-logo.72382e605ce3.png" /><a href="https://developer.mozilla.org/ja/docs/Web/CSS/:target" target="_blank">:target - CSS: カスケーディングスタイルシート | MDN</a></header><div>CSS の :target 疑似クラスは、 URL のフラグメントに一致する id を持つ固有の要素 (対象要素) を表します。</div></blockquote><br/><br/>これは知らんかった。。なんかすごいな。これのほかにチェックボックスなんかで実現する方法がある。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1237513248506707968"
+            target="_blank">2020/3/11 7:58:44</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">チェックボックスを使う方法は「checkbox hack」とかいうらしい。<br/><br/><blockquote class="card card-default"><header><img  src="https://css-tricks.com/wp-content/uploads/2011/12/file-system.png" /><a href="https://css-tricks.com/the-checkbox-hack/" target="_blank">The "Checkbox Hack" (and things you can do with it) | CSS-Tricks</a></header><div>Using a hidden checkbox, you can re-create a lot of functionality on website that rely on clicks and toggled states. Fair warning, it's not always super semantic or a good idea, but it's awful fun to play with.</div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1237854857077219329"
+            target="_blank">2020/3/12 6:36:10</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">WebFont使いたいなと思ってて、でもサイズが大きいから使ってる文字だけ縮小するコマンドラインツールもしくはnodeのライブラリないかな？と探したらありましたな。。<br/><blockquote class="card card-default"><header><img  src="https://avatars3.githubusercontent.com/u/2268460?s=400&v=4" /><a href="https://github.com/ecomfe/fontmin" target="_blank">GitHub - ecomfe/fontmin: Minify font seamlessly</a></header><div>Minify font seamlessly. Contribute to ecomfe/fontmin development by creating an account on GitHub.</div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1237855244354084864"
+            target="_blank">2020/3/12 6:37:43</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">「使ってる文字だけ残してあとは削って縮小」すればかなり小さくできるらしい。数メガが数百Kくらいになるとのこと。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1204199050553151488/08lOAWM3_normal.jpg" />
+        <p class="tweet-user-name">Yoichi Kobayashi@ykob0123</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/ykob0123/status/1236853722262560769"
+            target="_blank">2020/3/9 12:18:01</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">I renewed my profile site to try how to make a website that has a lot of 3D effects with three.js and Vue-CLI.<br/><a href="https://www.tplh.net/" target="_blank">tplh.net</a><br/>#javascript #vue #webgl #threejs https://t.co/JI9DUYOoyB</p>
+        
+        <video class="tweet-img" controls src="https://video.twimg.com/ext_tw_video/1236853633414615045/pu/vid/640x360/73ubsqgHgmA2A4Df.mp4?tag=10" />
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1291773405298008069/SpS-Ny_B_normal.jpg" />
+        <p class="tweet-user-name">pasin@pasinpasin</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/pasinpasin/status/1236193146159030274"
+            target="_blank">2020/3/7 16:33:08</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">2012年ゴジラが休眠して先が見えない時代、この映像を木場の現代美術館で見た時は本当に感動した。このクオリティのものが作れるならミニチュア特撮に生き残る道はある。手段じゃない、何を見せれるかだ。 https://t.co/YoQBP35SMq</p>
+        
+        <video class="tweet-img" controls src="https://video.twimg.com/ext_tw_video/1236193036050128896/pu/vid/1280x684/CRu6D--ChrPxWSzL.mp4?tag=10" />
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/2473419722/q8ls9bo4q1mv4uxycefy_normal.jpeg" />
+        <p class="tweet-user-name">吉村ことり＠ゲーム案件万引受〼@urdcat</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/urdcat/status/1236185600610324480"
+            target="_blank">2020/3/7 16:03:09</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">#しれっとすごいことを言う見た人もやる<br/><br/>日本で最初に発売されたポリゴンゲームを作りましたん。<br/><a href="https://www.youtube.com/watch?v=V0mitlCmypE" target="_blank">youtube.com/watch?v=V0mitl…</a></p>
+        
+      </section>
+      
+    </article>
     
     <article>
       
@@ -733,136 +1069,6 @@ div.no-image {
       </header>
       <section>
         <p class="tweet-text">花粉症の私はマスクしたいとこなんだけど、ここのところのコロナウィルスの件でマスクが買えず手元にない状態。電車でくしゃみしたらさぞや顰蹙を買いそうだね。。</p>
-        
-      </section>
-      
-    </article>
-    
-    <article>
-      
-      
-      <header class="tweet-header">
-        
-        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1212701145379946496/pSDVrvWj_normal.png" />
-        <p class="tweet-user-name">S.F.@SFPGMR</p>
-        
-        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1233887584108990464"
-            target="_blank">2020/3/1 7:51:39</a></p>
-      </header>
-      <section>
-        <p class="tweet-text">今これを読んでいる。今更だがmakeは多機能ですなあ。。<br/><blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="https://www.ecoop.net/coop/translated/GNUMake3.77/make_toc.jp.html" target="_blank">GNU make 日本語訳(Coop編) - 目次</a></header><div></div></blockquote></p>
-        
-      </section>
-      
-    </article>
-    
-    <article>
-      
-      
-      <header class="tweet-header">
-        
-        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1212701145379946496/pSDVrvWj_normal.png" />
-        <p class="tweet-user-name">S.F.@SFPGMR</p>
-        
-        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1233706214644543488"
-            target="_blank">2020/2/29 19:50:57</a></p>
-      </header>
-      <section>
-        <p class="tweet-text">虚数・複素数の基本部分の授業。３－４年前に観たがすごくわかりやすかった。<br/><br/><div class="youtube" data-type="yt" id="oLA6E-95K-s"><div class="yt-title">Youtube - 慶應大学 講義　物理情報数学A　第一回　高校数学からの復習 2010</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img  data-href="https://youtu.be/oLA6E-95K-s" class="youtube" src="https://i.ytimg.com/vi/oLA6E-95K-s/hqdefault.jpg" /></div>   <br/></p>
-        
-      </section>
-      
-      <header class="tweet-header">
-        
-        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1233706814136406021"
-            target="_blank">2020/2/29 19:53:20</a></p>
-      </header>
-      <section>
-        <p class="tweet-text">これと２回目のオイラーの公式について観てなるほどぉと当時思ったんだな。<br/><div class="youtube" data-type="yt" id="PBWaJbT3Kuo"><div class="yt-title">Youtube - 慶應大学 講義　物理情報数学A　第二回　オイラーの公式 2010</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img  data-href="https://youtu.be/PBWaJbT3Kuo" class="youtube" src="https://i.ytimg.com/vi/PBWaJbT3Kuo/hqdefault.jpg" /></div>   <br/></p>
-        
-      </section>
-      
-      <header class="tweet-header">
-        
-        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1233707320812556288"
-            target="_blank">2020/2/29 19:55:21</a></p>
-      </header>
-      <section>
-        <p class="tweet-text">フーリエ解析をきちんと理解しようと思った頃の話。もうだいぶ忘れたけど、肝の「波形を無次元（多次元？）ベクトルとして捉える」というところはしっかり頭に入った。それはこの動画というわけではないな。「やる夫で学ぶディジタル信号処理」だったかな。<br/><blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="http://www.ic.is.tohoku.ac.jp/~swk/lecture/yaruodsp/main.html" target="_blank">やる夫で学ぶディジタル信号処理</a></header><div></div></blockquote></p>
-        
-      </section>
-      
-      <header class="tweet-header">
-        
-        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1233707607359029248"
-            target="_blank">2020/2/29 19:56:29</a></p>
-      </header>
-      <section>
-        <p class="tweet-text">完璧に理解するレベルでは到底ないけどね。しかし「学ぶ」という点においては相当いい時代になったよね。今って。</p>
-        
-      </section>
-      
-      <header class="tweet-header">
-        
-        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1233708004794494981"
-            target="_blank">2020/2/29 19:58:04</a></p>
-      </header>
-      <section>
-        <p class="tweet-text">こういうのが手を伸ばせば世界中のあちこちにあって、本人次第でこういうの使っていくらでも勉強できるんだからね。</p>
-        
-      </section>
-      
-    </article>
-    
-    <article>
-      
-      
-      <header class="tweet-header">
-        
-        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/2198042994/DSC02173_normal.jpg" />
-        <p class="tweet-user-name">Shinji Kono@shinji_kono</p>
-        
-        <p class="tweet-date"><a href="https://twitter.com/shinji_kono/status/1233563850819002368"
-            target="_blank">2020/2/29 10:25:15</a></p>
-      </header>
-      <section>
-        <p class="tweet-text">「大学では何も教えてくれなかった。必要なことは全部自分で学んだ」と思って卒業していくのは大学教育的には成功。だめなのは授業で要求されたことだけで卒業してしまうこと。</p>
-        
-      </section>
-      
-    </article>
-    
-    <article>
-      
-      
-      <header class="tweet-header">
-        
-        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1209460095278448640/biLd993N_normal.jpg" />
-        <p class="tweet-user-name">ぺっく@peccul</p>
-        
-        <p class="tweet-date"><a href="https://twitter.com/peccul/status/1233175016738455552"
-            target="_blank">2020/2/28 8:40:09</a></p>
-      </header>
-      <section>
-        <p class="tweet-text">これめっちゃ面白い良い記事 / CSS・SVGとVue.jsでのアニメーション作成入門 - ライブラリに頼らない表現力を身に付けよう - ICS MEDIA <a href="https://ics.media/entry/200225/" target="_blank">ics.media/entry/200225/</a></p>
-        
-      </section>
-      
-    </article>
-    
-    <article>
-      
-      
-      <header class="tweet-header">
-        
-        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1212701145379946496/pSDVrvWj_normal.png" />
-        <p class="tweet-user-name">S.F.@SFPGMR</p>
-        
-        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1232997335019315202"
-            target="_blank">2020/2/27 20:54:07</a></p>
-      </header>
-      <section>
-        <p class="tweet-text"><blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="http://wolfgangpalm.com/story/index.html" target="_blank">Wolfgang Palm - PPG Story</a></header><div></div></blockquote></p>
         
       </section>
       

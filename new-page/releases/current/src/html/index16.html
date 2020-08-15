@@ -17,8 +17,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <title>トップページをリニューアルする</title>
-  <meta name="description" content="リニューアル用のトップページデザインを考えて実装する" />
+  <title>Twitter Viewer</title>
+  <meta name="description" content="自作Twitter Viewerによる自分のつぶやきの記録。Programming,Music,HTML5,WebGL,javascript,WebAudio,Gameなど" />
   <meta name="keywords" content="Programming,Music,HTML5,WebGL,javascript,WebAudio" /> 	
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
@@ -28,13 +28,13 @@
   <meta name="twitter:card" content="summary" />
   <meta name="twitter:site" content="S.F. Web" />
   <meta name="twitter:url" content="./index16.html" />
-  <meta name="twitter:title" content="リニューアル用のトップページデザイン" />
-  <meta name="twitter:description" content="リニューアル用のトップページデザインを考えて実装する" />
+  <meta name="twitter:title" content="Twitter Viewer" />
+  <meta name="twitter:description" content="自作Twitter Viewerによる自分のつぶやきの記録。Programming,Music,HTML5,WebGL,javascript,WebAudio,Gameなど" />
   <meta name="twitter:image" content="https://www.sfpgmr.net/img/sfweb.png" />
   
   <meta property="og:type" content="article">
   <meta property="og:url" content="./index16.html" />
-  <meta property="og:title" content="リニューアル用のトップページデザイン"/>
+  <meta property="og:title" content="Twitter Viewer"/>
   <meta property="og:site_name" content="S.F. Web" />
   <meta property="og:description" content="Programming,Music,HTML5,WebGL,javascript,WebAudio">
   <meta property="og:image" content="https://www.sfpgmr.net/img/sfweb.png">
@@ -43,21 +43,19 @@
   * {
   margin: 0;
   padding: 0;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-}
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
 
 html {
   margin: 0;
   padding: 0;
-  font-size: 10px;
-}
+  font-size: 10px; }
 
 body {
   margin: 0;
-  padding: 0;
+  padding-left: 8px;
+  padding-right: 8px;
   background: black;
-  color: white;
-}
+  color: white; }
 
 .top-nav {
   position: fixed;
@@ -66,44 +64,25 @@ body {
   display: block;
   width: 100%;
   height: 32px;
-  color: white;
-}
+  color: white; }
 
 #sentinel {
   width: 0px;
-  height: 0px;
-}
+  height: 0px; }
 
 .contents {
   padding-top: 32px;
   width: 100%;
   position: relative;
-  content: strict;
-}
-
-@-webkit-keyframes blinking {
-  0% {
-    color: black;
-  }
-  50% {
-    color: white;
-  }
-  100% {
-    color: black;
-  }
-}
+  content: strict; }
 
 @keyframes blinking {
   0% {
-    color: black;
-  }
+    color: black; }
   50% {
-    color: white;
-  }
+    color: white; }
   100% {
-    color: black;
-  }
-}
+    color: black; } }
 
 .loading {
   font-family: monospace;
@@ -115,10 +94,8 @@ body {
   padding-top: 50vh;
   z-index: 32768;
   background: black;
-  -webkit-animation: blinking 2s infinite;
-          animation: blinking 2s infinite;
-  content: strict;
-}
+  animation: blinking 2s infinite;
+  content: strict; }
 
 .contents > article {
   background: #f0f0f0;
@@ -128,39 +105,27 @@ body {
   overflow: auto;
   border-radius: 3px;
   /* transition: opacity 1s linear;*/
-  opacity: 1.0;
-}
+  opacity: 1.0; }
 
 .tweet-header {
-  display: -ms-grid;
   display: grid;
-  -webkit-box-align: end;
-      -ms-flex-align: end;
-          align-items: end;
-  -ms-grid-columns: 40px 2fr 1fr;
-      grid-template-columns: 40px 2fr 1fr;
-  -ms-grid-rows: 1fr;
-      grid-template-rows: 1fr;
+  align-items: end;
+  grid-template-columns: 40px 2fr 1fr;
+  grid-template-rows: 1fr;
   font-size: 12px;
-  font-weight: bold;
-}
+  font-weight: bold; }
 
 .tweet-img {
   width: 100%;
-  -o-object-fit: cover;
-     object-fit: cover;
-}
+  object-fit: cover; }
 
 .youtube {
   position: relative;
-  cursor: pointer;
-}
+  cursor: pointer; }
 
 .youtube > img {
   width: 100%;
-  -o-object-fit: cover;
-     object-fit: cover;
-}
+  object-fit: cover; }
 
 .youtube > svg.player-play {
   width: 64px;
@@ -169,16 +134,13 @@ body {
   top: calc(50% - 32px);
   position: absolute;
   z-index: 1000;
-  opacity: 0.5;
-}
+  opacity: 0.5; }
 
 .youtube:hover > svg.player-play {
-  opacity: 1.0;
-}
+  opacity: 1.0; }
 
 .youtube:hover .player-play-1 {
-  stroke: #80808080;
-}
+  stroke: #80808080; }
 
 .youtube > div.yt-title {
   /*text-shadow: #fff 1px 1px 0;*/
@@ -189,77 +151,56 @@ body {
   left: 0;
   top: 0;
   overflow: auto;
-  z-index: 998;
-}
+  z-index: 998; }
 
 .tweet-profile-img {
-  -ms-grid-column: 1;
-  -ms-grid-column-span: 1;
   grid-column: 1/2;
   width: 32px;
   height: 32px;
-  border-radius: 50%;
-}
+  border-radius: 50%; }
 
 .tweet-user-name {
-  -ms-grid-column: 2;
-  -ms-grid-column-span: 1;
-  grid-column: 2/3;
-}
+  grid-column: 2/3; }
 
 .tweet-date {
   font-size: 8px;
   text-align: right;
-  -ms-grid-column: 3;
-  -ms-grid-column-span: 1;
-  grid-column: 3/4;
-}
+  grid-column: 3/4; }
 
 .contents > twitter-widget {
   overflow: auto;
   max-height: 960px;
-  position: absolute;
-}
+  position: absolute; }
 
 .contents > article > section > .tweet-text {
   display: block;
   padding: 4px;
   word-break: break-all;
-  font-size: 12px;
-}
+  font-size: 12px; }
 
 .contents > article > h3 {
-  font-size: 12px;
-}
+  font-size: 12px; }
 
 blockquote.card {
   margin: 4px;
   padding: 4px;
   font-size: 12px;
   background: white;
-  border-radius: 4px;
-}
+  border-radius: 4px; }
 
 blockquote.card > header {
-  display: -ms-grid;
   display: grid;
   grid-gap: 4px;
-  gap: 4px;
-}
+  gap: 4px; }
 
 blockquote.card-default > header {
-  -ms-grid-columns: 64px 1fr;
-      grid-template-columns: 64px 1fr;
-}
+  grid-template-columns: 64px 1fr; }
 
 blockquote.card-large > header {
-  -ms-grid-columns: 1fr;
-      grid-template-columns: 1fr;
-}
+  grid-template-columns: 1fr; }
 
 blockquote.card > header > img {
-  width: 100%;
-}
+  width: 100%; }
 
 div.no-image {
   display: block;
@@ -268,9 +209,8 @@ div.no-image {
   background: gray;
   color: white;
   text-align: center;
-  line-height: 64px;
-}
-/*# sourceMappingURL=style.css.map */ 
+  line-height: 64px; }
+ 
   </style>
 </head>
 
@@ -281,6 +221,154 @@ div.no-image {
   </header>
   <div class="contents" id="contents" rendersubtree="invisible skip-activation"> 
     
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1212701145379946496/pSDVrvWj_normal.png" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1263582915591454721"
+            target="_blank">2020/5/22 6:30:17</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">お、地震。。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1212701145379946496/pSDVrvWj_normal.png" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1263428332558774272"
+            target="_blank">2020/5/21 20:16:02</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">シンタックスとセマンティクス。。<br/><br/><blockquote class="card card-large"><header><img  src="https://cdn-ak.f.st-hatena.com/images/fotolife/k/ko1hayashi/20180206/20180206110241.png" /><a href="https://www.syoubu.com/entry/2018/02/06/111737" target="_blank">まずは論理的な正しさと意味的な正しさを区別しよう - 勝負ドキュメント研究所</a></header><div>このブログでは、あまり込み入った細かい話はしないつもりですが、こだわりのあるところだけひとつ。論理構造を考えるときに、形式(シンタックス)と意味(セマンティクス)は分けて考えたいと思います。端的に言えば、論理的に正しくても意味的には正しいとは限らない。逆に、論理的に正しくなくても意味的に正しいことはある。ということです。 これは戦略コンサル系ロジカルシンキングの解説書にはほとんど説明されることはありません。また、大半の人には細かくてどうでもいい話に聞こえると思いますが、重要な観点です。記号論理学の(少なくとも入り口の初歩的な辺りでは)、明確に区別されています。 私はブール代数の教科書か何かで、…</div></blockquote></p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1212701145379946496/pSDVrvWj_normal.png" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1263043179835621377"
+            target="_blank">2020/5/20 18:45:34</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">坂本さんの「B-2ユニット」聴いたとき、キャバレー・ボルテールがなぜか思い浮かんだんだよな。。<br/><br/>Cabaret Voltaire - Landslide <br/><div class="youtube" data-type="yt" id="Q_1rxkDPyb8"><div class="yt-title">Youtube - Cabaret Voltaire - Landslide (from Red Mecca)</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img  data-href="https://youtu.be/Q_1rxkDPyb8" class="youtube" src="https://i.ytimg.com/vi/Q_1rxkDPyb8/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1263043663111712768"
+            target="_blank">2020/5/20 18:47:30</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">昔手にしたときは「なんだこりゃ。。」と思った。でもいま聴くと許容範囲が広がったのか1年に数回聴きなおすようになってる（笑）<br/><br/>Cabaret Voltaire - Nag Nag Nag Original<br/><div class="youtube" data-type="yt" id="i0dZqMfCJH4"><div class="yt-title">Youtube - Cabaret Voltaire - Nag Nag Nag Original</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img  data-href="https://youtu.be/i0dZqMfCJH4" class="youtube" src="https://i.ytimg.com/vi/i0dZqMfCJH4/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1263044022672650241"
+            target="_blank">2020/5/20 18:48:55</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">なんとなく似てる気がしないでもない。。<br/><br/>Riuichi Sakamoto* - Differencia<br/><div class="youtube" data-type="yt" id="vOX06g7OrTo"><div class="yt-title">Youtube - Riuichi Sakamoto* - Differencia</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img  data-href="https://youtu.be/vOX06g7OrTo" class="youtube" src="https://i.ytimg.com/vi/vOX06g7OrTo/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1263045982301745153"
+            target="_blank">2020/5/20 18:56:43</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">しかし坂本さんの場合、こういうのでバランスをとってくるところがいいんだよな。。しかしこの年代にこういう音色を選択して演奏するってどういう感覚なんだろうな。。すごいとしかいいようがないが。<br/><br/>THATNESS AND THERENESS RIUICHI SAKAMOTO 坂本龍一<br/><div class="youtube" data-type="yt" id="DxJJmTKvNtI"><div class="yt-title">Youtube - THATNESS AND THERENESS RIUICHI SAKAMOTO 坂本龍一</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img  data-href="https://youtu.be/DxJJmTKvNtI" class="youtube" src="https://i.ytimg.com/vi/DxJJmTKvNtI/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1212701145379946496/pSDVrvWj_normal.png" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1263040766953193472"
+            target="_blank">2020/5/20 18:35:59</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">DAFのベース・ラインってTB-303だという話だが、そうなのかね。。<br/><br/><div class="youtube" data-type="yt" id="8jetpwghTiU"><div class="yt-title">Youtube - DAF - El Que (Video)</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img  data-href="https://youtu.be/8jetpwghTiU" class="youtube" src="https://i.ytimg.com/vi/8jetpwghTiU/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1212701145379946496/pSDVrvWj_normal.png" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1263039038862155779"
+            target="_blank">2020/5/20 18:29:07</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ナイル・ロジャースによってこういう感じになったんだなあ。<br/><br/>David Bowie - Let's Dance<br/><div class="youtube" data-type="yt" id="VbD_kBJc_gI"><div class="yt-title">Youtube - David Bowie - Let's Dance (Official Video)</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img  data-href="https://youtu.be/VbD_kBJc_gI" class="youtube" src="https://i.ytimg.com/vi/VbD_kBJc_gI/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1212701145379946496/pSDVrvWj_normal.png" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1263035740805492736"
+            target="_blank">2020/5/20 18:16:01</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">そうかあ、これクィンシー・ジョーンズなのかあ。。<br/><br/>Soul Bossa Nova<br/><div class="youtube" data-type="yt" id="y-ndMMYhmi0"><div class="yt-title">Youtube - Soul Bossa Nova</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img  data-href="https://youtu.be/y-ndMMYhmi0" class="youtube" src="https://i.ytimg.com/vi/y-ndMMYhmi0/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1263037663159828480"
+            target="_blank">2020/5/20 18:23:39</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">このイメージだよなあ。。クィンシー・ジョーンズ..<br/><br/>愛のコリーダ<br/><div class="youtube" data-type="yt" id="NVTVheyDY4s"><div class="yt-title">Youtube - Ai No Corrida</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img  data-href="https://youtu.be/NVTVheyDY4s" class="youtube" src="https://i.ytimg.com/vi/NVTVheyDY4s/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+    </article>
     
     <article>
       
@@ -351,116 +439,6 @@ div.no-image {
         <p class="tweet-text">HDDの仕組みはレコード盤と同じで、回転するディスクに一本の針でデータを読み取ったり書き込んでいます。<br/>ただ、一本だったのは過去の話。<br/>Seagateは、アクチュエータ（針）を増やすことで、データの読み書きを倍増する技術を開発しました。<br/><br/>詳細はこちら：<a href="http://seagate.media/6012T9Pvq" target="_blank">seagate.media/6012T9Pvq</a> https://t.co/OfDbMZAqgj</p>
         
         <video class="tweet-img" controls src="https://video.twimg.com/ext_tw_video/1262880717333082115/pu/vid/720x404/YNR26IiaxzhdQPUp.mp4?tag=10" />
-        
-      </section>
-      
-    </article>
-    
-    <article>
-      
-      
-      <header class="tweet-header">
-        
-        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1022150732634419200/yZg4xLsO_normal.jpg" />
-        <p class="tweet-user-name">mattn@mattn_jp</p>
-        
-        <p class="tweet-date"><a href="https://twitter.com/mattn_jp/status/1262789171220869120"
-            target="_blank">2020/5/20 1:56:14</a></p>
-      </header>
-      <section>
-        <p class="tweet-text">やばい / “DirectX ❤ Linux | DirectX Developer Blog” <a href="https://htn.to/2Gkf3FWscB" target="_blank">htn.to/2Gkf3FWscB</a></p>
-        
-      </section>
-      
-    </article>
-    
-    <article>
-      
-      
-      <header class="tweet-header">
-        
-        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1212701145379946496/pSDVrvWj_normal.png" />
-        <p class="tweet-user-name">S.F.@SFPGMR</p>
-        
-        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1262831790294622208"
-            target="_blank">2020/5/20 4:45:35</a></p>
-      </header>
-      <section>
-        <p class="tweet-text">アルテアが。。 <blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="https://twitter.com/shibayan/status/1262761072743731200" target="_blank"></a></header><div></div></blockquote></p>
-        
-      </section>
-      
-    </article>
-    
-    <article>
-      
-      
-      <header class="tweet-header">
-        
-        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1022150732634419200/yZg4xLsO_normal.jpg" />
-        <p class="tweet-user-name">mattn@mattn_jp</p>
-        
-        <p class="tweet-date"><a href="https://twitter.com/mattn_jp/status/1262796314342899713"
-            target="_blank">2020/5/20 2:24:37</a></p>
-      </header>
-      <section>
-        <p class="tweet-text">WSL で Linux Desktop サポートするってマジすか。VirtualBox 要らなくなってしまいそう。 / “The Windows Subsystem for Linux BUILD 2020 Summary | Windows Command Line” <a href="https://htn.to/2DXi3iqrMr" target="_blank">htn.to/2DXi3iqrMr</a></p>
-        
-      </section>
-      
-    </article>
-    
-    <article>
-      
-      
-      <header class="tweet-header">
-        
-        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1212701145379946496/pSDVrvWj_normal.png" />
-        <p class="tweet-user-name">S.F.@SFPGMR</p>
-        
-        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1262675853609037824"
-            target="_blank">2020/5/19 18:25:57</a></p>
-      </header>
-      <section>
-        <p class="tweet-text">社会的・経済的な損失も大きいけど、いろいろ得たものも大きいなあ。</p>
-        
-      </section>
-      
-    </article>
-    
-    <article>
-      
-      
-      <header class="tweet-header">
-        
-        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1267819337026420739/GBuq7wjs_normal.jpg" />
-        <p class="tweet-user-name">Deno@deno_land</p>
-        
-        <p class="tweet-date"><a href="https://twitter.com/deno_land/status/1262517004159913985"
-            target="_blank">2020/5/19 7:54:44</a></p>
-      </header>
-      <section>
-        <p class="tweet-text">"node".split("").sort().join("")</p>
-        
-      </section>
-      
-    </article>
-    
-    <article>
-      
-      
-      <header class="tweet-header">
-        
-        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1044559592850546689/9e50EUga_normal.jpg" />
-        <p class="tweet-user-name">高卒工員プログラマー@kousaku80</p>
-        
-        <p class="tweet-date"><a href="https://twitter.com/kousaku80/status/1259746527808872450"
-            target="_blank">2020/5/11 16:25:51</a></p>
-      </header>
-      <section>
-        <p class="tweet-text">ちょっとオレオレIDEの宣伝を<br/><br/>オレオレIDEは過去に自分の作ったプログラムをまるごとオブジェクト図形として取り込んで関数を端子に見立てて関数呼び出しのラインを接続することでプログラムしています。<br/>ソースコード自動生成機能をもっており、数種類のプログラミング言語に対応しています。 https://t.co/kYu7XHBWpA</p>
-        
-        <img  class="tweet-img" src="https://pbs.twimg.com/media/EXuD7zvUEAAu5fp.jpg" />
         
       </section>
       

@@ -42,10 +42,11 @@ try {
 
 
     const insertStmt = db.prepare('insert into tweets(id,tweet) values(@id,@tweet);');
-    const getMaxIdStmt = db.prepare('select max(id)  as max_id from tweets;');
-    const max_id_ = getMaxIdStmt.get();
-    if(max_id_.max_id) {
-      params.max_id = max_id_.max_id;
+    const getMaxIdStmt = db.prepare('select max(id) as since_id from tweets;');
+    const since_id = getMaxIdStmt.get();
+    if(since_id.since_id) {
+      params.since_id = since_id.since_id;
+      console.log(params.since_id);
     }
 
     while(true){

@@ -124,7 +124,7 @@ try {
       }
     }
 
-    console.log(config);
+    // console.log(config);
 
     // ビルド
     if (config.buildCommands) {
@@ -135,6 +135,7 @@ try {
         commands = [commands];
       }
       for (const command of commands) {
+        console.log(command);
         if(command instanceof Function){
           let bkp = process.cwd();
           process.chdir(projectPath);

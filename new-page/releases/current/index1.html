@@ -17,8 +17,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <title>トップページをリニューアルする</title>
-  <meta name="description" content="リニューアル用のトップページデザインを考えて実装する" />
+  <title>Twitter Viewer</title>
+  <meta name="description" content="自作Twitter Viewerによる自分のつぶやきの記録。Programming,Music,HTML5,WebGL,javascript,WebAudio,Gameなど" />
   <meta name="keywords" content="Programming,Music,HTML5,WebGL,javascript,WebAudio" /> 	
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
@@ -28,13 +28,13 @@
   <meta name="twitter:card" content="summary" />
   <meta name="twitter:site" content="S.F. Web" />
   <meta name="twitter:url" content="./index1.html" />
-  <meta name="twitter:title" content="リニューアル用のトップページデザイン" />
-  <meta name="twitter:description" content="リニューアル用のトップページデザインを考えて実装する" />
+  <meta name="twitter:title" content="Twitter Viewer" />
+  <meta name="twitter:description" content="自作Twitter Viewerによる自分のつぶやきの記録。Programming,Music,HTML5,WebGL,javascript,WebAudio,Gameなど" />
   <meta name="twitter:image" content="https://www.sfpgmr.net/img/sfweb.png" />
   
   <meta property="og:type" content="article">
   <meta property="og:url" content="./index1.html" />
-  <meta property="og:title" content="リニューアル用のトップページデザイン"/>
+  <meta property="og:title" content="Twitter Viewer"/>
   <meta property="og:site_name" content="S.F. Web" />
   <meta property="og:description" content="Programming,Music,HTML5,WebGL,javascript,WebAudio">
   <meta property="og:image" content="https://www.sfpgmr.net/img/sfweb.png">
@@ -43,21 +43,19 @@
   * {
   margin: 0;
   padding: 0;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-}
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
 
 html {
   margin: 0;
   padding: 0;
-  font-size: 10px;
-}
+  font-size: 10px; }
 
 body {
   margin: 0;
-  padding: 0;
+  padding-left: 8px;
+  padding-right: 8px;
   background: black;
-  color: white;
-}
+  color: white; }
 
 .top-nav {
   position: fixed;
@@ -66,44 +64,25 @@ body {
   display: block;
   width: 100%;
   height: 32px;
-  color: white;
-}
+  color: white; }
 
 #sentinel {
   width: 0px;
-  height: 0px;
-}
+  height: 0px; }
 
 .contents {
   padding-top: 32px;
   width: 100%;
   position: relative;
-  content: strict;
-}
-
-@-webkit-keyframes blinking {
-  0% {
-    color: black;
-  }
-  50% {
-    color: white;
-  }
-  100% {
-    color: black;
-  }
-}
+  content: strict; }
 
 @keyframes blinking {
   0% {
-    color: black;
-  }
+    color: black; }
   50% {
-    color: white;
-  }
+    color: white; }
   100% {
-    color: black;
-  }
-}
+    color: black; } }
 
 .loading {
   font-family: monospace;
@@ -115,10 +94,8 @@ body {
   padding-top: 50vh;
   z-index: 32768;
   background: black;
-  -webkit-animation: blinking 2s infinite;
-          animation: blinking 2s infinite;
-  content: strict;
-}
+  animation: blinking 2s infinite;
+  content: strict; }
 
 .contents > article {
   background: #f0f0f0;
@@ -128,39 +105,27 @@ body {
   overflow: auto;
   border-radius: 3px;
   /* transition: opacity 1s linear;*/
-  opacity: 1.0;
-}
+  opacity: 1.0; }
 
 .tweet-header {
-  display: -ms-grid;
   display: grid;
-  -webkit-box-align: end;
-      -ms-flex-align: end;
-          align-items: end;
-  -ms-grid-columns: 40px 2fr 1fr;
-      grid-template-columns: 40px 2fr 1fr;
-  -ms-grid-rows: 1fr;
-      grid-template-rows: 1fr;
+  align-items: end;
+  grid-template-columns: 40px 2fr 1fr;
+  grid-template-rows: 1fr;
   font-size: 12px;
-  font-weight: bold;
-}
+  font-weight: bold; }
 
 .tweet-img {
   width: 100%;
-  -o-object-fit: cover;
-     object-fit: cover;
-}
+  object-fit: cover; }
 
 .youtube {
   position: relative;
-  cursor: pointer;
-}
+  cursor: pointer; }
 
 .youtube > img {
   width: 100%;
-  -o-object-fit: cover;
-     object-fit: cover;
-}
+  object-fit: cover; }
 
 .youtube > svg.player-play {
   width: 64px;
@@ -169,16 +134,13 @@ body {
   top: calc(50% - 32px);
   position: absolute;
   z-index: 1000;
-  opacity: 0.5;
-}
+  opacity: 0.5; }
 
 .youtube:hover > svg.player-play {
-  opacity: 1.0;
-}
+  opacity: 1.0; }
 
 .youtube:hover .player-play-1 {
-  stroke: #80808080;
-}
+  stroke: #80808080; }
 
 .youtube > div.yt-title {
   /*text-shadow: #fff 1px 1px 0;*/
@@ -189,77 +151,56 @@ body {
   left: 0;
   top: 0;
   overflow: auto;
-  z-index: 998;
-}
+  z-index: 998; }
 
 .tweet-profile-img {
-  -ms-grid-column: 1;
-  -ms-grid-column-span: 1;
   grid-column: 1/2;
   width: 32px;
   height: 32px;
-  border-radius: 50%;
-}
+  border-radius: 50%; }
 
 .tweet-user-name {
-  -ms-grid-column: 2;
-  -ms-grid-column-span: 1;
-  grid-column: 2/3;
-}
+  grid-column: 2/3; }
 
 .tweet-date {
   font-size: 8px;
   text-align: right;
-  -ms-grid-column: 3;
-  -ms-grid-column-span: 1;
-  grid-column: 3/4;
-}
+  grid-column: 3/4; }
 
 .contents > twitter-widget {
   overflow: auto;
   max-height: 960px;
-  position: absolute;
-}
+  position: absolute; }
 
 .contents > article > section > .tweet-text {
   display: block;
   padding: 4px;
   word-break: break-all;
-  font-size: 12px;
-}
+  font-size: 12px; }
 
 .contents > article > h3 {
-  font-size: 12px;
-}
+  font-size: 12px; }
 
 blockquote.card {
   margin: 4px;
   padding: 4px;
   font-size: 12px;
   background: white;
-  border-radius: 4px;
-}
+  border-radius: 4px; }
 
 blockquote.card > header {
-  display: -ms-grid;
   display: grid;
   grid-gap: 4px;
-  gap: 4px;
-}
+  gap: 4px; }
 
 blockquote.card-default > header {
-  -ms-grid-columns: 64px 1fr;
-      grid-template-columns: 64px 1fr;
-}
+  grid-template-columns: 64px 1fr; }
 
 blockquote.card-large > header {
-  -ms-grid-columns: 1fr;
-      grid-template-columns: 1fr;
-}
+  grid-template-columns: 1fr; }
 
 blockquote.card > header > img {
-  width: 100%;
-}
+  width: 100%; }
 
 div.no-image {
   display: block;
@@ -268,9 +209,8 @@ div.no-image {
   background: gray;
   color: white;
   text-align: center;
-  line-height: 64px;
-}
-/*# sourceMappingURL=style.css.map */ 
+  line-height: 64px; }
+ 
   </style>
 </head>
 
@@ -281,6 +221,152 @@ div.no-image {
   </header>
   <div class="contents" id="contents" rendersubtree="invisible skip-activation"> 
     
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1082744382585856001/rH_k3PtQ_normal.jpg" />
+        <p class="tweet-user-name">SpaceX@SpaceX</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SpaceX/status/1290854457136181248"
+            target="_blank">2020/8/5 12:37:40</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">Starship takes flight https://t.co/IWvwcA05hl</p>
+        
+        <video class="tweet-img" controls src="https://video.twimg.com/ext_tw_video/1290854200000167938/pu/vid/482x270/o2SNpfaL53UjgYYK.mp4?tag=10" />
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/651952641/southpark_normal.jpg" />
+        <p class="tweet-user-name">依田四十郎@yorita3</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/yorita3/status/1290643474866417665"
+            target="_blank">2020/8/4 22:39:18</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">「ねぇsiri、今日の予定を教えて。………あれ？siri？どこ行っちゃったの？！」<br/>siriにもたまには息抜きが必要なようです。<br/><br/>ということで、新作ジオラマ完成しました！<br/>とても可愛い感じに出来て満足です😁 https://t.co/2fM4gdtmCV</p>
+        
+        <video class="tweet-img" controls src="https://video.twimg.com/ext_tw_video/1290643416234242048/pu/vid/720x1280/CxdLBK2eIpBGXrot.mp4?tag=10" />
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1158725431094235137/I88pVyAm_normal.jpg" />
+        <p class="tweet-user-name">小澤至論 Michinori Ozawa@oz_shiron</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/oz_shiron/status/1290760029243494403"
+            target="_blank">2020/8/5 6:22:26</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">8月5日は #箱の日 でしたか。<br/><br/>スターフォックスのラスボス戦で顔の描かれた立方体が出てくるんですけど、この時代にこのスペックでテクスチャーが貼られたポリゴンを表示するのって凄くないですか！？初めて見た時は驚いたな〜。<br/><br/> https://t.co/Jtqxp2rBvG</p>
+        
+        <video class="tweet-img" controls src="https://video.twimg.com/ext_tw_video/1248538199896379399/pu/vid/1280x720/iw3KB4itGStKv60i.mp4?tag=10" />
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1212701145379946496/pSDVrvWj_normal.png" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1289865830969139200"
+            target="_blank">2020/8/2 19:09:13</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">このツールすげえなあ。。<br/><br/><blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="https://ephtracy.github.io/index.html?page=aerialod" target="_blank">MagicaVoxel</a></header><div></div></blockquote> https://t.co/NdwZ3zOR9L</p>
+        
+        <img  class="tweet-img" src="https://pbs.twimg.com/media/EeaGIgVU0AEatp5.jpg" />
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1289878860360585217"
+            target="_blank">2020/8/2 20:00:59</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">四国側から広島を望む。。 https://t.co/P1nHjl0jva</p>
+        
+        <img  class="tweet-img" src="https://pbs.twimg.com/media/EeaR6ZMU8AUtxMe.png" />
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1289886601753931776"
+            target="_blank">2020/8/2 20:31:45</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">福岡 https://t.co/GLYkxGtBMY</p>
+        
+        <img  class="tweet-img" src="https://pbs.twimg.com/media/EeaY_y6VoAAP9cC.jpg" />
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1289886750492332032"
+            target="_blank">2020/8/2 20:32:20</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">岐阜～富山～長野あたり https://t.co/i0FMMlX2nj</p>
+        
+        <img  class="tweet-img" src="https://pbs.twimg.com/media/EeaZEEgVAAAzcZ_.jpg" />
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1289886987281813504"
+            target="_blank">2020/8/2 20:33:17</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">岩木山 https://t.co/xk7dD2BME2</p>
+        
+        <img  class="tweet-img" src="https://pbs.twimg.com/media/EeaZP1SUwAAnYFi.png" />
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1212701145379946496/pSDVrvWj_normal.png" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1289477538754916352"
+            target="_blank">2020/8/1 17:26:17</a></p>
+      </header>
+      <section>
+        <p class="tweet-text"><blockquote class="card card-large"><header><img  src="https://www.4gamer.net/games/464/G046401/20200730052/SS/004.jpg" /><a href="https://www.4gamer.net/games/464/G046401/20200730052/" target="_blank">地球をまるごとAIで再現。「Microsoft Flight Simulator」プレス向けプレゼンテーションから最新作の技術面に迫る</a></header><div>　Microsoftから2020年8月18日にリリースされる人気フライトシムシリーズの最新作「Microsoft Flight Simulator」。その発売に先駆けて先日，プレス向けのプレゼンテーションがオンラインで実施された。本稿ではその模様をまとめてレポートしよう。</div></blockquote></p>
+        
+      </section>
+      
+    </article>
     
     <article>
       
@@ -381,106 +467,6 @@ div.no-image {
       </header>
       <section>
         <p class="tweet-text">地震？</p>
-        
-      </section>
-      
-    </article>
-    
-    <article>
-      
-      
-      <header class="tweet-header">
-        
-        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1212701145379946496/pSDVrvWj_normal.png" />
-        <p class="tweet-user-name">S.F.@SFPGMR</p>
-        
-        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1288560106414759936"
-            target="_blank">2020/7/30 4:40:44</a></p>
-      </header>
-      <section>
-        <p class="tweet-text">伝説のサンプラー：Fairlight CMI IIxの機能とUIをパソコン上に再現するソフト、「QasarBeach CMI IIz」 - ICON <blockquote class="card card-large"><header><img  src="https://icon.jp/wp-content/uploads/2020/07/20878-thumbnail.jpg" /><a href="https://icon.jp/archives/20878" target="_blank">伝説のサンプラー：Fairlight CMI IIxの機能とUIをパソコン上に再現するソフト、「QasarBeach CMI IIz」 - ICON</a></header><div>QasarBeach／AdamStrangeというデベロッパーが公開した「QasarBeach CMI IIz」は、1980年代に一世を風靡したサンプリング・ワークステーション、Fairlight C</div></blockquote></p>
-        
-      </section>
-      
-    </article>
-    
-    <article>
-      
-      
-      <header class="tweet-header">
-        
-        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1245044809720459267/uZYBPVpx_normal.jpg" />
-        <p class="tweet-user-name">doumae@donz80</p>
-        
-        <p class="tweet-date"><a href="https://twitter.com/donz80/status/1288095074312548352"
-            target="_blank">2020/7/28 21:52:52</a></p>
-      </header>
-      <section>
-        <p class="tweet-text">「COBOLは自然言語(英語)に近い構文で記述できるので、非技術者でもコンピュータを利用できる」というのもあった。</p>
-        
-      </section>
-      
-    </article>
-    
-    <article>
-      
-      
-      <header class="tweet-header">
-        
-        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1181647339330494464/n5hDMpx0_normal.jpg" />
-        <p class="tweet-user-name">Felix Rieseberg@felixrieseberg</p>
-        
-        <p class="tweet-date"><a href="https://twitter.com/felixrieseberg/status/1288116942885117957"
-            target="_blank">2020/7/28 23:19:45</a></p>
-      </header>
-      <section>
-        <p class="tweet-text">I put an entire 1991 Macintosh Quadra with Mac OS 8.1 into an Electron app, together with a bunch of apps and games. It runs on Windows, macOS, and Linux... and JavaScript. Again: I'm sorry.<br/><br/>Go grab it here: <a href="https://github.com/felixrieseberg/macintosh.js" target="_blank">github.com/felixrieseberg…</a> https://t.co/p3AR2dyx5r</p>
-        
-        <img  class="tweet-img" src="https://pbs.twimg.com/media/EeBK9N_UcAgEvCL.jpg" />
-        
-      </section>
-      
-    </article>
-    
-    <article>
-      
-      
-      <header class="tweet-header">
-        
-        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1287921394899017728/tCopvt49_normal.jpg" />
-        <p class="tweet-user-name">ちっち@tittiisme</p>
-        
-        <p class="tweet-date"><a href="https://twitter.com/tittiisme/status/1287420634922852352"
-            target="_blank">2020/7/27 1:12:53</a></p>
-      </header>
-      <section>
-        <p class="tweet-text">雰囲気だけで全然大したことしてない人 https://t.co/AYHyHRBGY6</p>
-        
-        <img  class="tweet-img" src="https://pbs.twimg.com/media/Ed3WOR4VAAAeJ5J.jpg" />
-        
-        <img  class="tweet-img" src="https://pbs.twimg.com/media/Ed3WOR6UwAEk_IY.jpg" />
-        
-        <img  class="tweet-img" src="https://pbs.twimg.com/media/Ed3WOR7UEAEYOXb.jpg" />
-        
-      </section>
-      
-    </article>
-    
-    <article>
-      
-      
-      <header class="tweet-header">
-        
-        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1050411381369929728/BtqZX2ZX_normal.jpg" />
-        <p class="tweet-user-name">特殊映画研究室 Panorama Effect Laboratory@tokuken20091</p>
-        
-        <p class="tweet-date"><a href="https://twitter.com/tokuken20091/status/1287600197363613696"
-            target="_blank">2020/7/27 13:06:24</a></p>
-      </header>
-      <section>
-        <p class="tweet-text">#1枚で本物に見えたらRT<br/><br/>ハジラvsキングデスラ <a href="https://www.youtube.com/watch?v=UNlmsYyuMoY&t=35s" target="_blank">youtube.com/watch?v=UNlmsY…</a> より阿部野橋界隈のミニチュアセットです。 https://t.co/riEjLDxe3w</p>
-        
-        <img  class="tweet-img" src="https://pbs.twimg.com/media/Ed55ihaUYAAZ9Jy.jpg" />
         
       </section>
       
