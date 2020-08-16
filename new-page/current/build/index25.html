@@ -20,7 +20,6 @@
   <title>Twitter Viewer</title>
   <meta name="description" content="自作Twitter Viewerによる自分のつぶやきの記録。Programming,Music,HTML5,WebGL,javascript,WebAudio,Gameなど" />
   <meta name="keywords" content="Programming,Music,HTML5,WebGL,javascript,WebAudio" /> 	
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
   <meta itemprop="image" content="https://www.sfpgmr.net/img/sfweb.png" />
   <meta itemprop="name" content="S.F. Web" />
@@ -230,6 +229,216 @@ div.no-image {
         <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1212701145379946496/pSDVrvWj_normal.png" />
         <p class="tweet-user-name">S.F.@SFPGMR</p>
         
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1248866826743771138"
+            target="_blank">2020/4/11 15:53:48</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">続いてIsInt32Double()のほうを見てみようか。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1248867688387993600"
+            target="_blank">2020/4/11 15:57:14</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">こういう関数ですな。Int32がとる範囲内かつマイナス0でないかつ値がFastI2D(FastD2I(value))とvalueが等しいと整数だと。<br/>bool IsInt32Double(double value) {<br/>return value &gt;= kMinInt &amp;&amp; value &lt;= kMaxInt &amp;&amp; !IsMinusZero(value) &amp;&amp;<br/>  value == FastI2D(FastD2I(value));<br/>}</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1248870300655075328"
+            target="_blank">2020/4/11 16:07:37</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">-0というのはDoubleだと63ビット目が1になってあとは0となるんだよな。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1248870785923436546"
+            target="_blank">2020/4/11 16:09:32</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">しかしなぜ-0でないことを確認せねばならないのだろうか。+0でも-0でも0だから整数とみなしてもいいはず。。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1248871093424685057"
+            target="_blank">2020/4/11 16:10:46</a></p>
+      </header>
+      <section>
+        <p class="tweet-text"><blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="https://ja.wikipedia.org/wiki/IEEE_754%E3%81%AB%E3%81%8A%E3%81%91%E3%82%8B%E8%B2%A0%E3%81%AE%E3%82%BC%E3%83%AD" target="_blank">IEEE 754における負のゼロ - Wikipedia</a></header><div></div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1248871945577172992"
+            target="_blank">2020/4/11 16:14:09</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">よくわからんが、次のvalue == FastI2D(FastD2I(value))と関係があるのかもしれないな。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1248873094657146881"
+            target="_blank">2020/4/11 16:18:43</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">FastD2I()というのはこれ<br/>inline int FastD2I(double x) {<br/>  DCHECK(x &lt;= INT_MAX);<br/>  DCHECK(x &gt;= INT_MIN);<br/>  return static_cast&lt;int32_t&gt;(x);<br/>}<br/><br/>DCHECK()はデバッグ時はassertとなるマクロ。要は単純にstatic_castしてるだけですな。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1248873580726636551"
+            target="_blank">2020/4/11 16:20:39</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">そしてFastI2D()というのはこれ。まあこれも単純にstatic_castしてdoubleに戻しているだけ。<br/>inline double FastI2D(int x) {<br/>  return static_cast&lt;double&gt;(x);<br/>}</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1248874868671516675"
+            target="_blank">2020/4/11 16:25:46</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ようするに「double値をint32_tでキャストして整数化→整数化したものをdoubleにキャストしてもとに戻した結果」が「もとの値と同じ」であればそれは「整数」ということなるんだな。当たり前といえば当たり前。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1248875275149963264"
+            target="_blank">2020/4/11 16:27:23</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">このキャストは、<br/>・値がInt32のとる範囲外<br/>・少数を含む<br/>場合はおそらく等しくないよな。なのでそれはInt32でないといえる。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1248875373430857729"
+            target="_blank">2020/4/11 16:27:46</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">等しくないというか元の値ではなくなるよな。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1248875459921629184"
+            target="_blank">2020/4/11 16:28:07</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ではマイナス0ではどうなるのか。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1248877913736273921"
+            target="_blank">2020/4/11 16:37:52</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">試してみたけど整数として判定されるな。<br/><br/><blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="https://wandbox.org/permlink/sZ7yrtkKu2q5iWCY" target="_blank">[Wandbox]三へ( へ՞ਊ ՞)へ ﾊｯﾊｯ</a></header><div></div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1248878005465657344"
+            target="_blank">2020/4/11 16:38:14</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">wandbox便利ですな。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1248878681155497984"
+            target="_blank">2020/4/11 16:40:55</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">しかしなぜIsInt32Double()は-0を整数で「ない」と判定するのだろうか。なんか意味があるはずだ。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1248888505020715008"
+            target="_blank">2020/4/11 17:19:57</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">Wikipediaに少しヒントとなるようなことが書いてあるな。。<br/><br/>「計算結果が負の極めて小さい値で算術アンダーフローとなった場合、負のゼロが結果として得られる。」<br/><br/>しかし単に-0.0や-0.0 x 1.0も負のゼロとなるようだが。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1248896008026615808"
+            target="_blank">2020/4/11 17:49:46</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ちょっとしょぼいコードで申し訳ないが、doubleのビットパターンを表示してみたらやっぱり-0.0x1.0は-0になるね。。 https://t.co/aEv0RlhPxu</p>
+        
+        <img  class="tweet-img" src="https://pbs.twimg.com/media/EVT3y0aU4AA-2gQ.png" />
+        
+        <img  class="tweet-img" src="https://pbs.twimg.com/media/EVT38oYUEAAPUQN.png" />
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1248896544729788416"
+            target="_blank">2020/4/11 17:51:54</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">いや、これって「整数演算の範囲では-0というのはあり得ない値だから」だからじゃないだろうか。なんかそんな気がするな。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1231176331628433408/1rqOW5xD_normal.jpg" />
+        <p class="tweet-user-name">κeen@blackenedgold</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/blackenedgold/status/1247172631880589317"
+            target="_blank">2020/4/6 23:41:41</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">かなり本格的にインタプリタを作る記事らしい。目次眺めた感じ、VM作ってるしGCも書いてるしclassもあるしNaN boxingとかもしてるし、ここまで充実した資料ほとんどないよね。<br/><br/>Crafting Interpreters<br/><a href="http://craftinginterpreters.com/" target="_blank">craftinginterpreters.com</a></p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1212701145379946496/pSDVrvWj_normal.png" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
         <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1247328008559415296"
             target="_blank">2020/4/7 9:59:06</a></p>
       </header>
@@ -255,28 +464,6 @@ div.no-image {
       </header>
       <section>
         <p class="tweet-text">多分リモートワークで生産性を高め、成果を出すような仕事の仕方を普段からしとけばこういうリスクにも強いよな。。</p>
-        
-      </section>
-      
-    </article>
-    
-    <article>
-      
-      
-      <header class="tweet-header">
-        
-        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/617722474327732224/kEGNMW1w_normal.png" />
-        <p class="tweet-user-name">b.p.s.@BasicProgrammer</p>
-        
-        <p class="tweet-date"><a href="https://twitter.com/BasicProgrammer/status/1246108439463333888"
-            target="_blank">2020/4/4 1:12:58</a></p>
-      </header>
-      <section>
-        <p class="tweet-text">BASICで３DCG、MSX turboRでもやってみました。<br/>88版ほぼそのまま動きました(^^)<br/>TIMEは36063だったので、10分1秒でした。 <a href="https://twitter.com/Stosstruppe/status/1245682316325740545" target="_blank">twitter.com/Stosstruppe/st…</a> https://t.co/OwK4VIWFux</p>
-        
-        <img  class="tweet-img" src="https://pbs.twimg.com/media/EUsOI9uU8AAWw9i.png" />
-        
-        <img  class="tweet-img" src="https://pbs.twimg.com/media/EUsOyPlU4AEy45P.png" />
         
       </section>
       
@@ -1042,6 +1229,410 @@ div.no-image {
         
       </section>
       
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1246023716456124416"
+            target="_blank">2020/4/3 19:36:18</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">そういえばなんかデバッグビルドでメモリ・リークチェックができたような気もするな。ああ、デバッグするにはデバッグバージョンでビルドしないといけないんだった！（笑）</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1246040844903182336"
+            target="_blank">2020/4/3 20:44:22</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">まあしかし、私がC++で遊べたのはやはりVisual Studio IDEのおかげなんだよなあ。コンパイル・デバッグがあんなに簡単にできるというのはやはりソフトウェアが優秀だったからということですわな。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1246041074797166592"
+            target="_blank">2020/4/3 20:45:17</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">多分VS Codeでエクステンションをほにゃららすれば比較的簡単にできるんだろうけど、明日試そう。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1246207153737592832"
+            target="_blank">2020/4/4 7:45:13</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">考えたらnodeのアドオンだからデバッグはそれなりに工夫は必要かもね。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1246207675425144832"
+            target="_blank">2020/4/4 7:47:17</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">HandleScopeの使いどころがいまいちわからんな。。オブジェクトをスイープされないようにするために使うのはわかるのだが。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1246211634055372802"
+            target="_blank">2020/4/4 8:03:01</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">AsyncWorker::Execute()中でのnode addon apiの呼び出しはできないのか。。そりゃそうか。。<br/><br/>As the method is not running on the main event loop, it must avoid calling any methods from node-addon-api or running any code that might invoke JavaScript.</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1246213824014766081"
+            target="_blank">2020/4/4 8:11:43</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">sqlite3_execのコールバックをきちんと処理するにはThreadSafeFunctionを使うほうがよさそうですな。。<br/><br/><blockquote class="card card-default"><header><img  src="https://avatars1.githubusercontent.com/u/9950313?s=400&v=4" /><a href="https://github.com/nodejs/node-addon-api/blob/master/doc/threadsafe_function.md" target="_blank">node-addon-api/threadsafe_function.md at master · nodejs/node-addon-api · GitHub</a></header><div>Module for using N-API from C++. Contribute to nodejs/node-addon-api development by creating an account on GitHub.</div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1246214786464899073"
+            target="_blank">2020/4/4 8:15:33</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ただまあsql injectionとか考えると、これでクエリすることはなさそうだし、返却値も型情報が失われ、テキストデータとして返されるから使い所は限られるかもね。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1246215384480403456"
+            target="_blank">2020/4/4 8:17:55</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">node_sqlite3がsqlite3_execのコールバックをサポートしないのも納得できるな。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1246215801448742912"
+            target="_blank">2020/4/4 8:19:35</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">なんだろうな、こういう言語間をつなぐ糊のようなコードを書くのもなかなか楽しいよな。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1246216479336357888"
+            target="_blank">2020/4/4 8:22:16</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">AsyncWorker::Execute中から行データを一行づつjsにコールバックしようとしてたが、それは仕様上できないということがわかったので、ThreadSafeFunctionで試してみることにしよう。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1246216987937669121"
+            target="_blank">2020/4/4 8:24:18</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">さっきHandleScopeの使い所で悩んでたけど、そりゃあかんわな。。AsyncWorker::Execute()中ではそもそも使えないもんね。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1246415638702125058"
+            target="_blank">2020/4/4 21:33:40</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ようやくsqlite3_execのラッパー部分がJSで動くようになった。が、かなり不安定だ。。 https://t.co/C7OsOpwDlU</p>
+        
+        <img  class="tweet-img" src="https://pbs.twimg.com/media/EUwoC8OUcAM0Pgt.png" />
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1246416284184535041"
+            target="_blank">2020/4/4 21:36:14</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">コールバックでデータを返すところで、ある条件下でsegmentation faultになってしまう。ウーム。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1246600457696374784"
+            target="_blank">2020/4/5 9:48:04</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">昨日のトラブルはコールバックの非同期性によるものだった。あたりまえといえば当たり前。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1246603195385704449"
+            target="_blank">2020/4/5 9:58:57</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">sqlite3_exec()はJS側では以下のように呼び出す。<br/>await db.exec("select * from test;",(row)=&gt; {<br/>  console.log(row);<br/>});<br/><br/>２つ目の引数にコールバックを渡すと、そのクエリがデータを返すものであった場合行ごとにコールバックが呼ばれるように考えた。この</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1246603799495491589"
+            target="_blank">2020/4/5 10:01:21</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">このメソッドはPromiseも返すようになっていて、コールバックによって行データがすべて返されたときにresolve()するように考えた。が、実際はコールバックがすべて行情報を返却する前にresolve()されてしまっていた。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1246605346002440192"
+            target="_blank">2020/4/5 10:07:29</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ThreadSafeFunctionを使いAsyncWorkerのExecute()からメインスレッド上で実行が必要な処理を行うようにした。Execute()内は別のスレッドで動いていて、node addon api関連の処理は行えないようになっているからである。逆にいうとそういうことをしたければThreadSafeFunctionを使えということ。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1246606846128836609"
+            target="_blank">2020/4/5 10:13:27</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">sqlite3_execのコールバックはAsyncWorkerのスレッドで実行されるから、そこで得られた行データをThreadSafeFunction::BlockingCall使って引数で指定するコールバックに渡す。コールバックはメインスレッドで実行されるので、node addon apiが使えるようになる。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1246608834598068224"
+            target="_blank">2020/4/5 10:21:21</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">このコールバックでデータをJSのオブジェクトに変換して、JS側のコールバックFunctionを呼び出すのである。でここで問題なのはThreadSafeFunction::BlockingCallもしくはコールバックが非同期で行われるということである。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1246609411050627072"
+            target="_blank">2020/4/5 10:23:39</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ThreadSafeFunction::BlockingCallは名前からすると同期呼び出しのように思うけど、実際は呼び出すコールバックを格納するキューに空きがない場合は空くまで待たされるというだけのことである。キューに渡された後いつ処理されるかはわからない。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1246609973347409921"
+            target="_blank">2020/4/5 10:25:53</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">以下のメソッドのコールバック部分は非同期で行われる。これ自体は期待した動きであるが、問題なのはPromise::resolve()の実行タイミングがコールバックが非同期なために掴めないことである。<br/>await db.exec("select * from test;",(row)=&gt; {<br/>  console.log(row);<br/>  rows.push(row);<br/>});</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1246610756956590082"
+            target="_blank">2020/4/5 10:29:00</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">今の時点ではAsyncWorker::OnOk()でPromiseをresolve()するようにしてるけど、さっき書いた通りコールバック自体はメインスレッドのキューに渡すので、AsyncWorkerのOnOk()は実際にコールバック呼び出しが完了してしまう前に呼び出されてしまうのだった。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1246612470778609664"
+            target="_blank">2020/4/5 10:35:48</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">つまりAsyncWorkerからメインスレッドに委託した処理の終了を検知してPromiseをresolve()しないと所望の動きにならない。そこをどうするか今考えているところ。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1246709778228764672"
+            target="_blank">2020/4/5 17:02:28</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">このへんところどころスレッドやスレッド・コンテキストの話が出てくるが、「node.jsはシングル・スレッドなのになぜ？」と思う人もいるだろう。私もかつては（といってもほんの少し前だが）そう思っていた。が、node.jsは非同期処理（ノンブロッキングな処理）を実現するためにスレッドを活用してる。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1246711938970554371"
+            target="_blank">2020/4/5 17:11:03</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">node.jsはI/Oをほぼ非同期で行えるが、それはlibuvで実現している。libuvはファイルI/OはブロッキングI/Oを使っているけど、そこをノン・ブロッキングであたかも行えているように見せるためにワーカー・スレッドを使ってる。つまりnode.js自体はマルチ・スレッドで動いている。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1246712403296952321"
+            target="_blank">2020/4/5 17:12:54</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">node.jsは例外的にファイルI/Oは同期的に処理が行えるけどこれはこの仕組み（ブロッキングI/O＋スレッドでノン・ブロッキングI/Oを実現）のおかげであると思う。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1246713791330451461"
+            target="_blank">2020/4/5 17:18:25</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">昔Windows APIでオーバーラップI/OとかIOCPとかを使ったファイルI/Oの実装を試したことがあったが、あれとよく似た感じである。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1246716300472119296"
+            target="_blank">2020/4/5 17:28:23</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">まあ今回のトラブルはそういう高尚な話に関係しているのではなく私の設計および実装がへたくそすぎるだけだが（笑）</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1246716606224334848"
+            target="_blank">2020/4/5 17:29:36</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">実際sqlite3_execを呼び出しているコードは以下である。<br/>char* message = nullptr;<br/>int status = sqlite3_exec(<br/>  const_cast&lt;sqlite3*&gt;(db_.handle()),<br/>  const_cast&lt;char*&gt;(sqlStatement_.c_str()),<br/>  need_callback_ ? exec_callback : 0,<br/>  this,<br/>  &amp;message<br/>);</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1246718038675603458"
+            target="_blank">2020/4/5 17:35:17</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">このsqlite3_exec() は同期的にexec_callbackが呼び出される（need_callback_ がtrueであった場合）。もしsqlStatementが行データを返すのであれば全行分のコールバックがここで発生する。このAPIの完了=すべての行返却済みとなるはずである。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1246718847115120640"
+            target="_blank">2020/4/5 17:38:30</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">でこの処理自体はAsyncWorker::Execute()内で行っているので、Execute()を抜けるつまりAsyncWorker::OnOk()が呼び出された時点でPromise::resolve()すれば良い。エラーならOnError()でreject()すればよい。と最初思ってた。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1246720314324578310"
+            target="_blank">2020/4/5 17:44:20</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">が途中でsqlite3_exec()のコールバック中にあるJSへのコールバック（JSへの行データ返却）を非同期に変更したため、「AsyncWorker::Execute()の完了時点でJSへ行データをすべて返却している」前提が崩れてしまった。というのが問題のもう少し詳細な話。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1246721117550571520"
+            target="_blank">2020/4/5 17:47:32</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">少し前にAsyncWorkerではなくThreadSafeFunctionで置き換えるみたいなことを言っていたがこれは間違い。AsyncWorker内でもThreadSafeFunctionは使える。ThreadSafeFunctionはメインスレッド以外からメインスレッドのコンテキストでJS関数を呼び出す（C++関数も呼べる）ものなので。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1246722299421548544"
+            target="_blank">2020/4/5 17:52:13</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ワーカー・スレッドからメイン・スレッドに対して非同期処理をお願いしてるので、ワーカー・スレッドがお願いした非同期処理の完了を検知できればこの問題は解決する。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1246726118436028416"
+            target="_blank">2020/4/5 18:07:24</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">流れは<br/><br/>１．メインがワーカーを起動し処理を委託<br/>２．ワーカーが処理してメインに非同期でコールバック<br/>３．ワーカーがメインへのコールバックが完了することを確認してメインにPromiseで完了を通知<br/>４．メインはPromiseで完了を受け取る<br/><br/>こうしたいところ。うまくいかんけど。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1246744299636576256"
+            target="_blank">2020/4/5 19:19:39</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">node-addon-apiはn-apiをすべて網羅しているわけではなさそう。解決の糸口を見つける意味でもn-apiも調べてみるか。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1246898593446768640"
+            target="_blank">2020/4/6 5:32:45</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">この辺をじっくり読もうと思っている。。<br/><blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="https://nodejs.org/api/n-api.html#n_api_asynchronous_thread_safe_function_calls" target="_blank">N-API | Node.js v14.8.0 Documentation</a></header><div></div></blockquote></p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/617722474327732224/kEGNMW1w_normal.png" />
+        <p class="tweet-user-name">b.p.s.@BasicProgrammer</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/BasicProgrammer/status/1246108439463333888"
+            target="_blank">2020/4/4 1:12:58</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">BASICで３DCG、MSX turboRでもやってみました。<br/>88版ほぼそのまま動きました(^^)<br/>TIMEは36063だったので、10分1秒でした。 <a href="https://twitter.com/Stosstruppe/status/1245682316325740545" target="_blank">twitter.com/Stosstruppe/st…</a> https://t.co/OwK4VIWFux</p>
+        
+        <img  class="tweet-img" src="https://pbs.twimg.com/media/EUsOI9uU8AAWw9i.png" />
+        
+        <img  class="tweet-img" src="https://pbs.twimg.com/media/EUsOyPlU4AEy45P.png" />
+        
+      </section>
+      
     </article>
     
     <article>
@@ -1056,7 +1647,7 @@ div.no-image {
             target="_blank">2020/3/31 21:43:30</a></p>
       </header>
       <section>
-        <p class="tweet-text">みさき公園。。懐かしい。。子供ころ2－3回いったかなあ。。 <blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="https://t.co/mNkYVgYnZj" target="_blank">Twitter</a></header><div></div></blockquote></p>
+        <p class="tweet-text">みさき公園。。懐かしい。。子供ころ2－3回いったかなあ。。 <blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="https://t.co/mNkYVgYnZj" target="_blank"></a></header><div></div></blockquote></p>
         
       </section>
       
@@ -1132,7 +1723,7 @@ div.no-image {
             target="_blank">2020/3/24 9:29:56</a></p>
       </header>
       <section>
-        <p class="tweet-text">何が？というと「基本非同期」というとこがすごいわけで。ステートメント書くとデフォルトですべて非同期で実行される。つまり<br/><br/><a href="http://db.run" target="_blank">db.run</a>("select～"); // 1.<br/><blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="http://db.run" target="_blank">尼克地带－传播、沟通、分享。</a></header><div></div></blockquote>("update～"); // 2.<br/><br/>1.,2.の実行順序が保証されないのである。</p>
+        <p class="tweet-text">何が？というと「基本非同期」というとこがすごいわけで。ステートメント書くとデフォルトですべて非同期で実行される。つまり<br/><br/><blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="http://db.run" target="_blank">尼克地带－传播、沟通、分享。</a></header><div></div></blockquote>("select～"); // 1.<br/><blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="http://db.run" target="_blank">尼克地带－传播、沟通、分享。</a></header><div></div></blockquote>("update～"); // 2.<br/><br/>1.,2.の実行順序が保証されないのである。</p>
         
       </section>
       
@@ -1142,7 +1733,7 @@ div.no-image {
             target="_blank">2020/3/24 9:31:56</a></p>
       </header>
       <section>
-        <p class="tweet-text">保証するには以下のように書けばいい。<br/><br/>db.serialize(()=&gt; {<br/>  <a href="http://db.run" target="_blank">db.run</a>("select～"); // 1.<br/>  <blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="http://db.run" target="_blank">尼克地带－传播、沟通、分享。</a></header><div></div></blockquote>("update～"); // 2.<br/>]);<br/><br/>こうすると1.,2.の順序実行が保証されるのですな。がしかしdb.serialize()自体は非同期で実行されるですわ。</p>
+        <p class="tweet-text">保証するには以下のように書けばいい。<br/><br/>db.serialize(()=&gt; {<br/>  <blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="http://db.run" target="_blank">尼克地带－传播、沟通、分享。</a></header><div></div></blockquote>("select～"); // 1.<br/>  <blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="http://db.run" target="_blank">尼克地带－传播、沟通、分享。</a></header><div></div></blockquote>("update～"); // 2.<br/>]);<br/><br/>こうすると1.,2.の順序実行が保証されるのですな。がしかしdb.serialize()自体は非同期で実行されるですわ。</p>
         
       </section>
       
@@ -1162,7 +1753,7 @@ div.no-image {
             target="_blank">2020/3/24 9:48:41</a></p>
       </header>
       <section>
-        <p class="tweet-text"><a href="http://db.run" target="_blank">db.run</a> 自体には完了コールバックがあるから、db.serialize()に仕込んだ最後の<blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="http://db.run" target="_blank">尼克地带－传播、沟通、分享。</a></header><div></div></blockquote> にコールバックを入れればいんだろうけど、ちょっとそれってちょっとかっこ悪い実装になっちゃうよなあと思ってね。。</p>
+        <p class="tweet-text"><blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="http://db.run" target="_blank">尼克地带－传播、沟通、分享。</a></header><div></div></blockquote> 自体には完了コールバックがあるから、db.serialize()に仕込んだ最後の<blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="http://db.run" target="_blank">尼克地带－传播、沟通、分享。</a></header><div></div></blockquote> にコールバックを入れればいんだろうけど、ちょっとそれってちょっとかっこ悪い実装になっちゃうよなあと思ってね。。</p>
         
       </section>
       
@@ -2005,44 +2596,6 @@ div.no-image {
       </header>
       <section>
         <p class="tweet-text">@Hoguchi373 文字列の終端が0というやつですね。実はあまりC言語は詳しくないんですよね。。</p>
-        
-      </section>
-      
-    </article>
-    
-    <article>
-      
-      
-      <header class="tweet-header">
-        
-        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/790595606850834433/Us2H4d3B_normal.jpg" />
-        <p class="tweet-user-name">ワトソン@wtsnjp</p>
-        
-        <p class="tweet-date"><a href="https://twitter.com/wtsnjp/status/1242379635985268737"
-            target="_blank">2020/3/24 18:16:02</a></p>
-      </header>
-      <section>
-        <p class="tweet-text">【リプ募集】<br/><br/>TeX 界には LaTeX3 という1990年代前半から開発が継続しているものの，未だに完成の目処すら立っていないサグラダ・ファミリア的プロジェクトがあります．このような OSS プロジェクトが他にありますか？<br/><br/>目安：<br/>・10年以上開発が継続している<br/>・一度も公式にリリースされていない</p>
-        
-      </section>
-      
-    </article>
-    
-    <article>
-      
-      
-      <header class="tweet-header">
-        
-        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1163429715278848006/idyXbYFw_normal.jpg" />
-        <p class="tweet-user-name">山岡 潤一 Junichi Yamaoka@jun1chi</p>
-        
-        <p class="tweet-date"><a href="https://twitter.com/jun1chi/status/1242335739561431040"
-            target="_blank">2020/3/24 15:21:36</a></p>
-      </header>
-      <section>
-        <p class="tweet-text">ZOOMで一時退席するときにばれない方法、こういうことか（事前録画をバーチャル背景） https://t.co/tXPubFJ2MP</p>
-        
-        <video class="tweet-img" controls src="https://video.twimg.com/ext_tw_video/1242335505317949441/pu/vid/1084x720/qg1I-mhb_42ZC7Bz.mp4?tag=10" />
         
       </section>
       

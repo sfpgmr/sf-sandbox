@@ -216,7 +216,7 @@
   };
 
   let observer;
-  const MaxContents = 32;
+  let MaxContents = 33;
 
   let cacheContentNo = ((p) => {
     const m = (/index(\d+)\.html/i).exec(p);
@@ -245,7 +245,9 @@
   // 後ほど、監視を中止
   //observer.disconnect();
 
-  window.addEventListener('load', () => {
+  window.addEventListener('load', async () => {
+    //const metaData = await (await fetch('./metaData.json')).json();
+    MaxContents = 33;
     const tag = document.createElement('script');
     tag.src = "//www.youtube.com/iframe_api";
     const firstScriptTag = document.getElementsByTagName('script')[0];

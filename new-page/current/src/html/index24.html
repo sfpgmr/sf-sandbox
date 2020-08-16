@@ -20,7 +20,6 @@
   <title>Twitter Viewer</title>
   <meta name="description" content="自作Twitter Viewerによる自分のつぶやきの記録。Programming,Music,HTML5,WebGL,javascript,WebAudio,Gameなど" />
   <meta name="keywords" content="Programming,Music,HTML5,WebGL,javascript,WebAudio" /> 	
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
   <meta itemprop="image" content="https://www.sfpgmr.net/img/sfweb.png" />
   <meta itemprop="name" content="S.F. Web" />
@@ -221,6 +220,112 @@ div.no-image {
   </header>
   <div class="contents" id="contents" rendersubtree="invisible skip-activation"> 
     
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1212701145379946496/pSDVrvWj_normal.png" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1252840495006412804"
+            target="_blank">2020/4/22 15:03:45</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">そうかあnodeもWASIをサポートしたのかあ。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1252840714230132740"
+            target="_blank">2020/4/22 15:04:37</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">そして14になって--experimental-modulesをつけたときに出るWarningが消えた。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1252843149350731783"
+            target="_blank">2020/4/22 15:14:18</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">WASIってまあwasmからローカル・リソースにアクセスできるにするインターフェースだよなあ。確か。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1252845109202149377"
+            target="_blank">2020/4/22 15:22:05</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">私のような趣味プログラマで困るのは今やってるようなsqlite3のaddonを作るとして、それがいろいろな機種で動くかどうかの検証が難しいということなんだよな。私はMac持ってないんで、macでビルドして動くかどうかの検証ができないし。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1252845548941438986"
+            target="_blank">2020/4/22 15:23:50</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">今はbinding.gypをnode-sqlite3/sqlcipherのものを少しいじって使ってるんで、まあおそらくmacでもビルドできるんだろうけど。いや今はwsl2で動かしてるんで、実際のところwin/linux/macで果たして動くのかどうかは現時点ではわからんよな。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1252846157572653057"
+            target="_blank">2020/4/22 15:26:15</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">これはネイティブ・アドオンなんで各OSのバージョンが必要になってくるからなんだけど、WASIをかませるとその心配が基本なくなるんだよな。コンパイラがWASMバイナリでWASIを通じてリソースにアクセスするようにしておけば。動かすには各OSのランタイムがいるけどね。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1252847107242749958"
+            target="_blank">2020/4/22 15:30:01</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">今のところC/C++とRust、アクセスできるリソースはファイル関係とソケットとかかな？</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1252848859539058688"
+            target="_blank">2020/4/22 15:36:59</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">もともと持ってるnodeからのwasmバインディングだと、リソースへのアクセスがメモリ以外できないんで、そこだけJSのfunctionを呼び出すなりメモリで返してJSが処理を肩代わりする必要があるんだよな。そこが非効率なのよね。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/917625215043194880/DB-47z5l_normal.jpg" />
+        <p class="tweet-user-name">WebAssemblyWeekly@WasmWeekly</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/WasmWeekly/status/1252834739997691905"
+            target="_blank">2020/4/22 14:40:53</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">Node v14 released- with experimental Web Assembly System Interface (WASI) support <a href="https://medium.com/@nodejs/node-js-version-14-available-now-8170d384567e" target="_blank">medium.com/@nodejs/node-j…</a></p>
+        
+      </section>
+      
+    </article>
     
     <article>
       
@@ -869,216 +974,6 @@ div.no-image {
       </header>
       <section>
         <p class="tweet-text">「ISO C++ 3.10 -15-の目的は、最適化コンパイラが異なる型の式が異なるメモリを参照していると仮定できるようにすることです。」だそうだ。</p>
-        
-      </section>
-      
-    </article>
-    
-    <article>
-      
-      
-      <header class="tweet-header">
-        
-        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1212701145379946496/pSDVrvWj_normal.png" />
-        <p class="tweet-user-name">S.F.@SFPGMR</p>
-        
-        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1248866826743771138"
-            target="_blank">2020/4/11 15:53:48</a></p>
-      </header>
-      <section>
-        <p class="tweet-text">続いてIsInt32Double()のほうを見てみようか。</p>
-        
-      </section>
-      
-      <header class="tweet-header">
-        
-        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1248867688387993600"
-            target="_blank">2020/4/11 15:57:14</a></p>
-      </header>
-      <section>
-        <p class="tweet-text">こういう関数ですな。Int32がとる範囲内かつマイナス0でないかつ値がFastI2D(FastD2I(value))とvalueが等しいと整数だと。<br/>bool IsInt32Double(double value) {<br/>return value &gt;= kMinInt &amp;&amp; value &lt;= kMaxInt &amp;&amp; !IsMinusZero(value) &amp;&amp;<br/>  value == FastI2D(FastD2I(value));<br/>}</p>
-        
-      </section>
-      
-      <header class="tweet-header">
-        
-        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1248870300655075328"
-            target="_blank">2020/4/11 16:07:37</a></p>
-      </header>
-      <section>
-        <p class="tweet-text">-0というのはDoubleだと63ビット目が1になってあとは0となるんだよな。</p>
-        
-      </section>
-      
-      <header class="tweet-header">
-        
-        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1248870785923436546"
-            target="_blank">2020/4/11 16:09:32</a></p>
-      </header>
-      <section>
-        <p class="tweet-text">しかしなぜ-0でないことを確認せねばならないのだろうか。+0でも-0でも0だから整数とみなしてもいいはず。。。</p>
-        
-      </section>
-      
-      <header class="tweet-header">
-        
-        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1248871093424685057"
-            target="_blank">2020/4/11 16:10:46</a></p>
-      </header>
-      <section>
-        <p class="tweet-text"><blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="https://ja.wikipedia.org/wiki/IEEE_754%E3%81%AB%E3%81%8A%E3%81%91%E3%82%8B%E8%B2%A0%E3%81%AE%E3%82%BC%E3%83%AD" target="_blank">IEEE 754における負のゼロ - Wikipedia</a></header><div></div></blockquote></p>
-        
-      </section>
-      
-      <header class="tweet-header">
-        
-        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1248871945577172992"
-            target="_blank">2020/4/11 16:14:09</a></p>
-      </header>
-      <section>
-        <p class="tweet-text">よくわからんが、次のvalue == FastI2D(FastD2I(value))と関係があるのかもしれないな。</p>
-        
-      </section>
-      
-      <header class="tweet-header">
-        
-        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1248873094657146881"
-            target="_blank">2020/4/11 16:18:43</a></p>
-      </header>
-      <section>
-        <p class="tweet-text">FastD2I()というのはこれ<br/>inline int FastD2I(double x) {<br/>  DCHECK(x &lt;= INT_MAX);<br/>  DCHECK(x &gt;= INT_MIN);<br/>  return static_cast&lt;int32_t&gt;(x);<br/>}<br/><br/>DCHECK()はデバッグ時はassertとなるマクロ。要は単純にstatic_castしてるだけですな。</p>
-        
-      </section>
-      
-      <header class="tweet-header">
-        
-        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1248873580726636551"
-            target="_blank">2020/4/11 16:20:39</a></p>
-      </header>
-      <section>
-        <p class="tweet-text">そしてFastI2D()というのはこれ。まあこれも単純にstatic_castしてdoubleに戻しているだけ。<br/>inline double FastI2D(int x) {<br/>  return static_cast&lt;double&gt;(x);<br/>}</p>
-        
-      </section>
-      
-      <header class="tweet-header">
-        
-        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1248874868671516675"
-            target="_blank">2020/4/11 16:25:46</a></p>
-      </header>
-      <section>
-        <p class="tweet-text">ようするに「double値をint32_tでキャストして整数化→整数化したものをdoubleにキャストしてもとに戻した結果」が「もとの値と同じ」であればそれは「整数」ということなるんだな。当たり前といえば当たり前。</p>
-        
-      </section>
-      
-      <header class="tweet-header">
-        
-        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1248875275149963264"
-            target="_blank">2020/4/11 16:27:23</a></p>
-      </header>
-      <section>
-        <p class="tweet-text">このキャストは、<br/>・値がInt32のとる範囲外<br/>・少数を含む<br/>場合はおそらく等しくないよな。なのでそれはInt32でないといえる。</p>
-        
-      </section>
-      
-      <header class="tweet-header">
-        
-        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1248875373430857729"
-            target="_blank">2020/4/11 16:27:46</a></p>
-      </header>
-      <section>
-        <p class="tweet-text">等しくないというか元の値ではなくなるよな。</p>
-        
-      </section>
-      
-      <header class="tweet-header">
-        
-        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1248875459921629184"
-            target="_blank">2020/4/11 16:28:07</a></p>
-      </header>
-      <section>
-        <p class="tweet-text">ではマイナス0ではどうなるのか。</p>
-        
-      </section>
-      
-      <header class="tweet-header">
-        
-        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1248877913736273921"
-            target="_blank">2020/4/11 16:37:52</a></p>
-      </header>
-      <section>
-        <p class="tweet-text">試してみたけど整数として判定されるな。<br/><br/><blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="https://wandbox.org/permlink/sZ7yrtkKu2q5iWCY" target="_blank">[Wandbox]三へ( へ՞ਊ ՞)へ ﾊｯﾊｯ</a></header><div></div></blockquote></p>
-        
-      </section>
-      
-      <header class="tweet-header">
-        
-        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1248878005465657344"
-            target="_blank">2020/4/11 16:38:14</a></p>
-      </header>
-      <section>
-        <p class="tweet-text">wandbox便利ですな。。</p>
-        
-      </section>
-      
-      <header class="tweet-header">
-        
-        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1248878681155497984"
-            target="_blank">2020/4/11 16:40:55</a></p>
-      </header>
-      <section>
-        <p class="tweet-text">しかしなぜIsInt32Double()は-0を整数で「ない」と判定するのだろうか。なんか意味があるはずだ。。</p>
-        
-      </section>
-      
-      <header class="tweet-header">
-        
-        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1248888505020715008"
-            target="_blank">2020/4/11 17:19:57</a></p>
-      </header>
-      <section>
-        <p class="tweet-text">Wikipediaに少しヒントとなるようなことが書いてあるな。。<br/><br/>「計算結果が負の極めて小さい値で算術アンダーフローとなった場合、負のゼロが結果として得られる。」<br/><br/>しかし単に-0.0や-0.0 x 1.0も負のゼロとなるようだが。。</p>
-        
-      </section>
-      
-      <header class="tweet-header">
-        
-        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1248896008026615808"
-            target="_blank">2020/4/11 17:49:46</a></p>
-      </header>
-      <section>
-        <p class="tweet-text">ちょっとしょぼいコードで申し訳ないが、doubleのビットパターンを表示してみたらやっぱり-0.0x1.0は-0になるね。。 https://t.co/aEv0RlhPxu</p>
-        
-        <img  class="tweet-img" src="https://pbs.twimg.com/media/EVT3y0aU4AA-2gQ.png" />
-        
-        <img  class="tweet-img" src="https://pbs.twimg.com/media/EVT38oYUEAAPUQN.png" />
-        
-      </section>
-      
-      <header class="tweet-header">
-        
-        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1248896544729788416"
-            target="_blank">2020/4/11 17:51:54</a></p>
-      </header>
-      <section>
-        <p class="tweet-text">いや、これって「整数演算の範囲では-0というのはあり得ない値だから」だからじゃないだろうか。なんかそんな気がするな。</p>
-        
-      </section>
-      
-    </article>
-    
-    <article>
-      
-      
-      <header class="tweet-header">
-        
-        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1231176331628433408/1rqOW5xD_normal.jpg" />
-        <p class="tweet-user-name">κeen@blackenedgold</p>
-        
-        <p class="tweet-date"><a href="https://twitter.com/blackenedgold/status/1247172631880589317"
-            target="_blank">2020/4/6 23:41:41</a></p>
-      </header>
-      <section>
-        <p class="tweet-text">かなり本格的にインタプリタを作る記事らしい。目次眺めた感じ、VM作ってるしGCも書いてるしclassもあるしNaN boxingとかもしてるし、ここまで充実した資料ほとんどないよね。<br/><br/>Crafting Interpreters<br/><a href="http://craftinginterpreters.com/" target="_blank">craftinginterpreters.com</a></p>
         
       </section>
       

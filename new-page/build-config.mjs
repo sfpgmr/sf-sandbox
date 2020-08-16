@@ -1,6 +1,8 @@
 export default {
   "buildCommands":[
     "node-sass ./current/src/css/style.scss > ./current/src/css/style.css",
+    "cd ~/pj/sandbox/new-page/tools && node ./twitter.mjs",
+    "cd ~/pj/sandbox/new-page/tools && node ./make-embeded.mjs",
     "cd ~/pj/sandbox/new-page/tools && node ./make-page.mjs",
     "rollup -c ./rollup.config.js"
   ],
