@@ -42,7 +42,7 @@ try {
 
 
     const insertStmt = db.prepare('replace into tweets(id,tweet) values(@id,@tweet);');
-    const getMaxIdStmt = db.prepare('select max(id) as since_id from tweets and flags = 0;');
+    const getMaxIdStmt = db.prepare('select max(id) as since_id from tweets where flags = 0;');
     const since_id = getMaxIdStmt.get();
     if(since_id.since_id) {
       params.since_id = since_id.since_id;
