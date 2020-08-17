@@ -7,7 +7,7 @@ export default {
     "rollup -c ./rollup.config.js"
   ],
   "copyFiles":[
-  "./current/src/html",
+  "./data/rendered",
   "./current/src/css/style.css",
   "./current/src/css/style.css.map",
   "./current/build/index.js"

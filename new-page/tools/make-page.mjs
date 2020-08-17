@@ -88,10 +88,10 @@ import Database from 'better-sqlite3';
       }
   
     });
-    await fs.promises.writeFile(`../current/src/html/${fname}`, html, 'utf8');
+    await fs.promises.writeFile(`../data/rendered/${fname}`, html, 'utf8');
     ++page;
   }
   const metaData = {maxContents:page};
-  await fs.promises.writeFile('../current/src/html/metaData.json',JSON.stringify(metaData),'utf8');
+  await fs.promises.writeFile('../data/rendered/metaData.json',JSON.stringify(metaData),'utf8');
 
 })();
