@@ -4,7 +4,14 @@ import ejs from 'ejs';
 import Database from 'better-sqlite3';
 
 
+
 (async () => {
+  
+  let outputPath = '../data/rendered/';
+
+  if(process.argv[2]){
+    outputPath = process.argv[2];
+  }
 
   const db = new Database('../data/tweets.db');
   const stmt = db.prepare('select tweet from tweets order by id');
@@ -88,10 +95,10 @@ import Database from 'better-sqlite3';
       }
   
     });
-    await fs.promises.writeFile(`../data/rendered/${fname}`, html, 'utf8');
+    await fs.promises.writeFile(`${outputPath}${fname}`, html, 'utf8');
     ++page;
   }
   const metaData = {maxContents:page};
-  await fs.promises.writeFile('../data/rendered/metaData.json',JSON.stringify(metaData),'utf8');
+  await fs.promises.writeFile(`${outputPath}metaData.json`,JSON.stringify(metaData),'utf8');
 
 })();
