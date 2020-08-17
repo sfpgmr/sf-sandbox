@@ -73,7 +73,7 @@ try {
       //   return 0;
       // });
       if(params.since_id){
-        const last = tweets[tweets.length - 1];
+        const last = tweets[0];
         params.since_id = last.id;
         console.log(tweets.length,last.id,last.created_at);
       } else {
