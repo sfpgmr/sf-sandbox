@@ -53,12 +53,16 @@ try {
       let tweets = await getTweets('statuses/user_timeline', params);
       console.log(tweets.length);
 
-      if(params.since_id || params.max_id){
+      if(params.since_id){
+        tweets = tweets.slice(-1);
+      } else if(params.max_id){
         tweets = tweets.slice(1);
       }
+
       if(tweets.length == 0) {
         break;
       }
+      
       tweets.forEach(tweet => {
         insertStmt.run({id:BigInt(tweet.id),tweet:JSON.stringify(tweet)});
       });
