@@ -55,10 +55,9 @@ try {
         break;
       }
 
-      if(params.max_id){
-        tweets = tweets.slice(1);
-      }
-
+      // if(params.since_id || params.max_id){
+      //   tweets = tweets.slice(1);
+      // }
       tweets.forEach(tweet => {
         insertStmt.run({id:BigInt(tweet.id),tweet:JSON.stringify(tweet)});
       });
@@ -73,9 +72,15 @@ try {
 
       //   return 0;
       // });
-      const last = tweets[tweets.length - 1];
-      params.max_id = last.id;
-      console.log(tweets.length,last.id,last.created_at);
+      if(params.since_id){
+        const first = tweets[tweets.length - 1];
+        params.since_id = first.id;
+        console.log(tweets.length,last.id,last.created_at);
+      } else {
+        const last = tweets[tweets.length - 1];
+        params.max_id = last.id;
+        console.log(tweets.length,last.id,last.created_at);
+      }
     }
     db.close();
     // await fs.promises.writeFile('../data/tweets.json', JSON.stringify(tweetData, null, 2), 'utf8');
