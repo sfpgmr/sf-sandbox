@@ -63,7 +63,6 @@ try {
       }
 
       tweets.forEach(tweet => {
-        console.log(tweet.id);
         insertStmt.run({id:BigInt(tweet.id),tweet:JSON.stringify(tweet)});
       });
       // tweets.sort((a,b)=>{

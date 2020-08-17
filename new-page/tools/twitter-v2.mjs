@@ -42,7 +42,8 @@ import querystring from 'querystring';
       }
     })).json();
 
-    if(tweets.meta.result_count == 0){
+    if(tweets.meta.result_count ==
+       0){
       break;
     }
 
