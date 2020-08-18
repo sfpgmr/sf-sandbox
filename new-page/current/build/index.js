@@ -201,7 +201,7 @@
         width: yt.clientWidth,
         videoId: yt.id,
         playerVars: {
-          origin: origin,
+          origin: yt.origin,
           autoplay: 1
         }
       });
@@ -238,6 +238,7 @@
 
     const dom = domparser.parseFromString(await content.text(), 'text/html');
     const yts = dom.querySelectorAll(".youtube");
+    yts && yts.length && yts.forEach(setYTPlayer);
     return { articles: dom.querySelectorAll('#contents > article'), yts: yts };
   }
 
@@ -270,7 +271,7 @@
             let { articles, yts } = await cacheArticles;
             //
             if (articles && articles.length) {
-              yts && yts.length && yts.forEach(setYTPlayer);
+              // yts && yts.length && yts.forEach(setYTPlayer);
               document.getElementById('contents').append(...articles);
               articles.forEach(a => {
                 masonry.resizeObserver.observe(a);

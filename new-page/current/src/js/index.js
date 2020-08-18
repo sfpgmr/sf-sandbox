@@ -77,7 +77,7 @@ function setYTPlayer(yt) {
       width: yt.clientWidth,
       videoId: yt.id,
       playerVars: {
-        origin: origin,
+        origin: yt.origin,
         autoplay: 1
       }
     });
@@ -93,7 +93,7 @@ window.onYouTubeIframeAPIReady = function () {
 }
 
 let observer;
-let MaxContents = 33;
+let MaxContents;
 
 let cacheContentNo = ((p) => {
   const m = (/index(\d+)\.html/i).exec(p);
@@ -115,6 +115,7 @@ async function fetchArticles() {
 
   const dom = domparser.parseFromString(await content.text(), 'text/html');
   const yts = dom.querySelectorAll(".youtube");
+  yts && yts.length && yts.forEach(setYTPlayer);
   return { articles: dom.querySelectorAll('#contents > article'), yts: yts };
 }
 
@@ -122,9 +123,9 @@ let cacheArticles = fetchArticles();
 
 function ObserverTest() {
   const resizeObserver = new ResizeObserver(entries => {
-    for (let entry of entries) {
-      console.log(entry.contentRect);
-    }
+    // for (let entry of entries) {
+    //   console.log(entry.contentRect);
+    // }
   });
   resizeObserver.observe(document.querySelector('#contents'));
 }
@@ -132,8 +133,8 @@ function ObserverTest() {
 //observer.disconnect();
 
 window.addEventListener('load', async () => {
-  //const metaData = await (await fetch('./metaData.json')).json();
-  MaxContents = 33;
+  const metaData = await (await fetch('./metaData.json')).json();
+  MaxContents = metaData.maxContents;
   const tag = document.createElement('script');
   tag.src = "//www.youtube.com/iframe_api";
   const firstScriptTag = document.getElementsByTagName('script')[0];
@@ -156,7 +157,7 @@ window.addEventListener('load', async () => {
           let { articles, yts } = await cacheArticles;
           //
           if (articles && articles.length) {
-            yts && yts.length && yts.forEach(setYTPlayer);
+            // yts && yts.length && yts.forEach(setYTPlayer);
             document.getElementById('contents').append(...articles);
             articles.forEach(a => {
               masonry.resizeObserver.observe(a);
@@ -205,7 +206,7 @@ window.addEventListener('load', async () => {
 
   window.addEventListener('resize', () => {
     masonry.layout();
-  })
+  });
   //masonry.layout();
   //twttr.events.bind('rendered',masonry.layout.bind(masonry));
 
