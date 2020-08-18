@@ -229,6 +229,378 @@ div.no-image {
         <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1212701145379946496/pSDVrvWj_normal.png" />
         <p class="tweet-user-name">S.F.@SFPGMR</p>
         
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1230441016848576513"
+            target="_blank">2020/2/20 19:36:13</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">とりあえずはpeg.jsでパーサ・レンダラを作ることにして、markdownパーサのテストページをAMPで作ろうと思う。AMPはテンプレートからこれを使ってみようかなと思っている。<br/><br/><blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="https://amp.dev/documentation/templates/preview/websites/blog/templates/blog.amp.html?format=websites" target="_blank">The Recipe Blog</a></header><div></div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1230441335292751872"
+            target="_blank">2020/2/20 19:37:29</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">これをテンプレート・エンジンのテンプレートに書き換えてmarkdownのテストページを作ろうと思う。テンプレートエンジンはejsで行こうかね。それとも何か新しいのを使ってみようかな。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1230601907468529664"
+            target="_blank">2020/2/21 6:15:32</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">デプロイ環境を整えている。makefileを作って、ページをレンダリングする部分を作ったりとかしているところ。makeもかなり思い出してきて、割と書けるようになってきてる。環境変数にシェルコマンドで値を放り込んだりできるんだよね。実は知らんかった（笑）。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1230601908382912512"
+            target="_blank">2020/2/21 6:15:33</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">markdownパーサーの実装にはかなり時間がかかると思われるので、その途中成果物をリリースしてレポートするような体裁のページを作ろうと思っている。しかしこのページを作るための環境を作らないといけないので、さらに時間がかかると思われる（笑）。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1230603701670174724"
+            target="_blank">2020/2/21 6:22:40</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">とりあえずmakeすると、<br/><br/>１．パーサのビルド（peg.js）<br/>２．cssのビルド（postcss）<br/>３．jsのビルド（rollup）<br/>４．htmlのビルド (ejs)<br/><br/>が順にできるようになった。<br/><br/>続いて<br/><br/>・途中成果のリリース<br/>・途中成果のサーバーへのデプロイ<br/>・テスト<br/>・clean<br/><br/>の実装を進めていく</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1230611278365749248"
+            target="_blank">2020/2/21 6:52:47</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">amp-script でパーサーを動かそうと思ったけど、スクリプトのサイズ制限があったよな。。なんかだめな気がする。peg.jsが吐くパーサーのソースファイルは大き買ったように思うので。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1230613227236515840"
+            target="_blank">2020/2/21 7:00:31</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">amp-scriptエレメントあたり10k 、ページトータルで150kかあ。<br/><blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="https://www.google.com/amp/s/amp.dev/documentation/components/amp-script/" target="_blank">リダイレクトの警告</a></header><div></div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1230615744011894784"
+            target="_blank">2020/2/21 7:10:31</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">こりゃあ、アウトですな。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1230617337457364992"
+            target="_blank">2020/2/21 7:16:51</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">パーサ部分はamp-iframe内に納めるしかないかな。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1230617711924789248"
+            target="_blank">2020/2/21 7:18:20</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ただなんらかの形でamp-scriptは使ってみたい。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1230619946444451840"
+            target="_blank">2020/2/21 7:27:13</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">amp-iframeはページのトップから600px以内に置いてはいけない制限がある。私のブログの記事タイトルブロックが大きいのはその制限を回避するため。。何につけ制約がきつい。その制約はページパフォーマンスやセキュリティを担保するためにあるのだが。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1231154621701181440"
+            target="_blank">2020/2/22 18:51:50</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">テンプレートをいじり始めている。 https://t.co/UP4v0sc6K8</p>
+        
+        <img  class="tweet-img" src="https://pbs.twimg.com/media/ERXwmjUU8AElFrk.jpg" />
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1231154946466123776"
+            target="_blank">2020/2/22 18:53:07</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">json-ldをデータ・フォーマットとしたいんだけど、なんかこうしっくりいかんなあ。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1231155381138681857"
+            target="_blank">2020/2/22 18:54:51</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">このテンプレートは<blockquote class="card card-large"><header><img  src="https://amp.dev/static/img/sharing/default-600x314.png" /><a href="http://amp.dev" target="_blank">AMP - a web component framework to easily create user-first web experiences - amp.dev</a></header><div></div></blockquote>にあるSimple Articleである。<br/>ものすごくシンプルでよい。全体のデザインもこれでいいかなあ。。と思ってる。<br/><br/><blockquote class="card card-large"><header><img  src="https://amp.dev/static/img/sharing/default-600x314.png" /><a href="https://amp.dev/documentation/templates/simple_article/?format=websites" target="_blank">Simple Article - amp.dev</a></header><div></div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1231319330844889088"
+            target="_blank">2020/2/23 5:46:19</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">フォントはWebFontを使おうかねえ。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1231518430160773120"
+            target="_blank">2020/2/23 18:57:28</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ejsのテンプレート化を進めている。AMPでページ作るとUIパーツが漏れなくついてくる（というか強制される）のがなんか私にはいい感じ。どんどん横道にそれるタイプなので、AMPの制約がそれを矯正して前を向かせてくれる。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1232049207759888384"
+            target="_blank">2020/2/25 6:06:36</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">簡単なエディタをelectronで作ろうと思いたってしまった。。とりあえず入れた。。 https://t.co/xocfFUZdKz</p>
+        
+        <img  class="tweet-img" src="https://pbs.twimg.com/media/ERkeOUmUwAAY23Y.jpg" />
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1232053231028588544"
+            target="_blank">2020/2/25 6:22:35</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">markdownパーサ・レンダラを作る環境はmakeで簡単に作った。が、パーサ・レンダラの開発ログを書く環境整備のほうに凝り始め、時間がかかっている</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1232080432239235072"
+            target="_blank">2020/2/25 8:10:40</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">これを機会にreactをいじってみるかな。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1232257847527792640"
+            target="_blank">2020/2/25 19:55:39</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">しかし以前に<br/><br/>・静的サイトジェネレータのパッケージ探す<br/>↓<br/>・gatsuby.js見つける<br/>↓<br/>・reactベースだと知って敬遠<br/><br/>したような</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1232279002410151936"
+            target="_blank">2020/2/25 21:19:43</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">あ、GatsbyJSだった。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1232414553922686976"
+            target="_blank">2020/2/26 6:18:21</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">いや、こういうのスターター動かすと「簡単！！」ってなるんだけど、実際コードいじろうとするとびっくりするほど学習しなくてはいけなくなるからな。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1232415028600401921"
+            target="_blank">2020/2/26 6:20:14</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">あとnext.jsちゅうのも見とくか。。<br/><br/><blockquote class="card card-large"><header><div class="no-image" >No Image</div><a href="https://nextjs.org/" target="_blank">Next.js by Vercel - The React Framework</a></header><div></div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1232626972624179200"
+            target="_blank">2020/2/26 20:22:26</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">考えればelectronとかではなく、koa.jsでCMSっぽいものを作ればいいんだった。それで編集したドキュメントを静的HTMLにレンダリングすればいいんだよな。まずはローカルで動くものを作って、それをVMにデプロイすればいいんだよな。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1232995437663137802"
+            target="_blank">2020/2/27 20:46:34</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">Webリニューアルはすこし迷走中ですな。CMSの管理画面っぽいものを作りたくなったりとかしてるんだよな。ログイン処理とかセッション管理とかはちょっと避けてきた部分ですわ。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1232995844560805888"
+            target="_blank">2020/2/27 20:48:11</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ちょっと頭の中ではまとまりのない、カオスな感じになっている。花粉症の季節は頭がひどく疲れるんだよなあ。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1232996746193596417"
+            target="_blank">2020/2/27 20:51:46</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">OAuthとか認証系のところは一度きっちりおさえときたいところですわ。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1232996786794463232"
+            target="_blank">2020/2/27 20:51:56</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">セッション管理はMSのASPが流行ってたころにちょっとかじってたな。Sessionオブジェクト使ってやってたな。確か。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1232997204425469954"
+            target="_blank">2020/2/27 20:53:36</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">これですわ。Visual Interdevとか懐かしいですわ。。<br/><br/><blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="https://support.microsoft.com/ja-jp/help/300883/how-to-use-session-and-application-variables-in-an-asp-program" target="_blank">ASP プログラムでの Session 変数と Application 変数の使用方法</a></header><div></div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1233501950429122560"
+            target="_blank">2020/2/29 6:19:16</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">やっぱりriot.jsでやってみるかなあ。。サーバーサイドもクライアントも。なんか自分の好みにフィットするライブラリなんだよなあ。<br/><blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="https://riot.js.org/ja/" target="_blank">Riot.js — Simple and elegant component-based UI library · Riot.js</a></header><div></div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1233522954979495937"
+            target="_blank">2020/2/29 7:42:44</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">プリコンパイルもSSRもできるしね。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1233523181215997955"
+            target="_blank">2020/2/29 7:43:38</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">どうしてもマイナーなものからちょっと外れてるものに興味や共感を持ってしまうな。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1233523338359734273"
+            target="_blank">2020/2/29 7:44:16</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">そしてビルドはmakeでやると。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1233581424432697344"
+            target="_blank">2020/2/29 11:35:05</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ブログを更新<br/><blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="https://www.sfpgmr.net/blog/entry/2020/02/3964e46d515c1ce9579395816b02ed45.amp.html" target="_blank">S.F. Blog:CMSもどきを作ろうとしている</a></header><div>ブログコンテンツ用のパーサ・レンダラを作ろうと思って開発環境を整えていたが、その間いろいろ思うことがあって簡単なCMSもどきを作ってみようと思い立った。が何かこう画期的なアイデアが浮かんでいるわけでもない。単純にCMS的な何かを作ってみたくなったのだ。今まではHTMLを直書きするか、ベースで文書を書いて静的ブログジェネレータを使ってHTMLに変換していた。機能的におおむね問題はない。がなんとなく今...</div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1234002011479134209"
+            target="_blank">2020/3/1 15:26:20</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">riot.jsの文書読んでて、その流れでWebComponentsあたりにきてる。メジャーなブラウザはサポートしているし、これでいくっちゅうのもありですな。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1234225233256599552"
+            target="_blank">2020/3/2 6:13:21</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">CSSフレームワーク使うと使ってないセレクタの容量が気になっていた。が、purgecssとか使うと削れるんですな。１つ悩みが解消したわ。。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1212701145379946496/pSDVrvWj_normal.png" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
         <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1234040893448941568"
             target="_blank">2020/3/1 18:00:51</a></p>
       </header>
@@ -420,24 +792,6 @@ div.no-image {
         <p class="tweet-text">三菱電機の「青空照明」実物を見てきました。言われなければ本物の空と区別不能。屋内の閉塞感を解消する新たな照明技術です。<br/><br/><a href="https://japanese.engadget.com/jp-2020-02-26-misola.html" target="_blank">japanese.engadget.com/jp-2020-02-26-…</a> https://t.co/XcUOsy1Sz5</p>
         
         <video class="tweet-img" controls src="https://video.twimg.com/ext_tw_video/1232886759253348352/pu/vid/1280x720/9NSAT2bFYKrtFR2g.mp4?tag=10" />
-        
-      </section>
-      
-    </article>
-    
-    <article>
-      
-      
-      <header class="tweet-header">
-        
-        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1212701145379946496/pSDVrvWj_normal.png" />
-        <p class="tweet-user-name">S.F.@SFPGMR</p>
-        
-        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1232993517263155200"
-            target="_blank">2020/2/27 20:38:57</a></p>
-      </header>
-      <section>
-        <p class="tweet-text">@Hoguchi373 昔はありましたが、今はクラウドに移行しました。</p>
         
       </section>
       
