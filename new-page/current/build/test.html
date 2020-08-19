@@ -1,0 +1,1884 @@
+<!DOCTYPE html><html lang="ja" prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb# article: http://ogp.me/ns/article#"><head>
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script src="//www.youtube.com/iframe_api"></script><script async="" src="https://www.googletagmanager.com/gtag/js?id=UA-15457703-9"></script>
+  <script>
+    if (!location.hostname.match(/localhost/)) {
+      window.dataLayer = window.dataLayer || [];
+      function gtag() { dataLayer.push(arguments); }
+      gtag('js', new Date());
+      gtag('config', 'UA-15457703-9');
+    }
+  </script>
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Twitter Viewer</title>
+  <meta name="description" content="自作Twitter Viewerによる自分のつぶやきの記録。Programming,Music,HTML5,WebGL,javascript,WebAudio,Gameなど">
+  <meta name="keywords" content="Programming,Music,HTML5,WebGL,javascript,WebAudio"> 	
+
+  <meta itemprop="image" content="https://www.sfpgmr.net/img/sfweb.png">
+  <meta itemprop="name" content="S.F. Web">
+  
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:site" content="S.F. Web">
+  <meta name="twitter:url" content="./index.html">
+  <meta name="twitter:title" content="Twitter Viewer">
+  <meta name="twitter:description" content="自作Twitter Viewerによる自分のつぶやきの記録。Programming,Music,HTML5,WebGL,javascript,WebAudio,Gameなど">
+  <meta name="twitter:image" content="https://www.sfpgmr.net/img/sfweb.png">
+  
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="./index.html">
+  <meta property="og:title" content="Twitter Viewer">
+  <meta property="og:site_name" content="S.F. Web">
+  <meta property="og:description" content="Programming,Music,HTML5,WebGL,javascript,WebAudio">
+  <meta property="og:image" content="https://www.sfpgmr.net/img/sfweb.png">
+
+  <style>
+  * {
+  margin: 0;
+  padding: 0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+
+html {
+  margin: 0;
+  padding: 0;
+  font-size: 10px; }
+
+body {
+  margin: 0;
+  padding-left: 8px;
+  padding-right: 8px;
+  background: black;
+  color: white; }
+
+.top-nav {
+  position: fixed;
+  z-index: 99999;
+  background: rgba(0, 0, 0, 0.5);
+  display: block;
+  width: 100%;
+  height: 32px;
+  color: white; }
+
+#sentinel {
+  width: 0px;
+  height: 0px; }
+
+.contents {
+  padding-top: 32px;
+  width: 100%;
+  position: relative;
+  content: strict; }
+
+@keyframes blinking {
+  0% {
+    color: black; }
+  50% {
+    color: white; }
+  100% {
+    color: black; } }
+
+.loading {
+  font-family: monospace;
+  font-size: 24px;
+  position: fixed;
+  width: 100vw;
+  height: 100vh;
+  text-align: center;
+  padding-top: 50vh;
+  z-index: 32768;
+  background: black;
+  animation: blinking 2s infinite;
+  content: strict; }
+
+.contents > article {
+  background: #f0f0f0;
+  color: #202020;
+  position: absolute;
+  max-height: 960px;
+  overflow: auto;
+  border-radius: 3px;
+  /* transition: opacity 1s linear;*/
+  opacity: 1.0; }
+
+.tweet-header {
+  display: grid;
+  align-items: end;
+  grid-template-columns: 40px 2fr 1fr;
+  grid-template-rows: 1fr;
+  font-size: 12px;
+  font-weight: bold; }
+
+.tweet-img {
+  width: 100%;
+  object-fit: cover; }
+
+.youtube {
+  position: relative;
+  cursor: pointer; }
+
+.youtube > img {
+  width: 100%;
+  object-fit: cover; }
+
+.youtube > svg.player-play {
+  width: 64px;
+  height: 64px;
+  left: calc(50% - 32px);
+  top: calc(50% - 32px);
+  position: absolute;
+  z-index: 1000;
+  opacity: 0.5; }
+
+.youtube:hover > svg.player-play {
+  opacity: 1.0; }
+
+.youtube:hover .player-play-1 {
+  stroke: #80808080; }
+
+.youtube > div.yt-title {
+  /*text-shadow: #fff 1px 1px 0;*/
+  font-size: 1.2rem;
+  color: white;
+  background: rgba(0, 0, 0, 0.5);
+  position: absolute;
+  left: 0;
+  top: 0;
+  overflow: auto;
+  z-index: 998; }
+
+.tweet-profile-img {
+  grid-column: 1/2;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%; }
+
+.tweet-user-name {
+  grid-column: 2/3; }
+
+.tweet-date {
+  font-size: 8px;
+  text-align: right;
+  grid-column: 3/4; }
+
+.contents > twitter-widget {
+  overflow: auto;
+  max-height: 960px;
+  position: absolute; }
+
+.contents > article > section > .tweet-text {
+  display: block;
+  padding: 4px;
+  word-break: break-all;
+  font-size: 12px; }
+
+.contents > article > h3 {
+  font-size: 12px; }
+
+blockquote.card {
+  margin: 4px;
+  padding: 4px;
+  font-size: 12px;
+  background: white;
+  border-radius: 4px; }
+
+blockquote.card > header {
+  display: grid;
+  grid-gap: 4px;
+  gap: 4px; }
+
+blockquote.card-default > header {
+  grid-template-columns: 64px 1fr; }
+
+blockquote.card-large > header {
+  grid-template-columns: 1fr; }
+
+blockquote.card > header > img {
+  width: 100%; }
+
+div.no-image {
+  display: block;
+  width: 64px;
+  height: 64px;
+  background: gray;
+  color: white;
+  text-align: center;
+  line-height: 64px; }
+ 
+  </style>
+</head>
+
+<body>
+  
+  <header class="top-nav">
+    <h1>S.F. Info.</h1>
+  </header>
+  <div class="contents" id="contents" rendersubtree="" style="height: 2674px;"> 
+    
+    
+    <article style="width: 368px; transform: translate3d(16px, 0px, 0px); opacity: 1;">
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/1171795194624086016/BZhp45Gm_normal.png">
+        <p class="tweet-user-name">ただすめん@tadasumen</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/tadasumen/status/1295267248962117632" target="_blank">2020/8/17 16:52:31</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">胸筋のピクピクだけで冒険するゲーム、ほぼ完成しましたけど https://t.co/nbsqq2Dv88</p>
+        
+        <video class="tweet-img" controls="" src="https://video.twimg.com/ext_tw_video/1295266734346100738/pu/vid/640x360/hvXUS_mjH_nI8yiU.mp4?tag=10">
+        
+      </video></section>
+      
+    </article>
+    
+    <article style="width: 368px; transform: translate3d(400px, 0px, 0px); opacity: 1;">
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/1117418195931947008/wBgf-Fm1_normal.png">
+        <p class="tweet-user-name">あめろん@Ameron001</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/Ameron001/status/1295384038903967749" target="_blank">2020/8/18 0:36:36</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">世界のコンピュターゲームアッターリ！の<br><br>MAJOR HAVOC【メジャーハボック】はやはり何度見ても表現など凄くて関心してしまいます☺️<br>1983年でコノクオリティ！<br><br>#ATARI #Nintendoswitch <br>#レトロコンシューマー愛好会 https://t.co/VHZBnfxqn2</p>
+        
+        <video class="tweet-img" controls="" src="https://video.twimg.com/ext_tw_video/1295383554130501633/pu/vid/486x360/wa_E5d07P_Q74pqr.mp4?tag=10">
+        
+      </video></section>
+      
+    </article>
+    
+    <article style="width: 368px; transform: translate3d(16px, 273px, 0px); opacity: 1;">
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/1212701145379946496/pSDVrvWj_normal.png">
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1295113909297274880" target="_blank">2020/8/17 6:43:12</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">コレのおかげで相当楽になるなあ。<br></p><blockquote class="card card-default"><header><div class="no-image">No Image</div><a href="https://developer.twitter.com/en/docs/twitter-api/conversation-id" target="_blank">Conversation ID | Docs | Twitter Developer</a></header><div></div></blockquote><p></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1295319496169648132" target="_blank">2020/8/17 20:20:08</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">と思ったがrecent search で取得出来るのは7日前までか。。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article style="width: 368px; transform: translate3d(400px, 369px, 0px); opacity: 1;">
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/1163320881055031296/iN8r5TIl_normal.jpg">
+        <p class="tweet-user-name">チバテレ【公式】@chiba3ch</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/chiba3ch/status/1295290166316158976" target="_blank">2020/8/17 18:23:35</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">#2020夏季千葉県高等学校野球大会<br>#チバテレ ＨＰに決勝トーナメントのダイジェスト掲載📺<br><br><a href="https://www.chiba-tv.com/info/detail/38475" target="_blank">chiba-tv.com/info/detail/38…</a><br><br>＃市立船橋 ＶＳ #専修大松戸<br><br>＃準決勝 実力校同士の戦いは6回表に大きく動く…<br><br>拡大したい場合は、動画の右下の❑四角マークを押して全画面（f）表示にしてください。<br>＃高校野球 https://t.co/Mrbl3uJjm8</p>
+        
+        <img class="tweet-img" src="https://pbs.twimg.com/media/EfnLZrQUwAMlB5V.jpg">
+        
+      </section>
+      
+    </article>
+    
+    <article style="width: 368px; transform: translate3d(16px, 460px, 0px); opacity: 1;">
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/817864664851750912/hN2kbele_normal.jpg">
+        <p class="tweet-user-name">阿部@ave620</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/ave620/status/1295282121221607424" target="_blank">2020/8/17 17:51:37</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">なんとかしてやる気を出すより、やる気がなくても動ける環境作りの方が大事だと思ったおんなのこのまんがをかきました… https://t.co/ioGpEZkva5</p>
+        
+        <img class="tweet-img" src="https://pbs.twimg.com/media/EfnEOOsU0AEAxnK.jpg">
+        
+      </section>
+      
+    </article>
+    
+    <article style="width: 368px; transform: translate3d(400px, 823px, 0px); opacity: 1;">
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/1210534203307069440/ZueFJm4M_normal.jpg">
+        <p class="tweet-user-name">ひでまる＠悪の誇りを舞掲げます@hidemaru0503</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/hidemaru0503/status/1294965633352740866" target="_blank">2020/8/16 20:54:00</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">お盆休みもあと数時間で終わりですね( ◠‿ ◠ ) https://t.co/F7W6t7IuEu</p>
+        
+        <img class="tweet-img" src="https://pbs.twimg.com/media/EfikQ6IU8AEaqir.jpg">
+        
+        <img class="tweet-img" src="https://pbs.twimg.com/media/EfikTNNUEAcHOAc.jpg">
+        
+      </section>
+      
+    </article>
+    
+    <article style="width: 368px; transform: translate3d(16px, 1436px, 0px); opacity: 1;">
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/1212701145379946496/pSDVrvWj_normal.png">
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1292292945085833216" target="_blank">2020/8/9 11:53:42</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">浦安７回の裏。３点返さないとこの回で終了。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1292293172698046465" target="_blank">2020/8/9 11:54:36</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">千葉県大会が気になって何も手がつかないや😅</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1292294601265442817" target="_blank">2020/8/9 12:00:17</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">浦安１点返した！</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1292295459977826305" target="_blank">2020/8/9 12:03:42</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">試合終了。<br><br>専大松戸 ９－１ 浦安（７回コールド）<br><br>専大松戸は敵なしな感じ。決勝は千葉商大と松戸六実の勝者と。このまま勝ち上がっていく感じがするね。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1292338403669753856" target="_blank">2020/8/9 14:54:20</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">市立千葉は投手市来くんの正確なコントロールが光るな。あんまりミットからずれたところにボールがいかないね。。球速はあまりないがコースを巧みに突いてる感じ。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1292339424680751105" target="_blank">2020/8/9 14:58:24</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">そして千葉経済大付属のユニフォームって変わった？いつから変わったんだろうね。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1292352211192705029" target="_blank">2020/8/9 15:49:12</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">県野球場はスコアボードがすごく見やすくなってるね。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1292353058601439234" target="_blank">2020/8/9 15:52:34</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">銚子商ー成田は銚子商が６回の裏逆転！６－４！</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1292354371192123392" target="_blank">2020/8/9 15:57:47</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">というか銚子商先行ー成田追いつくー銚子商追加点という流れですな。あと３回。成田追いつくか。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1292362155598127104" target="_blank">2020/8/9 16:28:43</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">成田８回１死満塁のチャンスものにできず。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1292362754666332166" target="_blank">2020/8/9 16:31:06</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">市立千葉は千葉経大付属の追い上げをぎりぎりでかわしここまで来ている。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1292364220919513091" target="_blank">2020/8/9 16:36:55</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">市立千葉ー千葉経大付属８回裏。２死2－3塁のピンチをなんとか0で切り抜ける。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1292365770106626053" target="_blank">2020/8/9 16:43:05</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">銚子商ー成田は８－４。8回裏に本塁打で2点加点。成田万事休すか。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1292366036302311426" target="_blank">2020/8/9 16:44:08</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">そして市立千葉ー千葉経大付属は9回裏。経大付属は2点差を跳ね返すことができるか。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1292366974866006017" target="_blank">2020/8/9 16:47:52</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ここで成田が2点本塁打。8-6。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1292368668534304768" target="_blank">2020/8/9 16:54:36</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">成田６ー８銚子商<br><br>銚子商エース宮内くん150球越えの力投。秋季大会の雪辱を果たす！</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1292369130494910472" target="_blank">2020/8/9 16:56:26</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">市立千葉ー千葉経大付属は９回裏２点差を跳ね返し５－５の同点！タイブレーク突入。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1292372096031404032" target="_blank">2020/8/9 17:08:13</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">10回表。市立千葉1点追加6-5。10回裏。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1292373207689785348" target="_blank">2020/8/9 17:12:38</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">10回裏2点タイムリーで千葉経大付属サヨナラ。千葉経大付属は決勝で千葉明徳と対戦。しかし市立千葉がここまでやるとは思わなかった。すごい試合だった。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1292373554751655937" target="_blank">2020/8/9 17:14:01</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ただ千葉経大付属はエースを登板させたのは想定外だったと思う。明日の決勝の采配が難しそうな気がする。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1292374021397348352" target="_blank">2020/8/9 17:15:52</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">そして銚子商も明日決勝だが宮内くんのコンディションが気になるね。相手が千葉黎明だからエースで勝負したいところだけど難しそう。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1292374813147709441" target="_blank">2020/8/9 17:19:01</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">しかし千葉経大付属は古豪の意地のようなものを感じたし、市立千葉は9回の守備で抑え込もうとする気が強くいってしまってたように思う。市来くんもすこし力みが入っててコースが甘くなってしまってたな。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1292375985715687425" target="_blank">2020/8/9 17:23:40</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">というわけで地区決勝は<br><br>第１ 千葉明徳ー千葉経大付<br>第２ 習志野ー市立船橋<br>第３ 専大松戸ー千葉商大付<br>第４ 西武台千葉ー日体大柏<br>第５ 八千代松陰ー中央学院<br>第６ 千葉黎明ー銚子商業<br>第７ 千葉学芸ー一宮商業<br>第８ 木更津総合ー志学館<br><br>となった。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1292376816003371008" target="_blank">2020/8/9 17:26:58</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">成田が敗退したのが予想外だったが、銚子商が雪辱を果たし決勝進出したのはそれはそれでうれしい誤算。県立は銚子商業と一宮商業の2校が残り、市立は習志野と船橋の2校が残っている。あとはもう私立の強豪が順当に残っている感じ。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1292378199427440645" target="_blank">2020/8/9 17:32:28</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">木更津総合・習志野・中央学院・専大松戸の4強は勝ち上がってくると思うんだよなあ。やっぱり。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1292590435475402752" target="_blank">2020/8/10 7:35:49</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">今日は千葉大会の地区トーナメント決勝である。これで決勝トーナメントに進出するベスト８が決まる。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1292591275573522432" target="_blank">2020/8/10 7:39:09</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">組み合わせ<br><br>第１ 千葉明徳ー千葉経大付 <br>第２ 習志野ー市立船橋 <br>第３ 専大松戸ー千葉商大付 <br>第４ 西武台千葉ー日体大柏 <br>第５ 八千代松陰ー中央学院<br>第６ 千葉黎明ー銚子商業<br>第７ 千葉学芸ー一宮商業<br>第８ 木更津総合ー志学館<br><br>千葉テレでは第１、第５地区の決勝を中継。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1292593022769668096" target="_blank">2020/8/10 7:46:06</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">私のベスト８予想<br><br>第１ 千葉明徳 <br>第２ 習志野 <br>第３ 専大松戸 <br>第４ 日体大柏 <br>第５ 中央学院<br>第６ 千葉黎明<br>第７ 千葉学芸<br>第８ 木更津総合<br><br>ただ第４と第６はひっくり返る可能性はあるし、どの地区もフタを開けてみないとわからないよね😅</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1292624996825612288" target="_blank">2020/8/10 9:53:09</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">習志野ー市立船橋は山内くん先発も序盤で習志野が7点を失う。さて習志野はここから盛り返すことができるのか。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1292625118833696768" target="_blank">2020/8/10 9:53:38</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">下手するとコールドで終了なんてこともあり得るな。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1292625264803893248" target="_blank">2020/8/10 9:54:13</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">これは予想外の展開だ。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1292625520081870853" target="_blank">2020/8/10 9:55:14</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">千葉明徳ー千葉経大付は集中打で千葉明徳が逆転。５－１。やはり強い。千葉経大は昨日のような粘りをみせることができるか。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1292626558520135680" target="_blank">2020/8/10 9:59:22</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">木更津総合ー志学館は３－０。篠木くん5回までで７Ｋ！</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1292626731895910400" target="_blank">2020/8/10 10:00:03</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">さすが千葉No.１右腕だけあるな。すごい。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1292627067704508417" target="_blank">2020/8/10 10:01:23</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">志学館の相馬くんも木総打線を４安打で凌いでるのもさすがですな。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1292627527676997632" target="_blank">2020/8/10 10:03:13</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">習志野はエースが相当打ち込まれても代えないのが伝統なので（笑）、このままいくだろうね。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1292627676021194752" target="_blank">2020/8/10 10:03:48</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">しかしここまで山内くんが打ち込まれるとは。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1292628505335721984" target="_blank">2020/8/10 10:07:06</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">千葉黎明ー銚子商は１－０。投手戦となっている。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1292629108459896833" target="_blank">2020/8/10 10:09:30</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">西武台千葉ー日体大柏も０－１。投手戦となっている。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1292629321710854144" target="_blank">2020/8/10 10:10:20</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">習志野ー市立船橋は０－８。あと２点で５回コールドの権利を市立船橋は得る。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1292629526728413185" target="_blank">2020/8/10 10:11:09</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">市船１点追加。９－０。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1292629820598231040" target="_blank">2020/8/10 10:12:19</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">市船圧勝の様相。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1292630138320953344" target="_blank">2020/8/10 10:13:35</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">千葉学芸ー一宮商業は７－０。やはり千葉学芸の強さはこの地区ではとびぬけてるからなあ。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1292633042629009413" target="_blank">2020/8/10 10:25:07</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">習志野ー市立船橋は過去の対戦をみてもこれほど大差がついた試合はないのではないだろうか。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1292641338274402304" target="_blank">2020/8/10 10:58:05</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">習志野ー市船 １－１２ もはや勝負あり。５回コールドの可能性も出てきたね。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1292643106295169025" target="_blank">2020/8/10 11:05:07</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">千葉明徳ー千葉経大付は経大付の粘りで６－５。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1292643612941881344" target="_blank">2020/8/10 11:07:08</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">千葉黎明ー銚子商は８回に銚子商追いつくも９回に千葉黎明１点追加。なおも攻撃中。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1292644892120715264" target="_blank">2020/8/10 11:12:13</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">習志野ー市船１２－２。習志野1死満塁も追加点１点にとどまる。５回突入。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1292646510077685762" target="_blank">2020/8/10 11:18:38</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">習志野ー市船、５回の裏。ここで習志野１点以上とらないとコールド負け。ここで意地をみせることができるか。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1292649435013373952" target="_blank">2020/8/10 11:30:16</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">市船１２ー２習志野（５回コールド）<br><br>習志野ここで終了。決勝トーナメントに進めず。エースの山内くんが打ち込まれ、その流れのまま５回コールド。市船は大金星！</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1292651600771571712" target="_blank">2020/8/10 11:38:52</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">市船の次の試合は要注目ですな。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1292652315611021315" target="_blank">2020/8/10 11:41:43</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">木更津総合４－０志学館<br><br>篠木くん１２Ｋ完封。相馬くん好投するもやはり木総の壁は高かった。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1292652762207891456" target="_blank">2020/8/10 11:43:29</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">千葉黎明２－１銚子商<br><br>接戦の末千葉黎明勝利。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1292653154975145987" target="_blank">2020/8/10 11:45:03</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">日体大柏４－３西武台千葉<br><br>これも接戦の末日体大柏が決勝トーナメント出場を果たす。西武台千葉は一歩及ばず。ここ数年西武台千葉はあと一歩というところでの敗退が多し。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1292653539089498112" target="_blank">2020/8/10 11:46:34</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">千葉学芸２４－０一宮商業（７回コールド）<br><br>大差がついてしまった。。この地区では千葉学芸敵なし。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1292653805289394182" target="_blank">2020/8/10 11:47:38</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">千葉明徳６－５千葉経大付<br><br>経大付が１点差まで詰め寄るも、千葉明徳が逃げ切る。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1292660930711416833" target="_blank">2020/8/10 12:15:57</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">専大松戸３－０千葉商大付<br><br>西村くん６安打完封。いやあ、さすがですわ。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1292728151387209728" target="_blank">2020/8/10 16:43:03</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">中央学院５－５八千代松陰<br><br>9回裏に八千代松陰追いつく。10回タイブレークに突入。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1292728922799403010" target="_blank">2020/8/10 16:46:07</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">しかしちょっと中央学院はツキがない感じ。山下くんも飯尾君も決して悪くなくて打者も速球に詰まり気味。だが詰まった打球だけに変な動きをして野手がミスってしまう。そして樋熊くんの力投が八千代松陰を後押ししている。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1292731849459085312" target="_blank">2020/8/10 16:57:45</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ちょっと球審のストライクゾーンがいまいちわからんな。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1292732030002765825" target="_blank">2020/8/10 16:58:28</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">中央学院10回表タイブレークで2点追加。７－５。10回裏へ。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1292732376842305537" target="_blank">2020/8/10 16:59:51</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">力まずいつも通りの投球をすれば山下くんなら抑えられるはず。ちょっと9回の投球時の力みが気になる。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1292732874605510658" target="_blank">2020/8/10 17:01:49</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">逆に八千代松陰は大振りせずミートに徹し転がすバッティングをすれば勝機はまだありそう。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1292733764762624000" target="_blank">2020/8/10 17:05:22</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">10回裏、八千代松陰１死満塁から２点タイムリー。７－７の同点。さらにサヨナラのチャンス。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1292734060016463872" target="_blank">2020/8/10 17:06:32</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">やはり山下くんの力みが悪い方向に行っている。こういう状況で平常心を保つのがいかに難しいかがよくわかる。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1292734477798539265" target="_blank">2020/8/10 17:08:12</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">10回裏終了。７－７で１１回へ。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1292735132382539778" target="_blank">2020/8/10 17:10:48</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">樋熊くんもちょっと疲れてる感じですな。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1292736800746663937" target="_blank">2020/8/10 17:17:25</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">タイブレーク11回表、中央学院2点追加。さらに１点追加。１０－７。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1292737809850068994" target="_blank">2020/8/10 17:21:26</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">１０－７でなんとか１１回裏へ。樋熊くんの力投を観ていると八千代松陰にちょっと肩入れしてしまうよな。樋熊くんはどこかで投げてるのを観た記憶があるんだよな。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1292740060509425664" target="_blank">2020/8/10 17:30:23</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">１１回裏、八千代松陰なんと３点タイムリーで追いつく。１０－１０。うそでしょ。。すごすぎる。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1292740956391841792" target="_blank">2020/8/10 17:33:56</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">八千代松陰 サヨナラ！ １１－１０で八千代松陰勝利！！<br><br>中央学院はパスボールが悔やまれる。しかしすごい試合だった。最後は樋熊くんがタイムリー。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1292741135547297794" target="_blank">2020/8/10 17:34:39</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">樋熊くんが最後バッティングで締めるなんて、ドラマだよこれは。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1292741607419084801" target="_blank">2020/8/10 17:36:31</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">今日は樋熊くんの日だな、これは😄</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1292741974626164736" target="_blank">2020/8/10 17:37:59</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">樋熊くん、去年の夏の決勝で投げてたか。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1292743062074998784" target="_blank">2020/8/10 17:42:18</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">これで決勝トーナメント進出チームが決定<br><br>１．千葉明徳<br>２．市立船橋！<br>３．専大松戸<br>４．日体大柏<br>５．八千代松陰！<br>６．千葉黎明<br>７．千葉学芸<br>８．木更津総合<br><br>番狂わせは２地区で発生。さてこの２チームは本大会の台風の目となるか。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1292743802755530753" target="_blank">2020/8/10 17:45:15</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">これは面白くなってきましたな。習志野と中央学院の名がないのは寂しいが、ベストを尽くした結果なので致し方ない。選手にはリスペクトするほかはない。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1292743908628115463" target="_blank">2020/8/10 17:45:40</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">さて決勝トーナメントの組み合わせはどうなるか。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1292745561527824384" target="_blank">2020/8/10 17:52:14</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">八千代松陰ー中央学院の試合。野球は時として実力以外の「何か」が味方をすることもある。山下くんは明らかに八千代松陰打線を抑えてはいたが、詰まった打球の落下位置や変な動きが八千代松陰に味方した。これが要所で出たので、「ツキ」も八千代松陰に味方をしていた感じがする。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1292746860281491457" target="_blank">2020/8/10 17:57:24</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">この特殊な状況の中、それぞれのチームは育成という面で相当難しかったと思う。高校生の時期は半年で驚くべき変貌を遂げるので、普通の練習ができないなか、いかに工夫してこの時期を過ごすかが問われていたのではないかと思う。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1292747828205240320" target="_blank">2020/8/10 18:01:14</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">そして最大のモチベーションとなるはずの「甲子園出場」がない中、どこに部活の目的を定めるのかという非常に難しい問題がある。こういう特殊な状況のなか、必死に戦っている選手たちを見ていると単なる観戦者の私も泣けてくる🥲</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1292750976000987136" target="_blank">2020/8/10 18:13:45</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">中央学院の山下くんの涙を見ていると、いつもの甲子園出場を果たせなかった涙とは少し違うものに見えた気もする。この複雑な状況の中力投を見せた山下くんはほんとに素晴らしい選手だと思う。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1292751665418780673" target="_blank">2020/8/10 18:16:29</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">決勝トーナメントに進んだチームは千葉県の頂点を目指して頑張ってほしい。県大会を長年観てきたおっさんの意見としては、千葉県の頂点に立つというのは全国大会に出る以上の価値があると思う。<br><br>おかしな理屈だけど本当にそう思うんだよね。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1292756429669990401" target="_blank">2020/8/10 18:35:25</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">決勝トーナメントの組み合わせが決まったな。。 https://t.co/wS1aQ5hLm8</p>
+        
+        <img class="tweet-img" src="https://pbs.twimg.com/media/EfDLGq_VAAAiVFx.png">
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1292756876065558529" target="_blank">2020/8/10 18:37:12</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">うーむ。この組み合わせを見たら専松ー木総のイメージが浮かぶなあ。さてこのイメージを破壊するチームが現れるかどうか。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1292757398436814850" target="_blank">2020/8/10 18:39:16</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">１回戦で気になるのはやっぱり<br><br>・市立船橋ー千葉学芸<br>・千葉黎明ー八千代松陰<br><br>この２試合になるなあ。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1292758443409932288" target="_blank">2020/8/10 18:43:25</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">市立船橋の打線がどれくらいのものなのかは、千葉学芸戦で測るのは難しいな。仮に市船が勝ち上がり、専大松戸も勝ち上がるとして、その試合で専松の投手陣を打ち崩すことができれば本物だといえるような気がする。いやあ、市船打線を早く観たいわ。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1292759373530296320" target="_blank">2020/8/10 18:47:07</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">決勝トーナメントまで数日あるのはありがたいね。。コロナ対策もしないといけないし大変だと思うがなんとかコンディションを調整してなるたけベストの状態で試合に臨むことを願うばかりである。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1292761282924273664" target="_blank">2020/8/10 18:54:42</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">県野球場も今年から来年にかけて照明設備の工事が行われるようだね。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1292776934317809664" target="_blank">2020/8/10 19:56:54</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">おそらくだけど、私が高校野球の虜になったのは１９７５年の新居浜商ー習志野の試合を観たからだろうと思う。小１～２のころだなあ。その頃は大阪にいて祖父の家でTVで観てた記憶があるね。<br><br></p><div class="youtube" data-type="yt" id="kBOy0d1Jv0I"><div class="yt-title">Youtube - 習志野　下山田のサヨナラヒット</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z"></path></g></svg><img data-href="https://youtu.be/kBOy0d1Jv0I" class="youtube" src="https://i.ytimg.com/vi/kBOy0d1Jv0I/hqdefault.jpg"></div>   <br><p></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1292777549647368194" target="_blank">2020/8/10 19:59:21</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">それでまあ２５年くらいに前に転勤で千葉に越してきたわけだけど、近くになんと習志野高校があって。ああ、ここがあの習志野高校なのか！と当時感動したのを覚えている😄</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1292777784205484033" target="_blank">2020/8/10 20:00:17</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">それでまあまた高校野球熱が再燃して今に至るわけですが😅</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1292778531202580480" target="_blank">2020/8/10 20:03:15</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">大阪にいたころはもちろん大阪のチームを応援してて、転勤した数年も習志野の存在を知りながらも大阪のチームを応援してたが、いつの間にか千葉県のチームばかりを追っかけるようになってしまってるな😄</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1292779967218999297" target="_blank">2020/8/10 20:08:57</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">エースとしての重責かあ。。山内くんはそのプレッシャーと戦ってたんだなあ。飯塚くんという大投手の後釜としての期待も大きいし、重責だよなそりゃ。ここ１０年くらいの習志野の投手ではピカイチですからな。飯塚くんは。。<br><br></p><blockquote class="card card-large"><header><img src="https://www.nikkansports.com/baseball/highschool/news/img/202008100000560-w500_0.jpg"><a href="https://www.nikkansports.com/baseball/highschool/news/202008100000560.html" target="_blank">習志野が敗退　先発の山内「自分の力不足」／千葉 - 高校野球夏の地方大会 : 日刊スポーツ</a></header><div>昨年、春夏の甲子園出場に出場した習志野が、市船橋に5回コールドで敗れ、地区トーナメントで姿を消した。今大会、初登板初先発の山内翔太投手（3年）は、初回からボー… - 日刊スポーツ新聞社のニュースサイト、ニッカンスポーツ・コム（nikkansports.com）</div></blockquote><p></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1292782591083307010" target="_blank">2020/8/10 20:19:23</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">習志野の速球派の投手として記憶に残るのは古谷くん、泉澤くんとかですかな。尾形くんあたりもそうかな。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1292784254976368640" target="_blank">2020/8/10 20:25:59</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">まあしかし千葉県全体でみると近年は木総・専松の投手陣が最高ランクだろうなあ。早川くんなんて大学で大化けしたし。。まあ木総時代もすごかったんだけど、今や最速151Kmですからなあ。こんなに球速って伸びるんだあと思ったね。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1294424580778385408" target="_blank">2020/8/15 9:04:03</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">さあ、今日はベスト８ですな。チバテレは全試合中継ですな。第２チャンネルの試合を観ますかな。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1294425751417008129" target="_blank">2020/8/15 9:08:43</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">市船のピッチャーは完全に野手投げだが、なかなかいい球を投げますな。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1294426091755458560" target="_blank">2020/8/15 9:10:04</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">船橋の球場だから球速表示がなさそうですな。千葉学芸のエースもなかなかすごいな。市船が打ち崩せるか。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1294427081221132288" target="_blank">2020/8/15 9:14:00</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">市船先制 １−０</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1294436514399547392" target="_blank">2020/8/15 9:51:29</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">市船２−０千葉学芸。そして専大松戸西村くん６者連続三振。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1294440635756232705" target="_blank">2020/8/15 10:07:51</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">千葉学芸の小芝くんもいいピッチャーですなあ。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1294460853278740480" target="_blank">2020/8/15 11:28:11</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">市船７−２千葉学芸<br>千葉学芸なんとかコールドはのがれた。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1294462248727977984" target="_blank">2020/8/15 11:33:44</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">専大松戸９−０日体大柏<br>西村くん６回１１ｋ。すばらしいピッチング。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1294516205953282048" target="_blank">2020/8/15 15:08:09</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">木総１−０千葉明徳<br>投手戦となっている。篠木くんのピッチングはさすが。中村くんもギリギリ抑えている感じ。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1294517215631249409" target="_blank">2020/8/15 15:12:09</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">篠木くんは尻上がりに調子を上げている感じ。５回裏３者連続三振。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1294517280903008256" target="_blank">2020/8/15 15:12:25</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ストレートが走っている。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1294529685938794496" target="_blank">2020/8/15 16:01:42</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">木総３−０千葉明徳<br><br>最終回。篠木くんから３点取るのは相当厳しい。しかし中村くんもよく凌いでいる。すばらしいピッチングだなあ。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1294530129855524864" target="_blank">2020/8/15 16:03:28</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">千葉黎明５−４八千代松蔭<br><br>樋熊くん登板。接戦になってる！</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1294530574393040897" target="_blank">2020/8/15 16:05:14</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">がここで千葉黎明おおきな１点追加。６−４。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1294531058780663809" target="_blank">2020/8/15 16:07:10</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">樋熊くん１点でとどめる。７回裏。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1294531250103803909" target="_blank">2020/8/15 16:07:55</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">９回裏。千葉明徳の攻撃。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1294533807165456384" target="_blank">2020/8/15 16:18:05</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">木総３−０千葉明徳<br><br>篠木くんの外角のストレートは手が出んな。。145Kぐらいでてるんではないだろうか。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1294544876478984192" target="_blank">2020/8/15 17:02:04</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">八千代松陰８－７千葉黎明<br><br>千葉くん最後打たれる。1死満塁からサヨナラホームラン。最後の球はちょっと高めにいってしまった。。<br><br>八千代松陰の粘りは正直すごい。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1294545025330753537" target="_blank">2020/8/15 17:02:40</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ちょっと鳥肌ものですわ。この試合。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1294545541183893504" target="_blank">2020/8/15 17:04:43</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">これでベスト４決定<br><br>・専大松戸ー市立船橋<br>・木更津総合ー八千代松陰</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1294546139711025152" target="_blank">2020/8/15 17:07:05</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">専大松戸は西村くんの連投はないと思うので、２番手以降がどれだけ市立船橋の打線を抑えることができるか、そして市立船橋のピッチャーがどれだけ専大松戸の打線を抑えることができるのか。打ち合いになりそうな気もするけど正直よくわからないね。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1294546496520515584" target="_blank">2020/8/15 17:08:30</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">木更津総合もおそらく吉鶴くんが投げると思う。そうそう打てるピッチャーではないので、八千代松陰がどれだけ喰らいつけるかにかかってるわな。今日の試合と同様ですわ。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1294546985228230657" target="_blank">2020/8/15 17:10:27</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">決勝は専松ー木総となって、西村くんと篠木くんとの投手戦が観たいと思うけど、さてどうなるのか。<br><br>逆に市船ー八千代松陰なんていう決勝もあるかもしれん。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1294571738533998593" target="_blank">2020/8/15 18:48:49</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">しかし八千代松蔭の逆転満塁サヨナラホームラン、TVの前で思わず叫んでしまったわ。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1294602138530676743" target="_blank">2020/8/15 20:49:37</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">今日の白球の残像は木総ー市船との決勝を観た。この年確か習志野と市船が準決勝で対戦したんだよな。このときも５−１で市船が完勝したんだよな。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1294603838838591488" target="_blank">2020/8/15 20:56:22</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">この年のベスト８の試合、習志野ー東京学館浦安の試合を県野球場に観に行ったのですわ。このときは確か９回表で逆転してそのまま４−３で勝ったんだよな。並河くんという選手もいたねえ。確か習志野４中出身だったよなあ。。<br><br></p><div class="youtube" data-type="yt" id="RVMsYH3CoIQ"><div class="yt-title">Youtube - 習志野 - 東京学館浦安 9回表 第９８回全国高等学校野球選手権千葉大会</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z"></path></g></svg><img data-href="https://youtu.be/RVMsYH3CoIQ" class="youtube" src="https://i.ytimg.com/vi/RVMsYH3CoIQ/hqdefault.jpg"></div>   <br><p></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1294604615648866305" target="_blank">2020/8/15 20:59:27</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">この年は木総の年だったよな。早川くんという大投手もいたし、甲子園に行ってもベスト８まで行ったしね。作新学院に惜敗した年ですな。相手も今井くんという大投手でしたな。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1294804470681833473" target="_blank">2020/8/16 10:13:36</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">市船４ー０専松<br><br>市船の打線はすごいな。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1294816223348195328" target="_blank">2020/8/16 11:00:18</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">突然打撃戦となり専松が一挙７点で逆転。７−４。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1294816514407768066" target="_blank">2020/8/16 11:01:28</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">あの原くんのランニングホームランのを思い出させますな。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1294826023394000896" target="_blank">2020/8/16 11:39:15</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">専松１１ー４市船<br><br>完全に専松のペース。リリーフの投手力の差がでてる感じですな。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1294830408433991680" target="_blank">2020/8/16 11:56:40</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">専大松戸１２ー４市立船橋（８回コールド）<br><br>これは順当といえば順当だが、投手は自滅した感あり。ここというときに四球・死球を出してしまってたなあ。。市船はお疲れ様でした。専大松戸は久しぶりの夏決勝ですわ。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1294896865335365634" target="_blank">2020/8/16 16:20:45</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">八千代松陰ー木更津総合<br><br>４－４のまま９回突入。木総が安打の数において圧倒しているが、もう１本が出ない。８回裏はスクイズを図るも本塁→１塁併殺。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1294897117962493955" target="_blank">2020/8/16 16:21:45</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">吉鶴くんから３点取ったことで木総のゲームプランが大きく崩れてしまってるのは確かだと思う。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1294897635380195329" target="_blank">2020/8/16 16:23:48</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">八千代松陰はここまで積み上げてきたものがツキを呼んでる気がする。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1294897722579808262" target="_blank">2020/8/16 16:24:09</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">そしてここで八千代松陰がスクイズで勝ち越し。５－４。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1294897818734190592" target="_blank">2020/8/16 16:24:32</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">なんというチームだ😄</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1294898202089385985" target="_blank">2020/8/16 16:26:04</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">さて９回裏、どうなるのか。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1294898598170128384" target="_blank">2020/8/16 16:27:38</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ここで気になるのが本田くんが抑えきれるかどうかだな。前の回でもヒヤヒヤものだったからなあ。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1294898786561658883" target="_blank">2020/8/16 16:28:23</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">できればもう１点ほしかった。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1294899181341904896" target="_blank">2020/8/16 16:29:57</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">木総、一死二塁</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1294899317950394369" target="_blank">2020/8/16 16:30:30</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">本田くん、変化球がちょっと甘いなあ。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1294899650839769090" target="_blank">2020/8/16 16:31:49</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">木総、二死二塁。ここで代打篠木くん。。ここで気を吐けるか。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1294899877910986752" target="_blank">2020/8/16 16:32:43</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">篠木くん同点タイムリー！<br>ちょっと鳥肌が。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1294900024552247296" target="_blank">2020/8/16 16:33:18</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ちょっと変化球が甘いんだよなあ。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1294900180743884801" target="_blank">2020/8/16 16:33:55</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">これはサヨナラの雰囲気あり。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1294900398151438339" target="_blank">2020/8/16 16:34:47</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">なんとか抑えた。タイブレーク突入。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1294901232339886080" target="_blank">2020/8/16 16:38:06</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ここで代打の篠木くんがそのままマウンドへ。いやあこれは想定外。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1294902986901082112" target="_blank">2020/8/16 16:45:04</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">篠木くん147k出てたな。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1294903341823098880" target="_blank">2020/8/16 16:46:29</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">148k見逃し三振。１０回裏。これは八千代松蔭大ピンチですわ。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1294903508525752320" target="_blank">2020/8/16 16:47:09</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">篠木くん球速上がっとるわ。そしてここで樋熊くん再登板。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1294903869466529792" target="_blank">2020/8/16 16:48:35</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">樋熊くんはもう少し低めに制球しないとね。。ちょっと今日は全般的に高い。疲れてると思うから抑えがきかないのはわかるけどね。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1294904472464834560" target="_blank">2020/8/16 16:50:59</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">この送りバントはなんとしても３塁殺しないとね。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1294904664039632896" target="_blank">2020/8/16 16:51:44</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">２−１。スリーバントするか。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1294904895581990913" target="_blank">2020/8/16 16:52:39</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">バスターで併殺。二死三塁。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1294905320351756288" target="_blank">2020/8/16 16:54:21</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">まじかあ！！十回裏、木総点取れず。。こんなことがあっていいのか😄</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1294905598517997568" target="_blank">2020/8/16 16:55:27</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">しかし篠木くんフルパワーで投球してるから、送るにしてすごくやりずらいわ。。十一回。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1294906125100310529" target="_blank">2020/8/16 16:57:33</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">やっぱり球威あるからバントフライになってしまった。。かといってヒッティングだと併殺くらう可能性高いしなあ。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1294906650516586496" target="_blank">2020/8/16 16:59:38</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">三振。二死一二塁。中途半端だったなあ。。今のは。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1294906991689609218" target="_blank">2020/8/16 17:00:59</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">十一回裏突入。篠木くんはやはりすごすぎる。ちょっとあの球威はいかんともしがたいわ。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1294907211148177414" target="_blank">2020/8/16 17:01:52</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">そして篠木くんの本気の球が木総に力を呼び込んでるよな。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1294907745490018304" target="_blank">2020/8/16 17:03:59</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">樋熊くん球が高い。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1294908715498274817" target="_blank">2020/8/16 17:07:50</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">樋熊くんここに来て最速139K。そしてそこからの低めのスライダーでフライに打ち取る。しかし死球でサヨナラ。<br><br>木総６ー５八千代松蔭</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1294909152779591681" target="_blank">2020/8/16 17:09:34</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">樋熊くん泣き崩れる。樋熊くんはほんとうに投打に活躍したと思う。八千代松蔭がここまでやるとは正直思わなかったな。これぞ高校野球ですよ。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1294909670826496000" target="_blank">2020/8/16 17:11:38</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">決勝は<br><br>木総ー専松<br><br>となった。<br>市船・八千代松蔭のみなさんはお疲れさまでした。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1294910712343457792" target="_blank">2020/8/16 17:15:46</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">木総ー専松はおそらく篠木くんと西村くんの投手戦になりそうだな。チーム力としては拮抗していると思うし、すごい試合になりそうな気がするね😄</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1294910917172318208" target="_blank">2020/8/16 17:16:35</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">正直千葉県大会観戦に力が入りすぎて交流試合はほとんどみていない😅</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1294911408404967426" target="_blank">2020/8/16 17:18:32</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">しかし篠木くんあの制球で148K出てるということは、最速150k〜153Kくらい出てそうな気がするね。大学に進学しても楽しみな投手ですな。故障だけは気をつけて。。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article style="width: 368px; transform: translate3d(400px, 1799px, 0px); opacity: 1;">
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/274433732/Rolex_normal.png">
+        <p class="tweet-user-name">Kurozumi@kurozumi_jp</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/kurozumi_jp/status/1294656129952227328" target="_blank">2020/8/16 0:24:09</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">SceneCity使えば数分でこんなの作れる。SceneCity専用のNode Editorで色々カスタマイズできるけど、まだ使い方把握してない。使いこなせば細かいカスタマイズとか地形に合わせた配置とかもできるはず。#Blender #3DCG #SceneCity #Addon https://t.co/6buIsVK6es</p>
+        
+        <img class="tweet-img" src="https://pbs.twimg.com/media/EfeKG2JVoAAYTAC.jpg">
+        
+      </section>
+      
+    </article>
+    
+    <article style="width: 368px; transform: translate3d(400px, 2094px, 0px); opacity: 1;">
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/1026843577878343681/nhRb6hdM_normal.jpg">
+        <p class="tweet-user-name">バラルバレル@BalalBarrel</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/BalalBarrel/status/1294786577185435648" target="_blank">2020/8/16 9:02:30</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">久々に宣伝を兼ねた紹介を。現在このようなアクションゲームを制作しています。4種類のショットと強力なパイルバンカーでステージを突き進みます。完成度は低めですが、楽しいゲームを目指しています。#gamedev #indiedev https://t.co/TKhllYmsDn</p>
+        
+        <video class="tweet-img" controls="" src="https://video.twimg.com/ext_tw_video/1294786533891874816/pu/vid/480x360/J1Ab1DG3DdG16tf4.mp4?tag=10">
+        
+      </video></section>
+      
+    </article>
+    
+    <article style="width: 368px; transform: translate3d(400px, 2404px, 0px); opacity: 1;">
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/498295898749681664/FWEysZPG_normal.jpeg">
+        <p class="tweet-user-name">𝘾𝙖𝙥𝙩 𝙍𝙖𝙗𝙞𝙣𝙙𝙚𝙧 𝙎𝙞𝙣𝙜𝙝 77K@captsingh</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/captsingh/status/1294466618697764865" target="_blank">2020/8/15 11:51:06</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">Coffee time on the mountain top.<br>https://t.co/fx5gds2Gkv</p>
+        
+        <video class="tweet-img" controls="" src="https://video.twimg.com/amplify_video/1294406094845087745/vid/720x900/8ItfHDy_Abj3D_a9.mp4?tag=13">
+        
+      </video></section>
+      
+    </article>
+    
+  </div>
+  <footer>
+    CopyLight 2019 Satoshi Fujiwara
+  </footer>
+  <script async="" src="https://platform.twitter.com/widgets.js"></script>
+
+  <script async="" src="./index.js"></script>
+<iframe scrolling="no" frameborder="0" allowtransparency="true" src="https://platform.twitter.com/widgets/widget_iframe.3c5aa8e2a38bbbee4b6d88e6846fc657.html?origin=https%3A%2F%2Flocalhost%3A5500" title="Twitter settings iframe" style="display: none;"></iframe><div id="sentinel"></div></body></html>
