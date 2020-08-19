@@ -241,12 +241,12 @@
     yts && yts.length && yts.forEach(setYTPlayer);
     return { articles: dom.querySelectorAll('#contents > article'), yts: yts };
   }
-
-  let cacheArticles = fetchArticles();
   // 後ほど、監視を中止
   //observer.disconnect();
+  let cacheArticles;
 
   window.addEventListener('load', async () => {
+    cacheArticles = fetchArticles();
     const metaData = await (await fetch('./metaData.json')).json();
     MaxContents = metaData.maxContents;
     const tag = document.createElement('script');

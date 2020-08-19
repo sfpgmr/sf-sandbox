@@ -119,7 +119,6 @@ async function fetchArticles() {
   return { articles: dom.querySelectorAll('#contents > article'), yts: yts };
 }
 
-let cacheArticles = fetchArticles();
 
 function ObserverTest() {
   const resizeObserver = new ResizeObserver(entries => {
@@ -131,8 +130,10 @@ function ObserverTest() {
 }
 // 後ほど、監視を中止
 //observer.disconnect();
+let cacheArticles;
 
 window.addEventListener('load', async () => {
+  cacheArticles = fetchArticles();
   const metaData = await (await fetch('./metaData.json')).json();
   MaxContents = metaData.maxContents;
   const tag = document.createElement('script');
