@@ -1,5 +1,4 @@
 import request from 'request-promise-native';
-import fs from 'fs';
 import YouTube from 'youtube-node';
 import util from 'util';
 import puppeteer from 'puppeteer';
@@ -7,12 +6,9 @@ import jsdom from 'jsdom';
 const {JSDOM} = jsdom;
 import Database from 'better-sqlite3';
 
-process.setMaxListeners(Infinity); // <== Important line
-
-
-
 try {
-const yt = new YouTube();
+  process.setMaxListeners(Infinity); // <== Important line
+  const yt = new YouTube();
 yt.setKey(process.env.YOUTUBE_API_KEY);
 
 const youtube = {
