@@ -3,8 +3,8 @@ export default {
     "node-sass ./current/src/css/style.scss > ./current/src/css/style.css",
     "cd ~/pj/sandbox/new-page/tools && node ./twitter.mjs",
     "cd ~/pj/sandbox/new-page/tools && node ./make-embeded.mjs",
-    "rm ~/pj/sandbox/new-page/data/rendered/*",
-    "rm ~/www/html/contents/twitter/index*",
+    "rm -f ~/pj/sandbox/new-page/data/rendered/*",
+    "rm -f ~/www/html/contents/twitter/index*.html",
     "cd ~/pj/sandbox/new-page/tools && node ./make-page.mjs",
     "rollup -c ./rollup.config.js"
   ],
