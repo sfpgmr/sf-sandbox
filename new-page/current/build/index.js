@@ -168,7 +168,7 @@
     container: '.contents',
     minimize: false,
     gutter: 16,
-    baseWidth: 320
+    baseWidth: 640
   });
 
   // twttr.ready(() => {
@@ -245,6 +245,17 @@
   //observer.disconnect();
   let cacheArticles;
 
+  function layout(){
+    if(window.innerWidth < 640) {
+      masonry.conf.baseWidth = 320; 
+    } else {
+      masonry.conf.baseWidth = 480; 
+    }
+    console.log(window.innerWidth,masonry.conf.baseWidth);
+    masonry.layout();
+  }
+
+
   window.addEventListener('load', async () => {
     cacheArticles = fetchArticles();
     const metaData = await (await fetch('./metaData.json')).json();
@@ -254,7 +265,7 @@
     const firstScriptTag = document.getElementsByTagName('script')[0];
     firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
     document.getElementById('loading').remove();
-    masonry.layout();
+    layout();
 
     const contents = document.getElementById('contents');
     contents.setAttribute('rendersubtree', '');
@@ -314,12 +325,12 @@
       s.style.opacity = 1;
     });
 
-    document.querySelector('body > header').addEventListener('click', () => {
-      masonry.layout();
-    });
+    // document.querySelector('body > header').addEventListener('click', () => {
+    //   layout();
+    // });
 
     window.addEventListener('resize', () => {
-      masonry.layout();
+      layout();
     });
     //masonry.layout();
     //twttr.events.bind('rendered',masonry.layout.bind(masonry));
