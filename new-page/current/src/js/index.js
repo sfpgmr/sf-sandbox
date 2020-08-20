@@ -133,7 +133,7 @@ function ObserverTest() {
 let cacheArticles;
 
 function layout(){
-  if(window.innerWidth < 640) {
+  if(window.innerWidth < 800) {
     masonry.conf.baseWidth = 320; 
   } else {
     masonry.conf.baseWidth = 480; 
