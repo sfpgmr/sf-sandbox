@@ -246,10 +246,10 @@
   let cacheArticles;
 
   function layout(){
-    if(window.innerWidth < 640) {
-      masonry.conf.baseWidth = 320; 
+    if(window.innerWidth < 800) {
+      masonry.conf.baseWidth = 300; 
     } else {
-      masonry.conf.baseWidth = 480; 
+      masonry.conf.baseWidth = 600; 
     }
     console.log(window.innerWidth,masonry.conf.baseWidth);
     masonry.layout();

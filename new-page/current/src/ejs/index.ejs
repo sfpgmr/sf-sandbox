@@ -57,7 +57,9 @@ const lazyLoading = '';
     <article>
       <% // -tweet.embed.html%>
       <% tweetGroup.forEach((tweet_,index)=>{ 
-            const tweet =  tweet_.retweeted ? tweet_.retweeted_status : tweet_;
+            const tweet =  
+              tweet_.retweeted ? tweet_.retweeted_status : 
+                (tweet_.quoted_status ? tweet_.quoted_status : tweet_);
             let tweetText = tweet.full_text?tweet.full_text:tweet.text;
             let embededs = [];
             if(tweet.entities.urls){
