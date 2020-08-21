@@ -44,7 +44,7 @@ const masonry = new MiniMasonry({
   container: '.contents',
   minimize: false,
   gutter: 16,
-  baseWidth: 640
+  baseWidth: 300
 });
 
 // twttr.ready(() => {
