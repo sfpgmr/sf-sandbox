@@ -41,7 +41,7 @@ try {
     //db.exec('create trigger if not exists update_tweets before update on tweets begin update ')
 
 
-    const insertStmt = db.prepare('insert into tweets(id,tweet) values(@id,@tweet);');
+    const insertStmt = db.prepare('replace into tweets(id,tweet) values(@id,@tweet);');
     const getMaxIdStmt = db.prepare('select max(id) as since_id from tweets;');
     const since_id = getMaxIdStmt.get();
     if(since_id.since_id) {
@@ -53,7 +53,7 @@ try {
       let tweets = await getTweets('statuses/user_timeline', params);
 
       if(params.since_id){
-        tweets = tweets.slice(0,-1);
+        tweets = tweets.slice(1);
       } else if(params.max_id){
         tweets = tweets.slice(1);
       }

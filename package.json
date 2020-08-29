@@ -28,6 +28,7 @@
     "rollup-plugin-terser": "^6.1.0"
   },
   "dependencies": {
+    "@ampproject/toolbox-optimizer": "^2.6.0",
     "@types/d3": "^5.7.2",
     "@types/three": "^0.93.31",
     "autoprefixer": "^9.8.6",
@@ -37,6 +38,7 @@
     "fs-extra": "^7.0.1",
     "install": "^0.12.2",
     "jsdom": "^15.2.1",
+    "markdown-it": "^11.0.0",
     "marked": "^0.7.0",
     "node-fetch": "^2.6.0",
     "ogp-parser": "^0.4.4",
@@ -50,8 +52,10 @@
     "postcss-simple-vars": "^5.0.2",
     "puppeteer": "^5.2.1",
     "request-promise-native": "^1.0.9",
+    "riot": "^4.13.5",
     "sharp": "^0.22.1",
-    "sqlite3": "^4.1.0",
+    "sitemap": "^6.2.0",
+    "sqlite3": "^4.2.0",
     "three": "^0.103.0",
     "twitter": "^1.7.1",
     "wabt": "^1.0.19",

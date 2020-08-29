@@ -7,6 +7,12 @@
       "driver": "SQLite",
       "name": "tweets",
       "previewLimit": 50
+    },
+    {
+      "database": "${workspaceFolder:sandbox}/new-site/data/db/sitedata.db",
+      "driver": "SQLite",
+      "name": "sitedata",
+      "previewLimit": 50
     }
   ],
   "sqltools.useNodeRuntime": true,
