@@ -53,9 +53,10 @@ try {
       let tweets = await getTweets('statuses/user_timeline', params);
 
       if(params.since_id){
-        tweets = tweets.slice(1);
+        tweets = tweets.filter(d=>d.id != params.since_id);
+        console.log(tweets.map(d=>{return {id:d.id,created_at:d.created_at};}));
       } else if(params.max_id){
-        tweets = tweets.slice(1);
+        tweets = tweets.filter(d=>d.id != params.max_id);
       }
 
       if(tweets.length == 0) {
