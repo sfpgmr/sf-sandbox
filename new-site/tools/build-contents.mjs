@@ -36,7 +36,7 @@ import ejs from 'ejs';
   Any missing extensions will be automatically imported.
   `;
   
-  const html = template({body:md.render(markdown)});
+  const html = template({meta:{},body:md.render(markdown)});
   
   // valid AMP!
   const amphtml = await ampOptimizer.transformHtml(html, {

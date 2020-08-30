@@ -28,7 +28,7 @@ const fsp = fs.promises;
     for(const d of dirs) {
       const currentPath = baseDir + d;
       const stats = await fsp.stat(currentPath);
-      if (stats.isDirectory() && !d.match(/blog|less|scripts|sh/ig)) {
+      if (stats.isDirectory() && !d.match(/less|scripts|sh/ig)) {
         await listFile(currentPath + '/');
 
       } else if (stats.isFile() && d.match(/\.(html?)|(md)$/)) {
