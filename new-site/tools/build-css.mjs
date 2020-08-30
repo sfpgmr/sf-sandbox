@@ -6,11 +6,12 @@ import fs from 'fs';
 const fsp = fs.promises;
 const sassp = util.promisify(sass.render.bind(sass));
 
-(async()=>{
+export default async function buildCss() {
   const result = await sassp({
-    file:'../src/scss/spectre.scss',
+    file:'../src/scss/style.scss',
     outputStyle:'compressed'
   });
-  console.log(result);
-  await fsp.writeFile('../src/css/spectre.css',result.css,'utf8');
-})();
+  //console.log(result);
+  await fsp.writeFile('../src/css/style.css',result.css,'utf8');
+  return result.css.toString();
+}

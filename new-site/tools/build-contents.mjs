@@ -2,6 +2,7 @@ import AmpOptimizer from '@ampproject/toolbox-optimizer';
 import MarkdownIt from 'markdown-it';
 import fs from 'fs';
 import ejs from 'ejs';
+import {}
 
 
 (async()=>{
@@ -23,7 +24,7 @@ import ejs from 'ejs';
   
   Here is an image declared in Markdown syntax: 
   
-  ![A random image](https://unsplash.it/800/600).
+  ![A random image](https://unsplash.it/1024/768)
   
   You can directly declare AMP components:
   
@@ -40,11 +41,11 @@ import ejs from 'ejs';
   
   // valid AMP!
   const amphtml = await ampOptimizer.transformHtml(html, {
-    canonical: '../dist/test.amp.html',
+    canonical: '.'
   });
 
-  await fs.promises.writeFile('../dist/test.amp.html',amphtml,'utf8');
-  await fs.promises.writeFile('../dist/test.html',html,'utf8');
+  await fs.promises.writeFile('../dist/test.html',amphtml,'utf8');
+  // await fs.promises.writeFile('../dist/test.html',html,'utf8');
 
 
 })();
