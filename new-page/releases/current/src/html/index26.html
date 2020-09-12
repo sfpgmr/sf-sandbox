@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+
+<html lang="ja" prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb# article: http://ogp.me/ns/article#">
+
+<head>
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-15457703-9"></script>
+  <script>
+    if (!location.hostname.match(/localhost/)) {
+      window.dataLayer = window.dataLayer || [];
+      function gtag() { dataLayer.push(arguments); }
+      gtag('js', new Date());
+      gtag('config', 'UA-15457703-9');
+    }
+  </script>
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Twitter Viewer</title>
+  <meta name="description" content="自作Twitter Viewerによる自分のつぶやきの記録。Programming,Music,HTML5,WebGL,javascript,WebAudio,Gameなど" />
+  <meta name="keywords" content="Programming,Music,HTML5,WebGL,javascript,WebAudio" /> 	
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <meta itemprop="image" content="https://www.sfpgmr.net/img/sfweb.png" />
+  <meta itemprop="name" content="S.F. Web" />
+  
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:site" content="S.F. Web" />
+  <meta name="twitter:url" content="./index26.html" />
+  <meta name="twitter:title" content="Twitter Viewer" />
+  <meta name="twitter:description" content="自作Twitter Viewerによる自分のつぶやきの記録。Programming,Music,HTML5,WebGL,javascript,WebAudio,Gameなど" />
+  <meta name="twitter:image" content="https://www.sfpgmr.net/img/sfweb.png" />
+  
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="./index26.html" />
+  <meta property="og:title" content="Twitter Viewer"/>
+  <meta property="og:site_name" content="S.F. Web" />
+  <meta property="og:description" content="Programming,Music,HTML5,WebGL,javascript,WebAudio">
+  <meta property="og:image" content="https://www.sfpgmr.net/img/sfweb.png">
+
+  <style>
+  * {
+  margin: 0;
+  padding: 0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+
+html {
+  margin: 0;
+  padding: 0;
+  font-size: 10px; }
+
+body {
+  margin: 0;
+  padding-left: 8px;
+  padding-right: 8px;
+  background: black;
+  color: white; }
+
+.top-nav {
+  position: fixed;
+  z-index: 99999;
+  background: rgba(0, 0, 0, 0.5);
+  display: block;
+  width: 100%;
+  height: 32px;
+  color: white; }
+
+#sentinel {
+  width: 0px;
+  height: 0px; }
+
+.contents {
+  padding-top: 32px;
+  width: 100%;
+  position: relative;
+  content: strict; }
+
+@keyframes blinking {
+  0% {
+    color: black; }
+  50% {
+    color: white; }
+  100% {
+    color: black; } }
+
+.loading {
+  font-family: monospace;
+  font-size: 24px;
+  position: fixed;
+  width: 100vw;
+  height: 100vh;
+  text-align: center;
+  padding-top: 50vh;
+  z-index: 32768;
+  background: black;
+  animation: blinking 2s infinite;
+  content: strict; }
+
+.contents > article {
+  background: #f0f0f0;
+  color: #202020;
+  position: absolute;
+  max-height: 960px;
+  overflow: auto;
+  border-radius: 3px;
+  /* transition: opacity 1s linear;*/
+  opacity: 1.0; }
+
+.tweet-header {
+  display: grid;
+  align-items: end;
+  grid-template-columns: 40px 2fr 1fr;
+  grid-template-rows: 1fr;
+  font-size: 12px;
+  font-weight: bold; }
+
+.tweet-img {
+  width: 100%;
+  object-fit: cover; }
+
+.youtube {
+  position: relative;
+  cursor: pointer; }
+
+.youtube > img {
+  width: 100%;
+  object-fit: cover; }
+
+.youtube > svg.player-play {
+  width: 64px;
+  height: 64px;
+  left: calc(50% - 32px);
+  top: calc(50% - 32px);
+  position: absolute;
+  z-index: 1000;
+  opacity: 0.5; }
+
+.youtube:hover > svg.player-play {
+  opacity: 1.0; }
+
+.youtube:hover .player-play-1 {
+  stroke: #80808080; }
+
+.youtube > div.yt-title {
+  /*text-shadow: #fff 1px 1px 0;*/
+  font-size: 1.2rem;
+  color: white;
+  background: rgba(0, 0, 0, 0.5);
+  position: absolute;
+  left: 0;
+  top: 0;
+  overflow: auto;
+  z-index: 998; }
+
+.tweet-profile-img {
+  grid-column: 1/2;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%; }
+
+.tweet-user-name {
+  grid-column: 2/3; }
+
+.tweet-date {
+  font-size: 8px;
+  text-align: right;
+  grid-column: 3/4; }
+
+.contents > twitter-widget {
+  overflow: auto;
+  max-height: 960px;
+  position: absolute; }
+
+.contents > article > section > .tweet-text {
+  display: block;
+  padding: 4px;
+  word-break: break-all;
+  font-size: 12px; }
+
+.contents > article > h3 {
+  font-size: 12px; }
+
+blockquote.card {
+  margin: 4px;
+  padding: 4px;
+  font-size: 12px;
+  background: white;
+  border-radius: 4px; }
+
+blockquote.card > header {
+  display: grid;
+  grid-gap: 4px;
+  gap: 4px; }
+
+blockquote.card-default > header {
+  grid-template-columns: 64px 1fr; }
+
+blockquote.card-large > header {
+  grid-template-columns: 1fr; }
+
+blockquote.card > header > img {
+  width: 100%; }
+
+div.no-image {
+  display: block;
+  width: 64px;
+  height: 64px;
+  background: gray;
+  color: white;
+  text-align: center;
+  line-height: 64px; }
+ 
+  </style>
+</head>
+
+<body>
+  <div class="loading" id="loading">Loading</div>
+  <header class="top-nav">
+    <h1>S.F. Info.</h1>
+  </header>
+  <div class="contents" id="contents" rendersubtree="invisible skip-activation"> 
+    
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1212701145379946496/pSDVrvWj_normal.png" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1242386382326091777"
+            target="_blank">2020/3/24 18:42:50</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">「おかしなことができる」とか「すごいが役に立たない」とか「理想的だが遅すぎる」とか「高速だがコードが難解」とか、そういうのに惹かれる傾向もある私。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1289276420632453122/cKKeSHh5_normal.jpg" />
+        <p class="tweet-user-name">中井寛一@ichikawakon</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/ichikawakon/status/1242068891603365889"
+            target="_blank">2020/3/23 21:41:14</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">61年前に撮影された大阪ミナミの戎橋筋商店街の風景。<br/><br/>1959年（昭和34年）にHerb Gouldonが撮影したカラー写真。<br/><br/>撮影場所は、現在の大阪市中央区の戎橋筋商店街。写真奥に見える南海ビルディングは、2011年（平成23年）に国の登録有形文化財に登録された<br/><br/>引用元は本ツイートのスレッドを参照。 https://t.co/oppRZRAfLa</p>
+        
+        <img  class="tweet-img" src="https://pbs.twimg.com/media/ETy2znNUcAIJZGO.jpg" />
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1289276420632453122/cKKeSHh5_normal.jpg" />
+        <p class="tweet-user-name">中井寛一@ichikawakon</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/ichikawakon/status/1241688169642250242"
+            target="_blank">2020/3/22 20:28:23</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">70年前の札幌市の「狸小路商店街」。<br/><br/>1950年（昭和25年）6月に撮影されたカラー写真。撮影者の詳細は不明。<br/><br/>撮影場所は、現在の札幌市中央区の狸小路3丁目。<br/><br/>今はアーケードがあるが、1950年当時はまだ設置されていない。非常に賑わっていますね。<br/><br/>引用元は本ツイートのスレッドを参照。 https://t.co/t8EpEHPZF0</p>
+        
+        <img  class="tweet-img" src="https://pbs.twimg.com/media/ETtcoeyU0AAZkTV.jpg" />
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1212701145379946496/pSDVrvWj_normal.png" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1242215954316005376"
+            target="_blank">2020/3/24 7:25:37</a></p>
+      </header>
+      <section>
+        <p class="tweet-text"><div class="youtube" data-type="yt" id="_2quiyHfJQw"><div class="yt-title">Youtube - MONDO GROSSO / ラビリンス</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img  data-href="https://youtu.be/_2quiyHfJQw" class="youtube" src="https://i.ytimg.com/vi/_2quiyHfJQw/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1212701145379946496/pSDVrvWj_normal.png" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1242213082446721024"
+            target="_blank">2020/3/24 7:14:12</a></p>
+      </header>
+      <section>
+        <p class="tweet-text"><div class="youtube" data-type="yt" id="Er9xGRolrT4"><div class="yt-title">Youtube - Chic - Good Times (Atlantic Records 1979)</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img  data-href="https://youtu.be/Er9xGRolrT4" class="youtube" src="https://i.ytimg.com/vi/Er9xGRolrT4/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1212701145379946496/pSDVrvWj_normal.png" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1242211088952774656"
+            target="_blank">2020/3/24 7:06:17</a></p>
+      </header>
+      <section>
+        <p class="tweet-text"><div class="youtube" data-type="yt" id="czdcjphhBHA"><div class="yt-title">Youtube - The Fatback Band - Wicky Wacky  (1974).wmv</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img  data-href="https://youtu.be/czdcjphhBHA" class="youtube" src="https://i.ytimg.com/vi/czdcjphhBHA/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1212701145379946496/pSDVrvWj_normal.png" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1242210722865541120"
+            target="_blank">2020/3/24 7:04:50</a></p>
+      </header>
+      <section>
+        <p class="tweet-text"><div class="youtube" data-type="yt" id="Wfh45tIlqy0"><div class="yt-title">Youtube - Scandal (New Recording)</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img  data-href="https://youtu.be/Wfh45tIlqy0" class="youtube" src="https://i.ytimg.com/vi/Wfh45tIlqy0/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1212701145379946496/pSDVrvWj_normal.png" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1242208744840130560"
+            target="_blank">2020/3/24 6:56:58</a></p>
+      </header>
+      <section>
+        <p class="tweet-text"><div class="youtube" data-type="yt" id="8rzpvOMccNk"><div class="yt-title">Youtube - パレード</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img  data-href="https://youtu.be/8rzpvOMccNk" class="youtube" src="https://i.ytimg.com/vi/8rzpvOMccNk/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1212701145379946496/pSDVrvWj_normal.png" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1242205772492075008"
+            target="_blank">2020/3/24 6:45:09</a></p>
+      </header>
+      <section>
+        <p class="tweet-text"><div class="youtube" data-type="yt" id="trDnFUK5dLo"><div class="yt-title">Youtube - United Future Organization - The Sixth Sense (1993)</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img  data-href="https://youtu.be/trDnFUK5dLo" class="youtube" src="https://i.ytimg.com/vi/trDnFUK5dLo/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1212701145379946496/pSDVrvWj_normal.png" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1242204163854848000"
+            target="_blank">2020/3/24 6:38:46</a></p>
+      </header>
+      <section>
+        <p class="tweet-text"><div class="youtube" data-type="yt" id="HpN4bdyqHeI"><div class="yt-title">Youtube - Friday Night Plans - "Plastic Love" (Live at Studio Tanta)</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img  data-href="https://youtu.be/HpN4bdyqHeI" class="youtube" src="https://i.ytimg.com/vi/HpN4bdyqHeI/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+    </article>
+    
+  </div>
+  <footer>
+    CopyLight 2019 Satoshi Fujiwara
+  </footer>
+  <script async src="https://platform.twitter.com/widgets.js"></script>
+
+  <script async src="./index.js"></script>
+
+</body>
+
+</html>

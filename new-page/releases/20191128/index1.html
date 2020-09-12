@@ -1,0 +1,932 @@
+<!DOCTYPE html>
+<html lang="ja" prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb# article: http://ogp.me/ns/article#">
+
+<head>
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-15457703-9"></script>
+  <script>
+    if (!location.hostname.match(/localhost/)) {
+      window.dataLayer = window.dataLayer || [];
+      function gtag() { dataLayer.push(arguments); }
+      gtag('js', new Date());
+      gtag('config', 'UA-15457703-9');
+    }
+  </script>
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>トップページをリニューアルする</title>
+  <meta name="description" content="リニューアル用のトップページデザインを考えて実装する" />
+  <meta name="keywords" content="Programming,Music,HTML5,WebGL,javascript,WebAudio" /> 	
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <meta itemprop="image" content="https://www.sfpgmr.net/img/sfweb.png" />
+  <meta itemprop="name" content="S.F. Web" />
+  
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:site" content="S.F. Web" />
+  <meta name="twitter:url" content="./index1.html" />
+  <meta name="twitter:title" content="リニューアル用のトップページデザイン" />
+  <meta name="twitter:description" content="リニューアル用のトップページデザインを考えて実装する" />
+  <meta name="twitter:image" content="https://www.sfpgmr.net/img/sfweb.png" />
+  
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="./index1.html" />
+  <meta property="og:title" content="リニューアル用のトップページデザイン"/>
+  <meta property="og:site_name" content="S.F. Web" />
+  <meta property="og:description" content="Programming,Music,HTML5,WebGL,javascript,WebAudio">
+  <meta property="og:image" content="https://www.sfpgmr.net/img/sfweb.png">
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    html {
+      margin: 0;
+      padding: 0;
+      font-size:10px;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      background: black;
+      color: white;
+    }
+
+    #sentinel {
+      width:1px;
+      height:1px;
+    }
+    .contents {
+      width: 100%;
+      position: relative;
+      content: strict;
+    }
+
+    @keyframes blinking {
+      0% {
+        color: black;
+      }
+
+      50% {
+        color: white;
+      }
+
+      100% {
+        color: black;
+      }
+    }
+
+    .loading {
+      font-family: monospace;
+      font-size: 24px;
+      position: fixed;
+      width: 100vw;
+      height: 100vh;
+      text-align: center;
+      padding-top: 50vh;
+      z-index: 32768;
+      background: black;
+      animation: blinking 2s infinite;
+      content: strict;
+    }
+
+
+    .contents>article {
+      background: #f0f0f0;
+      color: #202020;
+      position: absolute;
+      max-height: 960px;
+      overflow: auto;
+      border-radius: 3px;
+    }
+
+    .tweet-header {
+      display: grid;
+      align-items: end;
+      grid-template-columns: 40px 2fr 1fr;
+      grid-template-rows: 1fr;
+      font-size: 12px;
+      font-weight: bold;
+    }
+
+
+    .tweet-img {
+      width: 100%;
+      object-fit: cover;
+    }
+
+    .youtube {
+      position: relative;
+      cursor: pointer;
+    }
+
+    .youtube > img {
+      width: 100%;
+      object-fit: cover;
+    }
+
+    .youtube > svg.player-play {
+      width:64px;
+      height:64px;
+      left:calc(50% - 32px);
+      top:calc(50% - 32px);
+      position:absolute;
+      z-index: 1000;
+      opacity: 0.5;
+    }
+    
+    .youtube:hover > svg.player-play {
+      opacity: 1.0;
+    }
+
+    .youtube:hover .player-play-1 {
+      stroke:#80808080;
+    }
+
+    
+    .youtube > div.yt-title {
+      /*text-shadow: #fff 1px 1px 0;*/
+      font-size: 1.2rem;
+      color:white;
+      background:rgba(0, 0,0,0.5);
+      position:absolute;
+      left:0;
+      top:0;
+      overflow: auto;
+      z-index:998;
+    }
+
+
+    .tweet-profile-img {
+      grid-column: 1/2;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+    }
+
+    .tweet-user-name {
+      grid-column: 2/3;
+    }
+
+    .tweet-date {
+      font-size: 8px;
+      text-align: right;
+      grid-column: 3/4;
+    }
+
+    .contents>twitter-widget {
+      overflow: auto;
+      max-height: 960px;
+      position: absolute;
+    }
+
+    .contents>article>section>.tweet-text {
+      display: block;
+      padding: 4px;
+      word-break: break-all;
+      font-size: 12px;
+    }
+
+    .contents>article>h3 {
+      font-size: 12px;
+    }
+
+    blockquote.card {
+      margin:4px;
+      padding:4px;
+      font-size:12px;
+      background:white;
+      border-radius: 4px;
+    }
+
+    blockquote.card > header {
+      display:grid;
+      grid-gap:4px;
+      gap:4px;
+    }
+
+    blockquote.card-default > header {
+      grid-template-columns:64px 1fr;
+    }
+
+    blockquote.card-large > header {
+      grid-template-columns:1fr;
+    }
+
+    blockquote.card > header > img {
+      width:100%;
+    }
+
+
+    div.no-image {
+      display: block;
+      width:64px;
+      height:64px;
+      background:gray;
+      color:white;
+      text-align: center;
+      line-height: 64px;
+    }
+
+  </style>
+</head>
+
+<body>
+  <div class="loading" id="loading">Loading</div>
+  <header class="top-nav">
+    <h1>S.F. Info.</h1>
+  </header>
+  <div class="contents" id="contents" rendersubtree="invisible skip-activation"> 
+    
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/778946041416605696/TnrttgMm_normal.jpg" />
+        <p class="tweet-user-name">D.S.A.@ym2413</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/ym2413/status/1190769156414566400"
+            target="_blank">2019/11/3 8:14:24</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">YM2413のアタック変化は実チップからの録音で見ると、EG出力値 96 or 95, 73 or 72, 54, 40, 28, 20, 13, 9, 5, 1 で間違いないと思うのだけど、やっぱ計算式は謎...。OPL系なら val -= val /8 + 1 ぽいんですが、以前書いたとおり形状違うんですよね。 https://t.co/EBpD94HVls</p>
+        
+        <img loading="lazy" class="tweet-img" src="https://pbs.twimg.com/media/EIZ2OxPXYAA2DQv.png" />
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1187097470737600512"
+            target="_blank">2019/10/24 5:04:26</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">今これが出まくって困ってる。。<br/><blockquote class="card card-default"><header><img loading="lazy" src="https://avatars2.githubusercontent.com/u/6154722?s=400&v=4" /><a href="https://github.com/microsoft/vscode-remote-release/issues/1658" target="_blank">Permission issues on WSL with VSCode Remote · Issue #1658 · microsoft/vscode-remote-release · GitHub</a></header><div>VSCode Version: September 2019 (version 1.39) Local OS Version: Windows 10 Remote OS Version: WSL Ubuntu Remote Extension/Connection Type: WSL Steps to Reproduce: git clone https://github.com/Jeff-Tian/alpha or whatever nodejs project cd...</div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1187097727483559936"
+            target="_blank">2019/10/24 5:05:28</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">solutionとしてはこれか。。<br/><blockquote class="card card-large"><header><img loading="lazy" src="https://code.visualstudio.com/opengraphimg/opengraph-docs.png" /><a href="https://code.visualstudio.com/docs/remote/wsl#_i-see-eaccess-permission-denied-error-trying-to-rename-a-folder-in-the-open-workspace" target="_blank">Developing in the Windows Subsystem for Linux with Visual Studio Code</a></header><div>Using Visual Studio Code Remote Development with the Windows Subsystem for Linux (WSL)</div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1187099410007638016"
+            target="_blank">2019/10/24 5:12:09</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">これやっても何もかわらんなあ。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1187100122376597504"
+            target="_blank">2019/10/24 5:14:59</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ありゃ？いつのまにかwsl1になっとる。。 https://t.co/FrLZRAXHYL</p>
+        
+        <img loading="lazy" class="tweet-img" src="https://pbs.twimg.com/media/EHltRNdUUAEZUWt.png" />
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1187100956011315200"
+            target="_blank">2019/10/24 5:18:17</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">別のドライブにVMをうつしたせいかな？とりあえずwsl2に変換中。。 https://t.co/y4BKkvNW1l</p>
+        
+        <img loading="lazy" class="tweet-img" src="https://pbs.twimg.com/media/EHluBv6VUAAo3fM.png" />
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1187101179580313600"
+            target="_blank">2019/10/24 5:19:11</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ちなみに移し方はこれ。。<br/><blockquote class="card card-default"><header><img loading="lazy" src="https://avatars2.githubusercontent.com/u/6154722?s=400&v=4" /><a href="https://github.com/microsoft/WSL/issues/4320#issuecomment-513378521" target="_blank">[WSL 2] move VHD File · Issue #4320 · microsoft/WSL · GitHub</a></header><div>Thanks for the good work of bringing WSL 2! I am wondering that if it is possible to move VHD File to another volume. Thanks in advance!</div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1187101399441477632"
+            target="_blank">2019/10/24 5:20:03</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">移したらこれもやっといたほうがいい。。<br/><blockquote class="card card-default"><header><img loading="lazy" src="https://avatars2.githubusercontent.com/u/6154722?s=400&v=4" /><a href="https://github.com/microsoft/WSL/issues/3974#issuecomment-522921145" target="_blank">Impossible to set default user of distribution installed via wsl --import on 1903 · Issue #3974 · microsoft/WSL · GitHub</a></header><div>Windows Version 10.0.18362.30 (1903) The only way that's left to set the default user of a distribution is via its command line utility (ubuntu.exe for example). However, for Distributions installed via "wsl --import", no such command ex...</div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1187101889223000064"
+            target="_blank">2019/10/24 5:22:00</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">インポートした後「wsl --list -v」で確認したつもりだったのだが。とすると移した後は「wsl --set-version (ディストリビューション名） 2」やる必要があるのかね。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1187102595132706816"
+            target="_blank">2019/10/24 5:24:48</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">まじにnpmのオペレーションやると頻繁にこのエラーが発生してたまらん状態である。wsl2はまだ完成してるわけではないから、安定を望むなら使わないほうがいいのだが。<br/>もうubuntuとのデュアルブートにしたほうがいいかもしれんなあ。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1187102714422939649"
+            target="_blank">2019/10/24 5:25:17</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">まあでも面白いからいいか。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1187103758561337344"
+            target="_blank">2019/10/24 5:29:26</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">でももうちょっと待ったら、ChoromiumベースのEdgeみたく、Windows 10のOSカーネルもlinuxベースになったりして。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1187315053436911616"
+            target="_blank">2019/10/24 19:29:02</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">家に帰ると変換が終わっていた。 https://t.co/sanTADR6v5</p>
+        
+        <img loading="lazy" class="tweet-img" src="https://pbs.twimg.com/media/EHowvz-U4AASrE4.png" />
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1187315379229446145"
+            target="_blank">2019/10/24 19:30:20</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">やっぱりexport -&gt; importしたときにダウングレードしてしまってたんだろうな。。 https://t.co/koHxzRzbqn</p>
+        
+        <img loading="lazy" class="tweet-img" src="https://pbs.twimg.com/media/EHoxC0NUYAEJjpf.png" />
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1190770762728099840"
+            target="_blank">2019/11/3 8:20:47</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">その後。。npmパッケージのインストールやrollupにおけるバンドル処理が異常に速くなって驚いている。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1190766130576519168"
+            target="_blank">2019/11/3 8:02:23</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">風邪はだいぶ良くなったがまだ頭痛と喉の痛みがのこっている。先週は休めない状況だったのでロキソニンを飲んで凌いでいた。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1190767445243387905"
+            target="_blank">2019/11/3 8:07:36</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">しかしこのロキソニンという薬、私にはなかなか強力である。のどの痛みや頭痛であれば飲めばほぼ治まってしまう。切れると痛み出すが。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1190767446203854848"
+            target="_blank">2019/11/3 8:07:37</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">そして金曜日は午後から服用を停止して、３連休なので発熱させて菌やウィルスを殺すことにした。発熱が抑えられるといつまでも菌やウィルスが残るような感じがするので。案の定３８度台まで一気に発熱して夜は思いっきりうなされる状態。。朝起きるとかなりのどの痛みが軽減してる状況。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1190767836852969472"
+            target="_blank">2019/11/3 8:09:10</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">そして土曜日に定期的に通院している耳鼻咽喉科でいつもの治療を行って昏々と眠り、ちょっと起きてはネットをチェックしてまた寝る。。といった感じで今日にいたる。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1190769558346330114"
+            target="_blank">2019/11/3 8:16:00</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">私のような一般人は発熱を抑えるのは治療の一環のように思うけど、発熱自体は体の免疫機能が正常に働いているということなので、風邪が起因するものでない＆異常な発熱が長期間続かない限りは解熱剤の類は飲まないほうがいいんだろうな。。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/960092455486996480/cRvvhRUO_normal.jpg" />
+        <p class="tweet-user-name">herumi@herumi</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/herumi/status/1190406961952485376"
+            target="_blank">2019/11/2 8:15:11</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">Xbyakによるアセンブリ言語レベルでの最適化、比較的な高度な数学的知識、ドメインに応じた数学的トリックを組み合わせて高速化するの、めちゃ楽しい。そしてそれがいろんな人に使われるととてもうれしい。<br/><a href="https://medium.com/prysmatic-labs/ethereum-2-0-development-update-38-prysmatic-labs-a3293ca9280d" target="_blank">medium.com/prysmatic-labs…</a><br/>Integrating Slick New BLS Library by Herumi into Prysm</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/1004133914418376704/NmA3hWwc_normal.jpg" />
+        <p class="tweet-user-name">ぷり@pu_ri</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/pu_ri/status/1189923631037444096"
+            target="_blank">2019/11/1 0:14:36</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">昔は職場のコミュニケーションツールは　IP Messenger だった。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1189288333744201728"
+            target="_blank">2019/10/30 6:10:09</a></p>
+      </header>
+      <section>
+        <p class="tweet-text"><blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="http://blackpawn.com/texts/lightmaps/default.html" target="_blank">Packing Lightmaps</a></header><div></div></blockquote></p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1189287749028909056"
+            target="_blank">2019/10/30 6:07:49</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ここ2－3日風邪で苦しんでるところ。。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/778946041416605696/TnrttgMm_normal.jpg" />
+        <p class="tweet-user-name">D.S.A.@ym2413</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/ym2413/status/1188685670711058432"
+            target="_blank">2019/10/28 14:15:23</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ロゴ変わりました。地味にcomドメインです。#MSXplay<br/><a href="https://msxplay.com/" target="_blank">msxplay.com</a></p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/778946041416605696/TnrttgMm_normal.jpg" />
+        <p class="tweet-user-name">D.S.A.@ym2413</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/ym2413/status/1188494914226507776"
+            target="_blank">2019/10/28 1:37:23</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">とりあえず MSXplay.js の URLシェア機能はこんな感じです。スマホ対応とかはまた後日...。 https://t.co/QCrXNhATYq</p>
+        
+        <video class="tweet-img" controls src="https://video.twimg.com/ext_tw_video/1188494846538813440/pu/vid/378x270/xK1Cw8bPJ9WYK0Wt.mp4?tag=10" />
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/3278079864/a2bbf72808271b9bc221cefa15ddbd29_normal.jpeg" />
+        <p class="tweet-user-name">なるお@syntaxerrors72</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/syntaxerrors72/status/1188437053228240896"
+            target="_blank">2019/10/27 21:47:28</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">やっとPC-8001ミニを接続。この画面たまらない魅力がある。 https://t.co/FlQtIJNrTW</p>
+        
+        <video class="tweet-img" controls src="https://video.twimg.com/ext_tw_video/1188436956943831040/pu/vid/640x360/P5_gtxCmV7UL4_sl.mp4?tag=10" />
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1188255980858925056"
+            target="_blank">2019/10/27 9:47:57</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">このゲームも遊んだのは確か。しかしフルカラースクロールに驚嘆したのは覚えているのだが、ゲーム内容についてはほとんど記憶がない。。<br/><br/><a href="https://akiba-pc.watch.impress.co.jp/docs/column/retrosoft/1199564.html" target="_blank">akiba-pc.watch.impress.co.jp/docs/column/re…</a></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1188256260103127041"
+            target="_blank">2019/10/27 9:49:03</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">私が遊んだのはX1版だったと思うけどな。。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/1755509636/382997435_normal.png" />
+        <p class="tweet-user-name">ほっと@hotwatermorning</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/hotwatermorning/status/1188061052547649536"
+            target="_blank">2019/10/26 20:53:22</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">KushView っていうところが開発していた Element っていうオーディオプラグインホストアプリケーションがオープンソースになった<br/><a href="https://github.com/kushview/Element" target="_blank">github.com/kushview/Eleme…</a></p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1187477103542857730"
+            target="_blank">2019/10/25 6:12:58</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">CSS Gridを使って新しいトップページのデザインを検討中。確かにこりゃレイアウトが楽だわ。。 https://t.co/5Kz9ZBB08t</p>
+        
+        <img loading="lazy" class="tweet-img" src="https://pbs.twimg.com/media/EHrEISjVAAAqQw9.jpg" />
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1187095220053135360"
+            target="_blank">2019/10/24 4:55:30</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">先ほどwsl2使用中にOSが死亡。。イベントログを見ると、死ぬ直前にこんなワーニングが出てましたな。。 https://t.co/7ypROkpE45</p>
+        
+        <img loading="lazy" class="tweet-img" src="https://pbs.twimg.com/media/EHloz4KU8AAH6pT.png" />
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1187087849998319616"
+            target="_blank">2019/10/24 4:26:13</a></p>
+      </header>
+      <section>
+        <p class="tweet-text"><blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="http://mrdoob.github.io/frame.js/editor/" target="_blank">frame.js / editor</a></header><div></div></blockquote></p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1187087174836973570"
+            target="_blank">2019/10/24 4:23:32</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">Check out What You Don't Know — a #VR Experience on @WITHIN: <blockquote class="card card-default"><header><img loading="lazy" src="https://cms-cdn.with.in/content/C0gtd7g/images/74f0c7af-d30c-4296-9878-1fb5ad46cf5b-1024x539-4385.jpg" /><a href="https://with.in/watch/what-you-dont-know" target="_blank">What You Don't Know</a></header><div>Dive into the creative process of avant-pop artist Matthew Dear from his new single of the same name.</div></blockquote></p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1186978023926423553"
+            target="_blank">2019/10/23 21:09:48</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">すごいメンツだ。。 <blockquote class="card card-default"><header><img loading="lazy" src="https://pbs.twimg.com/media/EHgQ9WsWwAAvxFT.jpg:large" /><a href="https://twitter.com/OutRunner_/status/1186717180735434752" target="_blank">アウトランナーさんのツイート: "「エニックス・ゲームプログラミングスクール」の雑誌広告（1986年） In the image, a dream team of video game programming. Taken from a magazine advertising of "Enix Game Programming School" (1986)… https://t.co/gw4ol5hhUp"</a></header><div></div></blockquote></p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1186741238847832064"
+            target="_blank">2019/10/23 5:28:54</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">あら、昨日 node 13リリースされたのか。。<br/><br/><blockquote class="card card-default"><header><img loading="lazy" src="https://nodejs.org/static/images/logo-hexagon-card.png" /><a href="https://nodejs.org/ja/blog/release/v13.0.0/" target="_blank">Node v13.0.0 (Current) | Node.js</a></header><div>Node.js® is a JavaScript runtime built on Chrome's V8 JavaScript engine.</div></blockquote></p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/917625215043194880/DB-47z5l_normal.jpg" />
+        <p class="tweet-user-name">WebAssemblyWeekly@WasmWeekly</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/WasmWeekly/status/1186231785522454528"
+            target="_blank">2019/10/21 19:44:31</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">raw wasm: making a maze race, part 1 <a href="https://binji.github.io/posts/raw-wasm-making-a-maze-race/" target="_blank">binji.github.io/posts/raw-wasm…</a><br/>- a fun article from @binjimint about hand-writing a wasm demo</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1186451979184160770"
+            target="_blank">2019/10/22 10:19:29</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">うーむ。東海大相模の選手の体がデカい。こりゃすごいわ。。<br/><br/><div class="youtube" data-type="yt" id="AFhbbJaeC80"><div class="yt-title">Youtube - 東海大相模 vs 習志野 ダイジェスト（2019秋季関東大会 準々決勝）</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/AFhbbJaeC80" class="youtube" src="https://i.ytimg.com/vi/AFhbbJaeC80/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1186452249255350272"
+            target="_blank">2019/10/22 10:20:34</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">堀井くんも点とられたけど、まずまずのピッチングで今後に期待できるなあ。。春県大会まではまだ期間があるしね。。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1186446913194737664"
+            target="_blank">2019/10/22 9:59:21</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">関東大会ベスト４<br/><br/>・東海大相模<br/>・健大高崎<br/>・山梨学院<br/>・桐生第一<br/><br/>ということで千葉県全滅。。神奈川１、山梨１、群馬２がセンバツほぼ確定。あとは神宮大会の結果次第ですな。。<br/><br/><blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="http://www.gunma-hbf.com/R1kanto-k3.pdf" target="_blank">404 Not Found</a></header><div></div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1186447706052419584"
+            target="_blank">2019/10/22 10:02:30</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">返す返すも残念なのが木総が関東大会に行けなかったこと。。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/716745938732101632/U88i1lyK_normal.jpg" />
+        <p class="tweet-user-name">和田みさき@wada_misaki</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/wada_misaki/status/1186166777249615872"
+            target="_blank">2019/10/21 15:26:12</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ちがうちがう。<br/>本来その出っ張りはドアと壁があたって指を詰めたりしないようにするストッパー。<br/>そのストッパーにものを引っ掛ける人がでてきたから「じゃぁ、フックつけたれ」ってなったのがソレ。 <a href="https://twitter.com/h_nagayama/status/1186150980179525632" target="_blank">twitter.com/h_nagayama/sta…</a></p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1186394486877773824"
+            target="_blank">2019/10/22 6:31:02</a></p>
+      </header>
+      <section>
+        <p class="tweet-text"><blockquote class="card card-default"><header><img loading="lazy" src="https://www.shadertoy.com/media/shaders/4lBGRh.jpg" /><a href="https://www.shadertoy.com/view/4lBGRh" target="_blank">Shader - Shadertoy BETA</a></header><div></div></blockquote></p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/903659306289070080/eXQhsIW1_normal.jpg" />
+        <p class="tweet-user-name">Akiya Mizukoshi@Akiyah</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/Akiyah/status/1186064327670763521"
+            target="_blank">2019/10/21 8:39:06</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">スライム方程式をついに発見した https://t.co/eLijri0j9o</p>
+        
+        <img loading="lazy" class="tweet-img" src="https://pbs.twimg.com/media/EHW_N7QUUAAJrm0.png" />
+        
+        <img loading="lazy" class="tweet-img" src="https://pbs.twimg.com/media/EHW_N7RUcAEwm0p.png" />
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/1102899371429883904/8JgiIxUu_normal.jpg" />
+        <p class="tweet-user-name">はるとし＿背景とか屋さん@MadeinHarutoshi</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/MadeinHarutoshi/status/1186259682777653248"
+            target="_blank">2019/10/21 21:35:22</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">#俺の描き込みを見てくれ<br/>見て見てがんばったーー！！！ https://t.co/qvrhAFS1ev</p>
+        
+        <video class="tweet-img" controls src="https://video.twimg.com/ext_tw_video/1186259545720418304/pu/vid/480x360/QiJa3EyVDihjVugV.mp4?tag=10" />
+        
+      </section>
+      
+    </article>
+    
+  </div>
+  <footer>
+    CopyLight 2019 Satoshi Fujiwara
+  </footer>
+  <script async src="https://platform.twitter.com/widgets.js"></script>
+
+  <script async src="./index.js"></script>
+
+</body>
+
+</html>

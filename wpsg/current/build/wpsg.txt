@@ -1,0 +1,762 @@
+import memory env_memory;
+
+table T_a:funcref(min: 32, max: 0);
+
+data d_G951Tll1T59G21G951Tll1T59G(offset: 20328) = 
+  "\00\00\00\00\c2\c5G>\15\ef\c3>\da9\0e?\f3\045?1\dbT?^\83l?\be\14{?\00\00"
+  "\80?\be\14{?^\83l?1\dbT?\f3\045?\da9\0e?\15\ef\c3>\c2\c5G>21\0d%\c2\c5"
+  "G\be\15\ef\c3\be\da9\0e\bf\f3\045\bf1\dbT\bf^\83l\bf\be\14{\bf\00\00\80"
+  "\bf\be\14{\bf^\83l\bf1\dbT\bf\f3\045\bf\da9\0e\bf\15\ef\c3\be\c2\c5G\be"
+  "";
+
+import function sin(a:double):double;
+
+import function cos(a:double):double;
+
+import function sinh(a:double):double;
+
+import function exp(a:double):double;
+
+import function pow(a:double, b:double):double;
+
+export function initMemory() {
+  8[0]:int = 20456
+}
+
+export function allocateMemory(a:int):int {
+  var size:int;
+  var mem_offset_before:int;
+  size = size + 7 & -8;
+  var mem_offset:int = size + (mem_offset_before = 8[0]:int);
+  var mem_page:int = (mem_offset >> 16) + 1;
+  if (mem_page > memory_size()) { memory_grow(2) }
+  8[0]:int = mem_offset;
+  return mem_offset_before;
+}
+
+export function freeMemory(a:int) {
+  var offset:int;
+  8[0]:int = offset;
+}
+
+function set_rate(a:float) {
+  var r:float;
+  12[0]:float = r;
+  16[0]:float = 1.0f / r;
+}
+
+export function initWaveTable(a:int, b:int) {
+  var wave_table_offset:int;
+  var size:int;
+  (0 + wave_table_offset)[0]:int = 0;
+  (8 + wave_table_offset)[0]:int = size;
+  (12 + wave_table_offset)[0]:long = 
+    (i64_extend_i32_u(size) << 16L) - 1L;
+  (4 + wave_table_offset)[0]:int = 0;
+}
+
+export function setWaveTableSize(a:int, b:int) {
+  var wave_table_offset:int;
+  var size:int;
+  (8 + wave_table_offset)[0]:int = size;
+  (12 + wave_table_offset)[0]:long = 
+    (i64_extend_i32_u(size) << 16L) - 1L;
+}
+
+export function allocateWaveTable(a:int):int {
+  var data_size:int;
+  var offset:int = allocateMemory(data_size + 20);
+  initWaveTable(offset, data_size);
+  return offset;
+}
+
+export function initWaveTableWork(a:int, b:int, c:float) {
+  var base_frequency:float;
+  var wave_table_work_offset:int;
+  var wave_table_offset:int;
+  var base_frequency_i64:long = i64_trunc_f32_u(base_frequency);
+  (16 + wave_table_work_offset)[0]:long = i64_trunc_f32_u(12[0]:float);
+  (32 + wave_table_work_offset)[0]:long = base_frequency_i64;
+  (12 + wave_table_work_offset)[0]:float = 1.0f;
+  (8 + wave_table_work_offset)[0]:float = 1.0f;
+  (48 + wave_table_work_offset)[0]:long = 
+    (((base_frequency_i64 << 16L) * 
+      (i64_extend_i32_u((8 + wave_table_offset)[0]:int) << 16L) >> 
+      16L) << 
+     16L) / 
+    ((16 + wave_table_work_offset)[0]:long << 16L);
+  (40 + wave_table_work_offset)[0]:long = 0L;
+  (24 + wave_table_work_offset)[0]:float = 0.0f;
+  (0 + wave_table_work_offset)[0]:int = wave_table_offset;
+}
+
+export function readWaveTable(a:int):float {
+  var wave_table_work_offset:int;
+  var value:float;
+  var wave_table_offset:int = (0 + wave_table_work_offset)[0]:int;
+  var table_index:long = (40 + wave_table_work_offset)[0]:long;
+  var delta:long = 
+    (48 + wave_table_work_offset)[0]:long * 
+    i64_trunc_f32_u((8 + wave_table_work_offset)[0]:float * 65536.0f) >> 
+    16L;
+  (40 + wave_table_work_offset)[0]:long = 
+    (table_index = table_index + delta & (12 + wave_table_offset)[0]:long);
+  (24 + wave_table_work_offset)[0]:float = 
+    (value = 
+       (12 + wave_table_work_offset)[0]:float * 
+       ((i32_wrap_i64(table_index >> 16L) << 2) + 20 + wave_table_offset)[0]:float);
+  return value;
+}
+
+export function initEnvelope(a:int, b:float, c:float, d:float, e:float, f:float, g:float) {
+  var env_param_offset:int;
+  var attack_time:float;
+  var sample_rate:float;
+  var decay_time:float;
+  var sustain_level:float;
+  var release_time:float;
+  var level:float;
+  (4 + env_param_offset)[0]:float = attack_time;
+  (20 + env_param_offset)[0]:float = 
+    1.0f / sample_rate * (4 + env_param_offset)[0]:float;
+  (8 + env_param_offset)[0]:float = decay_time;
+  (24 + env_param_offset)[0]:float = 
+    (1.0f - (12 + env_param_offset)[0]:float) / 
+    sample_rate * (8 + env_param_offset)[0]:float;
+  (12 + env_param_offset)[0]:float = sustain_level;
+  (16 + env_param_offset)[0]:float = release_time;
+  (28 + env_param_offset)[0]:float = 
+    (12 + env_param_offset)[0]:float / 
+    sample_rate * (16 + env_param_offset)[0]:float;
+  (0 + env_param_offset)[0]:float = level;
+}
+
+export function updateEnvelope(a:int) {
+  var env_param_offset:int;
+  var sample_rate:float = 12[0]:float;
+  (20 + env_param_offset)[0]:float = 
+    1.0f / sample_rate * (4 + env_param_offset)[0]:float;
+  (24 + env_param_offset)[0]:float = 
+    (1.0f - (12 + env_param_offset)[0]:float) / 
+    sample_rate * (8 + env_param_offset)[0]:float;
+  (28 + env_param_offset)[0]:float = 
+    (12 + env_param_offset)[0]:float / 
+    sample_rate * (16 + env_param_offset)[0]:float;
+}
+
+export function initEnvelopeWork(a:int, b:int) {
+  var env_work_offset:int;
+  var env_param_offset:int;
+  (0 + env_work_offset)[0]:int = env_param_offset;
+  (12 + env_work_offset)[0]:float = 0.0f;
+  (8 + env_work_offset)[0]:int = -1;
+  (4 + env_work_offset)[0]:int = 0;
+  (16 + env_work_offset)[0]:float = 0.0f;
+}
+
+export function keyOnEnvelope(a:int) {
+  var env_work_offset:int;
+  (4 + env_work_offset)[0]:int = 
+    -2147483648 | (4 + env_work_offset)[0]:int;
+  (8 + env_work_offset)[0]:int = 0;
+  (12 + env_work_offset)[0]:float = 0.0f;
+  (16 + env_work_offset)[0]:float = 0.0f;
+}
+
+export function keyOffEnvelope(a:int) {
+  var env_work_offset:int;
+  (4 + env_work_offset)[0]:int = 
+    2147483647 & (4 + env_work_offset)[0]:int;
+  (8 + env_work_offset)[0]:int = 3;
+  (12 + env_work_offset)[0]:float = 0.0f;
+}
+
+export function doEnvelope(a:int):float {
+  var env_work_offset:int;
+  var env_param_offset:int = (0 + env_work_offset)[0]:int;
+  var counter:float = (12 + env_work_offset)[0]:float;
+  var step:int = (8 + env_work_offset)[0]:int;
+  if (step == -1) { return 0.0f }
+  var value:float = (16 + env_work_offset)[0]:float;
+  br_table[B_e, B_d, B_b, ..B_c](step)
+  label B_e:
+  counter = 16[0]:float + counter;
+  if (counter >= (4 + env_param_offset)[0]:float) {
+    (8 + env_work_offset)[0]:int = 1;
+    (12 + env_work_offset)[0]:float = (counter = 0.0f);
+    (16 + env_work_offset)[0]:float = (value = 1.0f);
+  } else {
+    (16 + env_work_offset)[0]:float = 
+      (value = value + (20 + env_param_offset)[0]:float)
+  }
+  goto B_b;
+  label B_d:
+  counter = 16[0]:float + counter;
+  if (counter >= (8 + env_param_offset)[0]:float | 
+      value <= (12 + env_param_offset)[0]:float) {
+    (8 + env_work_offset)[0]:int = 2;
+    (12 + env_work_offset)[0]:float = (counter = 0.0f);
+    (16 + env_work_offset)[0]:float = 
+      (value = (12 + env_param_offset)[0]:float);
+  } else {
+    (16 + env_work_offset)[0]:float = 
+      (value = value - (24 + env_param_offset)[0]:float)
+  }
+  goto B_b;
+  label B_c:
+  counter = 16[0]:float + counter;
+  if (counter >= (16 + env_param_offset)[0]:float | value <= 0.000001f) {
+    (8 + env_work_offset)[0]:int = -1;
+    (12 + env_work_offset)[0]:float = (counter = 0.0f);
+    (16 + env_work_offset)[0]:float = (value = 0.0f);
+  } else {
+    (16 + env_work_offset)[0]:float = 
+      (value = value - (28 + env_param_offset)[0]:float)
+  }
+  goto B_b;
+  label B_b:
+  (12 + env_work_offset)[0]:float = counter;
+  return value * (0 + env_param_offset)[0]:float;
+}
+
+function lowPassFilter(a:int) {
+  var filter_work:int_ptr;
+  var filter:int = filter_work[0];
+  var omega:float = 
+    6.283185f * (32 + filter_work)[0]:float * 16[0]:float;
+  var cos_omega:float = f32_demote_f64(cos(f64_promote_f32(omega)));
+  var alpha:float = f32_demote_f64(sin(f64_promote_f32(omega))) / 
+                    2.0f * (8 + filter)[0]:float;
+  (4 + filter_work)[0]:float = 1.0f + alpha;
+  (8 + filter_work)[0]:float = -2.0f * cos_omega;
+  (12 + filter_work)[0]:float = 1.0f - alpha;
+  (16 + filter_work)[0]:float = (1.0f - cos_omega) * 0.5f;
+  (20 + filter_work)[0]:float = 1.0f - cos_omega;
+  (24 + filter_work)[0]:float = (16 + filter_work)[0]:float;
+}
+
+function highPassFilter(a:int) {
+  var filter_work:int_ptr;
+  var filter:int = filter_work[0];
+  var omega:float = 
+    6.283185f * (32 + filter_work)[0]:float * 16[0]:float;
+  var cos_omega:float = f32_demote_f64(cos(f64_promote_f32(omega)));
+  var alpha:float = f32_demote_f64(sin(f64_promote_f32(omega))) / 
+                    2.0f * (8 + filter)[0]:float;
+  (4 + filter_work)[0]:float = 1.0f + alpha;
+  (8 + filter_work)[0]:float = -2.0f * cos_omega;
+  (12 + filter_work)[0]:float = 1.0f - alpha;
+  (16 + filter_work)[0]:float = (1.0f + cos_omega) * 0.5f;
+  (20 + filter_work)[0]:float = -(1.0f + cos_omega);
+  (24 + filter_work)[0]:float = (16 + filter_work)[0]:float;
+}
+
+function notchFilter(a:int) {
+  var filter_work:int_ptr;
+  var filter:int = filter_work[0];
+  var omega:double = 
+    f64_promote_f32(6.283185f * (32 + filter_work)[0]:float * 16[0]:float);
+  var cos_omega:float = f32_demote_f64(cos(omega));
+  var sin_omega:double = sin(omega);
+  var alpha:float = 
+    f32_demote_f64(
+      sin_omega * 
+      sinh(
+        0.346574 * f64_promote_f32((12 + filter_work)[0]:float) * omega / 
+        sin_omega));
+  (4 + filter_work)[0]:float = 1.0f + alpha;
+  (8 + filter_work)[0]:float = -2.0f * cos_omega;
+  (12 + filter_work)[0]:float = 1.0f - alpha;
+  (16 + filter_work)[0]:float = 1.0f;
+  (20 + filter_work)[0]:float = -2.0f * cos_omega;
+  (24 + filter_work)[0]:float = 1.0f;
+}
+
+function bandPassFilter(a:int) {
+  var filter_work:int_ptr;
+  var filter:int = filter_work[0];
+  var omega:double = 
+    f64_promote_f32(6.283185f * (32 + filter_work)[0]:float * 16[0]:float);
+  var cos_omega:float = f32_demote_f64(cos(omega));
+  var sin_omega:double = sin(omega);
+  var alpha:float = 
+    f32_demote_f64(
+      sin_omega * 
+      sinh(
+        0.346574 * f64_promote_f32((12 + filter_work)[0]:float) * omega / 
+        sin_omega));
+  (4 + filter_work)[0]:float = 1.0f + alpha;
+  (8 + filter_work)[0]:float = -2.0f * cos_omega;
+  (12 + filter_work)[0]:float = 1.0f - alpha;
+  (16 + filter_work)[0]:float = alpha;
+  (20 + filter_work)[0]:float = 0.0f;
+  (24 + filter_work)[0]:float = alpha;
+}
+
+function lowShelfFilter(a:int) {
+  var filter_work:int_ptr;
+  var filter:int = filter_work[0];
+  var omega:double = 
+    f64_promote_f32(6.283185f * (32 + filter_work)[0]:float * 16[0]:float);
+  var cos_omega:float = f32_demote_f64(cos(omega));
+  var sin_omega:float = f32_demote_f64(sin(omega));
+  var alpha:float = sin_omega / 2.0f * (8 + filter)[0]:float;
+  var A:float = 
+    f32_demote_f64(
+      pow(10.0, f64_promote_f32((16 + filter)[0]:float) * 0.025));
+  var beta:float = 
+    f32_demote_f64(
+      sqrt(f64_promote_f32(A)) / f64_promote_f32((8 + filter)[0]:float));
+  (4 + filter_work)[0]:float = 
+    A + 1.0f + (A - 1.0f) * cos_omega + beta * sin_omega;
+  (8 + filter_work)[0]:float = 
+    -2.0f * (A - 1.0f + (A + 1.0f) * cos_omega);
+  (12 + filter_work)[0]:float = 
+    A + 1.0f + (A - 1.0f) * cos_omega - beta * sin_omega;
+  (16 + filter_work)[0]:float = 
+    A * (A + 1.0f - (A - 1.0f) * cos_omega + beta * sin_omega);
+  (20 + filter_work)[0]:float = 
+    2.0f * A * (A - 1.0f - (A + 1.0f) * cos_omega);
+  (24 + filter_work)[0]:float = 
+    A * (A + 1.0f - (A - 1.0f) * cos_omega - beta * sin_omega);
+}
+
+function HighShelfFilter(a:int) {
+  var filter_work:int_ptr;
+  var filter:int = filter_work[0];
+  var omega:double = 
+    f64_promote_f32(6.283185f * (32 + filter_work)[0]:float * 16[0]:float);
+  var cos_omega:float = f32_demote_f64(cos(omega));
+  var sin_omega:float = f32_demote_f64(sin(omega));
+  var alpha:float = sin_omega / 2.0f * (8 + filter)[0]:float;
+  var A:float = 
+    f32_demote_f64(
+      pow(10.0, f64_promote_f32((16 + filter)[0]:float) * 0.025));
+  var beta:float = 
+    f32_demote_f64(
+      sqrt(f64_promote_f32(A)) / f64_promote_f32((8 + filter)[0]:float));
+  (4 + filter_work)[0]:float = 
+    A + 1.0f - (A - 1.0f) * cos_omega + beta * sin_omega;
+  (8 + filter_work)[0]:float = 
+    2.0f * (A - 1.0f - (A + 1.0f) * cos_omega);
+  (12 + filter_work)[0]:float = 
+    A + 1.0f - (A - 1.0f) * cos_omega - beta * sin_omega;
+  (16 + filter_work)[0]:float = 
+    A * (A + 1.0f + (A - 1.0f) * cos_omega + beta * sin_omega);
+  (20 + filter_work)[0]:float = 
+    -2.0f * A * (A - 1.0f + (A + 1.0f) * cos_omega);
+  (24 + filter_work)[0]:float = 
+    A * (A + 1.0f + (A - 1.0f) * cos_omega - beta * sin_omega);
+}
+
+function PeakingFilter(a:int) {
+  var filter_work:int_ptr;
+  var filter:int = filter_work[0];
+  var omega:double = 
+    f64_promote_f32(6.283185f * (32 + filter_work)[0]:float * 16[0]:float);
+  var cos_omega:float = f32_demote_f64(cos(omega));
+  var sin_omega_f64:double = sin(omega);
+  var sin_omega:float = f32_demote_f64(sin_omega_f64);
+  var alpha:float = 
+    f32_demote_f64(
+      sin_omega_f64 * 
+      sinh(0.346574 * f64_promote_f32((12 + filter)[0]:float) * omega / 
+           sin_omega_f64));
+  var A:float = 
+    f32_demote_f64(
+      pow(10.0, f64_promote_f32((16 + filter)[0]:float) * 0.025));
+  (4 + filter_work)[0]:float = 1.0f + alpha / A;
+  (8 + filter_work)[0]:float = -2.0f * cos_omega;
+  (12 + filter_work)[0]:float = 1.0f - alpha / A;
+  (16 + filter_work)[0]:float = 1.0f + alpha * A;
+  (20 + filter_work)[0]:float = -2.0f * cos_omega;
+  (24 + filter_work)[0]:float = 1.0f - alpha * A;
+}
+
+function allPassFilter(a:int) {
+  var filter_work:int_ptr;
+  var filter:int = filter_work[0];
+  var omega:double = 
+    f64_promote_f32(6.283185f * (32 + filter_work)[0]:float * 16[0]:float);
+  var cos_omega:float = f32_demote_f64(cos(omega));
+  var alpha:float = 
+    f32_demote_f64(sin(omega) / 2.0 * (8 + filter)[0]:double);
+  (4 + filter_work)[0]:float = 1.0f + alpha;
+  (8 + filter_work)[0]:float = -2.0f * cos_omega;
+  (12 + filter_work)[0]:float = 1.0f - alpha;
+  (16 + filter_work)[0]:float = 1.0f - alpha;
+  (20 + filter_work)[0]:float = -2.0f * cos_omega;
+  (24 + filter_work)[0]:float = 1.0f + alpha;
+}
+
+function processFilter(a:int, b:float):float {
+  var filter_work:int_ptr;
+  var in:float;
+  var filter:int = filter_work[0];
+  var a0:float = (4 + filter_work)[0]:float;
+  var a1:float = (8 + filter_work)[0]:float;
+  var a2:float = (12 + filter_work)[0]:float;
+  var b0:float = (16 + filter_work)[0]:float;
+  var b1:float = (20 + filter_work)[0]:float;
+  var b2:float = (24 + filter_work)[0]:float;
+  var out1:float = (44 + filter_work)[0]:float;
+  var out2:float = (48 + filter_work)[0]:float;
+  var in1:float = (36 + filter_work)[0]:float;
+  var in2:float = (40 + filter_work)[0]:float;
+  var out:float = 
+    b0 / a0 * in + b1 / a0 * in1 + b2 / a0 * in2 - a1 / a0 * out1 - 
+    a2 / a0 * out2;
+  (48 + filter_work)[0]:float = out1;
+  (44 + filter_work)[0]:float = out;
+  (40 + filter_work)[0]:float = in1;
+  (36 + filter_work)[0]:float = in;
+  return out;
+}
+
+export function initFilter(a:int, b:int, c:float, d:float, e:float, f:float) {
+  var filter:int;
+  var filter_type:int;
+  var base_frequency:float;
+  var q:float;
+  var band_width:float;
+  var gain:float;
+  (0 + filter)[0]:int = filter_type;
+  (4 + filter)[0]:float = base_frequency;
+  (8 + filter)[0]:float = q;
+  (12 + filter)[0]:float = band_width;
+  (16 + filter)[0]:float = gain;
+}
+
+export function initFilterWork(a:int, b:int) {
+  var filter_work:int_ptr;
+  var filter:int;
+  filter_work[0] = filter;
+  (4 + filter_work)[0]:float = 1.0f;
+  (8 + filter_work)[0]:float = 0.0f;
+  (12 + filter_work)[0]:float = 0.0f;
+  (16 + filter_work)[0]:float = 1.0f;
+  (20 + filter_work)[0]:float = 0.0f;
+  (24 + filter_work)[0]:float = 0.0f;
+  (28 + filter_work)[0]:float = 1.0f;
+  (32 + filter_work)[0]:float = (4 + filter)[0]:float;
+  (36 + filter_work)[0]:float = 0.0f;
+  (40 + filter_work)[0]:float = 0.0f;
+  (44 + filter_work)[0]:float = 0.0f;
+  (48 + filter_work)[0]:float = 0.0f;
+}
+
+export function keyOnTimbre(a:int) {
+  var timbre_work:int;
+  (0 + timbre_work)[0]:int = (0 + timbre_work)[0]:int | 1;
+  keyOnEnvelope(148 + timbre_work);
+  keyOnEnvelope(296 + timbre_work);
+  keyOnEnvelope(500 + timbre_work);
+  (8 + timbre_work)[0]:double = 0[0]:double;
+}
+
+export function keyOffTimbre(a:int) {
+  var timbre_work:int;
+  (0 + timbre_work)[0]:int = (0 + timbre_work)[0]:int & -2;
+  keyOffEnvelope(148 + timbre_work);
+  keyOffEnvelope(296 + timbre_work);
+  keyOffEnvelope(500 + timbre_work);
+}
+
+export function processTimbre(a:int):float {
+  var timbre_work:int;
+  var oscillator_work_offset:int;
+  var pitch:float;
+  var pitch_lfo_work_offset:int;
+  var temp:float;
+  var filter_lfo_work_offset:int;
+  var amplitude_envelope:int;
+  var amplitude_lfo_work_offset:int;
+  var timbre_flag:int = (0 + (4 + timbre_work)[0]:int)[0]:int;
+  var oscillator_offset:int = (0 + 20 + timbre_work)[0]:int;
+  (8 + (oscillator_work_offset = 20 + timbre_work))[0]:float = 
+    if (if ((temp = 
+               (pitch = (16 + timbre_work)[0]:float) + 
+               if (timbre_flag & 2) {
+                 call_indirect(pitch_lfo_work_offset = 168 + timbre_work,
+                               (4 + (0 + pitch_lfo_work_offset)[0]:int)[0]:int)
+               } else {
+                 0.0f
+               }) > 
+            1.0f) {
+          temp = 1.0f
+        } else {
+          temp
+        } < 
+        0.0f) {
+      temp = 0.0f
+    } else {
+      temp
+    } * 
+    if (timbre_flag & 1) { doEnvelope(148 + timbre_work) } else { 1.0f }
+  if (timbre_flag & 16) {
+    var filter_value:float = 
+      if (timbre_flag & 32) { doEnvelope(500 + timbre_work) } else { 1.0f } * 
+      if (timbre_flag & 64) {
+        (call_indirect(filter_lfo_work_offset = 520 + timbre_work,
+                       (4 + (0 + filter_lfo_work_offset)[0]:int)[0]:int) + 
+         1.0f) * 
+        0.5f
+      } else {
+        1.0f
+      }
+    var filter:int = (444 + timbre_work)[0]:int;
+    (472 + timbre_work)[0]:float = filter_value;
+    (476 + timbre_work)[0]:float = (4 + filter)[0]:float * filter_value;
+    call_indirect(444 + timbre_work,
+                  (0 + (444 + timbre_work)[0]:int)[0]:int + 8);
+  }
+  (652 + timbre_work)[0]:float = 
+    if (timbre_flag & 16) {
+      processFilter(
+        444 + timbre_work,
+        call_indirect(oscillator_work_offset, (4 + oscillator_offset)[0]:int))
+    } else {
+      call_indirect(oscillator_work_offset, (4 + oscillator_offset)[0]:int)
+    } * 
+    if (timbre_flag & 4) {
+      let t0 = doEnvelope(amplitude_envelope = 296 + timbre_work);
+      if ((8 + amplitude_envelope)[0]:int == -1) {
+        (0 + timbre_work)[0]:int = (timbre_flag = timbre_flag & 2147483647)
+      }
+      t0;
+    } else {
+      if (timbre_flag & 1) {
+        1.0f
+      } else {
+        (0 + timbre_work)[0]:int = (timbre_flag = timbre_flag & 2147483647);
+        0.0f;
+      }
+    } * 
+    if (if ((temp = 
+               if (timbre_flag & 8) {
+                 call_indirect(amplitude_lfo_work_offset = 316 + timbre_work,
+                               (4 + (0 + amplitude_lfo_work_offset)[0]:int)[0]:int)
+               } else {
+                 0.0f
+               } + 
+               (648 + timbre_work)[0]:float) > 
+            1.0f) {
+          temp = 1.0f
+        } else {
+          temp
+        } < 
+        0.0f) {
+      temp = 0.0f
+    } else {
+      temp
+    }
+  return (652 + timbre_work)[0]:float;
+}
+
+export function initTimbre(a:int, b:int, c:int) {
+  var timbre:int;
+  var oscillator:int_ptr;
+  var lfo_oscillator:int;
+  (0 + timbre)[0]:int = 0;
+  (4 + timbre)[0]:int = oscillator[0];
+  (8 + timbre)[0]:float = 440.0f;
+  initEnvelope(12 + timbre, 12[0]:float, 0.00015f, 0.15f, 0.2f, 0.2f, 1.0f);
+  (44 + timbre)[0]:int = lfo_oscillator;
+  (48 + timbre)[0]:float = 20.0f;
+  initEnvelope(52 + timbre, 12[0]:float, 0.001f, 0.5f, 0.5f, 0.25f, 1.0f);
+  (84 + timbre)[0]:int = lfo_oscillator;
+  (88 + timbre)[0]:float = 20.0f;
+  initFilter(92 + timbre, 0, 4000.0f, 1.0f, 0.5f, 1.0f);
+  initEnvelope(112 + timbre, 12[0]:float, 0.0f, 2.0f, 0.5f, 2.0f, 1.0f);
+  (144 + timbre)[0]:int = lfo_oscillator;
+  (148 + timbre)[0]:float = 20.0f;
+}
+
+export function initTimbreWork(a:int, b:int) {
+  var timbre:int;
+  var timbre_work:int;
+  initFilterWork(92 + timbre, 444 + timbre_work);
+  (0 + timbre_work)[0]:int = -2147483648;
+  (4 + timbre_work)[0]:int = timbre;
+  (16 + timbre_work)[0]:float = 1.0f;
+  initWaveTableWork(20 + timbre_work,
+                    (4 + timbre)[0]:int,
+                    (8 + timbre)[0]:float);
+  initWaveTableWork(168 + timbre_work,
+                    (44 + timbre)[0]:int,
+                    (48 + timbre_work)[0]:float);
+  initWaveTableWork(316 + timbre_work,
+                    (84 + timbre)[0]:int,
+                    (88 + timbre_work)[0]:float);
+  initWaveTableWork(520 + timbre_work,
+                    (144 + timbre)[0]:int,
+                    (148 + timbre_work)[0]:float);
+  initEnvelopeWork(148 + timbre_work, 12 + timbre);
+  initEnvelopeWork(296 + timbre_work, 52 + timbre);
+  initEnvelopeWork(500 + timbre_work, 112 + timbre);
+  (648 + timbre_work)[0]:float = 1.0f;
+}
+
+export function assignTimbre():int {
+  var min_time:double;
+  var timbre_work:int = 9812;
+  var timbre_work_min:int = timbre_work;
+  loop L_b {
+    if (timbre_work > 9812) goto B_a;
+    if (eqz(-2147483647 & (0 + timbre_work)[0]:int)) {
+      return timbre_work
+    } else {
+      if ((8 + timbre_work)[0]:double < min_time) {
+        min_time = (8 + timbre_work)[0]:double;
+        timbre_work_min = timbre_work;
+      }
+      timbre_work = timbre_work + 656;
+      continue L_b;
+    }
+  }
+  label B_a:
+  return timbre_work_min;
+}
+
+export function initTimbres() {
+  var timbre:int = 84;
+  loop L_b {
+    if (timbre >= 2516) goto B_a;
+    initTimbre(timbre, 20[0]:int, 24[0]:int);
+    timbre = timbre + 4;
+    continue L_b;
+  }
+  label B_a:
+}
+
+function initTimbreWorks() {
+  var timbre_work:int = 9812;
+  loop L_b {
+    if (timbre_work >= 2516) goto B_a;
+    initTimbreWork(timbre_work, 84);
+    timbre_work = timbre_work + 4;
+    continue L_b;
+  }
+  label B_a:
+}
+
+export function processTimbres():float {
+  var output:float;
+  var output:float;
+  var timbre_work:int = 9812;
+  loop L_b {
+    if (timbre_work >= 20308) goto B_a;
+    output = 
+      if ((0 + timbre_work)[0]:int & -2147483648) { processTimbre(timbre_work) } else { 0.0f } + 
+      output;
+    timbre_work = timbre_work + 656;
+    continue L_b;
+  }
+  label B_a:
+  var temp:float = output;
+  return if (if (temp > 1.0f) {
+               temp = 1.0f;
+               temp;
+             } else {
+               temp
+             } < 
+             -1.0f) {
+           temp = -1.0f;
+           temp;
+         } else {
+           temp
+         }
+}
+
+export function initOscillators() {
+  var oscillator:int;
+  var oscillator_table:int_ptr = 20;
+  loop L_b {
+    if (oscillator_table >= 84) goto B_a;
+    oscillator_table[0] = (oscillator = allocateWaveTable(512));
+    (8 + oscillator)[0]:int = 32;
+    (12 + oscillator)[0]:long = (i64_extend_i32_u(32) << 16L) - 1L;
+    var loop_counter:int = 32;
+    var offset_src:float_ptr = 20328;
+    var offset_dest:float_ptr = 20 + oscillator;
+    loop L_d {
+      loop_counter = loop_counter - 1;
+      if (eqz(loop_counter)) goto B_c;
+      offset_dest[0] = offset_src[0];
+      offset_dest = offset_dest + 4;
+      offset_src = offset_src + 4;
+      continue L_d;
+    }
+    label B_c:
+    oscillator_table = oscillator_table + 4;
+    continue L_b;
+  }
+  label B_a:
+}
+
+export function initOutputBuffer(a:int):int {
+  var size:int;
+  var offset:int;
+  20308[0]:int = (offset = allocateMemory(size));
+  20312[0]:int = size;
+  20316[0]:int = size - 1;
+  resetBuffer();
+  return offset;
+}
+
+function resetBuffer() {
+  20320[0]:int = 0;
+  20324[0]:int = 0;
+}
+
+export function process() {
+  var woffset:int = 20324[0]:int;
+  var roffset:int = 20320[0]:int;
+  var buffer_mask:int = 20316[0]:int;
+  var buffer_start:int = 20308[0]:int;
+  loop L_b {
+    if (roffset == woffset) goto B_a;
+    (buffer_start + woffset)[0]:float = processTimbres();
+    woffset = woffset + 4 & buffer_mask;
+    continue L_b;
+  }
+  label B_a:
+  AtomicRmwCmpxchg(20324, woffset);
+}
+
+export function fill() {
+  var woffset:float_ptr = 20308[0]:int;
+  var end:int = woffset + 20312[0]:int;
+  loop L_b {
+    if (woffset > end) goto B_a;
+    woffset[0] = processTimbre(9812);
+    woffset = woffset + 4;
+    continue L_b;
+  }
+  label B_a:
+}
+
+export function initSynth() {
+  initOscillators();
+  initTimbres();
+  initTimbreWorks();
+}
+
+function allocateTrack(a:int) {
+}
+
+function initTrack(a:int) {
+}
+
+function initTrackWork(a:int, b:int) {
+}
+
+function processTrack(a:int) {
+}
+
+function initSequence(a:int) {
+}
+
+function initSequenceWork(a:int, b:int) {
+}
+

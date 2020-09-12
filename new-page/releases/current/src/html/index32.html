@@ -1,0 +1,695 @@
+<!DOCTYPE html>
+
+<html lang="ja" prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb# article: http://ogp.me/ns/article#">
+
+<head>
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-15457703-9"></script>
+  <script>
+    if (!location.hostname.match(/localhost/)) {
+      window.dataLayer = window.dataLayer || [];
+      function gtag() { dataLayer.push(arguments); }
+      gtag('js', new Date());
+      gtag('config', 'UA-15457703-9');
+    }
+  </script>
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Twitter Viewer</title>
+  <meta name="description" content="自作Twitter Viewerによる自分のつぶやきの記録。Programming,Music,HTML5,WebGL,javascript,WebAudio,Gameなど" />
+  <meta name="keywords" content="Programming,Music,HTML5,WebGL,javascript,WebAudio" /> 	
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <meta itemprop="image" content="https://www.sfpgmr.net/img/sfweb.png" />
+  <meta itemprop="name" content="S.F. Web" />
+  
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:site" content="S.F. Web" />
+  <meta name="twitter:url" content="./index32.html" />
+  <meta name="twitter:title" content="Twitter Viewer" />
+  <meta name="twitter:description" content="自作Twitter Viewerによる自分のつぶやきの記録。Programming,Music,HTML5,WebGL,javascript,WebAudio,Gameなど" />
+  <meta name="twitter:image" content="https://www.sfpgmr.net/img/sfweb.png" />
+  
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="./index32.html" />
+  <meta property="og:title" content="Twitter Viewer"/>
+  <meta property="og:site_name" content="S.F. Web" />
+  <meta property="og:description" content="Programming,Music,HTML5,WebGL,javascript,WebAudio">
+  <meta property="og:image" content="https://www.sfpgmr.net/img/sfweb.png">
+
+  <style>
+  * {
+  margin: 0;
+  padding: 0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+html {
+  margin: 0;
+  padding: 0;
+  font-size: 10px;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  background: black;
+  color: white;
+}
+
+.top-nav {
+  position: fixed;
+  z-index: 99999;
+  background: rgba(0, 0, 0, 0.5);
+  display: block;
+  width: 100%;
+  height: 32px;
+  color: white;
+}
+
+#sentinel {
+  width: 0px;
+  height: 0px;
+}
+
+.contents {
+  padding-top: 32px;
+  width: 100%;
+  position: relative;
+  content: strict;
+}
+
+@-webkit-keyframes blinking {
+  0% {
+    color: black;
+  }
+  50% {
+    color: white;
+  }
+  100% {
+    color: black;
+  }
+}
+
+@keyframes blinking {
+  0% {
+    color: black;
+  }
+  50% {
+    color: white;
+  }
+  100% {
+    color: black;
+  }
+}
+
+.loading {
+  font-family: monospace;
+  font-size: 24px;
+  position: fixed;
+  width: 100vw;
+  height: 100vh;
+  text-align: center;
+  padding-top: 50vh;
+  z-index: 32768;
+  background: black;
+  -webkit-animation: blinking 2s infinite;
+          animation: blinking 2s infinite;
+  content: strict;
+}
+
+.contents > article {
+  background: #f0f0f0;
+  color: #202020;
+  position: absolute;
+  max-height: 960px;
+  overflow: auto;
+  border-radius: 3px;
+  /* transition: opacity 1s linear;*/
+  opacity: 1.0;
+}
+
+.tweet-header {
+  display: -ms-grid;
+  display: grid;
+  -webkit-box-align: end;
+      -ms-flex-align: end;
+          align-items: end;
+  -ms-grid-columns: 40px 2fr 1fr;
+      grid-template-columns: 40px 2fr 1fr;
+  -ms-grid-rows: 1fr;
+      grid-template-rows: 1fr;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.tweet-img {
+  width: 100%;
+  -o-object-fit: cover;
+     object-fit: cover;
+}
+
+.youtube {
+  position: relative;
+  cursor: pointer;
+}
+
+.youtube > img {
+  width: 100%;
+  -o-object-fit: cover;
+     object-fit: cover;
+}
+
+.youtube > svg.player-play {
+  width: 64px;
+  height: 64px;
+  left: calc(50% - 32px);
+  top: calc(50% - 32px);
+  position: absolute;
+  z-index: 1000;
+  opacity: 0.5;
+}
+
+.youtube:hover > svg.player-play {
+  opacity: 1.0;
+}
+
+.youtube:hover .player-play-1 {
+  stroke: #80808080;
+}
+
+.youtube > div.yt-title {
+  /*text-shadow: #fff 1px 1px 0;*/
+  font-size: 1.2rem;
+  color: white;
+  background: rgba(0, 0, 0, 0.5);
+  position: absolute;
+  left: 0;
+  top: 0;
+  overflow: auto;
+  z-index: 998;
+}
+
+.tweet-profile-img {
+  -ms-grid-column: 1;
+  -ms-grid-column-span: 1;
+  grid-column: 1/2;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+}
+
+.tweet-user-name {
+  -ms-grid-column: 2;
+  -ms-grid-column-span: 1;
+  grid-column: 2/3;
+}
+
+.tweet-date {
+  font-size: 8px;
+  text-align: right;
+  -ms-grid-column: 3;
+  -ms-grid-column-span: 1;
+  grid-column: 3/4;
+}
+
+.contents > twitter-widget {
+  overflow: auto;
+  max-height: 960px;
+  position: absolute;
+}
+
+.contents > article > section > .tweet-text {
+  display: block;
+  padding: 4px;
+  word-break: break-all;
+  font-size: 12px;
+}
+
+.contents > article > h3 {
+  font-size: 12px;
+}
+
+blockquote.card {
+  margin: 4px;
+  padding: 4px;
+  font-size: 12px;
+  background: white;
+  border-radius: 4px;
+}
+
+blockquote.card > header {
+  display: -ms-grid;
+  display: grid;
+  grid-gap: 4px;
+  gap: 4px;
+}
+
+blockquote.card-default > header {
+  -ms-grid-columns: 64px 1fr;
+      grid-template-columns: 64px 1fr;
+}
+
+blockquote.card-large > header {
+  -ms-grid-columns: 1fr;
+      grid-template-columns: 1fr;
+}
+
+blockquote.card > header > img {
+  width: 100%;
+}
+
+div.no-image {
+  display: block;
+  width: 64px;
+  height: 64px;
+  background: gray;
+  color: white;
+  text-align: center;
+  line-height: 64px;
+}
+/*# sourceMappingURL=style.css.map */ 
+  </style>
+</head>
+
+<body>
+  <div class="loading" id="loading">Loading</div>
+  <header class="top-nav">
+    <h1>S.F. Info.</h1>
+  </header>
+  <div class="contents" id="contents" rendersubtree="invisible skip-activation"> 
+    
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1212701145379946496/pSDVrvWj_normal.png" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1228287640568360960"
+            target="_blank">2020/2/14 20:59:28</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">@xxxmare そういうブレークスルーがあったのですね。太郎（一太郎）はやっぱりすごいですね。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1212701145379946496/pSDVrvWj_normal.png" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1228284206830125057"
+            target="_blank">2020/2/14 20:45:49</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">知らんかった。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1228284375378169858"
+            target="_blank">2020/2/14 20:46:30</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">わけわからなくなったらとにかくESCキーを押せばよいというわかりやすさでしたな。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1228284739607392256"
+            target="_blank">2020/2/14 20:47:57</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">倍角とか4倍角とか、PC-PR201とか、LBPを最初につないだ時の感動とか、いろいろ思い出すなあ。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1228285154705039360"
+            target="_blank">2020/2/14 20:49:35</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">罫線の機能とかもなんか使いやすかった気もするよね。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1228285492178735104"
+            target="_blank">2020/2/14 20:50:56</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">テキスト・エディタの使用頻度も多かったからそうそう一太郎を使うことはなかったね。そんなにPC98を使ってたわけではないけど。MIFESが一番のお気に入りでしたな。VZエディタなんかも良いね。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1228287095338192896"
+            target="_blank">2020/2/14 20:57:18</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">FEP（懐かしい）もATOKとか、VJE-βとかあったよな。私は開発用としてPC98VXを使ってましたが、286マシンってこんなに速いんだ！！って感動してましたわ。あれ、V30だったっけかな？？</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1228287322644303872"
+            target="_blank">2020/2/14 20:58:12</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">HDDも10MBとか、そんな時代だよねぇ。。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1279946084475785217/y3L5iPF5_normal.jpg" />
+        <p class="tweet-user-name">MZ-80K/C@sharpMZ1</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/sharpMZ1/status/1228133149139320832"
+            target="_blank">2020/2/14 10:45:35</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">広告 : 一太郎はここから始まった !! https://t.co/Fmd6bDDgK1</p>
+        
+        <img  class="tweet-img" src="https://pbs.twimg.com/media/EQs0jvvVAAE-mct.jpg" />
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/860186961579003904/fGVbWgDV_normal.jpg" />
+        <p class="tweet-user-name">zach lieberman@zachlieberman</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/zachlieberman/status/1227360439866216449"
+            target="_blank">2020/2/12 7:35:06</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">C++ for kids https://t.co/5gPYSmvlul</p>
+        
+        <img  class="tweet-img" src="https://pbs.twimg.com/media/EQh1ycHXYAAvVzH.jpg" />
+        
+        <img  class="tweet-img" src="https://pbs.twimg.com/media/EQh1ycsWsAAW-Ae.jpg" />
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1212701145379946496/pSDVrvWj_normal.png" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1228034365751320576"
+            target="_blank">2020/2/14 4:13:03</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">今年のセンバツは千葉県出ないから観るモチベーションが。。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1212701145379946496/pSDVrvWj_normal.png" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1227905213329113089"
+            target="_blank">2020/2/13 19:39:50</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">AMPのドキュメント見てると、これ自体一種のUIライブラリに見えてきたな。。<br/><br/><blockquote class="card card-large"><header><img  src="https://amp.dev/static/img/sharing/docs-component-600x314.png" /><a href="https://amp.dev/documentation/components/" target="_blank">Components - amp.dev</a></header><div></div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1227929610823712769"
+            target="_blank">2020/2/13 21:16:47</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">CSSの保守性の悪さ（これは私のせいだが）も気になるし、もうちょっとUIもモダン化したい。思い切ってAMPコンポーネントをメインに使ってUIを作り、極力カスタムCSSを減らす方向にもっていこう。それが難しいページはプレーンなHTMLにする。少なくとも静的なページはいけそう。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1227929612069421057"
+            target="_blank">2020/2/13 21:16:48</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">つまりAMP Onlyな方向にもっていくということ。ゲームなどのWebGLをガシガシやるページはAMPの対象外としよう。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1227930124839817216"
+            target="_blank">2020/2/13 21:18:50</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">手間をできる限りかけず、効率よくこれをやるにはやはり<br/><br/>・現状の分析<br/>・動かなくなってるページの修復<br/>・どうしようもないページの切り捨て<br/><br/>は必要ですな。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1227930520236875776"
+            target="_blank">2020/2/13 21:20:24</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">現状分析はやっぱりmarkdown/metadata(json-ld)/css/htmlを必要なレベルでパースするパーサを書いてやることにするかな。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1227931822547300352"
+            target="_blank">2020/2/13 21:25:35</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">今はオリジナルの文書書式は<br/><br/>タイトル（markdownのH1の書式）<br/>メタデータ（scriptタグで囲まれたjson-ld形式の情報)<br/>ボディ（markdown/html）<br/><br/>になってるんだよね。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1227933087188713474"
+            target="_blank">2020/2/13 21:30:36</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ボディ部分は過去seesaa・wordpress（オンプレ・クラウド）・はてな・オリジナルと変遷してきて、なかなかカオスなドキュメントになっていてですな、きちんと解析せんとAMP化できんのですわ。。古いHTMLは新しいのにしないといかんしね。なんと17年前に書いたドキュメントもあるんですわ。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1227933786907693057"
+            target="_blank">2020/2/13 21:33:23</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">PCにはもっと古いドキュメント（おそらく1999年以降～2000年代前半）もあって、これもアップしたいとは思ってるんだけど、IE5くらいの時代のものだからまともには表示できんのではと思うのですな。コンテンツの価値としてはほぼ0だと思うのですが、個人的な記録としては残しておきたいのでね。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1227933891127734273"
+            target="_blank">2020/2/13 21:33:48</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">しかしもうどこにあるのかわからんようになってるので、いつの間にか消去してしまってるかもしれん。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1227934181180624898"
+            target="_blank">2020/2/13 21:34:57</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">トップページも含め、モダン化を進めようと思う。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1227934713957928961"
+            target="_blank">2020/2/13 21:37:04</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">2003年の11月ころは<br/><br/>「今日からMovableTypeでサイト運営することにしました。とりあえずインストールし、適当に設定してみましたが、結構カスタマイズができるようです。」<br/><br/>みたいなことが書いてあった。MovableTypeも使ってたんだ！とさっき驚いた（笑）</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1227935418986840066"
+            target="_blank">2020/2/13 21:39:52</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">長い期間をかけ運用してるんだよなあ。。その間数回～10回くらいプラットフォームを引っ越しして、そのたびにデータを変換して持ってきてる。結果このようなカオスなドキュメント群になってしまってるのですな。。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1212701145379946496/pSDVrvWj_normal.png" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1227927827107864576"
+            target="_blank">2020/2/13 21:09:42</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">しかし古いWebGLのコードが軒並み動かなくなってるなあ。。1個1個直していくか。。こりゃまだまだリニューアルには程遠いや。。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1212701145379946496/pSDVrvWj_normal.png" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1227693662412263424"
+            target="_blank">2020/2/13 5:39:13</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">CSSいじったらマージンがおかしくなった。。 https://t.co/3D8t1UWZnV</p>
+        
+        <img  class="tweet-img" src="https://pbs.twimg.com/media/EQmk4L_VUAA45iD.jpg" />
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1227693929656537088"
+            target="_blank">2020/2/13 5:40:16</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">これは<br/><br/>.class1.class2 { .... }<br/><br/>と<br/><br/>.class1 .class2 { .... }<br/><br/>の違いにより起きたもの。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1227694317398978560"
+            target="_blank">2020/2/13 5:41:49</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">つなげて書くと、<br/><br/>class="class1 class2"<br/><br/>にマッチして、スペースをあけると<br/><br/>&lt;div class="class1"&gt;<br/>     &lt;p class="class2"&gt;<br/><br/>にマッチする。。<br/><br/>初歩的な凡ミスというやつ。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1227697041972715521"
+            target="_blank">2020/2/13 5:52:38</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">直った。。 https://t.co/qiZowfXbSx</p>
+        
+        <img  class="tweet-img" src="https://pbs.twimg.com/media/EQmn853VUAAS2IY.jpg" />
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1227904495784300544"
+            target="_blank">2020/2/13 19:36:59</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">私が書いたCSSは保守性が悪すぎるような気もする。いきあたりばったりで書いてるから当然か。。ついこの間まで詳細度も知らんかったし。。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1050411381369929728/BtqZX2ZX_normal.jpg" />
+        <p class="tweet-user-name">特殊映画研究室 Panorama Effect Laboratory@tokuken20091</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/tokuken20091/status/1227894209027293185"
+            target="_blank">2020/2/13 18:56:07</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">（株）サントスバーガーの歴史をまとめました。<br/>自販機のミニチュアにはこのような裏設定があります。良ければみて行ってください！<br/>#サントスバーガー<br/>#ミニチュア<br/>#note <a href="https://note.com/tokuken2009/n/n8790dc8ff264" target="_blank">note.com/tokuken2009/n/…</a></p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1212701145379946496/pSDVrvWj_normal.png" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1227692446894608385"
+            target="_blank">2020/2/13 5:34:23</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">OpenProcessing・・すごいな。。<br/><blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="https://www.openprocessing.org/" target="_blank">OpenProcessing - Creative Coding for the Curious Mind</a></header><div></div></blockquote></p>
+        
+      </section>
+      
+    </article>
+    
+  </div>
+  <footer>
+    CopyLight 2019 Satoshi Fujiwara
+  </footer>
+  <script async src="https://platform.twitter.com/widgets.js"></script>
+
+  <script async src="./index.js"></script>
+
+</body>
+
+</html>

@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+
+<html lang="ja" prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb# article: http://ogp.me/ns/article#">
+
+<head>
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-15457703-9"></script>
+  <script>
+    if (!location.hostname.match(/localhost/)) {
+      window.dataLayer = window.dataLayer || [];
+      function gtag() { dataLayer.push(arguments); }
+      gtag('js', new Date());
+      gtag('config', 'UA-15457703-9');
+    }
+  </script>
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Twitter Viewer</title>
+  <meta name="description" content="自作Twitter Viewerによる自分のつぶやきの記録。Programming,Music,HTML5,WebGL,javascript,WebAudio,Gameなど" />
+  <meta name="keywords" content="Programming,Music,HTML5,WebGL,javascript,WebAudio" /> 	
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <meta itemprop="image" content="https://www.sfpgmr.net/img/sfweb.png" />
+  <meta itemprop="name" content="S.F. Web" />
+  
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:site" content="S.F. Web" />
+  <meta name="twitter:url" content="./index9.html" />
+  <meta name="twitter:title" content="Twitter Viewer" />
+  <meta name="twitter:description" content="自作Twitter Viewerによる自分のつぶやきの記録。Programming,Music,HTML5,WebGL,javascript,WebAudio,Gameなど" />
+  <meta name="twitter:image" content="https://www.sfpgmr.net/img/sfweb.png" />
+  
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="./index9.html" />
+  <meta property="og:title" content="Twitter Viewer"/>
+  <meta property="og:site_name" content="S.F. Web" />
+  <meta property="og:description" content="Programming,Music,HTML5,WebGL,javascript,WebAudio">
+  <meta property="og:image" content="https://www.sfpgmr.net/img/sfweb.png">
+
+  <style>
+  * {
+  margin: 0;
+  padding: 0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+
+html {
+  margin: 0;
+  padding: 0;
+  font-size: 10px; }
+
+body {
+  margin: 0;
+  padding-left: 8px;
+  padding-right: 8px;
+  background: black;
+  color: white; }
+
+.top-nav {
+  position: fixed;
+  z-index: 99999;
+  background: rgba(0, 0, 0, 0.5);
+  display: block;
+  width: 100%;
+  height: 32px;
+  color: white; }
+
+#sentinel {
+  width: 0px;
+  height: 0px; }
+
+.contents {
+  padding-top: 32px;
+  width: 100%;
+  position: relative;
+  content: strict; }
+
+@keyframes blinking {
+  0% {
+    color: black; }
+  50% {
+    color: white; }
+  100% {
+    color: black; } }
+
+.loading {
+  font-family: monospace;
+  font-size: 24px;
+  position: fixed;
+  width: 100vw;
+  height: 100vh;
+  text-align: center;
+  padding-top: 50vh;
+  z-index: 32768;
+  background: black;
+  animation: blinking 2s infinite;
+  content: strict; }
+
+.contents > article {
+  background: #f0f0f0;
+  color: #202020;
+  position: absolute;
+  max-height: 960px;
+  overflow: auto;
+  border-radius: 3px;
+  /* transition: opacity 1s linear;*/
+  opacity: 1.0; }
+
+.tweet-header {
+  display: grid;
+  align-items: end;
+  grid-template-columns: 40px 2fr 1fr;
+  grid-template-rows: 1fr;
+  font-size: 12px;
+  font-weight: bold; }
+
+.tweet-img {
+  width: 100%;
+  object-fit: cover; }
+
+.youtube {
+  position: relative;
+  cursor: pointer; }
+
+.youtube > img {
+  width: 100%;
+  object-fit: cover; }
+
+.youtube > svg.player-play {
+  width: 64px;
+  height: 64px;
+  left: calc(50% - 32px);
+  top: calc(50% - 32px);
+  position: absolute;
+  z-index: 1000;
+  opacity: 0.5; }
+
+.youtube:hover > svg.player-play {
+  opacity: 1.0; }
+
+.youtube:hover .player-play-1 {
+  stroke: #80808080; }
+
+.youtube > div.yt-title {
+  /*text-shadow: #fff 1px 1px 0;*/
+  font-size: 1.2rem;
+  color: white;
+  background: rgba(0, 0, 0, 0.5);
+  position: absolute;
+  left: 0;
+  top: 0;
+  overflow: auto;
+  z-index: 998; }
+
+.tweet-profile-img {
+  grid-column: 1/2;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%; }
+
+.tweet-user-name {
+  grid-column: 2/3; }
+
+.tweet-date {
+  font-size: 8px;
+  text-align: right;
+  grid-column: 3/4; }
+
+.contents > twitter-widget {
+  overflow: auto;
+  max-height: 960px;
+  position: absolute; }
+
+.contents > article > section > .tweet-text {
+  display: block;
+  padding: 4px;
+  word-break: break-all;
+  font-size: 12px; }
+
+.contents > article > h3 {
+  font-size: 12px; }
+
+blockquote.card {
+  margin: 4px;
+  padding: 4px;
+  font-size: 12px;
+  background: white;
+  border-radius: 4px; }
+
+blockquote.card > header {
+  display: grid;
+  grid-gap: 4px;
+  gap: 4px; }
+
+blockquote.card-default > header {
+  grid-template-columns: 64px 1fr; }
+
+blockquote.card-large > header {
+  grid-template-columns: 1fr; }
+
+blockquote.card > header > img {
+  width: 100%; }
+
+div.no-image {
+  display: block;
+  width: 64px;
+  height: 64px;
+  background: gray;
+  color: white;
+  text-align: center;
+  line-height: 64px; }
+ 
+  </style>
+</head>
+
+<body>
+  <div class="loading" id="loading">Loading</div>
+  <header class="top-nav">
+    <h1>S.F. Info.</h1>
+  </header>
+  <div class="contents" id="contents" rendersubtree="invisible skip-activation"> 
+    
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1212701145379946496/pSDVrvWj_normal.png" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1273555037826891776"
+            target="_blank">2020/6/18 18:55:57</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">中ふ頭か。。 <blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="https://twitter.com/TECHNOuchi/status/1273279655793942528" target="_blank">Twitter</a></header><div></div></blockquote></p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1212701145379946496/pSDVrvWj_normal.png" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1272835695430610944"
+            target="_blank">2020/6/16 19:17:32</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">arcade 1upが値下がりして私の手の届く範囲に来た。欲しいけど買ったら確実に嫁に怒られる。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1273003207556427776"
+            target="_blank">2020/6/17 6:23:10</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">とはいえ嫁もかつては元ゲーム会社のグラフィック・デザイナー。社会人の長男とテトリス99にハマっている次第。。私はついていけてません（笑）。ちなみに次男はスマブラ一択（笑）</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1273003452621156352"
+            target="_blank">2020/6/17 6:24:09</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">テトリスというゲームは１つの「発明」ですわ。ほんと。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1212701145379946496/pSDVrvWj_normal.png" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1272870416474730501"
+            target="_blank">2020/6/16 21:35:30</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">そうだ。このチェッカーな床とか天井の柱とか。。懐かしいなあ。。 <blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="https://twitter.com/Area51_zek/status/824591508363890688" target="_blank">Twitter</a></header><div></div></blockquote></p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1212701145379946496/pSDVrvWj_normal.png" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1272868919414452224"
+            target="_blank">2020/6/16 21:29:33</a></p>
+      </header>
+      <section>
+        <p class="tweet-text"><blockquote class="card card-default"><header><img  src="https://pimg.togetter.com/small_light(sx=0.0p,sy=14.7p,sw=100.0p,sh=70.0p,dw=1212.0,dh=636.3,cw=1200.0,ch=630.0,p=default,da=l,ds=s)/d1c1d2b1a95d2ec1062041c4945eed4ea07291c2/68747470733a2f2f692e7974696d672e636f6d2f76692f395f475238734c38386a412f687164656661756c742e6a7067" /><a href="https://togetter.com/li/1537668" target="_blank">ゲーム開発の思い出 - Togetter</a></header><div>3年ほどアーケード・ゲーム開発をしてた時の思い出話です。30年以上前の話です。加齢による忘却の前に記録しておこうと（笑）</div></blockquote></p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1212701145379946496/pSDVrvWj_normal.png" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1272682062210719744"
+            target="_blank">2020/6/16 9:07:03</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">私も持ってます。初めて読む8086... <blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="https://twitter.com/tanam1972/status/1272439566612365312" target="_blank">Twitter</a></header><div></div></blockquote></p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/625942356894748672/4uBWrxZ2_normal.png" />
+        <p class="tweet-user-name">すーぱーたーぼ@SuperturboZ</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SuperturboZ/status/1272577379353767936"
+            target="_blank">2020/6/16 2:11:05</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">@ym2413 録音が良くないですがPSGでサンプリングレートで一番頑張ったのはこれです。15.25KHz 8bit相当をCPU命令長でPWM駆動してますが音量不足になるのと原理的に高周波ノイズが消せない事が分かったのでボツにしました。<br/><a href="https://www.youtube.com/watch?v=L0ZLidjoagc" target="_blank">youtube.com/watch?v=L0ZLid…</a><br/>OPMならPSGよりは少し楽ができます。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1212701145379946496/pSDVrvWj_normal.png" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1272605921403781120"
+            target="_blank">2020/6/16 4:04:30</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ビッグキャロット、通ったなあ。。懐かしい。。 <blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="https://twitter.com/Area51_zek/status/1272524490896035841" target="_blank">Twitter</a></header><div></div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1272678449144975361"
+            target="_blank">2020/6/16 8:52:42</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">そうそう、南館ですわ。たいていのナムコのゲームはココにあったからね。直営店だから、ないわけないか。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1272678708470378496"
+            target="_blank">2020/6/16 8:53:43</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">そして、私の憩いの場所は堺東のゲームセンター富士でしたなあ。。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1212701145379946496/pSDVrvWj_normal.png" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1272649092460507137"
+            target="_blank">2020/6/16 6:56:02</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">このジャイロダインというゲームにも相当貢がせていただいた。わりとキャラがリアルな感じで、レバーの方向に自弾が飛んでいくのが新鮮だった。タイトーのシューティングって、基本シューティングのツボをおさえてる感じがする。ゲームとしてきちんと作っているような。<br/><br/><div class="youtube" data-type="yt" id="NDI9Poyq6a0"><div class="yt-title">Youtube - 【AC】ジャイロダイン【1周クリアまで】</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img  data-href="https://youtu.be/NDI9Poyq6a0" class="youtube" src="https://i.ytimg.com/vi/NDI9Poyq6a0/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1272649703788654593"
+            target="_blank">2020/6/16 6:58:28</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">やっぱりシューティングのパイオニアだけあるなあとか思ったりとか。飛翔鮫とかもそういうの感じるんだよね。グラフィックとかサウンドとかでごまかさない感じ。飛翔鮫もすごく単純なゲーム・システムだけど縦シューのツボをおさえてると思う。<br/><br/><blockquote class="card card-default"><header><img  src="https://i.ytimg.com/vi/_91zUH1wyhQ/maxresdefault.jpg" /><a href="https://www.youtube.com/watch?v=_91zUH1wyhQ" target="_blank">1987 [60fps] Hishou Zame 10000000pts - YouTube</a></header><div>飛翔鮫 / Hishou Zame (Japan) Toaplan / Taito 1987 10,000,000+α Player T．S (めんく) 収録Ver MAME32Plus!Plus!0.119 1COIN ALL AREA 999 連付き ※動画は1周目＋16周目、17周目を収録。最後の捨て残機は...</div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1272649802375819264"
+            target="_blank">2020/6/16 6:58:52</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">そのツボっていうのがなんなのか、いまだによくわかってないんだけれども（笑）</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/975218116195008512/FHwbrCQ2_normal.jpg" />
+        <p class="tweet-user-name">はまろ@ryota_vfx</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/ryota_vfx/status/1272334131150479362"
+            target="_blank">2020/6/15 10:04:30</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">CG本格的に初めて9ヶ月くらい。とりあえず作品まとめてみました。 https://t.co/icS9GaaQqy</p>
+        
+        <video class="tweet-img" controls src="https://video.twimg.com/ext_tw_video/1272333978536521728/pu/vid/480x270/3Ee1uzroG88cibcR.mp4?tag=10" />
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/817864664851750912/hN2kbele_normal.jpg" />
+        <p class="tweet-user-name">阿部@ave620</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/ave620/status/1272453217687793664"
+            target="_blank">2020/6/15 17:57:42</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">今年もう半年終わったらしいけど、実質2〜3ヶ月ぐらいに感じますね… https://t.co/6NdgdSvNqy</p>
+        
+        <img  class="tweet-img" src="https://pbs.twimg.com/media/EaipdHqVAAAt1iZ.jpg" />
+        
+      </section>
+      
+    </article>
+    
+  </div>
+  <footer>
+    CopyLight 2019 Satoshi Fujiwara
+  </footer>
+  <script async src="https://platform.twitter.com/widgets.js"></script>
+
+  <script async src="./index.js"></script>
+
+</body>
+
+</html>

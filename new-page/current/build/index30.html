@@ -1,0 +1,1156 @@
+<!DOCTYPE html>
+
+<html lang="ja" prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb# article: http://ogp.me/ns/article#">
+
+<head>
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-15457703-9"></script>
+  <script>
+    if (!location.hostname.match(/localhost/)) {
+      window.dataLayer = window.dataLayer || [];
+      function gtag() { dataLayer.push(arguments); }
+      gtag('js', new Date());
+      gtag('config', 'UA-15457703-9');
+    }
+  </script>
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Twitter Viewer</title>
+  <meta name="description" content="自作Twitter Viewerによる自分のつぶやきの記録。Programming,Music,HTML5,WebGL,javascript,WebAudio,Gameなど" />
+  <meta name="keywords" content="Programming,Music,HTML5,WebGL,javascript,WebAudio" /> 	
+
+  <meta itemprop="image" content="https://www.sfpgmr.net/img/sfweb.png" />
+  <meta itemprop="name" content="S.F. Web" />
+  
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:site" content="S.F. Web" />
+  <meta name="twitter:url" content="./index30.html" />
+  <meta name="twitter:title" content="Twitter Viewer" />
+  <meta name="twitter:description" content="自作Twitter Viewerによる自分のつぶやきの記録。Programming,Music,HTML5,WebGL,javascript,WebAudio,Gameなど" />
+  <meta name="twitter:image" content="https://www.sfpgmr.net/img/sfweb.png" />
+  
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="./index30.html" />
+  <meta property="og:title" content="Twitter Viewer"/>
+  <meta property="og:site_name" content="S.F. Web" />
+  <meta property="og:description" content="Programming,Music,HTML5,WebGL,javascript,WebAudio">
+  <meta property="og:image" content="https://www.sfpgmr.net/img/sfweb.png">
+
+  <style>
+  * {
+  margin: 0;
+  padding: 0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+
+html {
+  margin: 0;
+  padding: 0;
+  font-size: 10px; }
+
+body {
+  margin: 0;
+  padding-left: 8px;
+  padding-right: 8px;
+  background: black;
+  color: white; }
+
+.top-nav {
+  position: fixed;
+  z-index: 99999;
+  background: rgba(0, 0, 0, 0.5);
+  display: block;
+  width: 100%;
+  height: 32px;
+  color: white; }
+
+#sentinel {
+  width: 0px;
+  height: 0px; }
+
+.contents {
+  padding-top: 32px;
+  width: 100%;
+  position: relative;
+  content: strict; }
+
+@keyframes blinking {
+  0% {
+    color: black; }
+  50% {
+    color: white; }
+  100% {
+    color: black; } }
+
+.loading {
+  font-family: monospace;
+  font-size: 24px;
+  position: fixed;
+  width: 100vw;
+  height: 100vh;
+  text-align: center;
+  padding-top: 50vh;
+  z-index: 32768;
+  background: black;
+  animation: blinking 2s infinite;
+  content: strict; }
+
+.contents > article {
+  background: #f0f0f0;
+  color: #202020;
+  position: absolute;
+  max-height: 95vh;
+  overflow: auto;
+  border-radius: 3px;
+  /* transition: opacity 1s linear;*/
+  opacity: 1.0; }
+
+.tweet-header {
+  display: grid;
+  align-items: end;
+  grid-template-columns: 40px 2fr 1fr;
+  grid-template-rows: 1fr;
+  font-size: 12px;
+  font-weight: bold; }
+
+.tweet-img {
+  width: 100%;
+  object-fit: cover; }
+
+.youtube {
+  position: relative;
+  cursor: pointer; }
+
+.youtube > img {
+  width: 100%;
+  object-fit: cover; }
+
+.youtube > svg.player-play {
+  width: 64px;
+  height: 64px;
+  left: calc(50% - 32px);
+  top: calc(50% - 32px);
+  position: absolute;
+  z-index: 1000;
+  opacity: 0.5; }
+
+.youtube:hover > svg.player-play {
+  opacity: 1.0; }
+
+.youtube:hover .player-play-1 {
+  stroke: #80808080; }
+
+.youtube > div.yt-title {
+  /*text-shadow: #fff 1px 1px 0;*/
+  font-size: 1.2rem;
+  color: white;
+  background: rgba(0, 0, 0, 0.5);
+  position: absolute;
+  left: 0;
+  top: 0;
+  overflow: auto;
+  z-index: 998; }
+
+.tweet-profile-img {
+  grid-column: 1/2;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%; }
+
+.tweet-user-name {
+  grid-column: 2/3; }
+
+.tweet-date {
+  font-size: 8px;
+  text-align: right;
+  grid-column: 3/4; }
+
+.contents > twitter-widget {
+  overflow: auto;
+  max-height: 960px;
+  position: absolute; }
+
+.contents > article > section > .tweet-text {
+  display: block;
+  padding: 4px;
+  word-break: break-all;
+  font-size: 12px; }
+
+.contents > article > h3 {
+  font-size: 12px; }
+
+blockquote.card {
+  margin: 4px;
+  padding: 4px;
+  font-size: 12px;
+  background: white;
+  border-radius: 4px; }
+
+blockquote.card > header {
+  display: grid;
+  grid-gap: 4px;
+  gap: 4px; }
+
+blockquote.card-default > header {
+  grid-template-columns: 64px 1fr; }
+
+blockquote.card-large > header {
+  grid-template-columns: 1fr; }
+
+blockquote.card > header > img {
+  width: 100%; }
+
+div.no-image {
+  display: block;
+  width: 64px;
+  height: 64px;
+  background: gray;
+  color: white;
+  text-align: center;
+  line-height: 64px; }
+ 
+  </style>
+</head>
+
+<body>
+  <div class="loading" id="loading">Loading</div>
+  <header class="top-nav">
+    <h1>S.F. Info.</h1>
+  </header>
+  <div class="contents" id="contents" rendersubtree="invisible skip-activation"> 
+    
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1212701145379946496/pSDVrvWj_normal.png" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1247328008559415296"
+            target="_blank">2020/4/7 9:59:06</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">時差出勤してるが今日は昨日に比べてガラガラだなあ、電車。ちなみに明日はテレワーク。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1247328374919327744"
+            target="_blank">2020/4/7 10:00:33</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">いつもこれくらいだと嬉しいけどね。。コロナで労働環境が良くなってるという、なんとも皮肉な現実だわ。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1247328967331213318"
+            target="_blank">2020/4/7 10:02:54</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">多分リモートワークで生産性を高め、成果を出すような仕事の仕方を普段からしとけばこういうリスクにも強いよな。。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/617722474327732224/kEGNMW1w_normal.png" />
+        <p class="tweet-user-name">b.p.s.@BasicProgrammer</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/BasicProgrammer/status/1246108439463333888"
+            target="_blank">2020/4/4 1:12:58</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">BASICで３DCG、MSX turboRでもやってみました。<br/>88版ほぼそのまま動きました(^^)<br/>TIMEは36063だったので、10分1秒でした。 <a href="https://twitter.com/Stosstruppe/status/1245682316325740545" target="_blank">twitter.com/Stosstruppe/st…</a> https://t.co/OwK4VIWFux</p>
+        
+        <img  class="tweet-img" src="https://pbs.twimg.com/media/EUsOI9uU8AAWw9i.png" />
+        
+        <img  class="tweet-img" src="https://pbs.twimg.com/media/EUsOyPlU4AEy45P.png" />
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1212701145379946496/pSDVrvWj_normal.png" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1244968563502239744"
+            target="_blank">2020/3/31 21:43:30</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">みさき公園。。懐かしい。。子供ころ2－3回いったかなあ。。 <blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="https://t.co/mNkYVgYnZj" target="_blank"></a></header><div></div></blockquote></p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1212701145379946496/pSDVrvWj_normal.png" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1243670689854431245"
+            target="_blank">2020/3/28 7:46:13</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">なんかすごい世界だ。。<br/><br/><div class="youtube" data-type="yt" id="-Lr_UBHVgmo"><div class="yt-title">Youtube - FIGHT CRAB 1st Trailer</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img  data-href="https://youtu.be/-Lr_UBHVgmo" class="youtube" src="https://i.ytimg.com/vi/-Lr_UBHVgmo/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1243671545618333703"
+            target="_blank">2020/3/28 7:49:37</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">『完全にプロシージャルなアニメーションと誤魔化しのない正確なコリジョン』</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1243671692108390400"
+            target="_blank">2020/3/28 7:50:12</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">『リアルファイトの感覚とカニになったような体験をあなたに与えます』<br/><br/>「カニになったような体験」かあ。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1212701145379946496/pSDVrvWj_normal.png" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1243284229904986112"
+            target="_blank">2020/3/27 6:10:34</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">これを読みつつ、libuvをビルドしている。exampleコードを実際動かしてみたくなったので。。<br/><br/><blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="https://nikhilm.github.io/uvbook/index.html" target="_blank">Table of Contents — An Introduction to libuv</a></header><div></div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1243300207212654592"
+            target="_blank">2020/3/27 7:14:03</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">uvbookのサンプルコードのレポジトリがあって、これ使えばいいのか。<br/><blockquote class="card card-default"><header><img  src="https://avatars1.githubusercontent.com/u/78682?s=400&v=4" /><a href="https://github.com/nikhilm/uvbook" target="_blank">GitHub - nikhilm/uvbook: An Introduction to libuv</a></header><div>An Introduction to libuv. Contribute to nikhilm/uvbook development by creating an account on GitHub.</div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1243300718703869952"
+            target="_blank">2020/3/27 7:16:05</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ああ、やはりFile I/Oはスレッド・プール使って疑似的にノンブロッキングI/Oを実現するわけね。。<br/><br/><blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="https://nikhilm.github.io/uvbook/filesystem.html" target="_blank">Filesystem — An Introduction to libuv</a></header><div></div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1243301069750300672"
+            target="_blank">2020/3/27 7:17:29</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">しかしC/C++は基本Windows + IDEでビルドしてた。gccやclangをコマンドラインで使うなんちゅうのはほとんどやったことないなあ。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1243302053851480065"
+            target="_blank">2020/3/27 7:21:23</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">libuvではファイルシステムへのアクセスは同期・非同期の2種類用意しているとあるな。そのためにブロッキングI/O＋スレッド・プール使っているのかな。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1243302289923702784"
+            target="_blank">2020/3/27 7:22:20</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">nodeもファイルI/Oは同期・非同期の2種類あるもんな。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1243305564307783686"
+            target="_blank">2020/3/27 7:35:20</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">uvcatのサンプル。ちょっとここで「あれ？」ってなった。<br/><br/><blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="https://nikhilm.github.io/uvbook/filesystem.html#reading-writing-files" target="_blank">Filesystem — An Introduction to libuv</a></header><div></div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1243306173450735616"
+            target="_blank">2020/3/27 7:37:45</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">基本的なところでだが。ファイルディスクリプタの1ってstdoutだったというところ。こんなのすっかり忘れてるわ。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1243308169591308288"
+            target="_blank">2020/3/27 7:45:41</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">私ってfile streamingってあんまり使ってこなかったなあ。。<br/><br/><blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="https://nikhilm.github.io/uvbook/filesystem.html#filesystem-operations" target="_blank">Filesystem — An Introduction to libuv</a></header><div></div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1243312727868583937"
+            target="_blank">2020/3/27 8:03:48</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">libuvの関数のフォーマットは<br/><br/>操作(イベントループ,ハンドル,パラメータ..,コールバック）<br/><br/>という感じですな。イベントループに対して処理をお願いして、コールバックで結果をもらう。FileSystemは例外的にコールバックをNULLにすると同期的に処理してくれる模様。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1243313000813125633"
+            target="_blank">2020/3/27 8:04:53</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">Windows APIでもPostMessageは非同期的、SendMessageは同期的とかそういうのありましたなあ。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1243313530280890368"
+            target="_blank">2020/3/27 8:06:59</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">あ、さっきの呼び出しのフォーマットは<br/><br/>リクエスト(イベントループ,ハンドル,パラメータ..,コールバック）<br/><br/>のほうがいいかも。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1243331279665287168"
+            target="_blank">2020/3/27 9:17:31</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ようやくuv_queue_work()が出てきた。<br/><blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="https://nikhilm.github.io/uvbook/threads.html#id1" target="_blank">Threads — An Introduction to libuv</a></header><div></div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1243341267964067840"
+            target="_blank">2020/3/27 9:57:13</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">とりあえずuvbookを読み終えた。node_sqlite3の非同期性はuv_queue_work()を使って実現してるんだなあということがわかった。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1243341860686290944"
+            target="_blank">2020/3/27 9:59:34</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">そういえばsqlite3が用意する同期オブジェクトを使ってるのをソースコード中に見かけたが、そういうわけかと納得。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1243343106642083841"
+            target="_blank">2020/3/27 10:04:31</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">そしてBatonに関してもここに書いてあった。<br/><blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="https://nikhilm.github.io/uvbook/utilities.html#passing-data-to-worker-thread" target="_blank">Utilities — An Introduction to libuv</a></header><div></div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1243344452896223232"
+            target="_blank">2020/3/27 10:09:52</a></p>
+      </header>
+      <section>
+        <p class="tweet-text"><blockquote class="card card-default"><header><img  src="http://i.cmpnet.com/ddj/digital/ddj.gif" /><a href="http://www.drdobbs.com/batons-a-sequential-synchronization-obje/184416338" target="_blank">Batons: A Sequential Synchronization Object | Dr Dobb's</a></header><div>Win32 offers a variety of synchronization primitives (mutexes, events, semaphores, etc.). None of these are convenient choices when you need to serialize a sequence of tasks, however. There's no easy way to say "block until the Nth stage of this task is complete. This article describes and implements batons, a serial synchronization primitive that solves just this class of problem.</div></blockquote></p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1212701145379946496/pSDVrvWj_normal.png" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1242384153871413248"
+            target="_blank">2020/3/24 18:33:59</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">こうして完成から遠のいていくのであった。。こういうのもう２０年以上続けてるからね。。C++をメインでいじっているときからそうだった。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1242385447570952193"
+            target="_blank">2020/3/24 18:39:07</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">C++とJSはまったく違う言語だけど、プログラミング・パラダイムという点において自由な感じ（悪く言うと節操がない）が似ている気がするし、そこが好きなところでもある。ちゅうてもC++の知識は11の手前くらいまでで止まっているので、今見るとまた違った感じを持つかもしれんけどね。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1242389202282536961"
+            target="_blank">2020/3/24 18:54:02</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ネイティブ・モジュールはC++とJSを使って作るので私にとってはとっつきやすい気もするんだよね。それやった時点でブラウザでは使えんようになってしまうんだけど。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1242390197330821120"
+            target="_blank">2020/3/24 18:58:00</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">Web SQLはバックエンドにsqliteを使ってたと思うんだけど、規格自体が終わったもんなあ。<br/><br/><blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="https://www.w3.org/TR/webdatabase/" target="_blank">Web SQL Database</a></header><div></div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1242390645488013312"
+            target="_blank">2020/3/24 18:59:47</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">これは惜しかったよねえ。。AppleとGoogleは支持したけど、MSとMozillaが不支持だったそうな。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1242390766984425472"
+            target="_blank">2020/3/24 19:00:16</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">セキュリティ的な懸念があるのか、そこまでの機能はブラウザには不要と考えたのか。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1242399868380839937"
+            target="_blank">2020/3/24 19:36:25</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">Indexed DBに取って代わられた感じなんだよな。キー・バリューストアでオブジェクトをそのまま保存できるのか。。なかなか面白い仕様ですな。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1242400649662218242"
+            target="_blank">2020/3/24 19:39:32</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ああ、そういえば一時期dexieというIndexedDBをラップしたやつも使ってみたりしてたな。<br/><br/><blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="https://dexie.org/" target="_blank">Dexie.js - Minimalistic IndexedDB Wrapper</a></header><div></div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1242400819955171329"
+            target="_blank">2020/3/24 19:40:12</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">なんのためにこれを試したんだっけかな？？</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1242417366748684288"
+            target="_blank">2020/3/24 20:45:57</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">sqlite自体をemscriptenでコンパイルしたっちゅうのもあるんだなあ。。<br/><br/><blockquote class="card card-large"><header><img  src="https://repository-images.githubusercontent.com/3556910/77d0d480-638b-11ea-849a-046869c84cfe" /><a href="https://github.com/sql-js/sql.js" target="_blank">GitHub - sql-js/sql.js: A javascript library to run SQLite on the web.</a></header><div>A javascript library to run SQLite on the web.  . Contribute to sql-js/sql.js development by creating an account on GitHub.</div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1242554584540672000"
+            target="_blank">2020/3/25 5:51:13</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">なんとなくネイティブ側でpromiseを返すことはできそうなので、ちょっとコードをまじめに読むことにした。<br/>データは暗号化したいのでnode-sqlcipherをforkしてコードを読み始めた。がまずNANを知らんので「なにこれ？」と思うことが多発。。<br/><br/><blockquote class="card card-default"><header><img  src="https://avatars0.githubusercontent.com/u/3806814?s=400&v=4" /><a href="https://github.com/sfpgmr/node-sqlcipher" target="_blank">GitHub - sfpgmr/node-sqlcipher: SQLCipher bindings for Node</a></header><div>SQLCipher bindings for Node. Contribute to sfpgmr/node-sqlcipher development by creating an account on GitHub.</div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1242555206757302272"
+            target="_blank">2020/3/25 5:53:41</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">そもそもsqlcipherのCソースを読まんといかんのでは？とも思うがとりあえずラッパーのソースを読めばNANと元ソースの雰囲気が掴めるのではという甘い期待（笑）</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1242555457522110464"
+            target="_blank">2020/3/25 5:54:41</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">まずdatabase.hを読んでNAN_METHODにぶち当たる。<br/><br/><blockquote class="card card-default"><header><img  src="https://avatars0.githubusercontent.com/u/3806814?s=400&v=4" /><a href="https://github.com/sfpgmr/node-sqlcipher/blob/master/src/database.h" target="_blank">node-sqlcipher/database.h at master · sfpgmr/node-sqlcipher · GitHub</a></header><div>SQLCipher bindings for Node. Contribute to sfpgmr/node-sqlcipher development by creating an account on GitHub.</div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1242555904857235456"
+            target="_blank">2020/3/25 5:56:27</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">NAN_METHODはソース読めばわかるだろうということで<blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="http://database.cc" target="_blank">Domain for sale</a></header><div></div></blockquote>を読んでみる。件のSerialize部分を読もうとした。メソッドはこの辺にある。<br/><br/><blockquote class="card card-default"><header><img  src="https://avatars0.githubusercontent.com/u/3806814?s=400&v=4" /><a href="https://github.com/sfpgmr/node-sqlcipher/blob/master/src/database.cc#L289" target="_blank">node-sqlcipher/database.cc at master · sfpgmr/node-sqlcipher · GitHub</a></header><div>SQLCipher bindings for Node. Contribute to sfpgmr/node-sqlcipher development by creating an account on GitHub.</div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1242556492705759232"
+            target="_blank">2020/3/25 5:58:48</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">メソッドの冒頭。いきなりinfoという変数が出現。なぜこれ定義なしでいきなり出てくるの？とおもってこれひょっとしてメンバ変数かなあ？と思ってヘッダを見直してもない。調べた結果NAN_METHODマクロに隠されていたのであった。。 https://t.co/GkQSucTmcw</p>
+        
+        <img  class="tweet-img" src="https://pbs.twimg.com/media/ET5yI0nUEAEghPY.png" />
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1242557249332994048"
+            target="_blank">2020/3/25 6:01:48</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">こう展開されるのであった。。<br/>NAN_METHOD(methodname)<br/>↓<br/>void methodname(const Nan::FunctionCallbackInfo&lt;v8::Value&gt;&amp; info);</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1242557944169824256"
+            target="_blank">2020/3/25 6:04:34</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ちゅうかネイティブ・アドオン（C++ Addon）の勉強をきちんとやれよ！とも思うが、それはおいおいやるとして。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1242558468894027776"
+            target="_blank">2020/3/25 6:06:39</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">NAN_METHODはstaticでインプリするからthisはinfoの中にあるんだなあとちょっと思った。<br/><br/>Database* db = Nan::ObjectWrap::Unwrap&lt;Database&gt;(info.This());<br/><br/>Databaseクラスのインスタンスをここで取り出しているもんね。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1242558776168738816"
+            target="_blank">2020/3/25 6:07:52</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ちらちらv8なんちゅうキーワードも出てきて、v8の端っこをいじってる感じがなんともいいねえ。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1242577549399437312"
+            target="_blank">2020/3/25 7:22:28</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">Serializeの動きは引数のcallbackを呼んで、db操作メソッドをstd::queueに溜め込み、そしてProcessでqueueからデータを取り出して実行するようだ。しかしまだ確証はない。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1242578316885811201"
+            target="_blank">2020/3/25 7:25:31</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">よくわからんのが以下の部分。<br/>TRY_CATCH_CALL(info.This(), callback, 0, NULL);<br/><blockquote class="card card-default"><header><img  src="https://avatars0.githubusercontent.com/u/3806814?s=400&v=4" /><a href="https://github.com/sfpgmr/node-sqlcipher/blob/bca45de1b893323abb4cd49bdcf4f445574312d8/src/database.cc#L297" target="_blank">node-sqlcipher/database.cc at bca45de1b893323abb4cd49bdcf4f445574312d8 · sfpgmr/node-sqlcipher · GitHub</a></header><div>SQLCipher bindings for Node. Contribute to sfpgmr/node-sqlcipher development by creating an account on GitHub.</div></blockquote><br/><br/>TRY_CATCH_CALLマクロは  Nan::MakeCallback((context), (callback), (argc), (argv))に展開される。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1242579149887172608"
+            target="_blank">2020/3/25 7:28:49</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">なんでこれがTRY_CATCH_CALLなんだろう？と思ってるところ。そしてこのマクロで展開される    Nan::MakeCallbackというのが、果たしてコールバックを作って実行までやってくれるのかなあ？と思って今調べてた。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1242579739593699328"
+            target="_blank">2020/3/25 7:31:10</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">がしかし、、。Nan::MakeCallbackはdeprecatedらしい。<br/><br/><blockquote class="card card-default"><header><img  src="https://avatars1.githubusercontent.com/u/9950313?s=400&v=4" /><a href="https://github.com/nodejs/nan/blob/master/doc/node_misc.md#nanmakecallback" target="_blank">nan/node_misc.md at master · nodejs/nan · GitHub</a></header><div>Native Abstractions for Node.js. Contribute to nodejs/nan development by creating an account on GitHub.</div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1242581686426066944"
+            target="_blank">2020/3/25 7:38:54</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">いまはAsyncResourceとAsyncResource::runInAsyncScopeを使えとある。このメソッド名を見る限りこのメソッドは引数として渡すメソッド実行してくれそうだ。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1242582333963653120"
+            target="_blank">2020/3/25 7:41:29</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">もしくはv8::Function#Call()を直接呼べとある。まあやはりここでコールバックを呼んでるのは間違いないですわな。。そうせんとコードのつじつまが合わん。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1242582714521288709"
+            target="_blank">2020/3/25 7:42:59</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">MakeCallbackという名前からは関数の実行はイメージできないわな。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1242583292206911488"
+            target="_blank">2020/3/25 7:45:17</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">そしてSerializeメソッドの301行目で<br/><br/>    db-&gt;Process();<br/><br/>を呼んでる。このメソッドの中を見てみることにする。<br/><br/><blockquote class="card card-default"><header><img  src="https://avatars0.githubusercontent.com/u/3806814?s=400&v=4" /><a href="https://github.com/sfpgmr/node-sqlcipher/blob/bca45de1b893323abb4cd49bdcf4f445574312d8/src/database.cc#L301" target="_blank">node-sqlcipher/database.cc at bca45de1b893323abb4cd49bdcf4f445574312d8 · sfpgmr/node-sqlcipher · GitHub</a></header><div>SQLCipher bindings for Node. Contribute to sfpgmr/node-sqlcipher development by creating an account on GitHub.</div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1242585300586524677"
+            target="_blank">2020/3/25 7:53:16</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">Database::Process()は31行目にあった。39-66行目までの処理はdbが開いてないのでqueueに溜まってる処理オブジェクトに対してエラーコールバックの指定があればそれを呼んでいる。<br/><br/><blockquote class="card card-default"><header><img  src="https://avatars0.githubusercontent.com/u/3806814?s=400&v=4" /><a href="https://github.com/sfpgmr/node-sqlcipher/blob/bca45de1b893323abb4cd49bdcf4f445574312d8/src/database.cc#L36" target="_blank">node-sqlcipher/database.cc at bca45de1b893323abb4cd49bdcf4f445574312d8 · sfpgmr/node-sqlcipher · GitHub</a></header><div>SQLCipher bindings for Node. Contribute to sfpgmr/node-sqlcipher development by creating an account on GitHub.</div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1242586854228017152"
+            target="_blank">2020/3/25 7:59:26</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">68-81行でqueueからCallオブジェクトを取り出し、callback()を呼んでいる。このCallオブジェクトはなんぞやと思うわけですが。それはdatabase.hに定義してあった。<br/><blockquote class="card card-default"><header><img  src="https://avatars0.githubusercontent.com/u/3806814?s=400&v=4" /><a href="https://github.com/sfpgmr/node-sqlcipher/blob/bca45de1b893323abb4cd49bdcf4f445574312d8/src/database.h#L73" target="_blank">node-sqlcipher/database.h at bca45de1b893323abb4cd49bdcf4f445574312d8 · sfpgmr/node-sqlcipher · GitHub</a></header><div>SQLCipher bindings for Node. Contribute to sfpgmr/node-sqlcipher development by creating an account on GitHub.</div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1242916895981895680"
+            target="_blank">2020/3/26 5:50:54</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">Callは<br/><br/>Work_Callback callback;<br/>bool exclusive;<br/>Baton* baton;<br/><br/>の３つのメンバを持つクラスですな。 https://t.co/DiDYc9BJJA</p>
+        
+        <img  class="tweet-img" src="https://pbs.twimg.com/media/ET-6Cm4UwAAhGKV.png" />
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1242917944591396864"
+            target="_blank">2020/3/26 5:55:04</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">Work_CallBackは*Batonを引数に持つ関数ポインタのtypedefですな。<br/><br/>typedef void (*Work_Callback)(Baton* baton);</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1242918399388217344"
+            target="_blank">2020/3/26 5:56:53</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">Work_Callbackには処理する関数へのポインタ、そしてその関数に渡すパラメータをBatonに入れてこのCallオブジェクトに格納し、さらにstd::queue&lt;Call *&gt;に格納するわけですな。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1242920143107158017"
+            target="_blank">2020/3/26 6:03:49</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">つまり Database::Process()の68-82行で行っているのはqueueから*Callを取り出し、callbackメンバに入っている関数をbatonメンバを引数に呼び出している。これをqueueが空になるか、lockedメンバがtrueでない限りループする。<br/><br/><blockquote class="card card-default"><header><img  src="https://avatars0.githubusercontent.com/u/3806814?s=400&v=4" /><a href="https://github.com/sfpgmr/node-sqlcipher/blob/bca45de1b893323abb4cd49bdcf4f445574312d8/src/database.cc#L68-L82" target="_blank">node-sqlcipher/database.cc at bca45de1b893323abb4cd49bdcf4f445574312d8 · sfpgmr/node-sqlcipher · GitHub</a></header><div>SQLCipher bindings for Node. Contribute to sfpgmr/node-sqlcipher development by creating an account on GitHub.</div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1242920644955607040"
+            target="_blank">2020/3/26 6:05:48</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">lockedメンバはDataBaseが持つメンバですな。C++はメンバへのアクセスはthisポインタ不要なんだよな。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1242920915748270080"
+            target="_blank">2020/3/26 6:06:53</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ああ、正確には「自身のメンバへのアクセスはthisポインタ不要」か。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1242934014664519680"
+            target="_blank">2020/3/26 6:58:56</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ループ中ではlockedメンバにCall::exclusiveの値が代入される。このメンバはserializeやexclusiveといったメンバの値が入るようだ。Database::serializeが呼ばれたときはserialize=trueになるので、Process中ではqueueに溜まったCallは１つしか処理されないことになるよな。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1242934930880884736"
+            target="_blank">2020/3/26 7:02:34</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">またDatabase::Parallelize()はserializeにfalseがセットされる以外はDatabase::serialize()と処理は同じ。Database::Process()でParallelize()中のDBに対する処理は同時に実行されることになる。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1242935795339497472"
+            target="_blank">2020/3/26 7:06:00</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">でこのqueueに*Callを放り込むのはどの関数かというとDatabase::Scheduleなわけですな。<br/><br/><blockquote class="card card-default"><header><img  src="https://avatars0.githubusercontent.com/u/3806814?s=400&v=4" /><a href="https://github.com/sfpgmr/node-sqlcipher/blob/bca45de1b893323abb4cd49bdcf4f445574312d8/src/database.cc#L84%E3%83%BCL108" target="_blank">node-sqlcipher/database.cc at bca45de1b893323abb4cd49bdcf4f445574312d8 · sfpgmr/node-sqlcipher · GitHub</a></header><div>SQLCipher bindings for Node. Contribute to sfpgmr/node-sqlcipher development by creating an account on GitHub.</div></blockquote> https://t.co/zDZYQnePqY</p>
+        
+        <img  class="tweet-img" src="https://pbs.twimg.com/media/ET_LhDQUcAAUTAh.jpg" />
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1242938034208649216"
+            target="_blank">2020/3/26 7:14:54</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">Database::Scheduleの87-99行目はopenがfalseそしてlocked=trueの場合データベースがクローズされているとして例外を発行するようである。EXCEPTIONマクロがまたこれが？？なやつでして。。<br/><br/><blockquote class="card card-default"><header><img  src="https://avatars0.githubusercontent.com/u/3806814?s=400&v=4" /><a href="https://github.com/sfpgmr/node-sqlcipher/blob/master/src/database.cc#L87-L99" target="_blank">node-sqlcipher/database.cc at master · sfpgmr/node-sqlcipher · GitHub</a></header><div>SQLCipher bindings for Node. Contribute to sfpgmr/node-sqlcipher development by creating an account on GitHub.</div></blockquote> https://t.co/95WbYMxrP4</p>
+        
+        <img  class="tweet-img" src="https://pbs.twimg.com/media/ET_NMJgU0AEK-_y.jpg" />
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1242938745592012801"
+            target="_blank">2020/3/26 7:17:44</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">マクロ定義を読むと、V8というかnodeの例外オブジェクトを作るマクロであることがわかる。 https://t.co/qOxTBXojSw</p>
+        
+        <img  class="tweet-img" src="https://pbs.twimg.com/media/ET_N1uMUMAEcRXV.png" />
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1242939890582470656"
+            target="_blank">2020/3/26 7:22:17</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">今回のケースだと<br/> EXCEPTION("Database is closed", SQLITE_MISUSE, exception);<br/>なので、Local&lt;Value&gt;型のexception変数とLocal&lt;Object&gt;型のexception_obj変数が作られる。Local&lt;ほにゃらら&gt;はv8(node)上のローカルスコープかなあ？と思いつつ進める。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1242940827044700161"
+            target="_blank">2020/3/26 7:26:00</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">90から97行目はSchedule()に渡されたbatonにcallbackがあればそのcallbackに対してエラーを返し、そうでなければexceptionを引数にEMIT_EVENTするとあるな。。<br/><blockquote class="card card-default"><header><img  src="https://avatars0.githubusercontent.com/u/3806814?s=400&v=4" /><a href="https://github.com/sfpgmr/node-sqlcipher/blob/master/src/database.cc#L90-L97" target="_blank">node-sqlcipher/database.cc at master · sfpgmr/node-sqlcipher · GitHub</a></header><div>SQLCipher bindings for Node. Contribute to sfpgmr/node-sqlcipher development by creating an account on GitHub.</div></blockquote> https://t.co/WhFSsM7tSJ</p>
+        
+        <img  class="tweet-img" src="https://pbs.twimg.com/media/ET_PkbuU4AAM8Xl.png" />
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1242941374766280704"
+            target="_blank">2020/3/26 7:28:11</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">このEMIT_EVENTマクロは中身みても今の時点では正直わからんなあ（笑）<br/><blockquote class="card card-default"><header><img  src="https://avatars0.githubusercontent.com/u/3806814?s=400&v=4" /><a href="https://github.com/sfpgmr/node-sqlcipher/blob/bca45de1b893323abb4cd49bdcf4f445574312d8/src/macros.h#L104-L109" target="_blank">node-sqlcipher/macros.h at bca45de1b893323abb4cd49bdcf4f445574312d8 · sfpgmr/node-sqlcipher · GitHub</a></header><div>SQLCipher bindings for Node. Contribute to sfpgmr/node-sqlcipher development by creating an account on GitHub.</div></blockquote> https://t.co/NTyKty1FMN</p>
+        
+        <img  class="tweet-img" src="https://pbs.twimg.com/media/ET_Ql1qUwAAm7Cc.png" />
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1242941833371516929"
+            target="_blank">2020/3/26 7:30:00</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">そしてようやくqueueにpushするところまで来るのだが。でまあここで全部pushするのかと思いきや違うんだなこれが。。<br/><blockquote class="card card-default"><header><img  src="https://avatars0.githubusercontent.com/u/3806814?s=400&v=4" /><a href="https://github.com/sfpgmr/node-sqlcipher/blob/master/src/database.cc#L101-L107" target="_blank">node-sqlcipher/database.cc at master · sfpgmr/node-sqlcipher · GitHub</a></header><div>SQLCipher bindings for Node. Contribute to sfpgmr/node-sqlcipher development by creating an account on GitHub.</div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1242942719426625537"
+            target="_blank">2020/3/26 7:33:31</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">openかつ（locked/exclusive/serializeがすべてfalse、もしくはpendingが0の時）はいきなりcallbackを呼んでいる。これはなぜかは現時点ではわからない。 https://t.co/w5QB7zCY8U</p>
+        
+        <img  class="tweet-img" src="https://pbs.twimg.com/media/ET_RHLsU4AE7Jh9.png" />
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1242944924883890176"
+            target="_blank">2020/3/26 7:42:17</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ちょっとDatabase::Process()に話が戻るけど、lockedにtrueがセットされるとそれがfalseにならない限りqueueに入った*Callは処理されない。lockedにfalseになるのはいつなのかというと、おそらく*Call中のcallbackの処理が終わり、コールバックするタイミングでlockedが解除されるんだろうなと推測。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1242945549688426496"
+            target="_blank">2020/3/26 7:44:46</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">*Call のexclusiveメンバがtrueである限り、Database::Process()でlockedにtrueがセットされ、*Callの処理が終わらないと解除されないので、それでDatabase::Serialize()の直列性を保証しているのだなといまいまは推測している。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1242948907337797632"
+            target="_blank">2020/3/26 7:58:07</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">と思ったが、lockedが明示的にfalseにセットされることはなかった。pendingというメンバが処理中（保留中？）を表すステータスのようである。Statementが処理されると+1され、処理が終わると-1されるようである。pendingが0だと処理されているものは何もないということかな？</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1242951004326256640"
+            target="_blank">2020/3/26 8:06:27</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ソース見てるとそろそろuv::ちゅうのがちらほら見えてきてる。。nodeはlibuv使ってるんだよなあ。。<br/><br/><blockquote class="card card-default"><header><img  src="https://avatars1.githubusercontent.com/u/4030929?s=400&v=4" /><a href="https://github.com/libuv/libuv" target="_blank">GitHub - libuv/libuv: Cross-platform asynchronous I/O</a></header><div>Cross-platform asynchronous I/O. Contribute to libuv/libuv development by creating an account on GitHub.</div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1242973221353185280"
+            target="_blank">2020/3/26 9:34:43</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">どうもBatonやらpendingやらという言葉はlibuvにちなんでるようですな。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1242973850213601280"
+            target="_blank">2020/3/26 9:37:13</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">Batonってリレーとかで使うやつだよなあ。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1242980618775883778"
+            target="_blank">2020/3/26 10:04:07</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ちゅうかやはりlibuvやnodeのネイティブアドオンの知識が皆無な状態だとこれを読み解くのは難しいよな。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1243276665767124993"
+            target="_blank">2020/3/27 5:40:30</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">libuvは非同期I/Oを実現するためのライブラリですな。そもそもnode.jsのために開発されたのか。。<br/><br/><blockquote class="card card-default"><header><img  src="https://avatars1.githubusercontent.com/u/4030929?s=400&v=4" /><a href="https://github.com/libuv/libuv" target="_blank">GitHub - libuv/libuv: Cross-platform asynchronous I/O</a></header><div>Cross-platform asynchronous I/O. Contribute to libuv/libuv development by creating an account on GitHub.</div></blockquote></p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1212701145379946496/pSDVrvWj_normal.png" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1242970841161199616"
+            target="_blank">2020/3/26 9:25:16</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">@Hoguchi373 ほとんどの言語はよくわかってないのではないでしょうか。私の場合。C言語の理解もこの程度ですし。お恥ずかしい限りですが。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1212701145379946496/pSDVrvWj_normal.png" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1242954039374966784"
+            target="_blank">2020/3/26 8:18:30</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">@Hoguchi373 文字列の終端が0というやつですね。実はあまりC言語は詳しくないんですよね。。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/790595606850834433/Us2H4d3B_normal.jpg" />
+        <p class="tweet-user-name">ワトソン@wtsnjp</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/wtsnjp/status/1242379635985268737"
+            target="_blank">2020/3/24 18:16:02</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">【リプ募集】<br/><br/>TeX 界には LaTeX3 という1990年代前半から開発が継続しているものの，未だに完成の目処すら立っていないサグラダ・ファミリア的プロジェクトがあります．このような OSS プロジェクトが他にありますか？<br/><br/>目安：<br/>・10年以上開発が継続している<br/>・一度も公式にリリースされていない</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1163429715278848006/idyXbYFw_normal.jpg" />
+        <p class="tweet-user-name">山岡 潤一 Junichi Yamaoka@jun1chi</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/jun1chi/status/1242335739561431040"
+            target="_blank">2020/3/24 15:21:36</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ZOOMで一時退席するときにばれない方法、こういうことか（事前録画をバーチャル背景） https://t.co/tXPubFJ2MP</p>
+        
+        <video class="tweet-img" controls src="https://video.twimg.com/ext_tw_video/1242335505317949441/pu/vid/1084x720/qg1I-mhb_42ZC7Bz.mp4?tag=10" />
+        
+      </section>
+      
+    </article>
+    
+  </div>
+  <footer>
+    CopyLight 2019 Satoshi Fujiwara
+  </footer>
+  <script async src="https://platform.twitter.com/widgets.js"></script>
+
+  <script async src="./index.js"></script>
+
+</body>
+
+</html>

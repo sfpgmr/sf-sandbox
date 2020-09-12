@@ -1,0 +1,30 @@
+{
+  "name": "markdown",
+  "version": "0.0.1",
+  "description": "マークダウンパーサ・レンダラを作ってみる",
+  "main": "rollup.config.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "S.F.",
+  "license": "MIT",
+  "dependencies": {
+    "autoprefixer": "^9.8.4",
+    "ava": "^3.10.1",
+    "commonmark": "^0.29.1",
+    "cssnano": "^4.1.10",
+    "ejs": "^3.1.3",
+    "electron": "^8.4.0",
+    "fs-extra": "^8.1.0",
+    "perfectionist": "^2.4.0",
+    "postcss": "^7.0.32",
+    "postcss-apply": "^0.8.0",
+    "postcss-css-variables": "^0.14.0",
+    "postcss-fail-on-warn": "^0.1.0",
+    "postcss-import": "^9.1.0",
+    "postcss-mixins": "^5.4.1",
+    "postcss-nested": "^1.0.1",
+    "postcss-preset-env": "^6.5.0",
+    "postcss-simple-vars": "^3.1.0"
+  }
+}

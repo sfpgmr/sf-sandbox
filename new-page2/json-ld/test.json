@@ -1,0 +1,139 @@
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Person",
+      "@id": "https://wp-poco.com/poco-file-configuration/#author",
+      "name": "ダイブツ",
+      "image": {
+        "@type": "ImageObject",
+        "@id": "https://wp-poco.com/poco-file-configuration/#personlogo",
+        "url": "https://wp-poco.com/wp-content/themes/poco/images/portrait.png",
+        "caption": "ダイブツ",
+        "width": 100,
+        "height": 100
+      },
+      "url": "https://habatakurikei.com/profile/",
+      "sameAs": [
+        "https://twitter.com/habatakurikei"
+      ]
+    },
+    {
+      "@type": "BreadcrumbList",
+      "@id": "https://wp-poco.com/poco-file-configuration/#breadcrumb",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "item": {
+            "@type": "WebPage",
+            "@id": "https://wp-poco.com/",
+            "url": "https://wp-poco.com/",
+            "name": "POCO"
+          }
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "item": {
+            "@type": "WebPage",
+            "@id": "https://wp-poco.com/category/learn-poco/",
+            "url": "https://wp-poco.com/category/learn-poco/",
+            "name": "POCOで学ぶWordPress"
+          }
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "item": {
+            "@type": "WebPage",
+            "@id": "https://wp-poco.com/poco-file-configuration/",
+            "url": "https://wp-poco.com/poco-file-configuration/",
+            "name": "WordPressテーマに必要なファイルとPOCOのファイル構成"
+          }
+        }
+      ]
+    },
+    {
+      "@type": "Article",
+      "@id": "https://wp-poco.com/poco-file-configuration/#article",
+      "isPartOf": {
+        "@id": "https://wp-poco.com/poco-file-configuration/#webpage"
+      },
+      "mainEntityOfPage": "https://wp-poco.com/poco-file-configuration/#webpage",
+      "headline": "WordPressテーマに必要なファイルとPOCOのファイル構成",
+      "description": "ワードプレステーマPOCOのファイル構成を説明します。長くブログ運営するために最小限の実装にしていることが特徴です。またテンプレート階層に沿ってどのファイルがどう使われているのかについて解説します。",
+      "image": {
+        "@type": "ImageObject",
+        "@id": "https://wp-poco.com/poco-file-configuration/#primaryimage",
+        "url": "https://wp-poco.com/wp-content/uploads/2019/04/poco-file-config-2.png",
+        "width": 680,
+        "height": 640
+      },
+      "datePublished": "2019-04-23T17:45:57+09:00",
+      "dateModified": "2019-04-23T17:45:57+09:00",
+      "author": {
+        "@id": "https://wp-poco.com/poco-file-configuration/#author"
+      },
+      "publisher": {
+        "@id": "https://wp-poco.com/#organization"
+      }
+    },
+    {
+      "@type": "WebPage",
+      "@id": "https://wp-poco.com/poco-file-configuration/#webpage",
+      "isPartOf": {
+        "@id": "https://wp-poco.com/#website"
+      },
+      "name": "WordPressテーマに必要なファイルとPOCOのファイル構成",
+      "url": "https://wp-poco.com/poco-file-configuration/",
+      "primaryImageOfPage": {
+        "@id": "https://wp-poco.com/poco-file-configuration/#primaryimage"
+      },
+      "breadcrumb": {
+        "@id": "https://wp-poco.com/poco-file-configuration/#breadcrumb"
+      },
+      "inLanguage": "ja-JP"
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://wp-poco.com/#website",
+      "name": "POCO",
+      "description": "漢のワードプレステーマ",
+      "url": "https://wp-poco.com/",
+      "image": {
+        "@id": "https://wp-poco.com/#siteicon"
+      },
+      "publisher": {
+        "@id": "https://wp-poco.com/#organization"
+      },
+      "potentialAction": {
+        "@type": "SearchAction",
+        "target": "https://wp-poco.com/?s={search_term_string}",
+        "query-input": "required name=search_term_string"
+      }
+    },
+    {
+      "@type": "Organization",
+      "@id": "https://wp-poco.com/#organization",
+      "name": "POCO",
+      "url": "https://wp-poco.com/",
+      "logo": {
+        "@type": "ImageObject",
+        "@id": "https://wp-poco.com/#sitelogo",
+        "url": "https://wp-poco.com/wp-content/themes/poco/images/site-logo.png",
+        "caption": "サイトロゴ",
+        "width": 280,
+        "height": 60
+      },
+      "image": {
+        "@type": "ImageObject",
+        "@id": "https://wp-poco.com/#siteicon",
+        "url": "https://wp-poco.com/wp-content/themes/poco/images/site-icon.png",
+        "caption": "サイトアイコン",
+        "width": 512,
+        "height": 512
+      }
+    }
+  ]
+}

@@ -1,0 +1,103 @@
+﻿<!DOCTYPE html>
+<html vocab="http://schema.org" lang="ja">
+<head>
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-15457703-9"></script>
+<script>
+  if (!window.location.hostname.match(/localhost/)) {
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'UA-15457703-9');
+  }
+</script>
+  <title>Three.jsによるアニメーション</title>
+
+  <meta charset="utf-8" />
+  <meta name="description" content="SVGをthree.jsのshapeに変換後、アニメーションするテスト" />
+  <meta name="keywords" content="svg,three.js" />
+  <meta name="author" content="sfpgmr" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+  <script src="https://d3js.org/d3.v5.min.js"></script>
+  <script src="https://threejs.org/build/three.min.js"></script>
+  <script src="https://threejs.org/examples/js/shaders/CopyShader.js"></script>
+  <script src="https://threejs.org/examples/js/shaders/DigitalGlitch.js"></script>
+  <script src="https://threejs.org/examples/js/shaders/DotScreenShader.js"></script>
+  <script src="https://threejs.org/examples/js/shaders/RGBShiftShader.js"></script>
+  <script src="https://threejs.org/examples/js/postprocessing/EffectComposer.js"></script>
+  <script src="https://threejs.org/examples/js/postprocessing/RenderPass.js"></script>
+  <script src="https://threejs.org/examples/js/postprocessing/MaskPass.js"></script>
+  <script src="https://threejs.org/examples/js/postprocessing/ShaderPass.js"></script>
+  <script src="https://threejs.org/examples/js/loaders/SVGLoader.js"></script>
+  <script src="https://threejs.org/examples/js/loaders/GLTFLoader.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/3.0.2/normalize.min.css" />
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+    }
+
+    #svg {
+      display: none;
+    }
+
+    #stat {
+      position: absolute;
+      color:white;
+      font-size:20px;
+    }
+    #playbutton 
+   {
+      position:absolute;
+      border:none;
+      background:none;
+      color:white;
+      font-size:50px;
+      top:0;
+      left:0;
+      height:100%;
+      width:100%;
+    }
+
+    #playbutton:hover{
+      cursor: hand;
+    }
+
+    .active {
+      opacity: 1;
+    }
+
+    .active1 {
+      animation: anime2 5s;
+      opacity: 0.0;
+      border:0;
+    }
+
+    .hidden {
+      animation: anime1 2s;
+      opacity:0.0;
+    }
+
+
+@keyframes anime1 {
+0% {opacity:1.0;}
+100% {opacity:0.0;}
+}
+
+@keyframes anime2 {
+0% {opacity:1.0;}
+80% {opacity: 1.0;}
+100% {opacity:0.0;}
+}    
+  </style>
+
+</head>
+<body>
+  <div id="stat"></div>
+  <div id="content">
+    <button id="playbutton" class="active">play</button>
+  </div>
+  <script src="./index.js"></script>
+</body>
+</html>

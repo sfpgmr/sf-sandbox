@@ -1,0 +1,149 @@
+@import "./config.css";
+
+/* common */
+@media screen {
+  .main-nav {
+    margin:0;
+    padding:0;
+    z-index:999;
+    position:fixed;
+    width:100vw;
+    top: 0;
+    left: 0;
+  }
+  .nav-items {
+    display:flex;
+    flex-direction: row;
+    padding:0;
+    margin:0;
+    list-style-type:none;
+  }
+
+  .nav-item {
+    font-size:1.25rem;
+    text-decoration:none;
+    text-align:left;
+    padding:10px;
+    color:white;
+  }
+  a.nav-item:hover {
+      color:red;
+  }
+
+  .nav-title {
+    font-size:1.25rem;
+    padding:0;
+    margin-top:auto;
+    margin-bottom:auto;
+    display: block;
+  }
+}
+
+/* for smart phone */
+@media (--smart-phone) {
+ .main-nav {
+    .nav-header {
+      display:flex;
+      height: 48px;
+      align-content:center;
+      .nav-button {
+        width: 48px;
+        height:48px;
+        text-align:center;
+        border:none;
+        background:none;
+      }
+      .nav-title {
+        font-size:1.25rem;
+        vertical-align: middle;
+        margin-top:auto;
+        margin-bottom:auto;
+      }
+
+    }
+  }
+
+
+  .nav-display-default {
+    display:none;
+  }
+
+  .nav-display-toggle {
+    display:flex;
+    flex-direction: column;
+  }      
+
+}
+
+@media (--tablet) {
+  .main-nav {
+    .nav-header {
+      display:flex;
+      height: 48px;
+      align-content:center;
+      .nav-button {
+        width: 48px;
+        svg {
+          vertical-align: middle;
+        }
+        border:none;
+        background:none;
+        display: block;
+        font-size:1.25rem;
+      }
+      .nav-title {
+        font-size:1.25rem;
+        vertical-align: middle;
+        margin-top:auto;
+        margin-bottom:auto;
+      }
+
+    }
+  }
+
+
+  .nav-display-default {
+    display:none;
+  }
+
+  .nav-display-toggle {
+    display:flex;
+    flex-direction: column;
+  }      
+
+}
+
+/* for deskctop */
+@media (--desktop) {
+  .main-nav {
+    display: flex;
+    align-items: center;
+    height:48px;
+  }
+  .nav-header {
+    color:red;
+  }
+  .nav-button {
+    display:none;
+  }
+  .nav-items {
+    align-items: center;
+    height:100%;
+    li {
+      color:white;
+    }
+    li:before
+    {
+      content:" > ";
+    }
+  }
+  .nav-display-default {
+    display:flex;
+    flex-direction: row;
+  }
+  .nav-display-toggle {
+    display:flex;
+    flex-direction: row;
+  }       
+
+}

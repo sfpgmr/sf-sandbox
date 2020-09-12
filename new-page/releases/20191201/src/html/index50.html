@@ -1,0 +1,940 @@
+<!DOCTYPE html>
+<html lang="ja" prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb# article: http://ogp.me/ns/article#">
+
+<head>
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-15457703-9"></script>
+  <script>
+    if (!location.hostname.match(/localhost/)) {
+      window.dataLayer = window.dataLayer || [];
+      function gtag() { dataLayer.push(arguments); }
+      gtag('js', new Date());
+      gtag('config', 'UA-15457703-9');
+    }
+  </script>
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>トップページをリニューアルする</title>
+  <meta name="description" content="リニューアル用のトップページデザインを考えて実装する" />
+  <meta name="keywords" content="Programming,Music,HTML5,WebGL,javascript,WebAudio" /> 	
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <meta itemprop="image" content="https://www.sfpgmr.net/img/sfweb.png" />
+  <meta itemprop="name" content="S.F. Web" />
+  
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:site" content="S.F. Web" />
+  <meta name="twitter:url" content="./index50.html" />
+  <meta name="twitter:title" content="リニューアル用のトップページデザイン" />
+  <meta name="twitter:description" content="リニューアル用のトップページデザインを考えて実装する" />
+  <meta name="twitter:image" content="https://www.sfpgmr.net/img/sfweb.png" />
+  
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="./index50.html" />
+  <meta property="og:title" content="リニューアル用のトップページデザイン"/>
+  <meta property="og:site_name" content="S.F. Web" />
+  <meta property="og:description" content="Programming,Music,HTML5,WebGL,javascript,WebAudio">
+  <meta property="og:image" content="https://www.sfpgmr.net/img/sfweb.png">
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    html {
+      margin: 0;
+      padding: 0;
+      font-size:10px;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      background: black;
+      color: white;
+    }
+
+    .top-nav {
+      position:fixed;
+      z-index:99999;
+      background: rgba(0,0,0,0.5);
+      display: block;
+      width:100%;
+      height:32px;
+      color:white;
+    }
+    #sentinel {
+      width:0px;
+      height:0px;
+    }
+    .contents {
+      padding-top:32px;
+      width: 100%;
+      position: relative;
+      content: strict;
+    }
+
+    @keyframes blinking {
+      0% {
+        color: black;
+      }
+
+      50% {
+        color: white;
+      }
+
+      100% {
+        color: black;
+      }
+    }
+
+    .loading {
+      font-family: monospace;
+      font-size: 24px;
+      position: fixed;
+      width: 100vw;
+      height: 100vh;
+      text-align: center;
+      padding-top: 50vh;
+      z-index: 32768;
+      background: black;
+      animation: blinking 2s infinite;
+      content: strict;
+    }
+
+
+    .contents > article {
+      background: #f0f0f0;
+      color: #202020;
+      position: absolute;
+      max-height: 960px;
+      overflow: auto;
+      border-radius: 3px;
+      transition: opacity 1s linear;
+      opacity: 0.0;
+    }
+
+    .tweet-header {
+      display: grid;
+      align-items: end;
+      grid-template-columns: 40px 2fr 1fr;
+      grid-template-rows: 1fr;
+      font-size: 12px;
+      font-weight: bold;
+    }
+
+
+    .tweet-img {
+      width: 100%;
+      object-fit: cover;
+    }
+
+    .youtube {
+      position: relative;
+      cursor: pointer;
+    }
+
+    .youtube > img {
+      width: 100%;
+      object-fit: cover;
+    }
+
+    .youtube > svg.player-play {
+      width:64px;
+      height:64px;
+      left:calc(50% - 32px);
+      top:calc(50% - 32px);
+      position:absolute;
+      z-index: 1000;
+      opacity: 0.5;
+    }
+    
+    .youtube:hover > svg.player-play {
+      opacity: 1.0;
+    }
+
+    .youtube:hover .player-play-1 {
+      stroke:#80808080;
+    }
+
+    
+    .youtube > div.yt-title {
+      /*text-shadow: #fff 1px 1px 0;*/
+      font-size: 1.2rem;
+      color:white;
+      background:rgba(0, 0,0,0.5);
+      position:absolute;
+      left:0;
+      top:0;
+      overflow: auto;
+      z-index:998;
+    }
+
+
+    .tweet-profile-img {
+      grid-column: 1/2;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+    }
+
+    .tweet-user-name {
+      grid-column: 2/3;
+    }
+
+    .tweet-date {
+      font-size: 8px;
+      text-align: right;
+      grid-column: 3/4;
+    }
+
+    .contents>twitter-widget {
+      overflow: auto;
+      max-height: 960px;
+      position: absolute;
+    }
+
+    .contents>article>section>.tweet-text {
+      display: block;
+      padding: 4px;
+      word-break: break-all;
+      font-size: 12px;
+    }
+
+    .contents>article>h3 {
+      font-size: 12px;
+    }
+
+    blockquote.card {
+      margin:4px;
+      padding:4px;
+      font-size:12px;
+      background:white;
+      border-radius: 4px;
+    }
+
+    blockquote.card > header {
+      display:grid;
+      grid-gap:4px;
+      gap:4px;
+    }
+
+    blockquote.card-default > header {
+      grid-template-columns:64px 1fr;
+    }
+
+    blockquote.card-large > header {
+      grid-template-columns:1fr;
+    }
+
+    blockquote.card > header > img {
+      width:100%;
+    }
+
+
+    div.no-image {
+      display: block;
+      width:64px;
+      height:64px;
+      background:gray;
+      color:white;
+      text-align: center;
+      line-height: 64px;
+    }
+
+  </style>
+</head>
+
+<body>
+  <div class="loading" id="loading">Loading</div>
+  <header class="top-nav">
+    <h1>S.F. Info.</h1>
+  </header>
+  <div class="contents" id="contents" rendersubtree="invisible skip-activation"> 
+    
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1091948257083715585"
+            target="_blank">2019/2/3 15:35:26</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ちょっとRYDEENカバーをアップデートしようかなと思ったが、リード音の音色がおかしいことに気づきちょっとこのバージョンはお蔵入りにした。もうちょっと元曲を聴き直して音色をちゃんとアップデートしてからにしよう。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1091949135576481792"
+            target="_blank">2019/2/3 15:38:56</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">1-2年ほど前だけどオーディオ・インターフェースはUR22mkIIに変えたんだけど、ヘッドフォンのモニターアウトの出力がちょっと小さいんだよなあ。。フル・ボリュームで聴いてもだいじょうぶなくらい。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1091951271584555009"
+            target="_blank">2019/2/3 15:47:25</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">それはそれとしてこの間とか今日とかYouTubeにアップしたら音量が半分くらいに落ちてしまう問題に遭遇した。2年前にアップしたのと比べるとかなり小さくなってしまう。どうもこれによってノーマライズされてしまうようなんだな。。<br/><br/><blockquote class="card card-default"><header><img loading="lazy" src="https://www.g200kg.com" /><a href="https://www.g200kg.com/archives/2015/03/youtube.html" target="_blank">YouTubeがラウドネス規格を導入したらしい | g200kg Music & Software</a></header><div></div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1091951992384118784"
+            target="_blank">2019/2/3 15:50:17</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">私の作ってるやつも全部のパートができる限り聞こえるようにと頑張ってたらどうも出力データが「海苔」のような波形になってしまったようだ。。うう。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1091954469418364930"
+            target="_blank">2019/2/3 16:00:07</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">あと今更だが、聴感上小さい音量しかなっていないようにしか聞こえないパート、今回だとライディーンの右の「タッタカタッタカ」パーカッションの音量がやたらでかい音になっちゃってたりしてるのに気づいた。これなんだけどね。<br/><br/><div class="youtube" data-type="yt" id="mkn_wAA15-k"><div class="yt-title">Youtube - Rydeenの右チャンネルのパーカッション</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/mkn_wAA15-k" class="youtube" src="https://i.ytimg.com/vi/mkn_wAA15-k/hqdefault.jpg" /></div>   <br/><br/><br/>+4.8dbとかなっちゃってる。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1091955144831320064"
+            target="_blank">2019/2/3 16:02:48</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">これなんの音量がでかいかというと重低音の音域なんだよね。多分いいヘッドフォンとかでかいスピーカーでないと聞こえない（というか圧として感じる）やつが音量を食ってしまってるんだな。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1091955492161634304"
+            target="_blank">2019/2/3 16:04:11</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">よく聴くと耳を圧迫するような音が鳴ってるような気がするんだけど、まあこのパートにはそのような役割は期待していないので、この周波数帯域はカットすべきだわな。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1091956578981269506"
+            target="_blank">2019/2/3 16:08:30</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">それでカットしたのが下なんだな。。<br/><div class="youtube" data-type="yt" id="wIFOWLCSUSA"><div class="yt-title">Youtube - Rydeenのパーカッション（右）修正後</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/wIFOWLCSUSA" class="youtube" src="https://i.ytimg.com/vi/wIFOWLCSUSA/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1091956978929217536"
+            target="_blank">2019/2/3 16:10:06</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">イコライジングはちょっといじりすぎたので違う感じの音になっちゃってますが。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1091957923582857216"
+            target="_blank">2019/2/3 16:13:51</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">で左右のパーカッションを鳴らすとまあこんな感じになるんですわ。。<br/><blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="https://www.youtube.com/watch?v=f6_P3Ye8TM8&feature=youtu.be" target="_blank">Rydeenのパーカッション（右・左） - YouTube</a></header><div></div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1091958492347260929"
+            target="_blank">2019/2/3 16:16:06</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">左のパーカッションは8分のウラだけが鳴ってるように聴こえるのだが、原盤をよく聴くとうっすら16分で小さく鳴ってる音もあると思うのでそれを再現しようとしてるんですな。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1091958699692777472"
+            target="_blank">2019/2/3 16:16:56</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ただこの音色もまだまだ手を入れなくてはいけないんですわ。。実際。。言うたら全部のパートですけどね。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1091960974192521216"
+            target="_blank">2019/2/3 16:25:58</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ライディーンのあの特徴的なシーケンスパートも難しいものの一つですわ。。これがいまいまのバージョンなんだけど。。このパートを苦悩してる割にはなかなか近づかないパートの一つなんですわ。。<br/><br/><div class="youtube" data-type="yt" id="mYoTJTmGQSc"><div class="yt-title">Youtube - Rydeen シーケンス・パート（苦悩のシーケンス）</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/mYoTJTmGQSc" class="youtube" src="https://i.ytimg.com/vi/mYoTJTmGQSc/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1091961913502650369"
+            target="_blank">2019/2/3 16:29:42</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">これはどうも本物のマルチトラックのシーケンスパートのようなんだけど。<br/><a href="https://youtu.be/IPNReZK-XIk" target="_blank">youtu.be/IPNReZK-XIk</a><br/>違いは一聴してわかるよね。裏打ちするシーケンスの音色がすごいパーカッシブで厚い音をしてるんですわ。。<br/>あとなんか妙なモタリがあるような気もするし。。聴けば聞くほどわからなくなってくる。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1091962967749419009"
+            target="_blank">2019/2/3 16:33:53</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">これはひょっとしてMC-8の特性なのかなとか勝手な想像して楽しんどるわけですよ。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1091963631737069568"
+            target="_blank">2019/2/3 16:36:32</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ただこれ多分ちょっと音が悪い気もするので、Giga Capsuleのかな？とか思うけどね。本物のマルチトラックテープを直に聴いてみたいわ。ほんとに。。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/1246875230/ryutorion_result_normal.png" />
+        <p class="tweet-user-name">M.K@ryutorion</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/ryutorion/status/1091030113481682944"
+            target="_blank">2019/2/1 2:47:04</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">HLSLでのfloat2x3はGLSLのmat3x2，とGLSLで列行の順で数を指定していたのね･･････正方行列しか使ってなかったから，気にしたことなかった</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/1150913195898310656/7k5VZqZ__normal.jpg" />
+        <p class="tweet-user-name">坂内綾花(21歳起業家)@FortuneFactory1</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/FortuneFactory1/status/1090391669634002945"
+            target="_blank">2019/1/30 8:30:07</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">昔ある経営コンサルに「席数減らしたら店外に行列できて人気店に見える。待ちスペースも狭くするように」と指導され、高齢のお客様やお子様連れも多いのでイヤだと言うと「そんな甘い考えだから儲からないんだ」と怒られたのでコンサル契約を解除したのは奈良の繁盛とんかつ店まるかつの店長さんです。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1091092926266978304"
+            target="_blank">2019/2/1 6:56:39</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">この自機のシステムいいアイデアですね。 <blockquote class="card card-default"><header><img loading="lazy" src="https://pbs.twimg.com/ext_tw_video_thumb/1090901256682401792/pu/img/2R35NOK8KHYk9mIA.jpg" /><a href="https://twitter.com/in_7010/status/1090902035552063490" target="_blank">えれのあ / Atelier Shinosさんのツイート: "最近は、こんな感じのゲームを作ってました。 まだまだ調整が足りない感じですが、一段落。… "</a></header><div>“最近は、こんな感じのゲームを作ってました。<br/>まだまだ調整が足りない感じですが、一段落。 https://t.co/A5hMhg8NuL”</div></blockquote></p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1090910423975571458"
+            target="_blank">2019/1/31 18:51:27</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">サン電子ってPCも作ってたんですね！ <blockquote class="card card-default"><header><img loading="lazy" src="https://pbs.twimg.com/profile_images/3278079864/a2bbf72808271b9bc221cefa15ddbd29_400x400.jpeg" /><a href="https://twitter.com/syntaxerrors72/status/1090788853290430465" target="_blank">なるおさんのツイート: "サン電子、今年はじめに本社をでっかいビルに移転してたのだねー。でもおなじみの江南市の社屋も残ってるみたいで良かった。いちど見に行ってみたい。https://t.co/Qup5d4CT70"</a></header><div>“サン電子、今年はじめに本社をでっかいビルに移転してたのだねー。でもおなじみの江南市の社屋も残ってるみたいで良かった。いちど見に行ってみたい。https://t.co/Qup5d4CT70”</div></blockquote></p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1090909831685271552"
+            target="_blank">2019/1/31 18:49:06</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">@syntaxerrors72 ありがとうございます。まあでもこの方でしたら個人でゲーム作って生きてけそうですよね。。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1090598107455250434"
+            target="_blank">2019/1/30 22:10:25</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">近年一番面白いというか、いわゆる「ゲーム性」っちゅうのを感じたのはこのゲームなのですわ。。レトロな感じのグラフィックもすごくいい。この2色の色使いがなんともいえない。私はSTEAMでPC版で遊んだクチですが。。 <blockquote class="card card-default"><header><img loading="lazy" src="https://pbs.twimg.com/tweet_video_thumb/DyHxbp5VAAEMI5f.jpg" /><a href="https://twitter.com/moppppin/status/1090425827777339393" target="_blank">もっぴんさんのツイート: "Downwellが明日1/31にNintendo Switchで配信開始します。足から弾を撃ちながら井戸を降りていくゲームです。ぜひ遊んでみてくださいね！よろしくお願いします。… "</a></header><div>“Downwellが明日1/31にNintendo Switchで配信開始します。足から弾を撃ちながら井戸を降りていくゲームです。ぜひ遊んでみてくださいね！よろしくお願いします。 https://t.co/EfmBkgUST8”</div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1090598241333174272"
+            target="_blank">2019/1/30 22:10:57</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">まあ、思わず買ってしまいました。これは。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1090599465931628544"
+            target="_blank">2019/1/30 22:15:49</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">こういう「ゲームとして楽しめる」デザイン力と個人的なリソースと折り合いをつけて完成させることができる「リソース管理能力」を合わせ持ってる感じが、ほんとリスペクトだよなあ。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1090599621003337728"
+            target="_blank">2019/1/30 22:16:26</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">任天堂の人になってしまったようですが。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1090717118583037952"
+            target="_blank">2019/1/31 6:03:20</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">任天堂はやめてしまったとのこと。。それはそれとして任天堂Switchって個人がゲームを発表できるようなプラットフォームになりそうなこと言ってたけど、今どうなってんだろうな。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1090717513191645184"
+            target="_blank">2019/1/31 6:04:54</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ああ、個人でも登録はできるんだな。。<br/><br/><blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="https://developer.nintendo.com/ja/home" target="_blank">Homepage - Nintendo Developer Portal</a></header><div></div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1090717773519511552"
+            target="_blank">2019/1/31 6:05:56</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">いや、でもSwitchは対象に入ってないよな。これ。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1090718893398667264"
+            target="_blank">2019/1/31 6:10:23</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">この状況は今も継続中なのかな。。<br/><blockquote class="card card-large"><header><img loading="lazy" src="https://cdn-ak.f.st-hatena.com/images/fotolife/r/rgamebox/20180605/20180605230327.png" /><a href="http://www.unitygamebox.com/entry/2018/06/05/232727" target="_blank">一個人としてswitch開発機材を購入しようとしたお話 - gamebox</a></header><div>unityを使えば、Nintendo Switchの開発もする事ができます。 unityが使えるなら俺でも開発できる！どこにだって翔べる！どこへだって行ける！という事で個人用のswitch開発機が欲しくなりました。 Switch Development Units SDEV and EDEV | WiiUbrU & SwitchbrU Forums 高いと噂のsdev(↑写真)と、安いedevの２種類の開発機材がある様です。 edevなら市販のswitchに毛が生えた程度の価格なので自分でも買えるなー、家でswitchを舐り倒してやりたいなーと考え個人的に入手する為に動きはじめました。 いざ任…</div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1090719780393312256"
+            target="_blank">2019/1/31 6:13:54</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">このまとめなかなか濃いな。。<br/><blockquote class="card card-large"><header><img loading="lazy" src="https://i0.wp.com/xn--eckybzahmsm43ab5g5336c9iug.com/wp-content/uploads/2017/04/Unreal-4.jpg?fit=939%2C530" /><a href="http://xn--eckybzahmsm43ab5g5336c9iug.com/chat/will-individuals-easily-develop-games-once-the-game-engine-develops/" target="_blank">【議論】ゲームエンジンが発達したら、個人でも簡単にゲーム開発が出来るようになるのか？ | ニンテンドースイッチ速報</a></header><div>元スレ: </div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1090720425045221377"
+            target="_blank">2019/1/31 6:16:28</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">今の段階ではまだ個人開発はできんということかな。。<br/>Switchは子供が買ったこともあってちょっと興味が出て来てる。<br/>今どきのゲームコンソールを直に触ってみたいなあと。でも任天堂のことだからある程度のハードルは課してくるんだろうなあ。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1090720976113811456"
+            target="_blank">2019/1/31 6:18:39</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">そんなこと言ってないで、とりあえず静的ブログシステムの不具合を直すか。。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1090666689132343296"
+            target="_blank">2019/1/31 2:42:56</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">@syntaxerrors72 なんと。。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1090370843677323264"
+            target="_blank">2019/1/30 7:07:21</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">昔のアーケードゲームハードはv-sync割り込み一回分の1フレーム分の処理をしてたんだよな。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1090374092337831936"
+            target="_blank">2019/1/30 7:20:16</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">でまあ、割り込みがかかったら割り込みの再入を防ぐために割り込み禁止にするので、次のv-syncまでに処理が追いつかない場合はその割り込みはスキップされるんだよね。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1090374946654580736"
+            target="_blank">2019/1/30 7:23:40</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">これがいわゆる「処理落ち」と言われるもの。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1090376667351048192"
+            target="_blank">2019/1/30 7:30:30</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">大量の敵が出た時に出現するので私のようなゲームが上手くない人にとっては嬉しかったりする。難しいシーンがスローモーションのようになるわけだからね。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1090376670907748352"
+            target="_blank">2019/1/30 7:30:31</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">この「処理落ち」対策を当時どうしてたかというと、一つのやり方としては1フレーム分の処理を分割して処理するというアプローチですわな。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1090377566370689024"
+            target="_blank">2019/1/30 7:34:04</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">1 v-syncで半分の処理を行って、次のv-syncでもう半分の処理を行うのである。こうすると敵の動きのスピードは1/2になってしまうので、移動速度は2倍にしてバランスをとるんですな。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1090378837873971200"
+            target="_blank">2019/1/30 7:39:07</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">これは実質的なフレームレートが1/30秒になるということでもある。ちょっとカクついた動きになるのがイマイチなんですなあ。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1090379284898664448"
+            target="_blank">2019/1/30 7:40:54</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">コードの最適化についてはコードの自己書き換え以外はほぼ行われてたので、そこはもう私レベルでは手をつけるところはなかったんだよねえ。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1090380242085064705"
+            target="_blank">2019/1/30 7:44:42</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">アーケードゲーム用のプログラムがコードの自己書き換えを使えないのは、コード自体をROMに収めることを想定してるから。当時のアーケードゲームの基板はRAMが極端に少なかったんだよね。4kとか8kあればいい方だった気がするな。いやもうちょっとあったかな。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1090380638220279809"
+            target="_blank">2019/1/30 7:46:17</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">そこに敵やら自機の移動情報を収めると空きもほとんどないんだよな。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1090381574225313792"
+            target="_blank">2019/1/30 7:50:00</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">とあるゲームでv-sync割り込みはスプライト用のRAMへのデータ送りだけして、それ以外の処理は割り込み外で処理するようなこともやってみたような気がするな。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1090382067550941184"
+            target="_blank">2019/1/30 7:51:57</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">まあ当時はRAMが高価だったのでコストダウンのためにできるかぎりRAMの量を減らす目的もあっだと思うなあ。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1090384641607888896"
+            target="_blank">2019/1/30 8:02:11</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">座標とキャラの番号を指定するだけで、最大128x128pxのサイズのスプライトがポコンと表示出来るようなすごいハードでしたが、それ以外の処理が追いつかないんだよな。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1090575094768779264"
+            target="_blank">2019/1/30 20:38:59</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">私が最初にかかわったCPUはHD63C09だった。これはモトローラ6809の日立版である。CMOSでクロックが3MHzだった。つまり通常の6809より1.5倍高速な代物だった。ということでいわゆるパソコンよりは速いCPUを積んではいたんだけどね。<br/><br/><blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="http://www.st.rim.or.jp/~nkomatsu/hitachi/HD6309.html" target="_blank">Hitachi HD6309</a></header><div></div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1090575653722705920"
+            target="_blank">2019/1/30 20:41:12</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">6809というのは究極の8ビットCPUと言われただけあって、やっぱりすごいんですよ。何がっていうと半分忘れたけど、思い出してみよう。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1090576352250552320"
+            target="_blank">2019/1/30 20:43:58</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">あのーこれはまあ、趣味プログラマーから「プロ」のプログラマーになってから最初に触れたCPUがということね。それまでは趣味でZ80と6809のアセンブラは理解してたんだよな。命令が両方とも簡素なので頭に入ったんだな。私のようなボンクラでもね。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1090590060636823552"
+            target="_blank">2019/1/30 21:38:27</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">だがまあ、このアセンブラを駆使してゲームを完成させることはできなかったですな。趣味プロのころは。私にとっては第一次趣味プロ時代とでも言おうか。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1090590061664526336"
+            target="_blank">2019/1/30 21:38:27</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">何が足りなかったかというと、やっぱりアルゴリズム的な知識なのかなあ。。2Dアクションゲームを作るには固定小数点の知識はまず必要だろうなあと今になって思う。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1090590062582976513"
+            target="_blank">2019/1/30 21:38:27</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">なぜかこの「固定小数点によるアバウトな小数点演算」というアイデアは全然思いつかないし、外部ソースから得ることもできなかったんだな。おそらく当時のゲームのソースコードを逆アセンブルしたりすれば知るチャンスはいくらでもあったと思うのだが。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1090590858879979521"
+            target="_blank">2019/1/30 21:41:37</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">おそらくはブレゼンハム・アルゴリズムよりもゲームを作るうえでは必要な知識だと思う。これは「プロ」のプログラマになってから得た知識の１つでもある。あとはsin/cosとatanのテーブルルックアップによる高速実装だよなあ。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1090594729228623875"
+            target="_blank">2019/1/30 21:57:00</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">それで6809のことだけど、これの何がすごかったかというと、アドレッシング・モードが豊富だったということと、乗算命令があったことなんだな。<br/>詳しくはここを読めばわかると思う。。<br/><blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="http://www.st.rim.or.jp/~nkomatsu/mc680x/MC6809.html" target="_blank">Motorola MC6809</a></header><div></div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1090594730105171968"
+            target="_blank">2019/1/30 21:57:00</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">レジスタの数はA,B,(A+Bで)D,U,X,Y,Sと少なかった。ああ、DPとかフラグ・レジスタ・PCもあったな。。この少ないレジスタ数をアドレッシング・モードが補ってた感じ。命令の直行性が高いというのもいいところだよなあ。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1090595820611588096"
+            target="_blank">2019/1/30 22:01:20</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">そういう特徴がコーディングをすごく楽にしてくれたんだと思うな。Z80もそうややこしいものではないんだけど、やっぱりちょっと癖のあるCPUである（逆にいうと可愛がり甲斐があるともいえる）。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1090595821425328128"
+            target="_blank">2019/1/30 22:01:20</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">そのせいか、かかわった期間は6809系が一番長いはずなのに、なぜか思い出すのはZ80のザイログ・ニーモニックだという不思議。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1090596648948912128"
+            target="_blank">2019/1/30 22:04:38</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">今頃発見したんだけど、63C09は日立の独自拡張が入ってたんだなあ。。<br/>16ビットアキュムレータが1個（8bitアキュムレータ2個）、Vと０というレジスタが追加されとるな。<br/><blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="http://www.st.rim.or.jp/~nkomatsu/hitachi/HD6309.html" target="_blank">Hitachi HD6309</a></header><div></div></blockquote><br/><br/>0レジスタってなんやねん。。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1090383323514327041"
+            target="_blank">2019/1/30 7:56:57</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">グラIIとグラIIIって確か開発メンバーが変わったと思うんだよな。そのせいかゲーム性がかなり変わった印象があるんだな。ちなみに私はグラIIが最高だと思ってる。。</p>
+        
+      </section>
+      
+    </article>
+    
+  </div>
+  <footer>
+    CopyLight 2019 Satoshi Fujiwara
+  </footer>
+  <script async src="https://platform.twitter.com/widgets.js"></script>
+
+  <script async src="./index.js"></script>
+
+</body>
+
+</html>

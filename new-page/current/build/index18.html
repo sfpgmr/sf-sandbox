@@ -1,0 +1,4066 @@
+<!DOCTYPE html>
+
+<html lang="ja" prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb# article: http://ogp.me/ns/article#">
+
+<head>
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-15457703-9"></script>
+  <script>
+    if (!location.hostname.match(/localhost/)) {
+      window.dataLayer = window.dataLayer || [];
+      function gtag() { dataLayer.push(arguments); }
+      gtag('js', new Date());
+      gtag('config', 'UA-15457703-9');
+    }
+  </script>
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Twitter Viewer</title>
+  <meta name="description" content="自作Twitter Viewerによる自分のつぶやきの記録。Programming,Music,HTML5,WebGL,javascript,WebAudio,Gameなど" />
+  <meta name="keywords" content="Programming,Music,HTML5,WebGL,javascript,WebAudio" /> 	
+
+  <meta itemprop="image" content="https://www.sfpgmr.net/img/sfweb.png" />
+  <meta itemprop="name" content="S.F. Web" />
+  
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:site" content="S.F. Web" />
+  <meta name="twitter:url" content="./index18.html" />
+  <meta name="twitter:title" content="Twitter Viewer" />
+  <meta name="twitter:description" content="自作Twitter Viewerによる自分のつぶやきの記録。Programming,Music,HTML5,WebGL,javascript,WebAudio,Gameなど" />
+  <meta name="twitter:image" content="https://www.sfpgmr.net/img/sfweb.png" />
+  
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="./index18.html" />
+  <meta property="og:title" content="Twitter Viewer"/>
+  <meta property="og:site_name" content="S.F. Web" />
+  <meta property="og:description" content="Programming,Music,HTML5,WebGL,javascript,WebAudio">
+  <meta property="og:image" content="https://www.sfpgmr.net/img/sfweb.png">
+
+  <style>
+  * {
+  margin: 0;
+  padding: 0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+
+html {
+  margin: 0;
+  padding: 0;
+  font-size: 10px; }
+
+body {
+  margin: 0;
+  padding-left: 8px;
+  padding-right: 8px;
+  background: black;
+  color: white; }
+
+.top-nav {
+  position: fixed;
+  z-index: 99999;
+  background: rgba(0, 0, 0, 0.5);
+  display: block;
+  width: 100%;
+  height: 32px;
+  color: white; }
+
+#sentinel {
+  width: 0px;
+  height: 0px; }
+
+.contents {
+  padding-top: 32px;
+  width: 100%;
+  position: relative;
+  content: strict; }
+
+@keyframes blinking {
+  0% {
+    color: black; }
+  50% {
+    color: white; }
+  100% {
+    color: black; } }
+
+.loading {
+  font-family: monospace;
+  font-size: 24px;
+  position: fixed;
+  width: 100vw;
+  height: 100vh;
+  text-align: center;
+  padding-top: 50vh;
+  z-index: 32768;
+  background: black;
+  animation: blinking 2s infinite;
+  content: strict; }
+
+.contents > article {
+  background: #f0f0f0;
+  color: #202020;
+  position: absolute;
+  max-height: 95vh;
+  overflow: auto;
+  border-radius: 3px;
+  /* transition: opacity 1s linear;*/
+  opacity: 1.0; }
+
+.tweet-header {
+  display: grid;
+  align-items: end;
+  grid-template-columns: 40px 2fr 1fr;
+  grid-template-rows: 1fr;
+  font-size: 12px;
+  font-weight: bold; }
+
+.tweet-img {
+  width: 100%;
+  object-fit: cover; }
+
+.youtube {
+  position: relative;
+  cursor: pointer; }
+
+.youtube > img {
+  width: 100%;
+  object-fit: cover; }
+
+.youtube > svg.player-play {
+  width: 64px;
+  height: 64px;
+  left: calc(50% - 32px);
+  top: calc(50% - 32px);
+  position: absolute;
+  z-index: 1000;
+  opacity: 0.5; }
+
+.youtube:hover > svg.player-play {
+  opacity: 1.0; }
+
+.youtube:hover .player-play-1 {
+  stroke: #80808080; }
+
+.youtube > div.yt-title {
+  /*text-shadow: #fff 1px 1px 0;*/
+  font-size: 1.2rem;
+  color: white;
+  background: rgba(0, 0, 0, 0.5);
+  position: absolute;
+  left: 0;
+  top: 0;
+  overflow: auto;
+  z-index: 998; }
+
+.tweet-profile-img {
+  grid-column: 1/2;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%; }
+
+.tweet-user-name {
+  grid-column: 2/3; }
+
+.tweet-date {
+  font-size: 8px;
+  text-align: right;
+  grid-column: 3/4; }
+
+.contents > twitter-widget {
+  overflow: auto;
+  max-height: 960px;
+  position: absolute; }
+
+.contents > article > section > .tweet-text {
+  display: block;
+  padding: 4px;
+  word-break: break-all;
+  font-size: 12px; }
+
+.contents > article > h3 {
+  font-size: 12px; }
+
+blockquote.card {
+  margin: 4px;
+  padding: 4px;
+  font-size: 12px;
+  background: white;
+  border-radius: 4px; }
+
+blockquote.card > header {
+  display: grid;
+  grid-gap: 4px;
+  gap: 4px; }
+
+blockquote.card-default > header {
+  grid-template-columns: 64px 1fr; }
+
+blockquote.card-large > header {
+  grid-template-columns: 1fr; }
+
+blockquote.card > header > img {
+  width: 100%; }
+
+div.no-image {
+  display: block;
+  width: 64px;
+  height: 64px;
+  background: gray;
+  color: white;
+  text-align: center;
+  line-height: 64px; }
+ 
+  </style>
+</head>
+
+<body>
+  <div class="loading" id="loading">Loading</div>
+  <header class="top-nav">
+    <h1>S.F. Info.</h1>
+  </header>
+  <div class="contents" id="contents" rendersubtree="invisible skip-activation"> 
+    
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1212701145379946496/pSDVrvWj_normal.png" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269613760827633666"
+            target="_blank">2020/6/7 21:54:43</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">@syntaxerrors72 実現したのですね！</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1212701145379946496/pSDVrvWj_normal.png" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269604109843234816"
+            target="_blank">2020/6/7 21:16:22</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">とりあえず終わったあああ！！<br/><br/><blockquote class="card card-default"><header><img  src="https://pimg.togetter.com/small_light(sx=0.0p,sy=14.7p,sw=100.0p,sh=70.0p,dw=1212.0,dh=636.3,cw=1200.0,ch=630.0,p=default,da=l,ds=s)/d1c1d2b1a95d2ec1062041c4945eed4ea07291c2/68747470733a2f2f692e7974696d672e636f6d2f76692f395f475238734c38386a412f687164656661756c742e6a7067" /><a href="https://togetter.com/li/1537668" target="_blank">ゲーム開発の思い出 - Togetter</a></header><div>3年ほどアーケード・ゲーム開発をしてた時の思い出話です。30年以上前の話です。加齢による忘却の前に記録しておこうと（笑）</div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269605437730459649"
+            target="_blank">2020/6/7 21:21:39</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">短い期間でしたが、濃密な3年間を過ごさせていただきました。関係する皆様、当時はお世話になりました。というかご迷惑をおかけしました。。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1212701145379946496/pSDVrvWj_normal.png" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1268843470929555458"
+            target="_blank">2020/6/5 18:53:52</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ここ半年くらいはゲームやってないなあと思ってSteam開いたら。。やっとるがな！！ https://t.co/NFOrWd2mJo</p>
+        
+        <img  class="tweet-img" src="https://pbs.twimg.com/media/EZvWZxaU0AAY32A.jpg" />
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1268843621710622720"
+            target="_blank">2020/6/5 18:54:28</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">あれ、こんなにDoomやってたかなあと思う。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1268843851625594881"
+            target="_blank">2020/6/5 18:55:22</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ララ・クロフトは無料だったからあわててDLしただけでやってないとは思うけどな。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1268844129573691392"
+            target="_blank">2020/6/5 18:56:29</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">Half Lifeは確かにやった。このゲームは何度クリアしてもまたやりたくなるんだよなあ。。EASYでクリアしといて何言ってんだか。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1268844320955629568"
+            target="_blank">2020/6/5 18:57:14</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">やっぱりHalf Lifeが一番好きなのかもしれんねぇ。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1268845253781381120"
+            target="_blank">2020/6/5 19:00:57</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">グラⅡとかR-TYPEとかもSTEAMで購入した。ちょこっとだけやるねえ。。グラⅢはあんまりというか持ってないし、ゲーセンでもやったけどやっぱり開発してるチームが違うからゲーム性が微妙に異なるんだよなあ、グラⅡと。やっぱり違うんだよな。同じメーカーでも作るチームが違うとね。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1268846026091192320"
+            target="_blank">2020/6/5 19:04:01</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">これはもう好みの問題で、どちらが面白いとか面白くないとか、そんなのではないけどね。私はグラⅡが好みだというだけ。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1268846282002452481"
+            target="_blank">2020/6/5 19:05:02</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">沙羅曼蛇とライフフォース。どっちが好きかというとライフフォースだったりする（笑）</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1268847146905661443"
+            target="_blank">2020/6/5 19:08:28</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">グラⅡのロケテストでたまたまかち合って、自分のゲームそっちのけでグラⅡのインカムを上げてしまった記憶もあるような（笑）。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1268848196865847296"
+            target="_blank">2020/6/5 19:12:38</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">MSX版のグラディウス・沙羅曼蛇・グラ３もやってるよなあ。確か。どれだけ好きなんだ（笑）</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1268848797993414657"
+            target="_blank">2020/6/5 19:15:02</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">そしてファミコンのグラ２もね。名作ですよ。FCであんな表現とゲーム性に迫れるのはやっぱりコナミパワーだよな。。もうどれだけこのゲームのせいで自分のゲームの開発時間を削られたことか（笑）</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1268853967603167233"
+            target="_blank">2020/6/5 19:35:34</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">追い打ちをかけるようにR-TYPEが登場するわけですよ。これとイメージ・ファイトでほぼ100%私の休憩時間が占領されてしまってた。R-TYPEは時期的には当時でもリリースして1年くらいは経ってた思うけど、研究用に会社が基板を買ったんだよな。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1268854394226761728"
+            target="_blank">2020/6/5 19:37:16</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">イメージ・ファイトもあの1面のリング状の弾を撃ってくるボスに衝撃を受けましたわ。そして敵の固いこと（笑）。このゲームのせいで整体で肩をほぐしてもらってた記憶も（笑）。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1268855043869913089"
+            target="_blank">2020/6/5 19:39:51</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">そういう研究用のゲームというのがいろいろある評価室というのもあってですな。飛翔鮫とか、スト２とかもうそりゃ終電近くまで会社に残ってやってた記憶もあるわ（笑）</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1268855546171408388"
+            target="_blank">2020/6/5 19:41:51</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">バグ出しみたいな作業も若手はやらされるんだけど、喜々としてやってましたわ。開発するより面白いんで（笑）</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1268855989966475265"
+            target="_blank">2020/6/5 19:43:36</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">20代前半は公私ともにゲームに費やされて時間は相当なものでしたな。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1268862277454753792"
+            target="_blank">2020/6/5 20:08:35</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">私は高校生のときにMZ-700を購入して、ベーマガやI/Oのゲームを打ち込んでプログラムを覚え、さらにマシン語（笑）を覚えてゲームを作ろうと思ったけどできない感じの凡人であった。当時はベーマガやI/Oに投稿するレベルより以下の、私のような人がたくさんいたのではないかなと思ったりする。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1268862880620806144"
+            target="_blank">2020/6/5 20:10:59</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">当時の記憶をたどると、ベーマガはミニゲーム、I/Oは本格的なプログラムといったすみわけがなされてたような気もする。I/Oのほうが記事のレベルも高かった気もするね。ベーマガは途中からゲーム雑誌の様相も呈してきたよね。両方とも好きな雑誌ですが。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1268863834388742145"
+            target="_blank">2020/6/5 20:14:47</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">I/Oのほうがプログラムが長くて入力がたいへん。アセンブラベースのゲームとかは16進数で入力ツールを使う。ソースコードにチェックサムがついていて、それと入力ツールが計算するチェックサムと比較するんだよね。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1268864792795557888"
+            target="_blank">2020/6/5 20:18:35</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">Oh!MZなんかもそういう長いソースコードが載ってた記憶もあるなあ。いくつかは打ち込んだはず。つらいんだよねえ。この作業。しかしゲームをやりたい一心でそこは耐えると（笑）</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1268865520033361924"
+            target="_blank">2020/6/5 20:21:29</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">そんなことしてるうちに、Z-80のニーモニックを覚えてハンドアセンブルできるようになり、モニターから打ち込んでBASICからCALLできるようになったりしたんだよね。あとはBIOSコールしたりとかね。BIOSって言ってたよなあ。FM-7だったか。この用語。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1268866875355656192"
+            target="_blank">2020/6/5 20:26:52</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">そしてあの80x50ドットのグラフィックを使用してなんとかミサイル・コマンドもどきのようなゲームを作ることができたんだよな。これはWICSという言語を使用した。いやーこの言語はすごかったですよ。安いし速い（笑）</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1268867526710005760"
+            target="_blank">2020/6/5 20:29:27</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">これでまあ私はイケる！！と思ったんだな（笑）。次に取り組んだのは確かゼビウスもどきの縦スクロールシューティングですよ。MZ-700って40x25のキャラクタそれぞれの背景と文字に別々の色をつけることができたんですよね。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1268867946589204482"
+            target="_blank">2020/6/5 20:31:07</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">これは40x25ドットのグラフィックスプレーンが2枚あると思えなくもないわけ。ふつう思わないが（笑）</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1268869358165479424"
+            target="_blank">2020/6/5 20:36:44</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">そしてスクロールする背景は40x25の背景色で書いて、ゲームキャラクタはさすがに40x25では難しいと思ったので80x50のセミグラで構成した。このアイデアは当時画期的と思ったんだよな。でも私はゲームを作るために必要な数学的知識が足りなかった。三角関数とベクトルですわ。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1268869516663992320"
+            target="_blank">2020/6/5 20:37:21</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">いや、習ってるはずなんだけど（笑）</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1268869884026314752"
+            target="_blank">2020/6/5 20:38:49</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">いやそれは知ってたかもしれない。が、そういう高級な関数は浮動小数点ベースなので、とてもじゃないが当時ゲーム使うには重すぎて話にならんかったんだよね。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1268870067577483264"
+            target="_blank">2020/6/5 20:39:33</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">当時知らないといけなかったのは固定少数点という考え方ですよ。これがなかった。これを知ったのは実はゲーム会社に入ってから。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1268872045980348416"
+            target="_blank">2020/6/5 20:47:24</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">そしてsin/cosのテーブル化とarctanによる角度計算。これがないとシューティングゲームって作れない。しかし身近にいろいろゲームがあったから、それを解析すれば分かったことかもしれんけどね。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1268872272166547456"
+            target="_blank">2020/6/5 20:48:18</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">まあそこが凡人の凡人たるところかもしれんねぇ。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1268872759091662851"
+            target="_blank">2020/6/5 20:50:14</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ただ知識としてもってたのはDDAというやつで。これ使うと線分が隙間なく描画できるんだよね。これ知ってたのでミサイルコマンドもどきが作れたんだよね。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1268873251628871680"
+            target="_blank">2020/6/5 20:52:12</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">あと吉村さんという方がOh!MZに寄稿した記事ね。スキャンライン・コンバージョンとかいうポリゴン塗りつぶしアルゴリズムですよ。これは私が作ってたゲームとは直接関係ないけどね（笑）</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1268873996398768128"
+            target="_blank">2020/6/5 20:55:09</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">まあしかしキャラクタ画面を40ｘ25ドットのグラフィックに見たててゲームとして成立させた人ってのはいるわけで。古旗さんっていう人なんですけどね。お会いしたことはもちろんございませんが（笑）<br/><div class="youtube" data-type="yt" id="cs-4Zu0DN2g"><div class="yt-title">Youtube - MZ-700版スペースハリアー</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img  data-href="https://youtu.be/cs-4Zu0DN2g" class="youtube" src="https://i.ytimg.com/vi/cs-4Zu0DN2g/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1268874162388393984"
+            target="_blank">2020/6/5 20:55:49</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">こういうの見ると挫折するよね。力量の差が明確にゲームに出る。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1268874592161984514"
+            target="_blank">2020/6/5 20:57:31</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">2次関数でテラジの動きをまねることができて喜んでたこともあったなあ。でも動きは飛び飛びだけどね（笑）</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1268875172351668224"
+            target="_blank">2020/6/5 20:59:50</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">まあそんなこんなでFM77ｰAVも購入して6809のアセンブラも覚え、ゲーム会社に滑り込んだわけですが。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1268875981143412745"
+            target="_blank">2020/6/5 21:03:03</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">私はそのゲーム会社に中途採用で入社した。その会社はアーケード・ゲームやファミコンのゲームを作っている会社でね。私はアーケード・ゲーム（いわゆるゲーセン）の課に配属となった。新入社員だと研修があったようなんだけど、入社した時はなかった。後で入ってきた新入社員と一緒に研修は受けたな</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1268876536209223680"
+            target="_blank">2020/6/5 21:05:15</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">プログラム知識はあるということで、いきなりゲームのプログラム・リストの束と基板を渡されて、勉強するように言い渡された。当時はラインプリンタに両端に穴の開いたプリンタ用紙で、5センチくらいの厚さがあったかなあ。。そういうのを読みながらICE使って動きを覚えるんだよね。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1268877117002903556"
+            target="_blank">2020/6/5 21:07:33</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">一応ソースコードにはコメント書いてあって、それを紐解きながらICEでステップ実行して勉強していく感じだったな。ICEはHP-64000というやつ。ICEもその会社で初めて見た。こんなすごいの使ってゲーム作るんだ。ほんと感動したよ。最初。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1268877541135114242"
+            target="_blank">2020/6/5 21:09:15</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ICEというのはいわゆるデバッガですよ。CPUのソケットにプローブを差し込んで、ICEがCPUの動きをまねるわけですな。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1268877911043346432"
+            target="_blank">2020/6/5 21:10:43</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">そしてまあHDDや本体は空調が効いたマシンルームのようなスペースに置いてあったな。漬物石みたいな形をしてるんだよね。当時のHDDってね。。それも生まれて初めて見た。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1268878522308628480"
+            target="_blank">2020/6/5 21:13:08</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ゲーム基板って、RAMが極端に少ない。16Kとか4Kとかそんな感じだった。プログラムはROMに置くから、ワークエリア分のRAMだけでいいんだよね。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1268879493625593856"
+            target="_blank">2020/6/5 21:17:00</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ROMは製品版はマスクROMというやつなんだけど、開発途中は頻繁に中身の更新が発生するからEEPROMを使用してた。EEPROMを消去するための紫外線照射するスペースもあった。EEPROMは主にグラフィックデータのやり取りで使ってたよね。USBメモリのイメージだな。プログラム自体はICE側で保存してた。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1268880225229615108"
+            target="_blank">2020/6/5 21:19:55</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">その会社ではペンタブのようなデバイスでドット絵を描く自社開発のエディタがあって、それでドット絵を描くと最終的にEEPROMに焼くことができた。それをプログラマに渡すか自分で基板に指してキャラクタを動かしてもらって動きを確認してたんだよね。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1268880327843344384"
+            target="_blank">2020/6/5 21:20:19</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">いや、昔はライト・ペンっていってたような気がするな。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1268881387802656770"
+            target="_blank">2020/6/5 21:24:32</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">その会社はゲームの企画部門はひょっとしたらあったのかもしれないが、あってもごくごく大まかなコンセプトだけで、あとは数人のプログラマ・グラフィックデザイナでチームを組んでゲームの内容を考えていたね。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1268881758860107776"
+            target="_blank">2020/6/5 21:26:00</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">プログラマの裁量も大きくて、キャラクタのイメージなんかも主導してグラフィック・デザイナーに伝えてつくってもらうこともできたように思う。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1268882211610099714"
+            target="_blank">2020/6/5 21:27:48</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ハードウェアは幾つかのゲームで再利用されるものなので、ハードウェア・エンジニアと接することは少ない。サウンド・エンジニアも最初のゲーム・デザインのところでは登場せず、ゲームの製作に中盤から終盤に差し掛かったところで登場してきて、ゲームに合う音楽を制作する感じだった。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1268882584039075840"
+            target="_blank">2020/6/5 21:29:17</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ただ私が最初チームとして参加したゲームはそのゲーム基板を使って作る最初のゲームだったので、ハードウェア・エンジニアとはそこそこ会話した記憶がある。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1268882943042191362"
+            target="_blank">2020/6/5 21:30:42</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">入社した当初は開発の終了した基板で勉強を続けてきたわけだけど、ようやく本格的にゲームを作るフェーズに入ったわけ。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1268883441841344512"
+            target="_blank">2020/6/5 21:32:41</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">そしてゲームの製作に入るわけだけど、その基板はまだ開発中で手元にないので、取り急ぎ別の基板を使って開発を開始した。最初はメインのプログラマの人が、メインプログラムというのを作るんだよね。これはまあOSみたいな立ち位置のプログラム。ジョイ・スティックやボタンのI/Oとかね。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1268883857559834624"
+            target="_blank">2020/6/5 21:34:21</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">もちろんスプライトや背景BGとかのI/Oとかね。ゲーム基板の特徴的なところとしてはコイン・カウンタのI/Oとかね。ここ結構重要。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1268884614916931584"
+            target="_blank">2020/6/5 21:37:21</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">あとはテスト・プログラムとかランキングとかね。ランキングはチームの別のプログラマがやっていたな。ちなみにプログラマの構成はメイン一人、サブ2人。私はサブの1人だった。もう１人のサブ（新人）のプログラミングを指導しながら、自分のプログラムも作る役割。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1268885160482574337"
+            target="_blank">2020/6/5 21:39:31</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ちゅうか私もお初のゲームだから新人みたいなもんだが、悲しいかな中途採用で3か月ほど早く入社したし、CPUの知識もあったから4月入社の同じ課の新人数人にプログラムの指導をする役割を任されてしまった。それはプレッシャーでしたな。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1268885660984676353"
+            target="_blank">2020/6/5 21:41:30</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ただそのころには、ソースコード読んだおかげで三角関数のテーブル化やarctanによる方向検知、固定小数点演算の知識を吸収することができた。それをまたすぐ新人に伝えるわけですよ。自転車操業ですな（笑）</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1268886956068319232"
+            target="_blank">2020/6/5 21:46:39</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">新人さんは自機とボス、私は雑魚敵の動きおよび中ボス、ボスあたりの動きを担当した。まあこの新人さんというのが特徴的な子でね。なかなか奇抜なアイデアの持ち主で、ほぼこの子のキャラでこのゲームのイメージがきまってしまったくらい。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1268887896099938304"
+            target="_blank">2020/6/5 21:50:23</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">グラフィックは名作中の名作のグラフィックを担当した主任、中堅の先輩、そしてうちの嫁（笑）が担当。当時は嫁さんになるとは思わんかったが、人生というのはわからんもんですな。。嫁も新卒採用の新人だったが、グラフィックには非凡なものがあったなあ。私に比べれば雲泥の差ですわ。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1268888822151999488"
+            target="_blank">2020/6/5 21:54:04</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">まあこの名作中の名作のグラフィックを担当した主任というのが、メタリックな質感を持ち込んでゲームにしてはかなりリアリティのあるキャラクタを作る人で、そりゃもう受け取る私はプレッシャーですよ。ほんと。キャラに負けない動きを作らんといかん。作れませんでしたが（笑）</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1268890425055535104"
+            target="_blank">2020/6/5 22:00:26</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">そうこうしているうちに、ゲーム基板の試作品が来た。ブレッド・ボードと呼んでいたね。これがまた巨大なもので、畳半畳ほどの多層の基板で、ワイヤーラッピングされた手作り感漂う代物だった。なんかチップに集積される前ってこういう感じらしいね。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1268891328819064838"
+            target="_blank">2020/6/5 22:04:02</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">これを恐る恐るICEの横に数人がかりで運んで設置するわけ。なかなか大変作業。そしてメイン・プログラマがメインを作り始めるわけ。なんかやっぱりハードウェアもバグのようなものがあるらしく、エンジニアが来てラッピングしなおしたりしてたような気もする。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1268891794915291137"
+            target="_blank">2020/6/5 22:05:53</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">この基板は当時にしては珍しいHW回転機能を持つBGを持っていた。さらにスプライトも回転・拡大・縮小が可能、1キャラクタの大きさも128x128まで可能というとんでもない代物だった。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1268892289926959105"
+            target="_blank">2020/6/5 22:07:51</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">音源はYM2151とDA（サンプリング）が2CHのステレオくらいだったかなあ。まあでもかなりリッチな音が出たと思う。当時にしては。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1268893047112122368"
+            target="_blank">2020/6/5 22:10:51</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">シンセおたくの血が騒ぎますな。BGMを担当した人は相当ゲーム・ミュージック界では有名な人だった。当時は知らんかったが。その後このゲームは「BGMだけはすごい」と言われるようになる（笑）</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1268893628300050432"
+            target="_blank">2020/6/5 22:13:10</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">そうして本格的にゲームつくりが始まったわけだが、その前に企画書というのをチームでまとめなければならない。これは主にメイン・プログラマとメインのデザイナーあたりが中心になって、MTGで内容を決めていたよな気もするが、なぜかこのあたりの記憶が希薄で思い出せないんだよな。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1268894724653322241"
+            target="_blank">2020/6/5 22:17:31</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">私は新しい基板で雑魚敵の移動の仕組みを作り始めた。その仕組みというのはスピードXXでYYだけ移動して、そこで弾を売ったら右に離脱みたいなフローをデータにするとそれに沿って動くような感じのものだった。そしてこれを完成させるころに体調を崩してしまった。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1268895639972114432"
+            target="_blank">2020/6/5 22:21:10</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">そして体調を崩している間は、これまた某コミカルシューティングをヒットさせた上司が代わりに雑魚敵の配置をやってくれていた。1週間ほど休んで復帰して戻った時にはほぼ雑魚敵の動きはできていて、コツみたいなものも私に教えてくれた。これは目から鱗だったな。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1268896680746741760"
+            target="_blank">2020/6/5 22:25:18</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">私はarctanによる方向検知を知ってうれしすぎて、これを使用した追尾弾を発射する敵を量産した。結果各ステージのあちこちで粘着気味な追尾弾が登場することとなった（笑）</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1268897580127117313"
+            target="_blank">2020/6/5 22:28:52</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">そういう感じで日々勉強・吸収しながら作っていったので当然粗さやバグも少し目立つものになった。その中でちょっとまずいと思ったのは当たり判定だった。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1268898146609819648"
+            target="_blank">2020/6/5 22:31:07</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">当時は自機のショットもかなり高速なのがトレンドであったので、敵をすり抜けるようなケースが出てきた。弾の1フレームあたりの移動距離が大きすぎてすり抜けてしまうのである。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1268898866734133248"
+            target="_blank">2020/6/5 22:33:59</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">これを解消するには自機弾の1フレームの移動距離を自機弾の当たり範囲に加えればい。こうするとすり抜けは発生しない。当時のこのことが思い浮かばなかった。どうしたかというと敵の当たり範囲を大きくした（笑）</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1268899337058172929"
+            target="_blank">2020/6/5 22:35:51</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">敵の当たり範囲を大きくすると自機が当たっていないように見える（実際当たっていない）のに死んでしまうということが起こってしまう。そこでどうしたかというと自機のあたり範囲を小さくした（笑）</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1268900322946117632"
+            target="_blank">2020/6/5 22:39:46</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">R-TYPEは自機の当たり範囲が 1x1 pixelだというのは有名な話だが、あれはきちんとゲームデザインを考えての結果だと思う。私の場合は突然死を防ぐためにやった（笑）</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1268901232304742401"
+            target="_blank">2020/6/5 22:43:23</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">その独特な当たり判定は結果的に功を奏するはずもなく（笑）、「突然死がちょくちょく発生するゲーム」という汚名を着せられることになるのである（笑）</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1268997246088966145"
+            target="_blank">2020/6/6 5:04:54</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">こういう基本的なところにぬかりというか稚拙な部分があると、ゲーム内容に矛盾というかおかしなところが出てきて、その辻褄を合わせるためにまたおかしな工夫をしてしまうような感じになるよね。どんどんゲームとはおかしく、つまらなくなっていってしまう。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1268998206093811712"
+            target="_blank">2020/6/6 5:08:43</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">グラフィックやサウンドやブランド力である程度の量は流通するし、実際この１作目のゲームも結果としてはまあまあだった。でもやっぱりねえ、そういう詰めの甘さを作品に残すというのはねえ。ちょっと後悔するよねえ。今でも。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269023502180298752"
+            target="_blank">2020/6/6 6:49:14</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ゲーム・プロジェクトの開発期間やリリース日程は決まっている。よって時間との戦いがある。自分の能力や知識以上のことをやるためには学習・トレーニングに時間を費やす必要がある。その間も刻々とリリース日が迫ってくる。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269024757787226112"
+            target="_blank">2020/6/6 6:54:14</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">現状とあるべき姿とのギャップが発生して、「現状はここまで」というところで落ち着くんだけど、それはそのままゲームの品質に反映されてしまう。良ゲームを出すクリエイターの方たちはその点が平均して高い位置にあるんだよな。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269025543602593792"
+            target="_blank">2020/6/6 6:57:21</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">まあそういうわけで締め切りギリギリまで粘るんだけど、やっぱり取り切れないバグも出るし、2日くらい睡眠時間がほぼない生活をすると「もうこれでいいかな..」となってしまうんだよなぁ。「些細なバグをとるか」「面白い要素を一つでも入れ込むか」の二択を迫られたら、私は後者を選んでしまう。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269025858934632448"
+            target="_blank">2020/6/6 6:58:36</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">あとは持て余すほどのグラフィック能力を生かすのが難しかったということもあったなあ。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269026617046609920"
+            target="_blank">2020/6/6 7:01:37</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">私の能力がヘボいというのは認めるとして。当時のゲーム基板はグラフィック能力に比してそれを制御するCPU側の非力な面が目立ったということ。今もそういう状況なのかもしれんが。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269027167431606274"
+            target="_blank">2020/6/6 7:03:48</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">メモリという観点でもそうかなあ。その能力を生かすにはかなりのROMが必要だったんだけど、全然足りなくてね。例えば大きなスプライトをバンバン使いたいんだけどメモリの関係で我慢せざるを得なくなったりとかね。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269027548538626048"
+            target="_blank">2020/6/6 7:05:19</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">最後の方になってくると「それはいいと思うけど、もうオブジェ（スプライト）を収めるメモリがないんだよなあ。。」とかなって、パレットを変えて違う敵に見せたりとかしてたね。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269028513018810368"
+            target="_blank">2020/6/6 7:09:09</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ある時評価室にセガのアフターバーナーが入ってきて。このゲーム、ポリゴンではなくてスプライトの拡大縮小で３Dを表現するというもので。当時はまだポリゴンベースのゲームはまったくなかった時代。ポリゴンベースなやつはおそらくナムコのウィニング・ランだったと思うが、それはかなり後。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269029872082419712"
+            target="_blank">2020/6/6 7:14:33</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">このゲームはどうなっているんだというくらいたくさんのスプライトを使って3D画面を構成する。ビルボード・３Dグラフィックスの極みともいえる（笑）この路線は「アウト・ラン」とか「スペース・ハリアー」とかその流れですわな。フレーム・バッファ方式とかいってたっけかなあ。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269032646056673282"
+            target="_blank">2020/6/6 7:25:34</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">画面見てスプライトの座標計算は3Dでやって、スプライトの優先はZ座標でやるのかなあと思ったね。それにしてもむちゃくちゃスプライト出るなあという。むむう。これはすごいと。しかしキャラクタ１つ1つ見ると意外にメモリで苦労してるのかなあ。。と思ったね。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269033333918363649"
+            target="_blank">2020/6/6 7:28:18</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">これがそのアフターバーナーの基板のスペックらしいんだけど。1987/7リリースかあ。まあそれくらいの時期ですわ。確かに。CPUは日立の68000のカスタム版かあ。。<br/><blockquote class="card card-default"><header><img  src="https://segaretro.org/skins/foreground/assets/img/segaretro_logo.png" /><a href="https://segaretro.org/Sega_X_Board" target="_blank">Sega X Board</a></header><div></div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269041758802829312"
+            target="_blank">2020/6/6 8:01:47</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">こういうCPUのカスタム化というのも大手メーカーではわりと普通にやってた気もする。私が制作に参加したゲームもCPUは6809のクローンの日立の6309というCPUのさらにカスタム版だった。主にこれはコピー・プロテクトの意味合いが大きかったらしい。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269042171824357376"
+            target="_blank">2020/6/6 8:03:26</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">日立の6309というCPUはクロック周波数が3MHzで、6809のCMOS版という位置づけ。カスタム命令も入っている。でもまあ「高速な6809」という位置づけで使ってたわね。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269043135973212160"
+            target="_blank">2020/6/6 8:07:15</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">最初のころのカスタムＣＰＵというのはインストラクションのバイナリコードを１：１で置換するような感じだったと思う。そうすればＲＯＭを吸い出しただけではコピーできないものね。ＣＰＵのクローンも作らないといけないから。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269043740934459394"
+            target="_blank">2020/6/6 8:09:40</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">これにクロック・アップとかMMUとかを付加するような感じで徐々に拡張されていったかもしれんね。私のころはカスタムＣＰＵのデバッガがなかったので、最後の最後まで6309（ICE)で作って、マスターを作るときにカスタムCPUのバイナリに置換する感じだったね。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269046339922391040"
+            target="_blank">2020/6/6 8:19:59</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">X Boardのスペック見てるけどやっぱりすごいわ。まずCPU。68000と日立の68000クローンのデュアルだよね。クロック12.5Mhzかあ。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269046883839688704"
+            target="_blank">2020/6/6 8:22:09</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">サウンドCPUはZ80。当時のゲーム基板って、サウンドは別CPUでZ80でドライブってのが多かったのかなぁ。私が関わってたゲームも大半はそうでしたな。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269047613640208384"
+            target="_blank">2020/6/6 8:25:03</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">オーディオはYM2151とDA（サンプリング音源）ですな。当時としては普通の構成っぽく見えるけど、DAのチャンネル数がすごいな。16CHですよ。これ。16ポリっちゅうことですわな。あっても2CHぐらいが普通だったよなあ。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269048891573334016"
+            target="_blank">2020/6/6 8:30:08</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">RAMの容量も大きい。プログラムで使えるのは148KB。これ少なく見えるけど、当時は多くて16KBとかだったからね（笑）。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269049329525772289"
+            target="_blank">2020/6/6 8:31:52</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">つまり一時ワークやスタック用しかメモリは確保してなくて、プログラム本体はすべてROMに置くんだよね。よってPCのゲームなどでよく見られた、プログラムの自己書き換えなどのテクニックは使えない。使わんでもいいけどね（笑）。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269050271717445632"
+            target="_blank">2020/6/6 8:35:37</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">RAMはトータルで802KBだけど、大半はスプライトのフレームバッファ用メモリなんだな。デュアルだとすると裏で書いてフリップする感じなのかな。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269050739311038464"
+            target="_blank">2020/6/6 8:37:28</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ROMも3MB程度まで可能と。こりゃすごいわ。68000のアドレス空間は16MBだからまだ余裕あるけどね。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269051787299807232"
+            target="_blank">2020/6/6 8:41:38</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">時代を感じさせるのはピクセル数だよな。320×224pixelだもんね。解像度上げるとメモリが半端なく必要になるからね。メモリが高価だったのもあるだろうし、この辺が妥協点だったんだろうな。当時の。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269053179972382721"
+            target="_blank">2020/6/6 8:47:10</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">カラーパレットも9万色かあ。1つのカラーパレットが15ビットRGBと1ビットがシャドウ＆ハイライトってなってるね。RGBが5ビットずつということか。パレットカラー方式も当時普通だったね。表示されるピクセルは指定したパレット番号でパレットデータを呼び出してその色を表示する仕組み。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269053657191870466"
+            target="_blank">2020/6/6 8:49:04</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ただ15ビットカラーだというのがすごいね。でも1つのスプライトに使用できるのはそのうちの16個になるんだね。そうするとスプライトピクセルのビット数は4になるのかね。多分スプライト制御用のメモリでパレットのバンク指定するんだろうな。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/naonori_msx/status/1269054031776804864"
+            target="_blank">2020/6/6 8:50:33</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">@SFPGMR バーナーの基板、回転機能が無いので回転パターンでかなり容量使うことになりますよね…</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269057798769270784"
+            target="_blank">2020/6/6 9:05:31</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ちなみに私が制作に参加したゲームの基板はVRAMは回転したが、スプライトは回転しなかったね。反転機能はあったと思う。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269058538954842112"
+            target="_blank">2020/6/6 9:08:28</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">このスプライト拡大縮小機能というのがちょっと曲者でね。制作に参加した基板は拡大縮小の中心が左上隅なんだよね。そして右下に向かって拡大する。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269059267627110400"
+            target="_blank">2020/6/6 9:11:22</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">つまり自然な感じで拡縮するように見せるには中心で拡大しているようにスプライト座標を補正する必要があるんだよね。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269059697501331456"
+            target="_blank">2020/6/6 9:13:04</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">これ結構めんどくさいので補正せずそのまま使用したりしてるゲームも実際存在する。沙羅曼蛇のブドウみたいなキャラがそうだと思う。これよく見ると弾が当たると右下に向かって拡大していく。<br/><br/><a href="https://youtu.be/KRlJmqT9bLU?t=93" target="_blank">youtu.be/KRlJmqT9bLU?t=…</a></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269060179300999169"
+            target="_blank">2020/6/6 9:14:59</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">そして当たり判定の矩形もそれに合わせて拡縮する必要もあって。おそらくそれを省略してるゲームも多いと思う。もともと当たり判定って、ピクセル単位ではやってなくて矩形でやってるのでそもそもいい加減なんだよね（笑）</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269061602315087873"
+            target="_blank">2020/6/6 9:20:38</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">で厳密にやりすぎるとプレイヤーの感覚的に違和感を感じたり、ゲームが面白くなくなってしまうことも多いので、程よい感じで手を抜くのがプロではないかと（笑）</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269062393654460417"
+            target="_blank">2020/6/6 9:23:47</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">しかし私はこの補正に無謀にもチャレンジした。しかしアルゴリズムがバグっていて拡縮に応じた補正ができてなく、妙な感じに拡縮されるようになってしまった（笑）。今だとなんとなく原因がわかるんだけど、当時は原因究明する時間がなくてそのままリリースしてしまった（笑）。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269063825887617024"
+            target="_blank">2020/6/6 9:29:28</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">当たり判定ですごいなと思ったのはやっぱりこのゲーム。R-TYPEもそうだったからプログラマーのスキルが高いんだと思う。当たったときのあたりマーク（跳ね返りとか爆発とか）の位置とかが絶妙。ここまで行くと死ぬんだなあというぎりぎりのところが弾を打つことでわかる。<br/><br/><div class="youtube" data-type="yt" id="9-uWyJ54NBM"><div class="yt-title">Youtube - 1988 [60fps] Image Fight Nomiss ALL part 1 of 2</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img  data-href="https://youtu.be/9-uWyJ54NBM" class="youtube" src="https://i.ytimg.com/vi/9-uWyJ54NBM/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269064284920614912"
+            target="_blank">2020/6/6 9:31:18</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">こういうところがきっちりできてないと、プレイヤーは不条理を感じるんだよね。つまり面白さとは別の「黒いストレス」が溜まることになる。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269065188742819840"
+            target="_blank">2020/6/6 9:34:53</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">当たり判定に関しては自弾の弾の当たり矩形に移動速度を加えるというテクも当たり前といえば当たり前で。つまり縦スクロールだと縦に長い矩形になるということなんだな。実際の弾よりも。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269065858917134336"
+            target="_blank">2020/6/6 9:37:33</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ゼビウスなんかも自弾の弾が結構速いので、矩形が縦長になる。なのでこのことを利用してバック・ファイヤーなるテクニックを編み出したプレイヤーもいる。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269066138924662784"
+            target="_blank">2020/6/6 9:38:40</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">つまり自弾発射すると当たり判定が縦長なのであたり矩形が自機の後ろにまで伸びるんだよね。それに敵が触れて死ぬという（笑）</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269066660146581505"
+            target="_blank">2020/6/6 9:40:44</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">私の場合逆に敵の当たり矩形を大きくしてしまったわけですが（笑）。おかげで「突然死」なる現象が発生することになってしまった。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269066987885301760"
+            target="_blank">2020/6/6 9:42:02</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">突然死は当たり矩形以外にも、キャラが画面端に達した時の処理のまずさもあいまって発生しているものだと思う。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269067939811999745"
+            target="_blank">2020/6/6 9:45:49</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">画面端の処理とは、画面から敵が消えたときに当たり判定をなくしたり、ワークから敵の情報を消したりする処理のこと。ゲーム基板って、実際に表示されるよりも一回り大きい仮想画面を持っていることが多い。そうしないと画面端にキャラが達したときに突然消えたりして不自然になってしまうからね。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269068573047009280"
+            target="_blank">2020/6/6 9:48:20</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">キャラが画面に登場するときも同じで、画面に一部分だけ表示されているときは当たり判定をOFFにして、全部表示されたらONにするような処理を入れるわけ。そうしないとほとんど見えてないのにキャラにふれて爆死することになる。これが突然死の原因。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269068981832318977"
+            target="_blank">2020/6/6 9:49:58</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">私の場合あたり判定が大きいし、画面端の処理が甘かったりするキャラがあると、見えてないのに当たり判定だけがONになってしまう。これはいかんよな（笑）</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269069594527817728"
+            target="_blank">2020/6/6 9:52:24</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">テストのときに気づかんのかい！と思うかもしれんけど、開発の終盤になってくると開発メンバーの腕も上がってきて、どこから敵が来るかとかも当然わかってるので楽にクリアしたり、バグが判明する前にやっつけてしまったりしてBugが顕在化しないことも多いんだな。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269069830759407617"
+            target="_blank">2020/6/6 9:53:20</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ショーなんかで出品するとそういう話が入ってきたりするんだけど、自分でテストプレイすると全然発生しない。すでに一般プレーヤーとは段違いにうまくなっているので。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269070276664233984"
+            target="_blank">2020/6/6 9:55:06</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">こうしてBugがすり抜けていくわけ。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269071490940461057"
+            target="_blank">2020/6/6 9:59:56</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">これゲームだから許される面もあるね。当時は緩かったというのももある。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269072727131910145"
+            target="_blank">2020/6/6 10:04:51</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">先ほどアフターバーナーの話が出たけど、そのインパクトってやっぱりすごく大きくて。私が制作に参加したゲームもその影響を受けてしまった。2Dシューティング＋α（αも売りにしてたけど私は「おまけ面」だと思ってた）なんだけど戦闘機が登場したので共通点がある思ったらしい。だれかが。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269073106422775808"
+            target="_blank">2020/6/6 10:06:21</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">それで割と大きめのショーに出品することになって、基板を収める筐体を見に行ったんだな。そしたらコックピット筐体だったんだな。「え！」となりましたわ。え、２Dシューティングにコックピット筐体って。。てなりますわな。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269073507574444034"
+            target="_blank">2020/6/6 10:07:57</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">で、操縦桿でプレイすると（笑）。いやいや、それはないでしょ？と思いましたわ。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269074223537913857"
+            target="_blank">2020/6/6 10:10:47</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">案の定、コックピット筐体で出品するとかなり不評だったらしく、チームの反対もあってこの筐体案はなくなり普通のテーブル筐体向けになった。胸をなでおろしたけどね。あんな細かい操作を必要とするシューティングなのに操縦桿では不可能ですわ。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269074469957459969"
+            target="_blank">2020/6/6 10:11:46</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">でも考えるとそもそもそういう路線だったのかもしれないなあと今になって思ったりもする。私が勘違いしてただけかも（笑）。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269074874858745859"
+            target="_blank">2020/6/6 10:13:23</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">今考えるとゲームのコンセプトを誤って理解していた可能性もある（笑）。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269075825367769088"
+            target="_blank">2020/6/6 10:17:09</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">自分一人で作ってるわけではないから、勘違いはどこかで正されるはずだしなあ。。まあ謎ですわ。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269076269951381504"
+            target="_blank">2020/6/6 10:18:55</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">こうしてなんとか完成までこぎつけるか、その前あたりにほんとに市場に出してウケるのか？というテストがある。これを「ロケテスト」と呼んでいた。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269076666241789953"
+            target="_blank">2020/6/6 10:20:30</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">協力してくれるゲーセンにお願いして、試作品を1－2週間置かせてもらうわけ。そして実際に遊んでもらってインカムがどれくらい入るかをカウントする。その結果によってリリースするかどうかが決まるわけ。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269077112616435713"
+            target="_blank">2020/6/6 10:22:16</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ロケテストの店は某市内のちょっと外れたところにあって、そこまで開発メンバーが交代で出かけてゲームプレイの様子とか、プレイヤーの性別や年齢層、プレイ時間や投入したコインの数とかを遠目で観察して集計するのですわ。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269077863359082497"
+            target="_blank">2020/6/6 10:25:15</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">しかしこれ開発メンバーが嘘ついたらどうなるんだと思うんだけど、たぶん裏でゲーセンのほうでもカウントしてて不正がないようにしていたとは思う。実際に開発者がゲーセンという現場で自分のゲームをどう遊んでいるかを観察することが一番重要なのではないかなと今となっては思いますな。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269079478531055617"
+            target="_blank">2020/6/6 10:31:40</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ロケテストでお客さんを観察していると、ネームバリューもあって遊んではくれるんだよね。1度はね。そしてコンティニューしてくれる人がいたりするとまあ嬉しいわけ。「お客さまは神様」って、この時にすごく感じたわけ。自分のゲームに惜しげもなくコインを投入する姿って神々しい（笑）</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269079601659080705"
+            target="_blank">2020/6/6 10:32:10</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">それと同時に会社のブランド力がすごいなとあらためて感じましたな。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269080190702870528"
+            target="_blank">2020/6/6 10:34:30</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">しかしお客さんも開発メンバーが観察してるなんて思ってなかっただろうなあ。店員のふりしてたしね。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269082069348388864"
+            target="_blank">2020/6/6 10:41:58</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">こうして無事にロケテストも完了し、発売が決まり、マスターも完成して開発は完了となる。そしてメンバーは溜まっていた休日をまとめて取る。ほとんど土日は出社してましたからなあ。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269082690361257984"
+            target="_blank">2020/6/6 10:44:26</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">そして次のゲームの開発に入るわけですが。次のゲームは同じ課で半年遅れくらいで開発していた、あるゲームの続編の助っ人として参加した。これもシューティングゲームのカテゴリですが、ゲームシステムがなかなか独特で、そこそこヒットしたゲームだった。続編は当然ともいえる。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269083352507641856"
+            target="_blank">2020/6/6 10:47:04</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">このゲームはシリーズ化され、現在でもリリースされ続けているという名作である。3か月くらいの助っ人とはいえ、そういうゲームの制作に参加できたのは光栄ですわな。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269083645853069313"
+            target="_blank">2020/6/6 10:48:14</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">チームのリーダーとサブのプログラマーがすごい人なんで当然ですけどね。私のような助っ人は何もしていないに等しいね。実際。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269084153821028352"
+            target="_blank">2020/6/6 10:50:15</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">このゲームの基板は、先にリリースしたゲームの基板から回転VRAM機能を除いた構成となっていたので、ほぼ勝手知ったるものであったのも呼ばれた要因だったと思う。シューティング大好きを公言してたし、メンバーもシューティングが好きな人たちだった。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269084732966371329"
+            target="_blank">2020/6/6 10:52:33</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">この方たちはいわゆるオーソドックスなスクロールシューティングを作りたいと常々言っていて、最終的にはその夢が叶ったようである。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269085354851569665"
+            target="_blank">2020/6/6 10:55:01</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">そっちの手伝いをしながら、ほかの課のが作っているゲームのテスターもかって出て、テストをしてる体で内心ゲーム欲を満たす行為も並行して行われた（笑）</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269086338256474113"
+            target="_blank">2020/6/6 10:58:56</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">それはスクロールシューティングの中では名作中の名作の続編（またか）で、かつての名作を作ったメンバーがようやくその続編に取り掛かるということで社内では注目を集めていたのだ。そこの開発ブースに行って開発中のゲームを遊ばせてもらうわけ。そういうことで断わられたことはほぼなかったなあ。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269086806428925954"
+            target="_blank">2020/6/6 11:00:47</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">まあその中のメンバーと仲がよかったのもあると思うんだけど。終業後におじゃまして夜遅くまで遊び、そして終電に間に合わないので会社で泊まってしまったりとか（笑）</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269087427961839616"
+            target="_blank">2020/6/6 11:03:15</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">そりゃあ次の面が待ち遠しくて仕方なかったですよ。ただこのゲームを完成まで見届けることができなかったのが残念だったのですが。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269088066901176320"
+            target="_blank">2020/6/6 11:05:48</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">このゲームのメンバーの人たちの意気込みはすさまじかった。ほんとうにすごかった。そりゃ売れますよ。あのゲーム。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269088739340333056"
+            target="_blank">2020/6/6 11:08:28</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">助っ人の内容というのは、ボス1面のアイデア出しとプログラミング、最終ボスのパーツを作るという仕事だった。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269089659717476352"
+            target="_blank">2020/6/6 11:12:08</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">この助っ人に参加したのも、手伝いたいオーラを出していたのもあるかもしれない。それはこのゲームの1面がとにかくよくできていて、テスターとして開発用のテーブル筐体にかじりついて遊んでいたので（またか）。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269090282634571776"
+            target="_blank">2020/6/6 11:14:36</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">当時はR-TYPEのヒットで、シューティングゲームに対する目が少し向いた時期だったんだよね。目が向いたというかR-TYPEの斬新さに危機感を感じたというか。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269090561455042560"
+            target="_blank">2020/6/6 11:15:43</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">でこの助っ人で参加したゲームもその影響を受けている。なにかというと「巨大戦艦」。まんまではないが、巨大戦艦のコンセプトを取り入れている。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269090728459726848"
+            target="_blank">2020/6/6 11:16:22</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">登場するのは「巨大戦艦」ではないけどね。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269091880790134784"
+            target="_blank">2020/6/6 11:20:57</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">でこの助っ人作業を終えた後、この会社を退職することになる。特にもめたわけでも、何かしくじったわけでもない。不規則な勤務に体がついてかないのが大きかった。ちょっとこれを続けるのはきついなあと。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269092483939487744"
+            target="_blank">2020/6/6 11:23:21</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">といいつつ、辞めたあとちょっとまたモチベーションが上がってきて、別の会社に就職することになるのだが。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269093101122973696"
+            target="_blank">2020/6/6 11:25:48</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">で先ほどの名作中の名作の続編もその別の会社でリリースを知ることになるのであった。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269093892156059650"
+            target="_blank">2020/6/6 11:28:57</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">次の会社の面接は前職の経験というよりは前職の会社のネームバリューで決まったようなもの。しかも給与は交渉もしていないのになぜか良いという（笑）私がポンコツであるかどうかは実社会ではあまり関係がないらしい（笑）</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269094165909925890"
+            target="_blank">2020/6/6 11:30:02</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">給与に関しては明細を見せるとうちの母親は驚いていたが、私にはその価値がわからなかった。ほぼ興味がなかったので（笑）。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269094560581537797"
+            target="_blank">2020/6/6 11:31:36</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ただし賞与が少なかった気がするね。どうでもいい話だけどね。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269095025637339136"
+            target="_blank">2020/6/6 11:33:27</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">残念ながらこの会社は今は消滅してなくなっている。老舗のゲームメーカーではあったのだが。数年前に会社があったところを通りかかるとマンションになっていた。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269096151543803905"
+            target="_blank">2020/6/6 11:37:55</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">この会社は、前の会社に比べると売上が一桁違う感じであった。それでもあるゲームで一世を風靡したこともあるそこそこ有名なゲームメーカーであった。そこで企画部長であった方はのちに北海道のとあるゲームメーカーに転職し、PCエンジンのマルチプレイヤーゲームでこれまた一世を風靡する。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269096242442731521"
+            target="_blank">2020/6/6 11:38:17</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">私の周りがすごいな。私はポンコツだが。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269096841682944001"
+            target="_blank">2020/6/6 11:40:40</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">そこの会社は企画部門がしっかりとあり、企画部門が練ったゲームの企画をプログラマーとデザイナーが実装するというスタイルであった。基本的に企画に口出しする権限はプログラマーにはない。また企画部門の人はグラフィックデザイナー出身の人でほぼ占めていた。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269097230897577986"
+            target="_blank">2020/6/6 11:42:13</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">この体制はくゲーム会社としては一般的な組織体制であったと思う。思うに前職の会社は少し特殊であったかもしれない。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269097971494162433"
+            target="_blank">2020/6/6 11:45:09</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">サウンド部門はもうこれは重鎮中の重鎮のような方がいて、その方ともう一人くらいで取りまわしていた。この方はとても腰が低く、とてもあのようなサウンドを生み出す方とは思えないほどだった。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269098392975597568"
+            target="_blank">2020/6/6 11:46:50</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">まあ私もシンセおたくの一面があったのでこの方の部屋にたびたびお邪魔して雑談に花を咲かせた。なぜか仕事をした記憶があまりない（笑）</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269102234744193024"
+            target="_blank">2020/6/6 12:02:06</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">その部屋にはローランドのシステム100Mというモジュラーシンセが置いてあった。この方はもともとベーシストでとあるバンドのメンバーとしても活動していたようだ。そのシステム100MとおそらくMC-8だと思うが、とある中華料理チェーン店のBGMを作曲したこともある方である。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269102353967230976"
+            target="_blank">2020/6/6 12:02:34</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">そのBGMは関西圏のひとなら一度は耳にしたことはあると思う。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269102699103965184"
+            target="_blank">2020/6/6 12:03:56</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ほかにもサンプラーやシンセが所せましと置いてあった。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269103395907895296"
+            target="_blank">2020/6/6 12:06:43</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">この会社には入社1日目からいきなり業務に従事した。なぜなら開発システムが前職と同じHPｰ64000だったので。操作指導をする必要がなかったのだ。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269103813190795266"
+            target="_blank">2020/6/6 12:08:22</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">しかしCPUは68000で、仕事では経験がない。がなぜかインストラクションは頭に入っていて、すぐ仕事に入ることができた。おそらくOh!Xとか読んでいて、X68000の記事で68000のことを覚えたからだと思われる（笑）</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269104374426427392"
+            target="_blank">2020/6/6 12:10:36</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">やはり前職と同じようにHP-64000でオペレーションしながら、ダンプしたソースリストを読むところから始まった。ただそのソースリストは勉強用ではなく開発中の本番だということが前職と違うところではある。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269105031627735041"
+            target="_blank">2020/6/6 12:13:13</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">会社では企画部門によって精緻に書かれた企画書があり、敵の動きや配置もほぼその企画書に書かれてあった。プログラマはその企画書に沿って実装を進めるのであった。これが私には気に入らなかった。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269105173852372992"
+            target="_blank">2020/6/6 12:13:46</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ポンコツならでは思考である。私は基本的に組織に馴染まないようである。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269106239855751169"
+            target="_blank">2020/6/6 12:18:01</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">前職だったらこういうことが言えたのになあ。。とか思うこともしばしばであった。ならなんで辞めたんだ。。少し後悔したね。。まあ前職の会社もどんどん様変わりしてそのような自由な気風はどうも失われたようだけどね。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269107064699117568"
+            target="_blank">2020/6/6 12:21:17</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">話を変えるけど、この会社でも開発支援ツールを自社開発して使用していた。グラフィックしかり、サウンドしかり。しかしそのツールで使用していたHWがなんとSONYのSMC-777であった。<br/><br/><blockquote class="card card-large"><header><img  src="https://akiba-pc.watch.impress.co.jp/img/ah/list/1099/850/tsmc777c4.jpg" /><a href="https://akiba-pc.watch.impress.co.jp/docs/column/retrohard/1099850.html" target="_blank">御三家に食い込むことはできなかった技術の結晶「ソニー SMC-777C」 - AKIBA PC Hotline!</a></header><div>　想い出に残る、懐かしのマイコン・パソコンを写真とともに振り返る本コーナー。今回取り上げるのはソニーが1984年に発売した、3.5インチFDD内蔵機種「SMC-777C」です。</div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269107319687659520"
+            target="_blank">2020/6/6 12:22:18</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">これは驚いたねえ。逆に身近に感じて嬉しかったけどね（笑）。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269107961021906944"
+            target="_blank">2020/6/6 12:24:51</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">グラフィック・デザイナーはSMCのあの特徴的なカーソルキーを使ってドット絵を書いてた記憶がある。マウスは使ってなかったと思う。ツールはCP/M上のアプリとして動いてたと思うな。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269108383967096832"
+            target="_blank">2020/6/6 12:26:32</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">SMCはパレットが4096色中16色、そしてCP/Mが動くということで、ゲーム開発用に向いてたのかもしれないね。ほかにはPC98も置いてあって、これはファミコンとPCエンジンの開発用マシンだったね。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269108735529517057"
+            target="_blank">2020/6/6 12:27:56</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">この会社で初めてCP/MとMS-DOSをいじることになるんだよね。前職ではHPの独自システム＋HP-UXくらいだったんだよね。一気にPCサイドに環境が近づいた。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269108927074938880"
+            target="_blank">2020/6/6 12:28:41</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">しかしSMC-777があちこちに置いてあるオフィスはなかなかないよ、たぶん（笑）</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269109821820727296"
+            target="_blank">2020/6/6 12:32:15</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">シューティング・ゲームの敵配置もこのSMC-777上のツールで行っていた。ツールで作成したデータをROMに焼いてもらって受け取ってものをセットすれば企画側の意図通りに敵が動くというわけ。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269110453797400576"
+            target="_blank">2020/6/6 12:34:45</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">この会社はそういう意味ではかなりシステマティックで、企画側の意向がすごく反映されやすい仕組み作りがなされていた。企画側に取ってみればすごく生産性が高いしくみ。しかしそれでは面白くない人がいたのだ。私である（笑）。この体制を結果的に少し崩してしまうことになる。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269110890441273344"
+            target="_blank">2020/6/6 12:36:29</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">言っときますが、私のせいでこの会社が傾いたのではないですよ。先ほども書いたが、一番大きかったのは企画部長が北海道の会社に転職してしまったことじゃないかと思う。この会社の屋台骨であったのは確かなので。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269111273507053569"
+            target="_blank">2020/6/6 12:38:01</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">それくらいこの方の実力はすごかった。このシステマチックな体制も企画部長と開発部長の頭の良さによって生み出されたものなのである。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269114186811928576"
+            target="_blank">2020/6/6 12:49:35</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">私はこの業界を離れて久しいが、かなり前に新・電子立国の書籍を読んで驚いた。その企画部長がインタビューされていたからだ。これには本当に驚いた。そこで北海道の会社で成功したことを知った。やっぱりすごい人なんだなあと思いましたね。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269169049008656384"
+            target="_blank">2020/6/6 16:27:35</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">その北海道の会社も今はもう消滅してしまったが。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269171220605399040"
+            target="_blank">2020/6/6 16:36:13</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">私が業界にいたころはアーケード・ゲームがまさに衰退局面を迎えていた。１番の原因はファミコン。PCエンジンも登場、スーファミも登場を控えていた。ゲーム会社も家庭用ゲーム中心の経営に舵を切った時代。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269171546058186752"
+            target="_blank">2020/6/6 16:37:31</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ゲーム会社としても独自ハードを持たずソフトウェアのみに集中したほうが経営が楽だったかもしれない。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269172163421958144"
+            target="_blank">2020/6/6 16:39:58</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">前職の会社もファミコンを中心としたコンシューマ市場の売り上げが拡大し、経営リソースもそこに集中し始めていた。よってアーケード・ゲーム部門も私が退職して以降縮小していく。私が退職するかしないかは関係ないけどね（笑）</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269172559062265856"
+            target="_blank">2020/6/6 16:41:32</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">前職の会社で特徴的だったのがMSXへのソフトウェア提供であった。豊富な量の移植ゲームやオリジナル・ゲームを提供して、MSX市場の延命に一役買っていた。これは間違いのないところだろう。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269172997761294336"
+            target="_blank">2020/6/6 16:43:17</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">そのMSX市場もそこから数年で消滅してしまうのだが。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269173147900633090"
+            target="_blank">2020/6/6 16:43:53</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">そしてSMCが今だ残る会社の話（笑）</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269174747121606657"
+            target="_blank">2020/6/6 16:50:14</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">この会社を支えているのは麻雀ゲームであった。いくつかのシューティング・ゲーム、アクション・ゲームで名を馳せたこの会社も、実際はそれで社員が食いつなぐような状況であった。私は麻雀を知らないこともあるし、前職の経験もあるので、シューティング・ゲーム担当PGとなった。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269175202606272514"
+            target="_blank">2020/6/6 16:52:03</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">その会社では結局シューティング２つ、アクションゲーム1つ、そしてサウンド・エンジンの開発１つ、PCエンジン・ファミコンの開発支援やツールの改修などに従事した。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269176248401399808"
+            target="_blank">2020/6/6 16:56:12</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">私は2年近くこの会社に在籍していたが、その間かなりの人の入れ替わりがあった。ある時コンシューマ・ゲームのプログラマーとして入社してきたのがMさんであった。この方はPCエンジンでシリーズにもなったレースゲームを、サウンド・エンジニアのOさん、そして企画のKさんとで生み出した人である。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269177213301088257"
+            target="_blank">2020/6/6 17:00:02</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">サウンド・エンジニアというよりは楽曲制作だね。私はサウンド・エンジン担当という名目で、Mさんへゲームのプロトタイプへ楽曲・エンジンを提供して遊んでいた。それが企画となって通り、私が退職した後立派なパッケージとなったのだった。しかもヒットするとは。もうちょっといればよかった（笑）</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269177862470250498"
+            target="_blank">2020/6/6 17:02:37</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">Mさんは車好きで、ゲーム開発の合間にF1をモチーフとしたレース・ゲームのプロトタイプみないなのを作って遊んでたんだな。そこに私がBGMいれてみよう！とか言ってPCエンジンのサウンド・ツール使って音を入れてみたりしてたわけ。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269178187503636481"
+            target="_blank">2020/6/6 17:03:54</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">そう、あのヒット作はMさんの遊びで始まったのだ。これは本当にゲーム制作としてあるべき姿だ（笑）</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269179205876502530"
+            target="_blank">2020/6/6 17:07:57</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">まあこれは私が在籍終盤の話なので、少し戻ることにしよう。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269180046956064768"
+            target="_blank">2020/6/6 17:11:18</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">この会社は企画部長がまさに企画した縦スクロールシューティングが2年前にヒットした。そこで開発スキームが固定されてしまったようだ。それは意図的ではなかったかもしれないが、開発手法としてはほぼ固定されてたと思う。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269180461428826113"
+            target="_blank">2020/6/6 17:12:56</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">入社して最初に参加したそのゲームは、そのゲームの続編ぽい位置づけのものであった。いうてもそのヒット作とそのゲームの間は結構な量のゲームがリリースされていたから、どれが続編の位置づけなのかは正直わからんが（笑）</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269181174397595649"
+            target="_blank">2020/6/6 17:15:46</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">開発としては中盤から後半に差し掛かるところであった。そして例のごとくソースリストとICE使って雑魚敵から作り始めた。が、企画の人には従順ではなかったのは先ほどつぶやいた通り。企画側からすればやりずらい人であったと思う。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269181712115748865"
+            target="_blank">2020/6/6 17:17:55</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">というのも、テスト・プレイしてみるもののこれが全然面白くない（笑）。そのヒット作は私もゲーセンで何度も遊んでいるので、なんであんなおもしろいものを作れる会社がこんな面白くないものを作るんだろう？とテスト・プレイをしていて感じたんだな。すみません、これ私の主観です（笑）</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269182464339005440"
+            target="_blank">2020/6/6 17:20:54</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">前職の会社も複数のラインで開発していて、企画面で失敗してお蔵入りしているゲームはあった。そういうのもいくつかテスト・プレイしてるので、ダメなゲームっていうのはなんとなくわかるようになっていた。しかし、どんだけ開発そっちのけでゲームしてるんだ、私は（笑）</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269183156390735873"
+            target="_blank">2020/6/6 17:23:39</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">企画側も実は面白くないということを自覚してたふしがある。昼休みに企画メンバーと研究用のR-TYPE/Image Fightで遊んで、「こんな面白いシューティングを作りたいよ。。」と言っていたもんね。これは確か。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269184165544472576"
+            target="_blank">2020/6/6 17:27:40</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">で、このままではこのゲームはマズイと思ったんだよね。妙な使命感があって。当時の私は。人によっては「勘違いな人」もしくは「空気読めない人」と思ってたりするかもしれないが（笑）</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269185042602848258"
+            target="_blank">2020/6/6 17:31:09</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">このようなゲームができてしまう原因は、「お役所仕事」的な開発体制となってしまっている点があげられると思う。それぞれがそれぞれの役割を全うしようとして、部署間で壁を作ってしまうのだ。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269185764073467904"
+            target="_blank">2020/6/6 17:34:01</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">つまり部分最適化が進みすぎて、ゲーム開発のプロセスとしては実に生産的であるものの、出てくる成果物の品質は一定以下になってしまうような感じ。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269186319856500737"
+            target="_blank">2020/6/6 17:36:13</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ゲームとしての一体感にかけるというかね。そんな感じですわ。なんか勢いというのがまるで感じられなかった。いやー若くて青いねぇ（笑）。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269187810335973376"
+            target="_blank">2020/6/6 17:42:09</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">この会社のHWも最先端とは決して言えないが、そこそこのスペックを有しているし、やっぱり何かおかしいなあと思ったんだよね。もっとこのスペックを生かしたら面白いことができるだろうとね。。実際できないんだけど、私も（笑）</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269188349698310146"
+            target="_blank">2020/6/6 17:44:17</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">でまあ、私は少しずつその体制を壊していくことにした（笑）。壊していこうと思ったのではなく、こうしたほうがいいと思ってやったことが結果的に壊してしまったということだけど（笑）。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269188884522360832"
+            target="_blank">2020/6/6 17:46:25</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">まずやろうと思ったのは多関節なキャラクタの動きの導入。ハア？（笑）</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269189227121541120"
+            target="_blank">2020/6/6 17:47:46</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">そのころは三角関数や固定小数点などの数学的？なものを使って、滑らかな動きを複数のスプライトで実現するというのはもう当たり前になってたんだよね。だけどこのゲームの動きは実に画一的でコマ送り的。そして面白くない（笑）。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269189958872338433"
+            target="_blank">2020/6/6 17:50:41</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">つまりヒット作によって開発のスキームが固定されてしまい、ソフトウェアの進化がそこで（つまり当時は2年前で）止まってしまってたんだな。PG部門としては苦労して新しいものを作るよりも、既存のものを使って手早く返すほうが生産性が高いもんね。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269190192251826180"
+            target="_blank">2020/6/6 17:51:36</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">これがセクショナリズムというもので、会社における暗黒面の１つである。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269190670620610560"
+            target="_blank">2020/6/6 17:53:30</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">何度もいうが、そのころそんなことを考えて行動していたわけではない。行動の結果を何年もたった後振り返り、もっともらしいことを後付けしてるだけである（笑）。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269192650713821185"
+            target="_blank">2020/6/6 18:01:23</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">多関節キャラで有名なのはグラディウスのこの触手だよね。<br/><br/><blockquote class="card card-default"><header><img  src="https://i.ytimg.com/vi/l12WdO3YHD0/hqdefault.jpg" /><a href="https://www.youtube.com/watch?v=l12WdO3YHD0&feature=youtu.be&t=520" target="_blank">グラディウス （初代） AC版 【高画質】 - YouTube</a></header><div>昔を思い出して頑張ってみましたが…かなり危ないPLAYになってしまいました。動体視力追いつかないですし、凄く苦しかったです。 （何とかノーミス一周ですが…）</div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269193144102318081"
+            target="_blank">2020/6/6 18:03:20</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">これってsin/cosや円運動を使えば作れるんだよね。これは1985年作だから当時にしては3年前くらいの作品。これくらいのことは十分できるスペックを持ってたんだよね。HW的には。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269193454770249729"
+            target="_blank">2020/6/6 18:04:34</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">なんせCPUは68000の８MHzですからな。Macintoshと同じ。どういう比較だ（笑）</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269197558842183680"
+            target="_blank">2020/6/6 18:20:53</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">いや、X68000と同じといったほうがよいだろうか。スペック的にはX68000に実際近かったもんね。。近からず、遠からずといったところだろうか。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269197925860569090"
+            target="_blank">2020/6/6 18:22:20</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">で、合間を見て仕様書通りに作ったものと、多関節アルゴリズムを導入したものを同時に配置して、企画の人に見てもらったんだよね。そりゃ一目瞭然ですよ。採用しないわけがない。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269198800150646786"
+            target="_blank">2020/6/6 18:25:49</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">仕様書は企画のアイデアや動きを他者に正確に伝えるためにあるのだけれども、実際は正確に伝えることはできないんだよね。なのでゲームに対しての妥協が、その仕様書から始まってしまうんだな。自分が伝えられる表現力の枠内で書いてしまって、肝心なところが伝わらない。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269204662986485760"
+            target="_blank">2020/6/6 18:49:06</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">仕様書を書くときにいろいろアイデアがあっても開発サイドでできることとかを考えると企画側で勝手にその枠内に収めてしまうんだよね。でもやりたいことは企画書に書いてないところにある。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269205075844460546"
+            target="_blank">2020/6/6 18:50:45</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">それを補うのはコミュニケーションなんだけどね。企画がやりたいことを開発側が汲み取って、本来やりたいことにできるだけ近づけてあげる。それは開発側の役割というか、思いやりですわな。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269206192724697090"
+            target="_blank">2020/6/6 18:55:11</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">でもコミュニケーションって負の方向にも働くよね。例えばこういうことができないか？と企画が開発に持ち掛けても、人によっては「ツールでできないことは不可」と突っ返す場合もあるだろう。こういうやり取りが続くと進化が完全に止まってしまうんだな。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269206427937107968"
+            target="_blank">2020/6/6 18:56:07</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">しかしながら開発側もそのツールにかなりの投資をしているとなると、できる限りそのツールを使用して投資を回収したいとなるかもしれないね。それはその組織としては正しい動きだったりするからね。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269207362704826369"
+            target="_blank">2020/6/6 18:59:50</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">まあそんなことは当時考えてもいないんだけど（笑）、多関節キャラクタは採用されたものの、それ以外はリリースも迫っていたこともあって、このゲームはそれくらいのことをやって終了となった。で発売はされたんだけど、やっぱり売れなかった（笑）。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269207861176856576"
+            target="_blank">2020/6/6 19:01:49</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ただこのゲームにかかわってわかったのは、<br/><br/>・企画の人は面白いゲームを作りたがっている<br/>・しかし様々な制約によって思うようなゲームが作れない。<br/><br/>でいるということであった。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269209847699890177"
+            target="_blank">2020/6/6 19:09:43</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">そして次の企画は私がメインでプログラムを担当することになった。それはあの有名なツイン・レバーのアクション・ゲームの続編であった。私にとってもアクション・ゲームをやるのは初めてだし、前作は私も大好きだったから、モチベーションは大いに上がった！</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269210616209698818"
+            target="_blank">2020/6/6 19:12:46</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">が、しかしこのゲームも商業的には失敗に終わってしまうんだよね。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269210983425126401"
+            target="_blank">2020/6/6 19:14:13</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">前作のはFL管のミニゲームとしておもちゃメーカーからもリリースされたほどで、ものすごいヒット作なんだけどね。まあ画期的なゲームシステムですよ。これは。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269211451484332032"
+            target="_blank">2020/6/6 19:16:05</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">私にとって良かったのは、既存の開発支援ツールがこのゲームのゲーム・システムが特殊すぎて使えなかったところ。もう自由にやれますよ。そりゃ。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269213836382318594"
+            target="_blank">2020/6/6 19:25:34</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ツインレバーの建物を登るゲームですからね。そんなゲーム用のツールがあるはずがない（笑）。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269215784141598720"
+            target="_blank">2020/6/6 19:33:18</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">これは企画的には、リバイバルというかリメイクというか、そういう流れの中で持ちあがった企画ですよ。その発端というのはタイトーの「アルカノイド」ですな。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269216667172651010"
+            target="_blank">2020/6/6 19:36:49</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ブロック崩しをリメイクして、新しいゲーム要素を加えた。これが受けたんだな。しかしなんでタイトーなんだ（笑）アタリでしょこれ（笑）<br/><br/><div class="youtube" data-type="yt" id="tn6-zcSxrO4"><div class="yt-title">Youtube - Arkanoid (1986) [Arcade Longplay]</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img  data-href="https://youtu.be/tn6-zcSxrO4" class="youtube" src="https://i.ytimg.com/vi/tn6-zcSxrO4/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269217013022330880"
+            target="_blank">2020/6/6 19:38:11</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">こういうリメイクものってちょっと流行ったんだけど、商業的にはほぼ失敗してたと思う。そういうわけで私が担当したものもその流れに沿って失敗と（笑）</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269218428910333952"
+            target="_blank">2020/6/6 19:43:49</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">例を挙げるとこれ。コナミの「バトランティス」。<br/><br/><div class="youtube" data-type="yt" id="caLyQ5mU0sE"><div class="yt-title">Youtube - 【解説付き】バトランティス ２周ALL</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img  data-href="https://youtu.be/caLyQ5mU0sE" class="youtube" src="https://i.ytimg.com/vi/caLyQ5mU0sE/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269218486623956992"
+            target="_blank">2020/6/6 19:44:02</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">知る人ぞ知るゲーム。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269218665909481472"
+            target="_blank">2020/6/6 19:44:45</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">インベーダーのリメイクですわな。タイトーのオリジナルをコナミがリメイクするという（笑）</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269219546809823232"
+            target="_blank">2020/6/6 19:48:15</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">私の担当したゲームに戻ると、システムが独特すぎて、新しい要素というのがまったくといいほど突っ込めなかったんだな。新しいキャラクタも登場するし、グラフィックは前作とは比べようもないほどよくなってるんだけど。前作を超える新しい面白さを加えることができなかったんだよね。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269219608470274048"
+            target="_blank">2020/6/6 19:48:30</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">リメイクって難しいなあ。。と思ったね。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269219720726642689"
+            target="_blank">2020/6/6 19:48:57</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">それくらい前作がすごかったということなんだけどね。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269220400526798851"
+            target="_blank">2020/6/6 19:51:39</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">それとこのゲーム、そもそも単調なんだよな（笑）。昔のゲームはみなそうでしたが。そういうのをほぼそのまま持ってきてもそりゃ難しいですよ。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269221369457160193"
+            target="_blank">2020/6/6 19:55:30</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">このゲーム、私がこっそり仕込んだものとして、ビルのガラスが全部割れる技というのがある。どうやるのかは忘れたが（笑）。これは製品版にもこっそり残しておいた。レバーをあるパターンで動かすと全部割れる。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269221582112620544"
+            target="_blank">2020/6/6 19:56:20</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">デバッグ用として作ったんだけど、面白いんでそのまま残してしまった（笑）。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269221904155439105"
+            target="_blank">2020/6/6 19:57:37</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">企画の人にはマスターになる前には消すっていってたけど（笑）</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269223813746618369"
+            target="_blank">2020/6/6 20:05:12</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ここまで書くとわかると思うけど、作ってたのはクレイジークライマー２ですな。これですよ。今では知る人ぞ知るゲームとなってしまってるね。<br/><br/><div class="youtube" data-type="yt" id="9_GR8sL88jA"><div class="yt-title">Youtube - CRAZY CLIMBER 2 / クレイジークライマー2　(PCB) - Nichibutsu 1988</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img  data-href="https://youtu.be/9_GR8sL88jA" class="youtube" src="https://i.ytimg.com/vi/9_GR8sL88jA/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269224999694434304"
+            target="_blank">2020/6/6 20:09:55</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">このゲームでも多関節な動きを取り入れている。それはこのクレーンのチェーンの揺れの動きですな。しかし伸びて主人公が振り回されるところは技術力のなさで直線的な動きで妥協している（笑）この辺が私のポンコツなところなんだよね。<br/><br/><a href="https://youtu.be/9_GR8sL88jA?t=179" target="_blank">youtu.be/9_GR8sL88jA?t=…</a></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269225829415845889"
+            target="_blank">2020/6/6 20:13:13</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">これを説明するにはこのゲーム名をさらすしかなかったな。。お恥ずかしい限りですが。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269227528205434880"
+            target="_blank">2020/6/6 20:19:58</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">しかしこのゲームもグラフィックに関しては今見てもいい感じだなあ。。しかし最終面のあの窓からの物の投げっぷりは異常ですな。よく見るとX68000投げてるし（笑）</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269227790445850624"
+            target="_blank">2020/6/6 20:21:01</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">こんなビルに主人公はなんで登ろうと思ったのか。。不思議でならんですわ（笑）</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269228302872350720"
+            target="_blank">2020/6/6 20:23:03</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">クリア時も盛り上がりが足りないみたいな感じとなって、テロップを横から入れたりとか、花火打ち上げたりとかしましたなあ。。ゲームの商業的な盛り上がりには貢献できてませんが（笑）</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269229099056132096"
+            target="_blank">2020/6/6 20:26:13</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">このゲームは企画が2人構成だったんだけど、一人はタイトーに転職してしまったんだよね。で途中でNさん一人になってしまった。Nさんとはかなりの部分で相談しながら進めた記憶がある。実際に動かして動きを見て次のアクションを決めるような作り方。Nさんのイメージに合うように進めていった。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269230901474365442"
+            target="_blank">2020/6/6 20:33:22</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">音楽はというとYさん。OPLを使ったニチブツサウンドを確立した立役者。クリアのBGMだけはなぜか私もパーカッションで参加している。パーカッションはサンプリングしてるものを同期をとらずに適当に合わせて鳴らしている。パーカッション用ではなく効果音をリズムに合わせて鳴らしてるだけ（笑）</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269231875442085889"
+            target="_blank">2020/6/6 20:37:14</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">これは開発中に遊びでYさんのBGMに合わせて鳴らしてたんだけど、Yさんが面白いから取り入れようってことになった。懐の深い方ですよ。結局CD化されてそこにも収録されたという。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269233045195771904"
+            target="_blank">2020/6/6 20:41:53</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">でこのゲームもとうとうロケテストのフェーズになって、心斎橋にある小さなゲーセンで実施したんですな。しかし残念ながらそもそもゲーセンにお客さんがいない。これだけの繁華街なのに。とうとう来たかと思いましたな。アーケード・ゲームの終焉が。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269233414902669312"
+            target="_blank">2020/6/6 20:43:21</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">しかし別の心斎橋にある大きなゲームセンターには客がそこそこ入ってるんで、そういう業界全体の傾向ではなく、このゲーセン自体がやばいってことだけだった（笑）</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269233787184926720"
+            target="_blank">2020/6/6 20:44:50</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ロケテストの結果は芳しいものではなかったね。ちょっとやばいかなあと。でも販売することにはなったんだよね。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269234377025654784"
+            target="_blank">2020/6/6 20:47:11</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">結果的には大爆発とはならず、商業的には失敗だと思うんだけど、実はこのゲーム、在庫基板を処分するという影の目的があったのだ（笑）その目的はどうも達成できたらしい。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269234509163069440"
+            target="_blank">2020/6/6 20:47:42</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">で売れたら売れたでその基板を追加で生産すればいいと。そんな計画だったようだ。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269238095364276226"
+            target="_blank">2020/6/6 21:01:57</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">さて次にかかわるゲームが、この会社においてアーケード・ゲームというジャンルでの最終作となるわけだけど、まだ企画が固まっていなかったので、それまでは社内ツールの改良や新しいサウンド・エンジンの試作をすることになった。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269238545962594304"
+            target="_blank">2020/6/6 21:03:45</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">新しいサウンドエンジンっつっても、音源はOPL2なんだけどね（笑）。この会社では最後までOPMを使うことはなかったね。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269433798648725504"
+            target="_blank">2020/6/7 9:59:37</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">このビル登りゲーム（笑）の続編は仕様書がかなり希薄な存在となっている。実際あったけど、かなりアバウトな内容となり、詳細は動いてるものを見ながら決めていくスタイルに変わっている。企画担当のNさんもそのほうが楽なので自然とそうなった（笑）</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269434355115413510"
+            target="_blank">2020/6/7 10:01:49</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">それまでの仕様書というのは、敵Aは左20ピクセル直線で動いて半径100ピクセルでπ/4だけ回転して。。。見たいな感じでとにかく細かかった。企画部門がそこまで文書に落としてたんだな。当時は手書きだった。あきらかにこれはやりすぎじゃないかと思ったんですわ。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269434991382949888"
+            target="_blank">2020/6/7 10:04:21</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">で、PG側でこれを実装して返すとイメージと違うのでまた直して。。みたいなことを繰り返すわけ。実際イメージ通りに文書に落とす神のような人はいたけども、それ以外の人はそこで妥協してしまうんだな。文書に落とせない以上のことはしなくなっちゃう。もしくはそのまま進めちゃう。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269436454159085568"
+            target="_blank">2020/6/7 10:10:10</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">なのでコンセプト的なものだけ文書でチームで共有して、実際に動きを見て面白さを確認していくコミュニケーションをとるほうが、ヒットするかどうかは別にして仕事として楽しいんだよね。私の場合。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269437979879079939"
+            target="_blank">2020/6/7 10:16:14</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">そしてこのころ気づいたのが、「キャラクターの個々の動きの面白さはゲームの面白さに直結する」ということなんだよね。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269438469723394048"
+            target="_blank">2020/6/7 10:18:10</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">これは多関節のキャラを作っているときに気づいたんだけど。すごく当たり前のことだけど（笑）</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269438682404016128"
+            target="_blank">2020/6/7 10:19:01</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">感情移入の度合いが高まるというのかなあ。。これはちょっと理由が言葉に表しにくいんだけどもね。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269443985619091456"
+            target="_blank">2020/6/7 10:40:05</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">このようにして企画書・仕様書に書けない部分をコミュニケーションで補いながら、「面白いものを作る」という形で進められたのが、このゲームだったんだよね。売れなかったけどね（笑）</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269444731513135106"
+            target="_blank">2020/6/7 10:43:03</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">そしてOPL2の新サウンド・システムの話ですが（笑）</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269445595262930944"
+            target="_blank">2020/6/7 10:46:29</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">そのころ会社の音源は、OPL/OPL2 + DA(サンプリング）2chか4chくらいだったと思う。これをZ80がコントロールする。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269446344059416578"
+            target="_blank">2020/6/7 10:49:28</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ツールはSMC-777のCP/M上で動く独自開発のエディタのようなものでシーケンス・データを作り、EEPROM渡しでゲーム基板に取り込むという感じだったと思う。このあたりあまり記憶がないというか、サウンド・プログラマは別にいらっしゃったのでほとんど触れてはいなかったんだよね。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269447838296989696"
+            target="_blank">2020/6/7 10:55:24</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">そして、どういういきさつかは知らないけど、シーケンスデータはPC9801のRCP-PC98で作って、そのデータを直接取り込んでOPL2をドライブする仕組みに変えることになった。そしてそのドライバを私が作ることになったんだよね。暇だったんで。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269448203558023168"
+            target="_blank">2020/6/7 10:56:51</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">おそらくSMCもいつまで使えるかわからんし、当時のPCでは一番安定感のあるPC98に移行しようということだったんだと思いますわ。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269448862357319680"
+            target="_blank">2020/6/7 10:59:28</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">RCP-PC98というのはレコンポーザというそこそこ有名なシーケンス・ソフトウェアの前身である。ST/GT方式ってこのソフトからじゃなかったのかな？でも源泉をたどるとMC-8になってしまうのかもしれんけども。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269449638253195264"
+            target="_blank">2020/6/7 11:02:33</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">それでこのソフトウェアって確か、データフォーマットも公開されてたんだよね。そのデータフォーマットのまま取り込んで、OPL2をドライブするようなソフトウェアを作り始めたわけ。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269450612283813890"
+            target="_blank">2020/6/7 11:06:25</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">昔STED2をいじってた時にRCPのデータフォーマットを調べたことがあって。こんなデータですわ。<br/><br/><a href="https://www.sfpgmr.net/blog/entry/rcp%E3%83%95%E3%82%A1%E3%82%A4%E3%83%AB%E3%83%95%E3%82%A9%E3%83%BC%E3%83%9E%E3%83%83%E3%83%88.html" target="_blank">sfpgmr.net/blog/entry/rcp…</a></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269451491917496320"
+            target="_blank">2020/6/7 11:09:55</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">確かRCPってリズムエディット画面みたいなものもあったと思うんだよね。そのデータって結局どうなったのか。。普通のトラックデータとして格納されてたのか。。もうわからんが、リズムトラックのデータはそのままOPL2のリズムを鳴らすようにしてたな。メロディはそのまま。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269452113869864961"
+            target="_blank">2020/6/7 11:12:23</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">テストデータはサウンド・チームのOさんにお願いして作ってもらって、音がなるところまでは何とか出来たんだよね。音色データの引き渡しはどうしてたのか、もう忘れたけどね。でもRCPのデータって、今までのものと比べるとかなり巨大だったんだよね。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269452727739801601"
+            target="_blank">2020/6/7 11:14:50</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">今までのROMの容量では到底収まらんとか、そんな話になってしまった。RCPのデータをそのまま取り込むというのは現実的でないということになった。今考えると不要なデータがいっぱいあるから、それをいったんPC9801上でフィルタするなり圧縮するなりすればよかったんだけどね。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269453045810651136"
+            target="_blank">2020/6/7 11:16:06</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">それをやるには時間がかかるので、この話はいったんお蔵入りとなった。その後どうなったのかはわからないね。もう。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269453606308048896"
+            target="_blank">2020/6/7 11:18:19</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">テストデータの曲って、ゲームらしからぬボサノバっぽい感じの曲で、ものすごく気に入った記憶があるんだよなぁ。こういう曲もいいなあとか（笑）Oさんがゲームとか関係なしに作るとこうなるんだなぁと思ったね。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269454126703718400"
+            target="_blank">2020/6/7 11:20:23</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">今考えると、ピッチベンドとか、コントロールチェンジのデータって結構でかいもんね。Oさんは「そういうところもきっちり鳴らしてくれるんだぁ。。」って喜んでくれてたんだけどね。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269454423224274944"
+            target="_blank">2020/6/7 11:21:34</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">プログラム・チェンジで音色もちゃんと変わるようにしたもんね。。MIDIに忠実であろうとしたのである（笑）。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269518474738450433"
+            target="_blank">2020/6/7 15:36:05</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">そんなこんなで企画も固まり、最終作となるゲームの製作に取りかかった。ジャンルは横スクロール・シューティングであった。R-TYPE を昼休み・終業後を費やして遊び倒した担当のTさんであれば当然の結果であろう（笑）</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269518912929988610"
+            target="_blank">2020/6/7 15:37:50</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">このゲームは随所にR-TYPE/Image Fight/グラⅡの影響を受けたステージ構成となっていた。ちょっとパクリ気味であったのは隠しようがない（笑）</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269519571720876032"
+            target="_blank">2020/6/7 15:40:27</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">それとロボット・アニメ好きなTさんの趣味・嗜好が相まって独特の世界観・グラフィックとなり、なかなかカオスなゲーム内容に仕上がっている。そして私がバグをちょこちょこちりばめることで、さらに混沌とした内容と化したのである（笑）</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269520328293707778"
+            target="_blank">2020/6/7 15:43:27</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">この1990年前後というのはアーケード・ゲームはもう大型筐体による体感系か、パズルゲーム的なものに2分されるような感じになってきていた。SEGAがテトリスを1988年にリリースして、その流れが加速していた。シューティング・ゲームはメジャーなもの以外はウケなくなっていた。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269520761921785856"
+            target="_blank">2020/6/7 15:45:10</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">もうシューティングはコアな人しかやらなくて、インカムも悪いからあまり店も置きたがらなくなってたんだと思う。要するにもう飽きられてたんだよね。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269521808589381632"
+            target="_blank">2020/6/7 15:49:20</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ただ、面白いゲームを作ればシューティングでも十分通用するということをR-TYPEが証明したんだよな。そのおかげでグラⅡも出たような気もするしね。スクロールシューティングがちょっとだけ見直された時期ではあったんだけどね。しかし作れば売れるなんていう時代では決してない。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269522606601859072"
+            target="_blank">2020/6/7 15:52:30</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ゲームが商業的に成功するか否かは、景気とか、流行とか、事件とか、そういう社会情勢にも左右される。発売時期なんていうのもあるよね。すごいいろいろな変数がある方程式を解くようなもので、出してみないとわからない部分はどうしても残る。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269523291879817217"
+            target="_blank">2020/6/7 15:55:14</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">当時はインターネットなんてなかったから、プロモーションに関してはTVCM・雑誌掲載・ショーへの出展ということになるだろう。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269524435737784321"
+            target="_blank">2020/6/7 15:59:46</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">広報のメンバーとのかかわりは私のような下っ端はほとんどなかったね。でもまあ雑誌用にイラスト提供したりだとか、グラフィックデザイナーの人はやってたわなあ。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269525528177815552"
+            target="_blank">2020/6/7 16:04:07</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">で唯一かかわるのが、ショーへの出展なんだよね。実際に展示用のROMを焼いたりとか、ショーの手伝いをしたりだとかした記憶がある。当時はショーへの出展、そこでの評判がすごく重要だった。取材はくるし、業界の人も来るしね。評判が良ければ出荷数もよくなる。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269525830864039939"
+            target="_blank">2020/6/7 16:05:19</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">当時は２つの大きなショーがあった。AOUショーとAMショーというやつ。確か時期はずれてたと思う。そこに制作スケジュールを合わせてものづくりをするんだよね。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269526731947249666"
+            target="_blank">2020/6/7 16:08:54</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">このゲームに関しても、企画のTさんとはかなり綿密なコミュニケーションをとっていた。時には怒鳴りあいの喧嘩になることもあったと思う。お互いゲームが好きなので、こだわりが異なる部分があると揉めるのだ。私もまだ若かったのでなかなか折れない（笑）</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269526981609091084"
+            target="_blank">2020/6/7 16:09:53</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">というか私のほうが性格が悪い（笑）</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269528536991186945"
+            target="_blank">2020/6/7 16:16:04</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">当時は「ゲーメスト」というアーケード・ゲーム専用の雑誌があった。この雑誌への出稿も重要だった。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269533083910299651"
+            target="_blank">2020/6/7 16:34:08</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">私が最初にかかわったゲームのプロモーション用のイラスト（嫁が書いた）がネットにあったので例示しようと思ったが、やめておこう。。この雑誌への広告・プロモーションも結構大事だったんじゃないかと思う。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269533406028640261"
+            target="_blank">2020/6/7 16:35:25</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">これに載ると「おおー」とかなるんだけど、おそらく雑誌社へお願いして記事書かせてたんじゃないかなと思うんだよね。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269534116678008833"
+            target="_blank">2020/6/7 16:38:14</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">プロモーションですからね。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269535324352344064"
+            target="_blank">2020/6/7 16:43:02</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">このゲームも中盤から終盤に差し掛かったころ、ショーにこのゲームを出展するということが決まった。AOUショーだったと思うんだけどね。時期的にはね。そこで試作バージョンを展示することになった。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269536091930898433"
+            target="_blank">2020/6/7 16:46:05</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">この試作バージョンは試作とはいえ、プレイアブルな状態で展示しなければならんので、それなりの品質を求められる。なので新たフィーチャーの実装なんかはいったん止めて、出来てるステージのバグをできる限りつぶして、動くステージだけど見せる形に仕立て上げると思うんだな。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269536769738805248"
+            target="_blank">2020/6/7 16:48:47</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">前職の時も最初のゲームはAMショーに出展したんだよね。操縦桿にはビックリしたけどね（笑）。その時はリーダーがしっかりしてたので、わりと事なきをえるような進め方をして、実際そこは事故なく乗り切った。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269537907582267393"
+            target="_blank">2020/6/7 16:53:18</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">が、このカオスな横スクロール・シューティングは私がメイン・プログラマであり、品質管理も私次第。そこで私はどうしたかというと、少しでも新しいフィーチャーを入れてショーに出展しようとして、ギリギリまで粘ってしまったんだな。アホですわ（笑）。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269538323187462146"
+            target="_blank">2020/6/7 16:54:57</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ギリギリすぎて、ほとんどデバッグできない状態で出展を迎えた。そしてどうなったか。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269538698166538240"
+            target="_blank">2020/6/7 16:56:27</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">不安はもちろんあったんだけど、祈るような気持ちで営業にROMを渡した。そして当日を迎えた。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269539052572704768"
+            target="_blank">2020/6/7 16:57:51</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">当日の午前中に、営業から連絡が。<br/><br/>「ステージ１でリセットがかかって最初に戻ってしまうで！！」<br/><br/>やってしまいました（笑）</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269539319485616128"
+            target="_blank">2020/6/7 16:58:55</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">バグりました。というか事故りました（笑）。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269539374326181891"
+            target="_blank">2020/6/7 16:59:08</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">しかもステージ１（笑）。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269540120908066816"
+            target="_blank">2020/6/7 17:02:06</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">頭が真っ白になった（笑）。あわててバグをつぶしてROMを焼き直して持って行ってもらった。それでなんとかショーを乗り切った。いやーこれは評判的にどうなんだろうと、やばいことになったなあという感じ。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269540876134436864"
+            target="_blank">2020/6/7 17:05:06</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">そしてショーが終了。結果を聞くと、営業さんの話では評判的にはまずまずというか、ここ1-2年では１番よかったんじゃないだろうかということだった。Bugで評価下げはもちろんあっただろうけど、その影響はそれほどでもなかったようで、胸をなでおろした。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269541838328745984"
+            target="_blank">2020/6/7 17:08:55</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">評価というのは会社内の評価で、一般的な評価ではもちろんないけどね（笑）</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269541977143406592"
+            target="_blank">2020/6/7 17:09:28</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">一般的な評価がよかったのならヒットしてますよ（笑）</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269548373012430849"
+            target="_blank">2020/6/7 17:34:53</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ショーでの失敗を糧にし、開発にいそしみ、終盤を迎えてきたころ、今度はHWの問題が発生した。グラフィック用のメモリ（ROM）の容量が足りなくなったのだ（笑）</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269549583077502976"
+            target="_blank">2020/6/7 17:39:42</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">当時のメモリってどれくらいかっていうと512Kbitか1MbitくらいのROM容量だった記憶があるんだけど、どうだったかなあ。それをいくつか基板に載せるんだけどね。それが足りなくなった。緊急会議がSW開発部長、HW開発部長、T社長、企画のTさん、私とで執り行われた。ここで名物社長登場</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269550010040901632"
+            target="_blank">2020/6/7 17:41:24</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">会議は社長室のソファーで、ソファーの前の机に基板を置いて、それを取り囲むように行われた。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269550929663016960"
+            target="_blank">2020/6/7 17:45:03</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">HWも他社に比べるとかなり劣るのは否めなかった。表現力はそんなに差があるわけではなかったんだけど、ROM容量が少なかったと思う。他社くらいのグラフィックを載せようとして、足りなくなったんだな。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269552136020361217"
+            target="_blank">2020/6/7 17:49:51</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">社長は容量は必要なのか？と聞いてきて、Tさんが「そうしないとゲームが完成しない」とか言ったと思う。それだけだったと思う。そしたら社長がROMを1個手にして、基板のスペースに置いて、一言<br/><br/>「ここに入るやろ？入れたれや。」<br/><br/>とHW開発部長に言った。これで追加決定（笑）</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269552619258695680"
+            target="_blank">2020/6/7 17:51:46</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">え、それで決定？？衝撃的な瞬間（笑）そんな簡単でいいの？？（笑）</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269554603692982274"
+            target="_blank">2020/6/7 17:59:39</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">終盤ではさらにもう１つ、コピープロテクト対応をすることになった。前職ではCPU丸ごとカスタム化してプロテクトしてたけど、この会社ではそこまでやるリソースはない。それよりコストがかからないやり方でやることになった。サブCPU（8051）を載せ、それに仕事させることでプロテクトするというもの。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269555735492349952"
+            target="_blank">2020/6/7 18:04:09</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">8051の内臓ROMは後から読み出しができないとか言ってたような気もするんだよね。それで8051に仕事をさせるとその部分のコードが隠蔽されるようになるので、8051の内臓ROMの中身がわからないとコピーできないという仕組みだったと思うんだけどね。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269556912791515136"
+            target="_blank">2020/6/7 18:08:49</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">I/O経由で8051と通信して、仕事を依頼してそれを68000側で受け取るという感じで、なにがしかの作業を8051にさせればよいとのことだったので、「開け」と依頼したら8051から「ゴマ」を返すみたいな処理をちょこちょこ入れておいた。しかしこれではコピープロテクトにはならんような気がする（笑）</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269557805532340225"
+            target="_blank">2020/6/7 18:12:22</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">そしてようやく完成を迎え、販売となったが、結果はそんなに良くなかったんじゃないかと思う。やっぱり売れない（笑）</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269558564986556416"
+            target="_blank">2020/6/7 18:15:23</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">そしてこの会社でのアーケード・アクション・ゲームは終了となったのであった。しかしなぜかやり切った感はあったんだよね。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269560361214083078"
+            target="_blank">2020/6/7 18:22:32</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">そしてこれが最終成果物。。<br/><br/><div class="youtube" data-type="yt" id="5xh5ds2Exh8"><div class="yt-title">Youtube - Tatakae! BIG FIGHTER / 戦え！ビッグファイター (PCB) - Nichibutsu 1989</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img  data-href="https://youtu.be/5xh5ds2Exh8" class="youtube" src="https://i.ytimg.com/vi/5xh5ds2Exh8/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269560804090605569"
+            target="_blank">2020/6/7 18:24:17</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">これは貴重ですよ（笑）。このPCB持ってるというだけで（笑）。それを動画にする人っているんだよなあ。。ゲーム観るとやっぱりところどころ粗さが残ってるね。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269561039894409216"
+            target="_blank">2020/6/7 18:25:13</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">グラフィックも独特なものがありますな。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269562218103726083"
+            target="_blank">2020/6/7 18:29:54</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">アーケード・アクション・ゲーム開発も終了となり、さてこれからどうなるんだろう。。と思ってたところでＰＣエンジンのＭさんが遊びで作っていたレース・ゲームにちょっと音つけてよと言われて、音をつけることになった。私からノリで音を付けようといったのか、今となっては定かではない。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269563139806224384"
+            target="_blank">2020/6/7 18:33:34</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ＰＣエンジン担当のＭさんは、某社の営業だった方で、ゲーム好きが高じて会社を辞め、プログラマーになったのだった。X68000あるから一度家においでよ！と言われ、自宅にもお邪魔したことがある。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269563463631691778"
+            target="_blank">2020/6/7 18:34:51</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">そこで遊んだのは「グラディウス」。いやーこの移植はよくできてましたよ。ほんと。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269564024925990914"
+            target="_blank">2020/6/7 18:37:05</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">それはさておき、ＰＣエンジンはハドソンとＮＥＣが共同開発したゲームマシン。グラフィックやサウンド能力はファミコンを凌駕しており、CPUはファミコンと系統が同じというものだった。6502互換ですわな。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269569506134745094"
+            target="_blank">2020/6/7 18:58:52</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">6502互換を採用してるところが、ファミコンからの移植性を高めようという意思が感じられるね。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269569958125531136"
+            target="_blank">2020/6/7 19:00:40</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">セガもＳＣを経てメガドライブを発売したころだったよな。ゲームコンソール戦争がこのあたりから始まったのかな。ＳＣの時代はＦＣが独り勝ちだもんね。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269570409394888704"
+            target="_blank">2020/6/7 19:02:27</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ＳＣとはＳＣ－３０００とかＳＣ－１０００とか、そういうやつね。仕様がＭＳＸに似た感じのやつ。3000がパソコンっぽくて、SC-1000はゲーム・コンソールタイプだったと思うな。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269572389668413441"
+            target="_blank">2020/6/7 19:10:19</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">セガも早くからゲーム・コンソールに参入してたんだよな。でもハードを見ると少し迷いを感じるよね。アタリ・ショックに対する対応・対策の違いで任天堂とセガの勝敗が決まった気がするね。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269574895970578432"
+            target="_blank">2020/6/7 19:20:17</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">メガドライブはもう少し早く世に出してたら、結果は変わってたかもしれんよな。なんせ北米では互角だったんだから。でもあのキラーソフトがあるからねえ。FCには。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269577917626892288"
+            target="_blank">2020/6/7 19:32:17</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">そして、この時期、SFCの話も流れてきていて。この会社ではFCの開発は割と小規模な人数で、麻雀ゲームやシューティングの移植を細々とリリースしている感じだった。開発メンバーも2人くらい。FCはPC9801上で動く6502のクロス・アセンブラと、PC98につないで使うICEで開発してたね。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269578190176935937"
+            target="_blank">2020/6/7 19:33:22</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">汎用の6502のクロス・アセンブラなのか、任天堂が独自に提供しているソフトウェアなのかは定かではない。バイナリレベルでも互換性があったのかどうかもよく知らない。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269578385539207169"
+            target="_blank">2020/6/7 19:34:09</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">FCのCPUは6502互換だけど、リコーのカスタムだもんね。確か。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269578824615784448"
+            target="_blank">2020/6/7 19:35:54</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">そしてSFCは開発マシンがSONYのNEWSだということ、その開発システムの価格がかなり高価で、参入するかどうかこの会社でも迷ってるような状況だった。それはなぜかというとPCエンジンの存在があったからだと思う。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269579270159872000"
+            target="_blank">2020/6/7 19:37:40</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">NEWSのいうのはUNIXワークステーション。EWSとかいうカテゴライズがなされていたなあ。この会社ではUNIX文化はなく、誰も使い方を知らなかった。私も前職でHPｰUXをちょこちょこいじったくらい。経験があるというレベルでは決してない。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269579838739722240"
+            target="_blank">2020/6/7 19:39:55</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">おそらくそれ上で動くツールがあるのだろうから、OSなんていうのはそんなに恐れるものではないと思うんだけどね。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269580575142055936"
+            target="_blank">2020/6/7 19:42:51</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">それだけ当時PCエンジンに勢いがあったということなんだよね。で、この会社は当面軸足をPCエンジンに据えることになったと思う。でものちにSFCにも参入してたと思うから、1-2年くらいの期間なんじゃないかなあ。SFCも任天堂の巧みなマーケティングで勝利したからね。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269584364897046529"
+            target="_blank">2020/6/7 19:57:54</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">まあそういう業界のおおきなうねりがある中で、私はのんきにMさんのレース・ゲームにBGMをつけるという名目で、PCエンジンの波形メモリ音源を使って遊んでいたのだ（笑）</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269593306154938368"
+            target="_blank">2020/6/7 20:33:26</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">世の中はF1ブームの真っ只中であった。セナとかプロストとかマンセルとかいた時代。Mさんは車好きなので、F1のドット絵を自分で書き、そして道をスクロールさせるレースゲームを作り始めていた。こういうゲームって昔からあるよね。ロードファイターなんていうのもそう。<br/><br/><div class="youtube" data-type="yt" id="fpwoi5qIUKU"><div class="yt-title">Youtube - [AC]ロードファイター Road Fighter</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img  data-href="https://youtu.be/fpwoi5qIUKU" class="youtube" src="https://i.ytimg.com/vi/fpwoi5qIUKU/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269593834029080581"
+            target="_blank">2020/6/7 20:35:32</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">まあ見た目ちょっと古い感じなんだけど、その時すでに特徴的だったのがスクロールスピードが異常に速いということだった。ちょっとコントローラのボタンを押すタイミンングを誤るとすぐにコースアウトするような感じ。それがなんか動きとして面白かったんだな。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269594578123763713"
+            target="_blank">2020/6/7 20:38:30</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">そこに車好きのサウンド・エンジニアのOさんが参入してきた。OさんはサウンドのことはそっちのけでこのゲームのフィーチャについてMさんにアドバイスを与えていた。でそこに音がないとさみしいという話になり、BGMをつけることにしたのだ。曲は私が適当に作った（笑）</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269595234855313414"
+            target="_blank">2020/6/7 20:41:06</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">PCエンジンの波形メモリ音源は5ビットくらいだったと思うんだよね。音源ドライバはおそらくデフォルトのものをそのまま使っていたのではないかなあと思うんだよね。自社開発したのかもわからんが。そのあたりは定かではない。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269595791481438208"
+            target="_blank">2020/6/7 20:43:19</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">でBGMは適当につけたんだけど、車の排気音をリアルにしたいという話になったんだな。そこで車の排気音を研究することになった。それとドラム音もPCMにできないかなあという思いが私にはあった。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269596508640309249"
+            target="_blank">2020/6/7 20:46:10</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">研究するにあたって5ビットPCMで排気音を再現することにしたが、私用の開発用PCエンジンなんていうものはもちろんない。で5ビットPCMで思い出したのがPSGなんだよね。確かPSGって5ビットPCM相当のサンプリング音を発音することができたんだよね。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269596948589232130"
+            target="_blank">2020/6/7 20:47:55</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">4ビットだったかな？（笑）でOPNが乗っているPC9801がたまたま余っていたので、でこれを代用してとりあえず4ンビットだか5ビットだかのPCMデータを作り、そのSSG部分を作って鳴らしてみたんだよね。音データは車の排気音をごく短くサンプリングしたもの。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269597373656756226"
+            target="_blank">2020/6/7 20:49:36</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">これがなかなかいい音で、Oさんがベースアンプを持ってきて、それにつないで鳴らすとほぼまんまの音が鳴ったんだな。開発室エキゾースト・サウンドが鳴り響いたわけ。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269597560798236678"
+            target="_blank">2020/6/7 20:50:21</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">音がでかすぎて怒られたけどね（笑）</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269597788091805698"
+            target="_blank">2020/6/7 20:51:15</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">でこれでめどがついて、さあこれをインプリしようかどうしようかといったところで、私は退職したのであった（笑）。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269598592404123649"
+            target="_blank">2020/6/7 20:54:27</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">なんで辞めたのかというと、理由は明確にはない。もうちょっといいかなあ、ゲームつくりは。。という感じ。カタギな仕事に戻るにはこのへんが潮時かなあ。。と思ったんだよね。私にはちょっと無理かなあと。そして退職した。で、現職に至ると。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269598896503676930"
+            target="_blank">2020/6/7 20:55:39</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ちなみに今の現職はゲームとはまるで関係のない普通の会社です（笑）。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269600362828148736"
+            target="_blank">2020/6/7 21:01:29</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">そしてこのときMさんが作ってたゲームは正式な企画となり、翌年の9月に「F1サーカス」としてリリースされた。このゲームは久々のヒット作となり、会社の社員全員でハワイに行ったらしい（笑）<br/><br/><div class="youtube" data-type="yt" id="CoVcisyVksw"><div class="yt-title">Youtube - PCエンジン　F1サーカス　オープニング</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img  data-href="https://youtu.be/CoVcisyVksw" class="youtube" src="https://i.ytimg.com/vi/CoVcisyVksw/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269602106039652352"
+            target="_blank">2020/6/7 21:08:24</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">私が遊びでつけたBGMは、MさんやOさんが残してくれようである。隠しコマンドみたいなもんですな（笑）<br/><br/>これとかね。<br/><br/><blockquote class="card card-default"><header><img  src="https://i.ytimg.com/vi/Pc4AtkG__iY/hqdefault.jpg" /><a href="https://www.youtube.com/watch?v=Pc4AtkG__iY&feature=youtu.be&t=1458" target="_blank">F1 Circus - OST - エフワンサーカス PC Engine - YouTube</a></header><div>Full Soundtrack. Developer(s) Nihon Bussan Publisher(s) Nichibutsu Series F1 Circus Platform(s) Family Computer, PC-Engine Release date(s) PCE/TG-16 JP Septe...</div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269602553563451392"
+            target="_blank">2020/6/7 21:10:11</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">これもそうだね。<br/><br/><blockquote class="card card-default"><header><img  src="https://i.ytimg.com/vi/Pc4AtkG__iY/hqdefault.jpg" /><a href="https://www.youtube.com/watch?v=Pc4AtkG__iY&feature=youtu.be&t=1719" target="_blank">F1 Circus - OST - エフワンサーカス PC Engine - YouTube</a></header><div>Full Soundtrack. Developer(s) Nihon Bussan Publisher(s) Nichibutsu Series F1 Circus Platform(s) Family Computer, PC-Engine Release date(s) PCE/TG-16 JP Septe...</div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269602671964549121"
+            target="_blank">2020/6/7 21:10:39</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">これで「おしまい」。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269603164820402177"
+            target="_blank">2020/6/7 21:12:37</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">このゲームで名残惜しいのはやはりPCMでドラムを鳴らせなかったことだなあ。それと排気音もね。。実現には至らなかったみたい。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269603269539557376"
+            target="_blank">2020/6/7 21:13:02</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">まだ続くんかい（笑）</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1212701145379946496/pSDVrvWj_normal.png" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269469287921532928"
+            target="_blank">2020/6/7 12:20:38</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">まとめを更新しました。「ゲーム開発の思い出」 <blockquote class="card card-default"><header><img  src="https://pimg.togetter.com/small_light(sx=0.0p,sy=14.7p,sw=100.0p,sh=70.0p,dw=1212.0,dh=636.3,cw=1200.0,ch=630.0,p=default,da=l,ds=s)/d1c1d2b1a95d2ec1062041c4945eed4ea07291c2/68747470733a2f2f692e7974696d672e636f6d2f76692f395f475238734c38386a412f687164656661756c742e6a7067" /><a href="https://togetter.com/li/1537668" target="_blank">ゲーム開発の思い出 - Togetter</a></header><div>3年ほどアーケード・ゲーム開発をしてた時の思い出話です。30年以上前の話です。加齢による忘却の前に記録しておこうと（笑）</div></blockquote></p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1212701145379946496/pSDVrvWj_normal.png" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269411754309677056"
+            target="_blank">2020/6/7 8:32:01</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">「ゲーム開発の思い出」をトゥギャりました。 <blockquote class="card card-default"><header><img  src="https://pimg.togetter.com/small_light(sx=0.0p,sy=14.7p,sw=100.0p,sh=70.0p,dw=1212.0,dh=636.3,cw=1200.0,ch=630.0,p=default,da=l,ds=s)/d1c1d2b1a95d2ec1062041c4945eed4ea07291c2/68747470733a2f2f692e7974696d672e636f6d2f76692f395f475238734c38386a412f687164656661756c742e6a7067" /><a href="https://togetter.com/li/1537668" target="_blank">ゲーム開発の思い出 - Togetter</a></header><div>3年ほどアーケード・ゲーム開発をしてた時の思い出話です。30年以上前の話です。加齢による忘却の前に記録しておこうと（笑）</div></blockquote></p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1212701145379946496/pSDVrvWj_normal.png" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269407875991875584"
+            target="_blank">2020/6/7 8:16:36</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">まとめを更新しました。「オレオレ言語への道」 <blockquote class="card card-default"><header><img  src="https://pimg.togetter.com/small_light(sx=0.0p,sy=8.7p,sw=100.0p,sh=82.3p,dw=1212.0,dh=636.3,cw=1200.0,ch=630.0,p=default,da=l,ds=s)/ad3f2fd296c450147daf73a1dfc85411dc14945f/68747470733a2f2f7062732e7477696d672e636f6d2f6d656469612f455a764d3978675663414952747a422e706e67" /><a href="https://togetter.com/li/1266927" target="_blank">オレオレ言語 - Togetter</a></header><div>node.jsでWASMを吐くコンパイラを作っています。まだ完成には至っていません。少々放置していましたがまた新たな言語を作り始めてます。■オレオレ言語の中間成果物として作ったもの■過去の遺物リポ..</div></blockquote></p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1212701145379946496/pSDVrvWj_normal.png" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269054239516397569"
+            target="_blank">2020/6/6 8:51:23</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">@naonori_msx お、そういえばないですね。。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1212701145379946496/pSDVrvWj_normal.png" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1268866281341476864"
+            target="_blank">2020/6/5 20:24:30</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">@syntaxerrors72 どっちもですね（笑）。究極のシューティング・ゲームを作るためという崇高な目的のために費やされた貴重な時間です。言い換えると他社の崇高なゲームが面白すぎて自分のゲームをダメにしてしまった時間とも言えます（笑）</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1212701145379946496/pSDVrvWj_normal.png" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1268840277034143744"
+            target="_blank">2020/6/5 18:41:10</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">これすごいと思った。<br/>BASICインタプリタ+コンパイラ＋X86アセンブラ。。<br/><br/><blockquote class="card card-large"><header><img  src="https://files.speakerdeck.com/presentations/768e883cd13641feb76efa39e2b3c39d/slide_0.jpg?634278" /><a href="https://speakerdeck.com/hkawai/chao-qing-liang-xing-puroguraminguyan-yu-es-basic" target="_blank">超軽量型プログラミング言語 ES-BASIC - Speaker Deck</a></header><div>ES-BASIC ver.0.2a → http://essen.osask.jp/?esbasic02a<br/><br/>前回発表のES-BASICをパワーアップしました。<br/>スクリプト言語だけではなく、コンパイラやアセンブラとしても使えるようになっています。<br/>しかもサイズは前のバージョンよりも小さくなっています！</div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1268840621000646656"
+            target="_blank">2020/6/5 18:42:32</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">あれを思い出す。私のTLでたびたび登場する、キャリーラボのWICSを。。<br/><br/><blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="https://ja.wikipedia.org/wiki/WICS" target="_blank">WICS - Wikipedia</a></header><div></div></blockquote></p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1212701145379946496/pSDVrvWj_normal.png" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1268631018522636288"
+            target="_blank">2020/6/5 4:49:39</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">まとめを更新しました。「オレオレ言語への道」 <blockquote class="card card-default"><header><img  src="https://pimg.togetter.com/small_light(sx=0.0p,sy=8.7p,sw=100.0p,sh=82.3p,dw=1212.0,dh=636.3,cw=1200.0,ch=630.0,p=default,da=l,ds=s)/ad3f2fd296c450147daf73a1dfc85411dc14945f/68747470733a2f2f7062732e7477696d672e636f6d2f6d656469612f455a764d3978675663414952747a422e706e67" /><a href="https://togetter.com/li/1266927" target="_blank">オレオレ言語 - Togetter</a></header><div>node.jsでWASMを吐くコンパイラを作っています。まだ完成には至っていません。少々放置していましたがまた新たな言語を作り始めてます。■オレオレ言語の中間成果物として作ったもの■過去の遺物リポ..</div></blockquote></p>
+        
+      </section>
+      
+    </article>
+    
+  </div>
+  <footer>
+    CopyLight 2019 Satoshi Fujiwara
+  </footer>
+  <script async src="https://platform.twitter.com/widgets.js"></script>
+
+  <script async src="./index.js"></script>
+
+</body>
+
+</html>

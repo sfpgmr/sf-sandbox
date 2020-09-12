@@ -1,0 +1,79 @@
+<% 
+  const img_ = meta.image ? meta.image : 'https://www.sfpgmr.net/img/sfweb.png' ;
+%> 
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+<meta name="description" content="リニューアル用のトップページデザインを考えて実装する" />
+<meta name="keywords" content="Programming,Music,HTML5,WebGL,javascript,WebAudio" /> 	
+<title><%= meta.title %></title>
+
+
+<meta itemprop="image" content="<%- img_ %>" />
+<meta itemprop="name" content="<%=meta.title%>" />
+<meta name="twitter:card" content="summary" />
+<meta name="twitter:site" content="<%=meta.site_name%>" />
+<meta name="twitter:url" content="<%=meta.url%>" />
+<meta name="twitter:title" content="<%=meta.title%>" />
+<meta name="twitter:description" content="<%=meta.description %>" />
+<meta name="twitter:image" content="<%- img_ %>" />
+  
+<meta property="og:type" content="article">
+<meta property="og:url" content="<%-meta.url%>" />
+<meta property="og:title" content="<%=meta.title%>"/>
+<meta property="og:site_name" content="<%=meta.site_name%>" />
+<meta property="og:description" content="<%=meta.description%>">
+<meta property="og:image" content="<%- img_ %>">
+
+  <script type="application/ld+json">
+    {
+     "@type": "WebPage",
+     "@id": "./webpages/web.html",
+     "url": "./webpages/web.html",
+     "datePublished": "2017-01-10T08:00:00+08:00",
+     "dateModified": "2017-01-12T08:00:00+08:00",
+     "headline": "Web関連",
+     "keywords": "Programming,Music,HTML5,WebGL,javascript,WebAudio",
+     "description": "HTML5,JS,WebGL,WebAudio,SNS API等のコンテンツ",
+     "image": {
+      "@type": "ImageObject",
+      "url": "./img/sfweb.png",
+      "width": "640",
+      "height": "640"
+     },
+     "name": "Web関連",
+     "about": "HTML5,JS,WebGL,WebAudio,SNS API",
+     "author": {
+      "@type": "Person",
+      "@id": "./profile.html#sfpgmr",
+      "name": "Satoshi Fujiwara",
+      "image": "https://sfpgmr.net/img/sfpgmr.png",
+      "alternateName": "SFPGMR"
+     },
+     "relatedLink": [
+      "http://github.sfpgmr.net",
+      "http://blog.sfgpmr.net/"
+     ],
+     "breadcrumb": {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+       {
+        "@type": "ListItem",
+        "position": 1,
+        "item": {
+         "url": "./webpages/web.html",
+         "name": "Web関連"
+        }
+       }
+      ]
+     },
+     "@context": {
+      "@vocab": "http://schema.org/",
+      "@base": "https://www.sfpgmr.net/",
+      "sf": "https://www.sfpgmr.net/"
+     }
+    }
+    </script>
+    <style amp-custom>
+      <%- (meta.css ? meta.css : '/*@css@*/') %>
+    </style>

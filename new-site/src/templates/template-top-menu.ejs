@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang=ja>
+<head>
+  <%- include('/home/sfpg/pj/sandbox/new-site/src/templates/template-head',{meta:meta}); %> 
+</head>  
+<body>
+  <% if(!meta.debug) { %>
+    <%- include('/home/sfpg/pj/sandbox/new-site/src/templates/template-analytics'); %>
+  <% }%>
+    
+  <amp-sidebar id="sidebar1" layout="nodisplay" side="right">
+    <ul>
+      <li>Nav item 1</li>
+      <li><a href="#idTwo" on="tap:idTwo.scrollTo">Nav item 2</a></li>
+      <li>Nav item 3</li>
+      <li><a href="#idFour" on="tap:idFour.scrollTo">Nav item 4</a></li>
+      <li>Nav item 5</li>
+      <li>Nav item 6</li>
+    </ul>
+  </amp-sidebar>
+
+  <div class="sf container">
+    <nav class="nav">
+      <button class="btn btn-action btn-lg btn-primary" on="tap:sidebar1.toggle"><i class="icon icon-menu"></i></button>
+    </nav>
+    <header class="header" title="click !">
+      <h1 class="text-center">S.F. Web</h1> 
+      <p class="text-center">
+        Programming,Music,etc...
+      </p>
+      </header>
+      <main>
+        <section>
+          <h1>
+            Contents
+          </h1>
+          <article>
+            コンテンツ
+          </article>
+  
+        </section>
+        <section>
+          <h1>
+            Contents
+          </h1>
+          <article>
+            コンテンツ
+          </article>
+  
+        </section>
+        <section>
+          <h1>
+            Contents
+          </h1>
+          <article>
+            コンテンツ
+          </article>
+  
+        </section>
+        <aside>
+          <% if(!meta.debug) { %>
+          <%-include('/home/sfpg/pj/sandbox/new-site/src/templates/template-ad'); %>
+          <% } %>
+          </aside>
+
+      </main>
+    <footer>
+      <span>&copy; 2020 Satoshi Fujiwara</span>
+    </footer>
+  </div>
+</body>
+</html>

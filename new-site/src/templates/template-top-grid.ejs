@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang=ja>
+<head>
+  <%- include('/home/sfpg/pj/sandbox/new-site/src/templates/template-head',{meta:meta}); %> 
+</head>  
+<body>
+  <% if(!meta.debug) { %>
+    <%- include('/home/sfpg/pj/sandbox/new-site/src/templates/template-analytics'); %>
+  <% }%>
+ 
+  <div class="sf container">
+    <nav class="nav"><div>?</div></nav>
+    <header class="header" title="click !">
+      <h1 class="text-center">S.F. Web</h1> 
+      <p class="text-center">
+        Programming,Music,etc...
+      </p>
+      <p>
+        <a class="btn btn-primary" href="./top-menu.html" title="click to menu">
+          click to menu
+        </a>
+      </p>
+      </header>
+    <footer>
+      <span>&copy; 2020 Satoshi Fujiwara</span>
+    </footer>
+  </div>
+</body>
+</html>

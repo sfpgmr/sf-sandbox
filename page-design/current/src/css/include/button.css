@@ -1,0 +1,38 @@
+@import "./config.css";
+
+.button {
+  border-radius: 3px;
+	border:none;
+	display: inline-block;
+	text-align: center;
+	text-decoration: none;
+	line-height: 54px;
+	outline: none;
+}
+
+.button::before,
+.button::after {
+	position: absolute;
+	z-index: -1;
+	display: block;
+	content: '';
+}
+
+.button,
+.button::before,
+.button::after {
+	box-sizing: border-box;
+	transition: all .3s;
+}
+
+.button {
+	background:var(--button-bg-color);
+	color:var(--button-color);
+}
+
+.button:hover {
+	background:var(--button-hover-bg-color);
+	border:1px solid var(--button-hover-color);
+	color:var(--button-hover-color);
+}
+

@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="ja" prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb# article: http://ogp.me/ns/article#">
+
+<head>
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-15457703-9"></script>
+  <script>
+    if (!location.hostname.match(/localhost/)) {
+      window.dataLayer = window.dataLayer || [];
+      function gtag() { dataLayer.push(arguments); }
+      gtag('js', new Date());
+      gtag('config', 'UA-15457703-9');
+    }
+  </script>
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>トップページをリニューアルする</title>
+  <meta name="description" content="リニューアル用のトップページデザインを考えて実装する" />
+  <meta name="keywords" content="Programming,Music,HTML5,WebGL,javascript,WebAudio" /> 	
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <meta itemprop="image" content="https://www.sfpgmr.net/img/sfweb.png" />
+  <meta itemprop="name" content="S.F. Web" />
+  
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:site" content="S.F. Web" />
+  <meta name="twitter:url" content="./index18.html" />
+  <meta name="twitter:title" content="リニューアル用のトップページデザイン" />
+  <meta name="twitter:description" content="リニューアル用のトップページデザインを考えて実装する" />
+  <meta name="twitter:image" content="https://www.sfpgmr.net/img/sfweb.png" />
+  
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="./index18.html" />
+  <meta property="og:title" content="リニューアル用のトップページデザイン"/>
+  <meta property="og:site_name" content="S.F. Web" />
+  <meta property="og:description" content="Programming,Music,HTML5,WebGL,javascript,WebAudio">
+  <meta property="og:image" content="https://www.sfpgmr.net/img/sfweb.png">
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    html {
+      margin: 0;
+      padding: 0;
+      font-size:10px;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      background: black;
+      color: white;
+    }
+
+    .top-nav {
+      position:fixed;
+      z-index:99999;
+      background: rgba(0,0,0,0.5);
+      display: block;
+      width:100%;
+      height:32px;
+      color:white;
+    }
+    #sentinel {
+      width:0px;
+      height:0px;
+    }
+    .contents {
+      padding-top:32px;
+      width: 100%;
+      position: relative;
+      content: strict;
+    }
+
+    @keyframes blinking {
+      0% {
+        color: black;
+      }
+
+      50% {
+        color: white;
+      }
+
+      100% {
+        color: black;
+      }
+    }
+
+    .loading {
+      font-family: monospace;
+      font-size: 24px;
+      position: fixed;
+      width: 100vw;
+      height: 100vh;
+      text-align: center;
+      padding-top: 50vh;
+      z-index: 32768;
+      background: black;
+      animation: blinking 2s infinite;
+      content: strict;
+    }
+
+
+    .contents > article {
+      background: #f0f0f0;
+      color: #202020;
+      position: absolute;
+      max-height: 960px;
+      overflow: auto;
+      border-radius: 3px;
+      transition: opacity 1s linear;
+      opacity: 0.0;
+    }
+
+    .tweet-header {
+      display: grid;
+      align-items: end;
+      grid-template-columns: 40px 2fr 1fr;
+      grid-template-rows: 1fr;
+      font-size: 12px;
+      font-weight: bold;
+    }
+
+
+    .tweet-img {
+      width: 100%;
+      object-fit: cover;
+    }
+
+    .youtube {
+      position: relative;
+      cursor: pointer;
+    }
+
+    .youtube > img {
+      width: 100%;
+      object-fit: cover;
+    }
+
+    .youtube > svg.player-play {
+      width:64px;
+      height:64px;
+      left:calc(50% - 32px);
+      top:calc(50% - 32px);
+      position:absolute;
+      z-index: 1000;
+      opacity: 0.5;
+    }
+    
+    .youtube:hover > svg.player-play {
+      opacity: 1.0;
+    }
+
+    .youtube:hover .player-play-1 {
+      stroke:#80808080;
+    }
+
+    
+    .youtube > div.yt-title {
+      /*text-shadow: #fff 1px 1px 0;*/
+      font-size: 1.2rem;
+      color:white;
+      background:rgba(0, 0,0,0.5);
+      position:absolute;
+      left:0;
+      top:0;
+      overflow: auto;
+      z-index:998;
+    }
+
+
+    .tweet-profile-img {
+      grid-column: 1/2;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+    }
+
+    .tweet-user-name {
+      grid-column: 2/3;
+    }
+
+    .tweet-date {
+      font-size: 8px;
+      text-align: right;
+      grid-column: 3/4;
+    }
+
+    .contents>twitter-widget {
+      overflow: auto;
+      max-height: 960px;
+      position: absolute;
+    }
+
+    .contents>article>section>.tweet-text {
+      display: block;
+      padding: 4px;
+      word-break: break-all;
+      font-size: 12px;
+    }
+
+    .contents>article>h3 {
+      font-size: 12px;
+    }
+
+    blockquote.card {
+      margin:4px;
+      padding:4px;
+      font-size:12px;
+      background:white;
+      border-radius: 4px;
+    }
+
+    blockquote.card > header {
+      display:grid;
+      grid-gap:4px;
+      gap:4px;
+    }
+
+    blockquote.card-default > header {
+      grid-template-columns:64px 1fr;
+    }
+
+    blockquote.card-large > header {
+      grid-template-columns:1fr;
+    }
+
+    blockquote.card > header > img {
+      width:100%;
+    }
+
+
+    div.no-image {
+      display: block;
+      width:64px;
+      height:64px;
+      background:gray;
+      color:white;
+      text-align: center;
+      line-height: 64px;
+    }
+
+  </style>
+</head>
+
+<body>
+  <div class="loading" id="loading">Loading</div>
+  <header class="top-nav">
+    <h1>S.F. Info.</h1>
+  </header>
+  <div class="contents" id="contents" rendersubtree="invisible skip-activation"> 
+    
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/1047146817622691840/OEfWnvqB_normal.jpg" />
+        <p class="tweet-user-name">千葉県高校野球情報GRAND☆SLAM@chiba5589</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/chiba5589/status/1152864524166242304"
+            target="_blank">2019/7/21 17:54:56</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">☆ゼットエーボールパーク☆<br/>市川 410 001 00<br/>銚商 130 100 00<br/>8回裏<br/>市 6-5 銚</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/875578789081661443/rHkguGBo_normal.jpg" />
+        <p class="tweet-user-name">スポーツナビ　野球編集部@sn_baseball_jp</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/sn_baseball_jp/status/1152835364442255360"
+            target="_blank">2019/7/21 15:59:04</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">大船渡・佐々木朗希　最速160キロで延長12回2失点21K完投！打っては勝ち越し2ラン <br/>試合詳細 ⇒ <a href="https://yahoo.jp/COWJ-x" target="_blank">yahoo.jp/COWJ-x</a> <br/>#高校野球 #佐々木朗希 <br/><a href="https://headlines.yahoo.co.jp/hl?a=20190721-00000257-spnannex-base" target="_blank">headlines.yahoo.co.jp/hl?a=20190721-…</a></p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/1164095364384739328/eX-HBhSg_normal.jpg" />
+        <p class="tweet-user-name">わびすけ🌸@lmtqx</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/lmtqx/status/1152853373298700288"
+            target="_blank">2019/7/21 17:10:37</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">【全国高校野球選手権千葉県大会5回戦 ＠ゼットエー】<br/>市川<br/>410 001│6 H5 E2<br/>130 100│5 H9 E2<br/>銚子商<br/>（市）加來①、德竹⑧―小島<br/>（銚）向後勇①、宮内⑪、角田⑩―那須</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1152837236527755264"
+            target="_blank">2019/7/21 16:06:30</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">家族全員で投票した。とりあえず国民のつとめは果たした。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1152837379989704704"
+            target="_blank">2019/7/21 16:07:04</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">たった４票だけど、これするかしないかで国政への関心が全然違うんだよね。やっぱり。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1152838659445366786"
+            target="_blank">2019/7/21 16:12:09</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">どんなに政治に対して幻滅しようとも、国民の権利を放棄してはいかんのよね。。よりよくするにはどうすべきかというと投票行動しかないわけですよ。やっぱり。。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1152838144149995520"
+            target="_blank">2019/7/21 16:10:06</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">@Hokubatsu_Kai やっぱりそうなのですね。ありがとうございます。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1152315236055019520"
+            target="_blank">2019/7/20 5:32:15</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">興味の赴くまま、おすすめユーザーをフォローし続けた結果、気が付くと1744もフォローしてるな。。こうなるとTLがものすごい高速で流れていって、なかなかほしい情報をキャッチできなくなってしまってるな。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1152315237342691328"
+            target="_blank">2019/7/20 5:32:16</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">多分こういうときのためにリストがあるんだろうけど、面倒でちゃんとやってない。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1152316039654330368"
+            target="_blank">2019/7/20 5:35:27</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">それでも高速で流れるTLをがんばって見てると、プチコン4率がとても高い。みんなそれぞれ楽しそう。まあフォロー対象が偏ってるから、そりゃそうだよなあ。。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1152313446005821440"
+            target="_blank">2019/7/20 5:25:09</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">C64mini買ったけど、今は高校野球観戦と音源作りで趣味の時間はいっぱいいっぱいでいじる時間がない。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1152313447037538304"
+            target="_blank">2019/7/20 5:25:09</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ゲームも「Shadow of The Tomb Raider」や「コナミアーケードコレクション」も全然やってないし。。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/511844707748413440/FDGRDtZp_normal.jpeg" />
+        <p class="tweet-user-name">mori@kimama789</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/kimama789/status/1152151739207827457"
+            target="_blank">2019/7/19 18:42:35</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">101回 夏 千葉県大会<br/>4回戦<br/><br/>中央学院<br/>005 010 000 10  =7  H15E2<br/>200 003 001 11x=8  H17E3<br/>市立船橋<br/><br/>試合終了でございます。<br/>1死満塁からリリーフ金子君 初球で決めました。おめでとうございます。<br/>市立船橋 5回戦 進出<br/> <br/>中央学院ナイン<br/>残念でした😭(ことばが出ません) https://t.co/lGWxLv6m2P</p>
+        
+        <video class="tweet-img" controls src="https://video.twimg.com/ext_tw_video/1152151504666517504/pu/vid/1280x720/WoS5tts89JS-UV-V.mp4?tag=10" />
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/511844707748413440/FDGRDtZp_normal.jpeg" />
+        <p class="tweet-user-name">mori@kimama789</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/kimama789/status/1152146177065811968"
+            target="_blank">2019/7/19 18:20:29</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">中央学院<br/>005 010 000 1<br/>200 003 001 1<br/>市立船橋<br/><br/>まず<br/>2死12塁<br/>○菅谷君 同点タイムリー(駄目動画) https://t.co/fGbm2X0Yn2</p>
+        
+        <video class="tweet-img" controls src="https://video.twimg.com/ext_tw_video/1152146099450216448/pu/vid/640x360/OC1Hjbv8VL5xxOSN.mp4?tag=10" />
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/1175529469492072448/JOnARm-r_normal.jpg" />
+        <p class="tweet-user-name">⚾市船応援⚽@baseball8_9like</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/baseball8_9like/status/1152138257422942208"
+            target="_blank">2019/7/19 17:49:00</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">高校野球選手権千葉大会<br/>ZA⚾パーク③<br/><br/>延長戦突入！<br/>中学 005 010 000｜6<br/>市船 200 003 001｜6<br/><br/>鍵本3塁打のあと、高田の打席でWPで同点に追いつく</p>
+        
+      </section>
+      
+    </article>
+    
+  </div>
+  <footer>
+    CopyLight 2019 Satoshi Fujiwara
+  </footer>
+  <script async src="https://platform.twitter.com/widgets.js"></script>
+
+  <script async src="./index.js"></script>
+
+</body>
+
+</html>

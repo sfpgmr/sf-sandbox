@@ -1,0 +1,62 @@
+@import './style.scss';
+
+
+body {
+  background-image: url('../data/contents/img/top.jpg');
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+@media screen and (max-aspect-ratio:3/2) { 
+  body {
+    background-size: auto;
+  }
+}
+
+header.header {
+  text-decoration: none;
+  color:white;
+  display:flex;
+  flex-direction: column;
+  width:320px;
+  height:320px;
+  text-align:center;
+  border:1px solid white;
+  justify-content: center;
+  background-color:#00000000;
+  /*transition: background-color 1s;*/
+  // &:hover {
+  //   background-color:#ffffff20;
+  // }
+}
+
+footer {
+  text-align: center;
+  color:white;
+}
+
+
+.sf {
+  &.container {
+    padding:0;
+    display:grid;
+    justify-items: center;
+    align-items:center;
+    width:100vw;
+    height:100vh;
+    grid-template-rows: 2rem 1fr 2rem;
+    grid-template-columns: 1fr;
+  }
+  nav.nav {
+    font-size:1.5rem;
+    color:white;
+    width:100%;
+    display:flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-content: center;
+    div {
+      padding:0px 0.5rem;
+    }
+  }
+}

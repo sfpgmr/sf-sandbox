@@ -1,0 +1,1145 @@
+<!DOCTYPE html>
+
+<html lang="ja" prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb# article: http://ogp.me/ns/article#">
+
+<head>
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-15457703-9"></script>
+  <script>
+    if (!location.hostname.match(/localhost/)) {
+      window.dataLayer = window.dataLayer || [];
+      function gtag() { dataLayer.push(arguments); }
+      gtag('js', new Date());
+      gtag('config', 'UA-15457703-9');
+    }
+  </script>
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>トップページをリニューアルする</title>
+  <meta name="description" content="リニューアル用のトップページデザインを考えて実装する" />
+  <meta name="keywords" content="Programming,Music,HTML5,WebGL,javascript,WebAudio" /> 	
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <meta itemprop="image" content="https://www.sfpgmr.net/img/sfweb.png" />
+  <meta itemprop="name" content="S.F. Web" />
+  
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:site" content="S.F. Web" />
+  <meta name="twitter:url" content="./index.html" />
+  <meta name="twitter:title" content="リニューアル用のトップページデザイン" />
+  <meta name="twitter:description" content="リニューアル用のトップページデザインを考えて実装する" />
+  <meta name="twitter:image" content="https://www.sfpgmr.net/img/sfweb.png" />
+  
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="./index.html" />
+  <meta property="og:title" content="リニューアル用のトップページデザイン"/>
+  <meta property="og:site_name" content="S.F. Web" />
+  <meta property="og:description" content="Programming,Music,HTML5,WebGL,javascript,WebAudio">
+  <meta property="og:image" content="https://www.sfpgmr.net/img/sfweb.png">
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    html {
+      margin: 0;
+      padding: 0;
+      font-size:10px;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      background: black;
+      color: white;
+    }
+
+    .top-nav {
+      position:fixed;
+      z-index:99999;
+      background: rgba(0,0,0,0.5);
+      display: block;
+      width:100%;
+      height:32px;
+      color:white;
+    }
+    #sentinel {
+      width:0px;
+      height:0px;
+    }
+    .contents {
+      padding-top:32px;
+      width: 100%;
+      position: relative;
+      content: strict;
+    }
+
+    @keyframes blinking {
+      0% {
+        color: black;
+      }
+
+      50% {
+        color: white;
+      }
+
+      100% {
+        color: black;
+      }
+    }
+
+    .loading {
+      font-family: monospace;
+      font-size: 24px;
+      position: fixed;
+      width: 100vw;
+      height: 100vh;
+      text-align: center;
+      padding-top: 50vh;
+      z-index: 32768;
+      background: black;
+      animation: blinking 2s infinite;
+      content: strict;
+    }
+
+
+    .contents > article {
+      background: #f0f0f0;
+      color: #202020;
+      position: absolute;
+      max-height: 960px;
+      overflow: auto;
+      border-radius: 3px;
+     /* transition: opacity 1s linear;*/
+      opacity: 1.0;
+    }
+
+    .tweet-header {
+      display: grid;
+      align-items: end;
+      grid-template-columns: 40px 2fr 1fr;
+      grid-template-rows: 1fr;
+      font-size: 12px;
+      font-weight: bold;
+    }
+
+
+    .tweet-img {
+      width: 100%;
+      object-fit: cover;
+    }
+
+    .youtube {
+      position: relative;
+      cursor: pointer;
+    }
+
+    .youtube > img {
+      width: 100%;
+      object-fit: cover;
+    }
+
+    .youtube > svg.player-play {
+      width:64px;
+      height:64px;
+      left:calc(50% - 32px);
+      top:calc(50% - 32px);
+      position:absolute;
+      z-index: 1000;
+      opacity: 0.5;
+    }
+    
+    .youtube:hover > svg.player-play {
+      opacity: 1.0;
+    }
+
+    .youtube:hover .player-play-1 {
+      stroke:#80808080;
+    }
+
+    
+    .youtube > div.yt-title {
+      /*text-shadow: #fff 1px 1px 0;*/
+      font-size: 1.2rem;
+      color:white;
+      background:rgba(0, 0,0,0.5);
+      position:absolute;
+      left:0;
+      top:0;
+      overflow: auto;
+      z-index:998;
+    }
+
+
+    .tweet-profile-img {
+      grid-column: 1/2;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+    }
+
+    .tweet-user-name {
+      grid-column: 2/3;
+    }
+
+    .tweet-date {
+      font-size: 8px;
+      text-align: right;
+      grid-column: 3/4;
+    }
+
+    .contents>twitter-widget {
+      overflow: auto;
+      max-height: 960px;
+      position: absolute;
+    }
+
+    .contents>article>section>.tweet-text {
+      display: block;
+      padding: 4px;
+      word-break: break-all;
+      font-size: 12px;
+    }
+
+    .contents>article>h3 {
+      font-size: 12px;
+    }
+
+    blockquote.card {
+      margin:4px;
+      padding:4px;
+      font-size:12px;
+      background:white;
+      border-radius: 4px;
+    }
+
+    blockquote.card > header {
+      display:grid;
+      grid-gap:4px;
+      gap:4px;
+    }
+
+    blockquote.card-default > header {
+      grid-template-columns:64px 1fr;
+    }
+
+    blockquote.card-large > header {
+      grid-template-columns:1fr;
+    }
+
+    blockquote.card > header > img {
+      width:100%;
+    }
+
+
+    div.no-image {
+      display: block;
+      width:64px;
+      height:64px;
+      background:gray;
+      color:white;
+      text-align: center;
+      line-height: 64px;
+    }
+
+  </style>
+</head>
+
+<body>
+  <div class="loading" id="loading">Loading</div>
+  <header class="top-nav">
+    <h1>S.F. Info.</h1>
+  </header>
+  <div class="contents" id="contents" rendersubtree="invisible skip-activation"> 
+    
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1201696955769901056"
+            target="_blank">2019/12/3 11:57:35</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">自サーバへのアクセスがものすごく減少してるなと思ってたら、express -&gt; koa.js移行時の作業漏れで404エラーが出まくってるせいだった。原因は判明したので対応せんといかんな。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1201697097868668928"
+            target="_blank">2019/12/3 11:58:09</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">コードの書き換えが必要。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1201840749542690817"
+            target="_blank">2019/12/3 21:28:58</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">サーバー内のローカルのファイル名はurlencodeしたままで保存しているが、ウェブサーバがリクエストURLを取得したとき、urldecodeしてローカルファイルを検索するため404エラーとなってしまってた。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1201840750670925824"
+            target="_blank">2019/12/3 21:28:58</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">解決策としてはkoa-staticで使用しているkoa-sendのパスをdecodeしてるとこを修正した。<br/>まずデコードなしでファイルのチェックを行い、ない場合はデコードありで行うようにしたのだ。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1201842781414494211"
+            target="_blank">2019/12/3 21:37:02</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">修正した部分はここ。適当なのでまだBugはあるかもしれん。。<br/><br/><blockquote class="card card-default"><header><img  src="https://avatars0.githubusercontent.com/u/3806814?s=400&v=4" /><a href="https://github.com/sfpgmr/send/blob/master/index.js#L63-L139" target="_blank">send/index.js at master · sfpgmr/send · GitHub</a></header><div>Transfer static files. Contribute to sfpgmr/send development by creating an account on GitHub.</div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1201843067386380289"
+            target="_blank">2019/12/3 21:38:11</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">なんでurl encodeしたままのファイル名にしてるかというと、ファイル名で使用できない文字もエスケープできるし、windows/linux双方のファイルシステムでも化けないという利点があったのでね。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1201843312719618048"
+            target="_blank">2019/12/3 21:39:09</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">この修正は私のような変なことをしているときのみに必要なものである。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1201844211655442434"
+            target="_blank">2019/12/3 21:42:43</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">あとsitemapも作り直さないといかんわ。古いまま放置されとるし、gzipしたsitemapもなくなってるし。これはサーバー移行時の作業漏れである。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1201845400669343744"
+            target="_blank">2019/12/3 21:47:27</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">今回のトラブルによるアクセスの激減は別として、ブログの更新はことしの５月以降ほとんど行っておらず、アクセスも漸減している傾向。もともとしょぼいPVではあるんだけど、もうちょっと盛り返したいなあと思うんだよね。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1201846093291479040"
+            target="_blank">2019/12/3 21:50:12</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">トップページの改修を終えたらゲーム音源作りに戻り、並行してコンテンツの充実も図っていこうか。あと自作のブログプラットフォームも手をいれようか。もうちょっとコンテンツアップを容易にできるようにしないと書く気がおきん（笑）</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1201846345713106946"
+            target="_blank">2019/12/3 21:51:12</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">冬休みにならんと買ったゲームはできそうにない。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1201971727636393984"
+            target="_blank">2019/12/4 6:09:26</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ディレクトリを走査し、sitemapを吐くコードは過去に書いたものがあったのでそれを少し修正して動かし、sitemapを更新した。これで少し様子を見てみることにする。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1201971989281300480"
+            target="_blank">2019/12/4 6:10:28</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ちなみに吐いたsitemapはこんな感じ。。<br/><blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="https://www.sfpgmr.net/sitemap-web.xml" target="_blank"></a></header><div></div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1209443260046794752"
+            target="_blank">2019/12/24 20:58:38</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">これをGoogle Search Consoleに読み込ませるとなぜかエラーになる。「取得できません」ってなんでかな？ https://t.co/NayuRIXNVB</p>
+        
+        <img  class="tweet-img" src="https://pbs.twimg.com/media/EMjOPAIVAAALnNL.png" />
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1209443899090989058"
+            target="_blank">2019/12/24 21:01:10</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">express → koa.jsにしたときにいろいろケアが漏れていて404が多発していた時期があって、そのせいかなあと思っている。昨日も拡張子が指定されていないファイルに自動的に.html/.htmを付与するのを忘れてていくつかのファイルが404になってしまってたのに気づいた。。両方とも修正したのだが。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1209448211544444928"
+            target="_blank">2019/12/24 21:18:18</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">Search ConsoleでURL検査すると、クロールエラーとなってしまっている。robot.txtも問題ないようだ。とするとなんだろうな。いったい。。 https://t.co/qe0m2wkepw</p>
+        
+        <img  class="tweet-img" src="https://pbs.twimg.com/media/EMjSvMtUcAA3SGD.jpg" />
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1209448213540823040"
+            target="_blank">2019/12/24 21:18:19</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">どうも短い文のHTMLファイルはインデックスされなくなったようだが、それはまあいいかなと思うのだが。Twitterのような短さの文をブログに入れてたりとかもするので。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1209448801527681024"
+            target="_blank">2019/12/24 21:20:39</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ちょっとこのサイトのコンテンツはやはり見直さないといけないよな。おそらくブラウザのアップデートで動かないコンテンツもそこそこあると思うし。ドメインも変えて再出発するのもいいかもしれない。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1209449074971201538"
+            target="_blank">2019/12/24 21:21:44</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">トップページの見直しも含め、大改造しようかね。。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1013410868606877696/hwtzVfcl_normal.jpg" />
+        <p class="tweet-user-name">からあげ@karaage0703</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/karaage0703/status/1209441228556627980"
+            target="_blank">2019/12/24 20:50:33</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">とんでもないものが公開されとる <a href="https://twitter.com/learn_learning3/status/1209415229949407239" target="_blank">twitter.com/learn_learning…</a></p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1209432976523530240"
+            target="_blank">2019/12/24 20:17:46</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ライブラリも増えてきた。。 https://t.co/ydpczh65cx</p>
+        
+        <img  class="tweet-img" src="https://pbs.twimg.com/media/EMjE4XeVUAA2fjr.png" />
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1050411381369929728/BtqZX2ZX_normal.jpg" />
+        <p class="tweet-user-name">特殊映画研究室@12/28-1/5大阪廃墟展@tokuken20091</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/tokuken20091/status/1209293727396552704"
+            target="_blank">2019/12/24 11:04:26</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">28日より始まります廃墟展示会で販売予定の1/32サイズの廃車ミニチュアです。3台ありそれぞれ3000～5000円台で販売予定です。<br/><br/>大阪中崎町　カフェギャラリーきのね さんにて12/28-1/5(12/31、1/5はおやすみ)です！よろしくお願いします。<br/><br/>#きのね_廃<br/>#特殊映画研究室<br/>#ミニチュア https://t.co/9eHW9lCjaX</p>
+        
+        <img  class="tweet-img" src="https://pbs.twimg.com/media/EMhGNlIU8AABjpj.jpg" />
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1696646376/_____normal.jpg" />
+        <p class="tweet-user-name">ORION80@orion80</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/orion80/status/1209116208865234945"
+            target="_blank">2019/12/23 23:19:03</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">いまさらなんですけど、グランツーリスモスポーツ凄くないですか？！<br/>こんなカッチョいい写真が超簡単に撮れちゃうんですよ？！<br/><br/>鈴鹿サーキットのホームストレッチでアクセルベタ踏みしつつ爆走する俺ですよ！ヤバイ、俺もGTOもカッコ良すぎて死ぬ。<br/><br/>って妻に力説してたらどっか行っちゃったけどねw https://t.co/o4RPsA46o0</p>
+        
+        <img  class="tweet-img" src="https://pbs.twimg.com/media/EMekx94U8AA708l.jpg" />
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1209085695844728832"
+            target="_blank">2019/12/23 21:17:48</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">調べるとQUAKEシリーズが全部入ってるのも今500円くらいで買えるのか。すごいな。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1209087163486179328"
+            target="_blank">2019/12/23 21:23:38</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">違うわ。800円だった。。が、QUAKE Collection、これは欲しいな。Duke Nukem 3Dは無いな。亜種はあるみたいだが。最初のやつがいいんだよな。。あのトイレの「Oh... Much Better」ちゅうのがね。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1209088945784381441"
+            target="_blank">2019/12/23 21:30:43</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">QUAKE II RTXのプレイ動画。。<br/><br/><div class="youtube" data-type="yt" id="l_ZznYZOg7o"><div class="yt-title">Youtube - Quake 2 RTX Remaster で遊ぶ</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img  data-href="https://youtu.be/l_ZznYZOg7o" class="youtube" src="https://i.ytimg.com/vi/l_ZznYZOg7o/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1209089228203683840"
+            target="_blank">2019/12/23 21:31:50</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">なんとはなく、リアルタイム・レイトレーシングを感じなくはないこのゲーム。。（笑）</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1209089495980593155"
+            target="_blank">2019/12/23 21:32:54</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">しかしSTEAMちゅうのはなんかすごいな。セールから目を離すことができん。。QUAKEはぽちった。あかん、これで未消化のゲームがまた増えた。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1209089729053872129"
+            target="_blank">2019/12/23 21:33:49</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ちなみにQUAKE II RTXではQUAKE IIを持っているとそのマップで遊べるようである。。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1205790863990784002"
+            target="_blank">2019/12/14 19:05:19</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">今回思い切って自作デスクトップPCのCPU/マザー/SSD/メモリを入れかえることにした。インテルからAMDへの乗り換えになる。GPUは1060のままで据え置く。<br/><br/>・Core i7-6700 -&gt; Ryzen 5 3600<br/>・マザーはGIGABYTEからASRockのB450<br/>・メモリは16GB-&gt;32GB<br/>・SSDはSATA3 500GB からNVMe 1TBへ</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1205791126835228673"
+            target="_blank">2019/12/14 19:06:21</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ほんとはRyzen 7 3700XにしたかったがCPUに4万は払えない。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1205792164665409536"
+            target="_blank">2019/12/14 19:10:29</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ベンチマーク見る限り大幅なパフォーマンス改善はなさそうだけど、HWの経年による故障のリスク回避の面が強いからね。HWにそんなに思い入れがあるわけではないので。電源が今のが使えるのかちょっと心配。しかし3600でも6コア12スレッドなのね。これで2万円台だというからすごい時代ですわ。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1206183627530260482"
+            target="_blank">2019/12/15 21:06:01</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">とりあえずHWの入れ換えとセットアップ完了。ちょっと疲れた。。体感的にはちょっと速くなったかな？くらいの感じ。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1206184463660511233"
+            target="_blank">2019/12/15 21:09:20</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">いや、やっぱり結構速くなってるわ。いろいろ。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1206185238478512130"
+            target="_blank">2019/12/15 21:12:25</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">https://t.co/CeG8VteZTH</p>
+        
+        <img  class="tweet-img" src="https://pbs.twimg.com/media/EL07FL9U0AA-XYz.png" />
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1206302285136945152"
+            target="_blank">2019/12/16 4:57:31</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">wsl2でnodeを動かすと特にその違いがわかるな。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1207047846735708160"
+            target="_blank">2019/12/18 6:20:07</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">あとは1TBのm2 ssdへOSイメージを引っ越そうかなと思ってるんだけど、どうするかなあ。しかしSSDも安くなったなあ。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1207047847759081472"
+            target="_blank">2019/12/18 6:20:07</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">AMDの復活によって、PCの自作もしばらくは続けられるような気配。しかし老眼なので細かいものがとても見づらくなってきたのでジャンパーやマザーボードの小さな文字を読むのが苦痛（笑）。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1208154502685061121"
+            target="_blank">2019/12/21 7:37:34</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">HWのリニューアルに伴い、ディスクパーティションの統廃合を実施中。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1208154503783993345"
+            target="_blank">2019/12/21 7:37:34</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">そしてRTX 2060も買ってしまった。。完全に金欠状態（笑）。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1208155032098467841"
+            target="_blank">2019/12/21 7:39:40</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">diskpartのextend使ってパーティションをまとめている。ディスクの管理だとエラーとなる処理。パーティションよりも前の位置にある空きエリアをパーティションに含めることがディスクの管理だとできない。がdiskpartだとできるんだな、これが。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1208155440288129024"
+            target="_blank">2019/12/21 7:41:18</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">必要なデータは移行側にコピーして。。とかそういう事前作業は必要なんだけどね。誤ってデータを消さないように慎重に作業を進めてるんだけど、やっぱり何か間違って消してしまうんだな、これが。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1208155664662446080"
+            target="_blank">2019/12/21 7:42:11</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">というわけでデータのrobocopy中。。 https://t.co/8t5R9I2DRg</p>
+        
+        <img  class="tweet-img" src="https://pbs.twimg.com/media/EMQ7LFiU4AAMNWG.png" />
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1208156355304939520"
+            target="_blank">2019/12/21 7:44:56</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ディスクは<br/><br/>・2TB HDD ×2 (うち1台はSSDのキャッシュつき）<br/>・1TB M.2  NVMe SSD × 1<br/>・500GB SSD (SATA) × 1<br/><br/>という構成。NVMeはものすごく速い。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1208156924459405313"
+            target="_blank">2019/12/21 7:47:11</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">もう2－3年のうちにHDDはすべてSSDに切り替えようと思っている。静かだし、速いしね。もちろん価格と見合いしてだけど。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1208157204856991744"
+            target="_blank">2019/12/21 7:48:18</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">HDDも静音化が進んで昔に比べたらそりゃものすごく静かになったんだけど、SSDにはかないませんわな。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1208508624567357440"
+            target="_blank">2019/12/22 7:04:43</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ディスクの構成とパーティションの整理はようやく終わり。以下の構成となった<br/><br/>・1TB NVMe SSD ... OS<br/>・500MB SATA SSD ... WSL用<br/>・2TB SATA HDD (SSDキャッシュ付き) ... データ・ストア<br/>・2TB SATA HDD ... バックアップ用<br/><br/>パーティションはディスクそれぞれに１つずつにした。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1208509090260848641"
+            target="_blank">2019/12/22 7:06:34</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">で今はエクスポートしたwslのディストロをインポートしてるところなんだけど、ちょっとハマっている。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1208509471044952065"
+            target="_blank">2019/12/22 7:08:05</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">エクスポートは問題ないんだけど、インポートすると以下の現象が出て、エラーが出てインポートできなかったのですわ。。<br/><br/><blockquote class="card card-default"><header><img  src="https://avatars2.githubusercontent.com/u/6154722?s=400&v=4" /><a href="https://github.com/microsoft/WSL/issues/4530" target="_blank">Couldn't import wsl2 distribution · Issue #4530 · microsoft/WSL · GitHub</a></header><div>D:\wsl&gt;wsl --import Ubuntu U:\wsl2\Ubuntu sdvhome_wsl2_2.tar --version 2 The specified network name is no longer available. Process allocating all of the available memory and terminates with the...</div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1208510422975778816"
+            target="_blank">2019/12/22 7:11:52</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">で今はこれをためしてるところ<br/><br/><blockquote class="card card-default"><header><img  src="https://avatars2.githubusercontent.com/u/6154722?s=400&v=4" /><a href="https://github.com/microsoft/WSL/issues/4530#issuecomment-533876693" target="_blank">Couldn't import wsl2 distribution · Issue #4530 · microsoft/WSL · GitHub</a></header><div>D:\wsl&gt;wsl --import Ubuntu U:\wsl2\Ubuntu sdvhome_wsl2_2.tar --version 2 The specified network name is no longer available. Process allocating all of the available memory and terminates with the...</div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1208511248096038912"
+            target="_blank">2019/12/22 7:15:09</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ちなみにエクスポートしたイメージは80GBくらいある。これを変換するのは時間がかかる。おそらく私の環境では1時間以上かかるだろう。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1208517857136410624"
+            target="_blank">2019/12/22 7:41:24</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">終わったあとは以下の情報でデフォルトユーザーをrootから変更して一応終わり。。<br/><blockquote class="card card-default"><header><img  src="https://avatars2.githubusercontent.com/u/6154722?s=400&v=4" /><a href="https://github.com/microsoft/WSL/issues/3974#issuecomment-522921145" target="_blank">Impossible to set default user of distribution installed via wsl --import on 1903 · Issue #3974 · microsoft/WSL · GitHub</a></header><div>Windows Version 10.0.18362.30 (1903) The only way that&#39;s left to set the default user of a distribution is via its command line utility (ubuntu.exe for example). However, for Distributions inst...</div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1208524511605223424"
+            target="_blank">2019/12/22 8:07:51</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">BIOSのアップデートもしとくか。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1208526305177698309"
+            target="_blank">2019/12/22 8:14:59</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ドライバもほとんど入れる必要がなくなったな。。しかし。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1208527949831389185"
+            target="_blank">2019/12/22 8:21:31</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">RTX 2060が今日届くので、GTX1060をRTX2060に換装したらHWのアップグレードは完了ですな。。これで3年程度は使えるか。途中CPUは3700X/3800Xのどちらかに入れ換えたいけど。。AMD復活のおかげでスペックでIntel一択という状況が改善されたのは自作PC界隈にとってうれしい話題。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1208528189686894593"
+            target="_blank">2019/12/22 8:22:28</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">AMDはGPUでNVIDIAと、CPUでINTELと張り合っている。すごいね。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1208534171775168512"
+            target="_blank">2019/12/22 8:46:14</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">といいながら今回はGPUはRTX 2060にするんだけど（笑）。やっぱりリアルタイム・レイトレの魅力はすてがたく。。レイトレは10代からの憧れであったからね（笑）。なにせ1枚画像・320x200pxのレイトレで1週間かかったてたから。リアルタイム・レイトレなんて信じられんよ。ほんと。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1208654028206297093"
+            target="_blank">2019/12/22 16:42:30</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">RTX2060に換装して年末の自作PCのアップデートは終了した。<br/><br/>・CPU Core i7 6700 → Ryzen 5 3600<br/>・MEM 16GB → 32GB<br/>・GPU GTX 1060 → RTX2060</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1208661162658713601"
+            target="_blank">2019/12/22 17:10:51</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">「そんなにガッツリゲームをするわけではないが、ちょっとは現代のゲームグラフィックに触れてみたい」スペックになりましたですな。結果。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1208678535650373632"
+            target="_blank">2019/12/22 18:19:53</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">といいつつ最初にプレイしたのはQUAKE II RTX（笑）。 https://t.co/rPw5vybqGP</p>
+        
+        <img  class="tweet-img" src="https://pbs.twimg.com/media/EMYWuIQU8AAOsJX.jpg" />
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1208687204538601472"
+            target="_blank">2019/12/22 18:54:20</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">やってみると面白いし、QUAKE II って遊んだことないと思ってたけどあるな、たぶん。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1208687558537859072"
+            target="_blank">2019/12/22 18:55:44</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">溜まっているゲームも一気に消化したいなと思うけど時間かかるからねえ。気が付くとQUAKE IIで小一時間つぶしてしまってるし（笑）。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1208687871835525120"
+            target="_blank">2019/12/22 18:56:59</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">FPSってPC独自のジャンルでゲーセンにはなかったから、ハマりましたよ。そりゃね。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1208688736612937728"
+            target="_blank">2019/12/22 19:00:25</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">こうなるとまたHalf Lifeやりたくなってくるんだけど（笑）。メディアは持ってるんだけどプレイヤーが壊れてしまったんだよな。。メディア挿入しないと動かんのよね。これ。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1208696248921919488"
+            target="_blank">2019/12/22 19:30:16</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">メディアは大事に持っている。今はひょっとすると貴重なCD-ROM。。 https://t.co/GffvCS1j9D</p>
+        
+        <img  class="tweet-img" src="https://pbs.twimg.com/media/EMYm1EeUcAI_Jld.jpg" />
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1208697162994814977"
+            target="_blank">2019/12/22 19:33:54</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">いまSTEAMでチェックしたらセールで101円で売ってた。思わずポチってしまった。というわけで年末はHalf-LifeとQUAKEⅡで過ごすかも（笑）。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1208697310252691456"
+            target="_blank">2019/12/22 19:34:29</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">溜まっている未消化ゲームはいつやれるのやら。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1208697750679773190"
+            target="_blank">2019/12/22 19:36:14</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">Half-Lifeは都合２ライセンス持ってることになるね（笑）。どれだけ好きなんだ。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1208707321074835456"
+            target="_blank">2019/12/22 20:14:16</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">冴えないスクリーンショットだが、QUAKE II RTX。。 https://t.co/r8hZFy8nWW</p>
+        
+        <img  class="tweet-img" src="https://pbs.twimg.com/media/EMYw5o3VUAAdqpH.jpg" />
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1208880165092118528"
+            target="_blank">2019/12/23 7:41:05</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">自作PCいうてもネジ留めしたり、コネクタ差したりするだけの簡単な作業だけどね。。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1208711306888400897"
+            target="_blank">2019/12/22 20:30:06</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">気が付くとwsl2でlocalhost forwardingが効かなくなっていた。win10 19536のissueの模様。。<br/><br/><blockquote class="card card-default"><header><img  src="https://avatars2.githubusercontent.com/u/6154722?s=400&v=4" /><a href="https://github.com/microsoft/WSL/issues/4636" target="_blank">WSL2 localhost forwarding doesn't seem to work · Issue #4636 · microsoft/WSL · GitHub</a></header><div>Your Windows build number: Microsoft Windows [Version 10.0.19008.1000] What you&#39;re doing and what&#39;s happening: Running Ubuntu 18.04 with WSL 2 enabled. For example running in Powershell PS ...</div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1208843654875365376"
+            target="_blank">2019/12/23 5:16:01</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">とりあえずは仮想マシンに設定されているIPを使って回避しておくか。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1208844151908777984"
+            target="_blank">2019/12/23 5:17:59</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">次のビルトあたりに直るようですな。。<br/><blockquote class="card card-default"><header><img  src="https://avatars2.githubusercontent.com/u/6154722?s=400&v=4" /><a href="https://github.com/microsoft/WSL/issues/4769" target="_blank">Only one port can be accessed by the host through localhost at the same time · Issue #4769 · microsoft/WSL · GitHub</a></header><div>Windows build number: 10.0.19536.1000 Steps to reproduce: Listen on port A vianc -l &lt;PortA&gt;. The browser accesses http://localhost:PortA, and the console can output the browser request body. ...</div></blockquote></p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1208700050131447808"
+            target="_blank">2019/12/22 19:45:23</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">１２月のあたまごろ、御殿山庭園の紅葉がものすごくきれいだったんだよな。。 https://t.co/yaRoPHqRxb</p>
+        
+        <img  class="tweet-img" src="https://pbs.twimg.com/media/EMYqSQzU4AAhtWa.jpg" />
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1208711950760206336"
+            target="_blank">2019/12/22 20:32:40</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">いやぁ。まじにきれいだった。。 https://t.co/dGszzqy9Hx</p>
+        
+        <img  class="tweet-img" src="https://pbs.twimg.com/media/EMY1G7hVAAE5vap.jpg" />
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1203584291214524416"
+            target="_blank">2019/12/8 16:57:11</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">とりあえず大掃除の第一弾は終了。これから年末にかけて休日は大掃除が続く。今年も12/30からは何もせずのんびりと休日を過ごせるようにしたいね。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1208153892262801408"
+            target="_blank">2019/12/21 7:35:08</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">さて、今日も大掃除を少しやるか。。下駄箱・風呂・洗面・トイレあたりを土日でこなそうか。</p>
+        
+      </section>
+      
+    </article>
+    
+  </div>
+  <footer>
+    CopyLight 2019 Satoshi Fujiwara
+  </footer>
+  <script async src="https://platform.twitter.com/widgets.js"></script>
+
+  <script async src="./index.js"></script>
+
+</body>
+
+</html>

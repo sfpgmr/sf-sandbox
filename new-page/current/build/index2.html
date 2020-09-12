@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+
+<html lang="ja" prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb# article: http://ogp.me/ns/article#">
+
+<head>
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-15457703-9"></script>
+  <script>
+    if (!location.hostname.match(/localhost/)) {
+      window.dataLayer = window.dataLayer || [];
+      function gtag() { dataLayer.push(arguments); }
+      gtag('js', new Date());
+      gtag('config', 'UA-15457703-9');
+    }
+  </script>
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Twitter Viewer</title>
+  <meta name="description" content="自作Twitter Viewerによる自分のつぶやきの記録。Programming,Music,HTML5,WebGL,javascript,WebAudio,Gameなど" />
+  <meta name="keywords" content="Programming,Music,HTML5,WebGL,javascript,WebAudio" /> 	
+
+  <meta itemprop="image" content="https://www.sfpgmr.net/img/sfweb.png" />
+  <meta itemprop="name" content="S.F. Web" />
+  
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:site" content="S.F. Web" />
+  <meta name="twitter:url" content="./index2.html" />
+  <meta name="twitter:title" content="Twitter Viewer" />
+  <meta name="twitter:description" content="自作Twitter Viewerによる自分のつぶやきの記録。Programming,Music,HTML5,WebGL,javascript,WebAudio,Gameなど" />
+  <meta name="twitter:image" content="https://www.sfpgmr.net/img/sfweb.png" />
+  
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="./index2.html" />
+  <meta property="og:title" content="Twitter Viewer"/>
+  <meta property="og:site_name" content="S.F. Web" />
+  <meta property="og:description" content="Programming,Music,HTML5,WebGL,javascript,WebAudio">
+  <meta property="og:image" content="https://www.sfpgmr.net/img/sfweb.png">
+
+  <style>
+  * {
+  margin: 0;
+  padding: 0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+
+html {
+  margin: 0;
+  padding: 0;
+  font-size: 10px; }
+
+body {
+  margin: 0;
+  padding-left: 8px;
+  padding-right: 8px;
+  background: black;
+  color: white; }
+
+.top-nav {
+  position: fixed;
+  z-index: 99999;
+  background: rgba(0, 0, 0, 0.5);
+  display: block;
+  width: 100%;
+  height: 32px;
+  color: white; }
+
+#sentinel {
+  width: 0px;
+  height: 0px; }
+
+.contents {
+  padding-top: 32px;
+  width: 100%;
+  position: relative;
+  content: strict; }
+
+@keyframes blinking {
+  0% {
+    color: black; }
+  50% {
+    color: white; }
+  100% {
+    color: black; } }
+
+.loading {
+  font-family: monospace;
+  font-size: 24px;
+  position: fixed;
+  width: 100vw;
+  height: 100vh;
+  text-align: center;
+  padding-top: 50vh;
+  z-index: 32768;
+  background: black;
+  animation: blinking 2s infinite;
+  content: strict; }
+
+.contents > article {
+  background: #f0f0f0;
+  color: #202020;
+  position: absolute;
+  max-height: 95vh;
+  overflow: auto;
+  border-radius: 3px;
+  /* transition: opacity 1s linear;*/
+  opacity: 1.0; }
+
+.tweet-header {
+  display: grid;
+  align-items: end;
+  grid-template-columns: 40px 2fr 1fr;
+  grid-template-rows: 1fr;
+  font-size: 12px;
+  font-weight: bold; }
+
+.tweet-img {
+  width: 100%;
+  object-fit: cover; }
+
+.youtube {
+  position: relative;
+  cursor: pointer; }
+
+.youtube > img {
+  width: 100%;
+  object-fit: cover; }
+
+.youtube > svg.player-play {
+  width: 64px;
+  height: 64px;
+  left: calc(50% - 32px);
+  top: calc(50% - 32px);
+  position: absolute;
+  z-index: 1000;
+  opacity: 0.5; }
+
+.youtube:hover > svg.player-play {
+  opacity: 1.0; }
+
+.youtube:hover .player-play-1 {
+  stroke: #80808080; }
+
+.youtube > div.yt-title {
+  /*text-shadow: #fff 1px 1px 0;*/
+  font-size: 1.2rem;
+  color: white;
+  background: rgba(0, 0, 0, 0.5);
+  position: absolute;
+  left: 0;
+  top: 0;
+  overflow: auto;
+  z-index: 998; }
+
+.tweet-profile-img {
+  grid-column: 1/2;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%; }
+
+.tweet-user-name {
+  grid-column: 2/3; }
+
+.tweet-date {
+  font-size: 8px;
+  text-align: right;
+  grid-column: 3/4; }
+
+.contents > twitter-widget {
+  overflow: auto;
+  max-height: 960px;
+  position: absolute; }
+
+.contents > article > section > .tweet-text {
+  display: block;
+  padding: 4px;
+  word-break: break-all;
+  font-size: 12px; }
+
+.contents > article > h3 {
+  font-size: 12px; }
+
+blockquote.card {
+  margin: 4px;
+  padding: 4px;
+  font-size: 12px;
+  background: white;
+  border-radius: 4px; }
+
+blockquote.card > header {
+  display: grid;
+  grid-gap: 4px;
+  gap: 4px; }
+
+blockquote.card-default > header {
+  grid-template-columns: 64px 1fr; }
+
+blockquote.card-large > header {
+  grid-template-columns: 1fr; }
+
+blockquote.card > header > img {
+  width: 100%; }
+
+div.no-image {
+  display: block;
+  width: 64px;
+  height: 64px;
+  background: gray;
+  color: white;
+  text-align: center;
+  line-height: 64px; }
+ 
+  </style>
+</head>
+
+<body>
+  <div class="loading" id="loading">Loading</div>
+  <header class="top-nav">
+    <h1>S.F. Info.</h1>
+  </header>
+  <div class="contents" id="contents" rendersubtree="invisible skip-activation"> 
+    
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1270356432387371008/9j932EY6_normal.jpg" />
+        <p class="tweet-user-name">望月哲門/マンガ家@Tetsuto1319</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/Tetsuto1319/status/1281694739314556928"
+            target="_blank">2020/7/11 6:00:13</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">自分が分からなくなったとき、本を読みまくったら抜け出せた話。<br/><br/>（1/2）<br/><br/>＃がんばらなくても死なない https://t.co/0g9ZuvETqX</p>
+        
+        <img  class="tweet-img" src="https://pbs.twimg.com/media/Ecl-khhUYAEBhKl.jpg" />
+        
+        <img  class="tweet-img" src="https://pbs.twimg.com/media/Ecl-khgUYAAspL1.jpg" />
+        
+        <img  class="tweet-img" src="https://pbs.twimg.com/media/Ecl-khwU8AAxAA2.jpg" />
+        
+        <img  class="tweet-img" src="https://pbs.twimg.com/media/Ecl-kiNVAAAd_iD.jpg" />
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1212701145379946496/pSDVrvWj_normal.png" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1296923046633119746"
+            target="_blank">2020/8/22 6:32:04</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">“光の玉” 東京 横浜など各地で目撃 | NHKニュース   <blockquote class="card card-large"><header><img  src="https://www3.nhk.or.jp/news/html/20200822/K10012578421_2008220203_2008220207_01_03.jpg" /><a href="https://www3.nhk.or.jp/news/html/20200822/k10012578421000.html" target="_blank">“光の玉” 東京 横浜など各地で目撃 | NHKニュース</a></header><div>【NHK】21日夜、東京など各地の上空で光の玉のようなものが流れ落ちる様子が目撃されました。</div></blockquote></p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/806049795131379712/VBiU6Weq_normal.jpg" />
+        <p class="tweet-user-name">みむ*mim@hidemimtp</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/hidemimtp/status/1296643767655477248"
+            target="_blank">2020/8/21 12:02:19</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ありがちな、グラディウス風なオプションがいくつまで処理落ちしないで付けられるかテスト。プチコン4の最大表示数4096個までいってレーザーが打てなくなっても処理落ちなしでした。BASICなのに!BASICなのに!<br/> #petitcom #プチコン4 #NintendoSwitch https://t.co/nCSy11aBX0</p>
+        
+        <video class="tweet-img" controls src="https://video.twimg.com/ext_tw_video/1296643718183653376/pu/vid/480x270/6BIgg4PwTCYViP0G.mp4?tag=10" />
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/806258758963732480/LxgCOQjE_normal.jpg" />
+        <p class="tweet-user-name">佐天涙子@御坂美琴@satensan2828</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/satensan2828/status/1296208080145768448"
+            target="_blank">2020/8/20 7:11:03</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">どう考えても、再開発前の阪急梅田駅の方が良かった https://t.co/3pRL57iGl1</p>
+        
+        <img  class="tweet-img" src="https://pbs.twimg.com/media/Ef0OYGnVoAISe6T.jpg" />
+        
+        <img  class="tweet-img" src="https://pbs.twimg.com/media/Ef0OYOCUMAIHLaF.jpg" />
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/617722474327732224/kEGNMW1w_normal.png" />
+        <p class="tweet-user-name">b.p.s.@BasicProgrammer</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/BasicProgrammer/status/1296682252445728768"
+            target="_blank">2020/8/21 14:35:14</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">30年以上前のFM-11用5インチFDから、ギャプラスっぽいものを発掘【黒歴史】<br/><br/>FC版が話題に上がっていたので、動画についてみました。<br/>当時、友達の家でPC-98版を遊んで、無謀にもBASICで作ろうとして挫折した、苦い思い出...orz https://t.co/yqnl2jDWVY</p>
+        
+        <video class="tweet-img" controls src="https://video.twimg.com/ext_tw_video/1296681366755540992/pu/vid/640x400/9rUCimHSZx07YvLv.mp4?tag=10" />
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/875369762338910208/m8PeQD-P_normal.jpg" />
+        <p class="tweet-user-name">KARZWORKS@Karzworks</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/Karzworks/status/1296446562315440129"
+            target="_blank">2020/8/20 22:58:41</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">「シャイニング」<br/>2001年や時計仕掛けのスケールに比べて、適当なホテルで冬に少人数で撮影したお手軽映画と、公開以来ずっと思い込んでいた。<br/>ホテルは作り物、雪はすべて塩と知って<br/>やはりキューブリックはどうかしていると感服した。 https://t.co/wmLbh8rWLs</p>
+        
+        <img  class="tweet-img" src="https://pbs.twimg.com/media/Ef3nRv4U8AEZdPq.jpg" />
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1131382440/MixiIcon_normal.jpg" />
+        <p class="tweet-user-name">後藤寿庵@juangotoh</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/juangotoh/status/1296526084872183808"
+            target="_blank">2020/8/21 4:14:41</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">「くもとちゅうりっぷ」の天才アニメーター、政岡憲三が戦後に作った「捨て猫トラちゃん」。以前見たとき「えええ！？」ってびっくりしたシーンがここ。このクオリティの手描き背景がまるごと回り込む。どうやったんだろう。 https://t.co/RfsFL08Peb</p>
+        
+        <video class="tweet-img" controls src="https://video.twimg.com/ext_tw_video/1296525033645334528/pu/vid/480x360/rDI7AEqIoUqwOc6w.mp4?tag=10" />
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1238004519918657537/pa8wpHVr_normal.jpg" />
+        <p class="tweet-user-name">LITTLE-NERO@LITTLExNERO</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/LITTLExNERO/status/1296059231422930947"
+            target="_blank">2020/8/19 21:19:35</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">SoundCloudから曲を引き上げたので、代わりに最近作ったので一番好きな曲を。自分はChiptuneはmp3やストリーミング再生より、実データを開いて聴くほうが好きなんです、勉強にもなるし。今後は自分の曲もその方向で公開したい。 https://t.co/oqIDabb89J</p>
+        
+        <video class="tweet-img" controls src="https://video.twimg.com/ext_tw_video/1296056823582060546/pu/vid/1094x720/31F1-ycrdyYOiaJ9.mp4?tag=10" />
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1212701145379946496/pSDVrvWj_normal.png" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1296204201010192384"
+            target="_blank">2020/8/20 6:55:38</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ちょっと夏バテで趣味に対するモチベーションが著しく低下。気が付くと神戸の夜景の動画ばかり観てる。私のモニタはWQXGAだけど、それでも解像度が高いというのはすごいと実感できる。なんか綺麗で見とれてしまう。HDとは違う密度である。４Ｋだとどれだけきれいなんだか。。<br/><br/><div class="youtube" data-type="yt" id="Ls6GKmZNfu8"><div class="yt-title">Youtube - 4K Kobe Night View Timelapse 神戸夜景S　ー時空の栞ー</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img  data-href="https://youtu.be/Ls6GKmZNfu8" class="youtube" src="https://i.ytimg.com/vi/Ls6GKmZNfu8/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1296206902007742464"
+            target="_blank">2020/8/20 7:06:22</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">それと地蔵川とか柿田川とかのおそろしく透明度の高い湧水を観てるとホッとしますわ。いやぁ。疲れてますな。。<br/><br/><div class="youtube" data-type="yt" id="2_icpkdQeTU"><div class="yt-title">Youtube - 4K 水中花　梅花藻 (水中のバイカモ) Underwater Ranunculus aquatilis</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img  data-href="https://youtu.be/2_icpkdQeTU" class="youtube" src="https://i.ytimg.com/vi/2_icpkdQeTU/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1296207403910758402"
+            target="_blank">2020/8/20 7:08:22</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">柿田川は２，３回行ってるが、また行きたいねえ。。<br/><br/><div class="youtube" data-type="yt" id="4-51tf9aXuM"><div class="yt-title">Youtube - 神秘の清流 柿田川 〜8KVRで体験！空中散歩と絶景癒しスポット〜/Explore the Enchanting Crystal Waters of Kakita River with 8KVR!!!</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img  data-href="https://youtu.be/4-51tf9aXuM" class="youtube" src="https://i.ytimg.com/vi/4-51tf9aXuM/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1264227591185022976/2G77aj5L_normal.jpg" />
+        <p class="tweet-user-name">ふぁてちゃ提督@9月たぶん京都いくよ@fatechan</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/fatechan/status/1296057235739615233"
+            target="_blank">2020/8/19 21:11:39</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">奥穂→ジャンダルム@馬の背下り https://t.co/0JEXzIzG2w</p>
+        
+        <video class="tweet-img" controls src="https://video.twimg.com/ext_tw_video/1296056893698265095/pu/vid/1280x720/2El35RiygPq4Xd9A.mp4?tag=10" />
+        
+      </section>
+      
+    </article>
+    
+  </div>
+  <footer>
+    CopyLight 2019 Satoshi Fujiwara
+  </footer>
+  <script async src="https://platform.twitter.com/widgets.js"></script>
+
+  <script async src="./index.js"></script>
+
+</body>
+
+</html>

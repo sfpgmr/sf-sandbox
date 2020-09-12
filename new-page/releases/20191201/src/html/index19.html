@@ -1,0 +1,1142 @@
+<!DOCTYPE html>
+<html lang="ja" prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb# article: http://ogp.me/ns/article#">
+
+<head>
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-15457703-9"></script>
+  <script>
+    if (!location.hostname.match(/localhost/)) {
+      window.dataLayer = window.dataLayer || [];
+      function gtag() { dataLayer.push(arguments); }
+      gtag('js', new Date());
+      gtag('config', 'UA-15457703-9');
+    }
+  </script>
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>トップページをリニューアルする</title>
+  <meta name="description" content="リニューアル用のトップページデザインを考えて実装する" />
+  <meta name="keywords" content="Programming,Music,HTML5,WebGL,javascript,WebAudio" /> 	
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <meta itemprop="image" content="https://www.sfpgmr.net/img/sfweb.png" />
+  <meta itemprop="name" content="S.F. Web" />
+  
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:site" content="S.F. Web" />
+  <meta name="twitter:url" content="./index19.html" />
+  <meta name="twitter:title" content="リニューアル用のトップページデザイン" />
+  <meta name="twitter:description" content="リニューアル用のトップページデザインを考えて実装する" />
+  <meta name="twitter:image" content="https://www.sfpgmr.net/img/sfweb.png" />
+  
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="./index19.html" />
+  <meta property="og:title" content="リニューアル用のトップページデザイン"/>
+  <meta property="og:site_name" content="S.F. Web" />
+  <meta property="og:description" content="Programming,Music,HTML5,WebGL,javascript,WebAudio">
+  <meta property="og:image" content="https://www.sfpgmr.net/img/sfweb.png">
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    html {
+      margin: 0;
+      padding: 0;
+      font-size:10px;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      background: black;
+      color: white;
+    }
+
+    .top-nav {
+      position:fixed;
+      z-index:99999;
+      background: rgba(0,0,0,0.5);
+      display: block;
+      width:100%;
+      height:32px;
+      color:white;
+    }
+    #sentinel {
+      width:0px;
+      height:0px;
+    }
+    .contents {
+      padding-top:32px;
+      width: 100%;
+      position: relative;
+      content: strict;
+    }
+
+    @keyframes blinking {
+      0% {
+        color: black;
+      }
+
+      50% {
+        color: white;
+      }
+
+      100% {
+        color: black;
+      }
+    }
+
+    .loading {
+      font-family: monospace;
+      font-size: 24px;
+      position: fixed;
+      width: 100vw;
+      height: 100vh;
+      text-align: center;
+      padding-top: 50vh;
+      z-index: 32768;
+      background: black;
+      animation: blinking 2s infinite;
+      content: strict;
+    }
+
+
+    .contents > article {
+      background: #f0f0f0;
+      color: #202020;
+      position: absolute;
+      max-height: 960px;
+      overflow: auto;
+      border-radius: 3px;
+      transition: opacity 1s linear;
+      opacity: 0.0;
+    }
+
+    .tweet-header {
+      display: grid;
+      align-items: end;
+      grid-template-columns: 40px 2fr 1fr;
+      grid-template-rows: 1fr;
+      font-size: 12px;
+      font-weight: bold;
+    }
+
+
+    .tweet-img {
+      width: 100%;
+      object-fit: cover;
+    }
+
+    .youtube {
+      position: relative;
+      cursor: pointer;
+    }
+
+    .youtube > img {
+      width: 100%;
+      object-fit: cover;
+    }
+
+    .youtube > svg.player-play {
+      width:64px;
+      height:64px;
+      left:calc(50% - 32px);
+      top:calc(50% - 32px);
+      position:absolute;
+      z-index: 1000;
+      opacity: 0.5;
+    }
+    
+    .youtube:hover > svg.player-play {
+      opacity: 1.0;
+    }
+
+    .youtube:hover .player-play-1 {
+      stroke:#80808080;
+    }
+
+    
+    .youtube > div.yt-title {
+      /*text-shadow: #fff 1px 1px 0;*/
+      font-size: 1.2rem;
+      color:white;
+      background:rgba(0, 0,0,0.5);
+      position:absolute;
+      left:0;
+      top:0;
+      overflow: auto;
+      z-index:998;
+    }
+
+
+    .tweet-profile-img {
+      grid-column: 1/2;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+    }
+
+    .tweet-user-name {
+      grid-column: 2/3;
+    }
+
+    .tweet-date {
+      font-size: 8px;
+      text-align: right;
+      grid-column: 3/4;
+    }
+
+    .contents>twitter-widget {
+      overflow: auto;
+      max-height: 960px;
+      position: absolute;
+    }
+
+    .contents>article>section>.tweet-text {
+      display: block;
+      padding: 4px;
+      word-break: break-all;
+      font-size: 12px;
+    }
+
+    .contents>article>h3 {
+      font-size: 12px;
+    }
+
+    blockquote.card {
+      margin:4px;
+      padding:4px;
+      font-size:12px;
+      background:white;
+      border-radius: 4px;
+    }
+
+    blockquote.card > header {
+      display:grid;
+      grid-gap:4px;
+      gap:4px;
+    }
+
+    blockquote.card-default > header {
+      grid-template-columns:64px 1fr;
+    }
+
+    blockquote.card-large > header {
+      grid-template-columns:1fr;
+    }
+
+    blockquote.card > header > img {
+      width:100%;
+    }
+
+
+    div.no-image {
+      display: block;
+      width:64px;
+      height:64px;
+      background:gray;
+      color:white;
+      text-align: center;
+      line-height: 64px;
+    }
+
+  </style>
+</head>
+
+<body>
+  <div class="loading" id="loading">Loading</div>
+  <header class="top-nav">
+    <h1>S.F. Info.</h1>
+  </header>
+  <div class="contents" id="contents" rendersubtree="invisible skip-activation"> 
+    
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1150673191448109056"
+            target="_blank">2019/7/15 16:47:21</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">習志野は初戦を8回コールド7-0で安房に勝利。山内くんは要所で締めるピッチング。そして杉山くんにリリーフ。山内くんも杉山くんもいまひとる伸び悩んでる感じがする。初戦だからこんなもんかもしれんけど。初戦そつなく勝てて良かったというところか。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1150673538879111169"
+            target="_blank">2019/7/15 16:48:44</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">山内くんは昨年秋の県大会の決勝戦で、杉山くんが打ち込まれた後リリーフしたんだけど、そのピッチングはちょっと神がかってたんだよね。ものすごく精緻なコントロールだったし、カーブの曲がりも異常だった。小林監督も1年で投げさせるはずだわ。。と思った。そのころと比較してしまうんだな。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1150673958535979008"
+            target="_blank">2019/7/15 16:50:24</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">杉山くんも秋県大会からちょっと色々見出してる感じがしないでもない。ちょっと足りないと思うのはスライダーのコントロールと、置きにいった球が甘いところなんだよな。そして力を入れると少し中に入ってしまう。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1150674445024911360"
+            target="_blank">2019/7/15 16:52:20</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">今日もスライダーのコントロールがイマイチだったけど、うまいことボールが散ったので良かった。でもこれがBシードクラスに対してだったらどうなるだろうかとちょっと思った。力のある投手なのでそこがすごく惜しいところ。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1150675001588117504"
+            target="_blank">2019/7/15 16:54:33</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">春のセンバツでもバッティングピッチャーをかってでて、チームの準優勝に貢献してるし、ここは表舞台でビシッと抑える姿をみたいという気持ちが強くて、つい投球内容について辛口なコメントをしてしまう。頑張ってほしいな。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1150675493475086337"
+            target="_blank">2019/7/15 16:56:30</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">山内くんもコンパクトにまとまってしまった感じがするんだよな。さて、あとは山本くんを見たいところだけど、次の試合で投げるかな。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1150676006497206273"
+            target="_blank">2019/7/15 16:58:33</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">そして木総は柏井と。打線が強力すぎて、柏井が勝つ見込みはほとんど感じられなかったけど、ノーアウト満塁での1点止まり、あそこが痛かったよなあ。もう1-2点追加でほしかったところ。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1150676790148419584"
+            target="_blank">2019/7/15 17:01:39</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">今日は根本くんが先発。そしてエースナンバーではなく11番。春の県大会では制球が荒れてたけど、今日もちょっとそういうところがあったよなあ。ということは篠木くんがエースナンバーということか。春の投球内容からするとまあそうだよなあと思う。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1150677204495265792"
+            target="_blank">2019/7/15 17:03:18</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ただそれでも緩急はすごくて、もうちょっと調子が上がって制球が良くなるとやっぱりすごい投手になるだろうなあと思う。体はもうプロ並に出来上がってるし。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1150678458135040002"
+            target="_blank">2019/7/15 17:08:17</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">吉鶴くんのピッチングもようやく見ることができた。ちょっと今日は初戦だからみんなそれなりなんだろうけど、これに加え篠木くんがいるとなるとやっぱり本命は木総かなあと思ってしまう。他のシード校のチームがどれだけ食い下がれるか。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1150678461201055744"
+            target="_blank">2019/7/15 17:08:18</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">中央学院、東海大望洋あたりとの一線が楽しみだよなあ。ちょっと話はそれるけど東海大望洋と拓大紅陵は3回戦で当たるから、それも注目ですわな。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1150679307099836417"
+            target="_blank">2019/7/15 17:11:40</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">Aシードは全校危なげなく勝った2回戦だったな。さすがに2回戦では番狂わせはないか。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1150679310115545089"
+            target="_blank">2019/7/15 17:11:40</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ちょっと楽しみなのは県立船橋。3-0の完封で2回戦勝利。3回戦勝つとおそらく習志野と当たる。いつもベスト32くらいは上がってくる。そしてここ2-3年で習志野を一度下している。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1150679814816202752"
+            target="_blank">2019/7/15 17:13:41</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">おっと。その前に習志野高校は津田沼高校と「習志野ダービー」ですな。さて、どうなるか。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1151806621447671808"
+            target="_blank">2019/7/18 19:51:12</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">津田沼と習志野は3-8で習志野勝利。順当勝ちだが私はこの試合津田沼のピッチャーを褒めたい。結果的には8失点だが、投球フォームといい、緩急といい素質を持ってるなと感じた。抑えの効いたストレートが低めにコントロールできてたしね。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1151927709104128000"
+            target="_blank">2019/7/19 3:52:22</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">飯塚くんが最終回で投げたが、ほぼストレートしか投げてなかったな。最速で150k出てたね。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1151929402076225536"
+            target="_blank">2019/7/19 3:59:05</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">左側ブロックは順当に銚子商と専松が上がってきそうだよね。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1151929403376459776"
+            target="_blank">2019/7/19 3:59:06</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">右側は順当にいけば成田と習志野、木総と中央学院があたるところが最初のヤマ場だろうか。そして準決勝がどうなるか。右側ブロックのほうが厳しい感じがする。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/1127735135757979648/Omk45Nmr_normal.png" />
+        <p class="tweet-user-name">山浦清透@技術をわかりやすく@kiyotoyamaura</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/kiyotoyamaura/status/1151297024177901569"
+            target="_blank">2019/7/17 10:06:15</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">npmが突如更新されなくなる覚悟をしといたほうがいいかも。運営母体がやばい状況。オープンソースでスタートしたが資金が厳しくVCのお金を入れ法人化。ここ1年はCTOが追い出され、新しく入ったCTOが昔の仲間を連れてきて元々いた社員と合わなくて揉め、昔からいた社員が大量離職。突然の解雇も行われた</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/1107730470232571905/lwXmMvzW_normal.jpg" />
+        <p class="tweet-user-name">Janne Hellsten@nurpax</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/nurpax/status/1151281599318650880"
+            target="_blank">2019/7/17 9:04:57</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">My interactive 6502 assembler web app is now live at: <a href="https://nurpax.github.io/c64jasm-browser/" target="_blank">nurpax.github.io/c64jasm-browse…</a><br/><br/>Go break it!<br/><br/>It requires a reasonably up-to-date browser (tested on Chrome, Safari and FF).  Not really usable on mobile -- it should run but sucks UX wise. https://t.co/D5PI4seosP</p>
+        
+        <video class="tweet-img" controls src="https://video.twimg.com/ext_tw_video/1151278838686597120/pu/vid/1118x720/l1ImIV14Y0_-y-vK.mp4?tag=10" />
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1151233014120083456"
+            target="_blank">2019/7/17 5:51:54</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">うーむ。これだけ気温の変化があるとほんと体がきつい。むしろ暑さが続くほうがよかったりするんだけどね。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1151233015336427520"
+            target="_blank">2019/7/17 5:51:54</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">そして雨の日のこの体のだるさよ。。なんだこれは。。うっとぉしいこのうえない。。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/1696646376/_____normal.jpg" />
+        <p class="tweet-user-name">ORION80@orion80</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/orion80/status/1150977335832670208"
+            target="_blank">2019/7/16 12:55:55</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">1983年発売の「ジェルダ」。いわゆるゼビウスをワイヤーフレーム3Dで再現してみたというコンセプトのゲームなんだけど、当時メッチャやりたくてウズウズしてた。<br/><br/>それを！@apaslothy さんが80mk2に勝手移植してくれたの！<br/><br/>うーん感動。<br/>今回の #80mk2 会でメッチャプレイしました。純粋に楽しい！ https://t.co/ulhBpdgKaC</p>
+        
+        <img loading="lazy" class="tweet-img" src="https://pbs.twimg.com/media/D_kXsgRUIAAM8D7.jpg" />
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/845473856668119040/QDkgXe1k_normal.jpg" />
+        <p class="tweet-user-name">Brendan Gregg@brendangregg</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/brendangregg/status/1150796412931600384"
+            target="_blank">2019/7/16 0:57:00</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">Announcing my next book: BPF Performance Tools: Linux System and Application Observability, for which I developed over 100 new tools <a href="http://www.brendangregg.com/blog/2019-07-15/bpf-performance-tools-book.html" target="_blank">brendangregg.com/blog/2019-07-1…</a> https://t.co/FOWr4mG05U</p>
+        
+        <img loading="lazy" class="tweet-img" src="https://pbs.twimg.com/media/D_hyvHXU0AA8pBz.jpg" />
+        
+        <img loading="lazy" class="tweet-img" src="https://pbs.twimg.com/media/D_hy1r8UIAEYsY0.jpg" />
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/984612244842463232/kkvqMhF3_normal.jpg" />
+        <p class="tweet-user-name">TINY野郎@tiny_yarou</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/tiny_yarou/status/1150233061465870336"
+            target="_blank">2019/7/14 11:38:26</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">Bug太郎さん作の、PC-8001版ドルアーガ。動きのスムーズさに驚愕なのです！ https://t.co/J9adsMnXJR</p>
+        
+        <video class="tweet-img" controls src="https://video.twimg.com/ext_tw_video/1150232918003871745/pu/vid/640x360/bl83unTeUnvR8ISq.mp4?tag=10" />
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1150320943358627841"
+            target="_blank">2019/7/14 17:27:39</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">自作RYDEENカバーのプレイリストを整理。最初のほうから聴くとレベルアップしてるのがわかるけど、１０年かかってるからね。これ。。<br/><br/><blockquote class="card card-default"><header><img loading="lazy" src="https://i.ytimg.com/vi/Fo1YzqRwDwQ/hqdefault.jpg?sqp=-oaymwEXCNACELwBSFryq4qpAwkIARUAAIhCGAE=&rs=AOn4CLCzlo-oaaYhYIy8wJs0QDk6xmoi9Q" /><a href="https://www.youtube.com/playlist?list=PLmZxXGcVDPAThOGr2p_5pi72Vgayu_Yx7" target="_blank">YMO - Rydeenをカバーする - YouTube</a></header><div>YMOのRydeen(JASRAC 作品コード 097-0258-0 ＲＹＤＥＥＮ)をカバーしています。 一番上が最新版です。修正のたびにアップしているのでこのプレイリストは更新履歴になっています。</div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1150322510962946048"
+            target="_blank">2019/7/14 17:33:53</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">違うか。２０年近いのか。。あほだな。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1150324387330977792"
+            target="_blank">2019/7/14 17:41:20</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">Psycle -&gt; Buzz -&gt; REAPERとツールを変えてきた。どれもいいツールだけどやっぱりREAPERが一番かなと思うね。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1150325685925208065"
+            target="_blank">2019/7/14 17:46:30</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">Psycle使う前はBuzzで、その前はFast TrackerだとかMOD Plug Trackerとか使ってたんだよな。AodixはテクノポリスとかBehind The Maskのカバーで一時期使ってた。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1150325686957031425"
+            target="_blank">2019/7/14 17:46:30</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">Aodixはモジュラータイプ・トラッカーの進化形の一つの方向性を示してたんだけど、作者のArguruさんがお亡くなりになってしまって、そこで開発が止まってしまったんですな。結構好きだったんだけどね。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1150325925982003202"
+            target="_blank">2019/7/14 17:47:27</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">もうソフトウェアもダウンロードできなくなってるね。。<br/><blockquote class="card card-default"><header><img loading="lazy" src="https://static.kvraudio.com/i/b/aodix.jpg" /><a href="https://www.kvraudio.com/product/aodix-by-arguru-software" target="_blank">KVR: Aodix by Arguru Software - Tracker</a></header><div>Aodix by Arguru Software (@KVRAudio Product Listing): Aodix is described as the ultimate bridge between tracking and sequencing, featuring full support for ASIO and VST 2.0 allowing modular wiring of VST instances and pure real-time operation. Main features: 256 track multi-pattern sequencer. Virtually unlimited pattern length, intended for pattern call operation. 32-bit float sample precision. Up to 960 PPQN timestamp precision. Selectable timelin...</div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1150329898210213888"
+            target="_blank">2019/7/14 18:03:14</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">画期的だったのはAudio I/OがASIOだけだというところ。この割り切りがまずすごいよね。のちにWASAPIができたから、そっちにも対応したかもしれんけど。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1150329903864172546"
+            target="_blank">2019/7/14 18:03:15</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">普通のDAWはイベントが横に流れるんだけど、Aodixは縦に流れるんだよね。そしていわゆるMOD Trackerというのはトラックが単音なんだけど、Aodixはマルチトラック・マルチイベントというところが画期的なんだよね。 https://t.co/jcGSWGrdpz</p>
+        
+        <img loading="lazy" class="tweet-img" src="https://pbs.twimg.com/media/D_bK8vKUYAAMLYC.png" />
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1150331569116082177"
+            target="_blank">2019/7/14 18:09:52</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">これはシーケンス・パターンの画面なんだけど、横にノートを追加してくことでコードが入力できるんだよね。それとパターンとトラックの考え方が独特なんだよね。 https://t.co/Xbdmy4vL9o</p>
+        
+        <img loading="lazy" class="tweet-img" src="https://pbs.twimg.com/media/D_bMdvAU8AEUbgh.png" />
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1150332345599135744"
+            target="_blank">2019/7/14 18:12:57</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">それをノートイベントが前後に簡単にシフトできるし、ゲート・タイムが視覚的に把握できるという点でも他のTrackerを凌駕してたと思う。こういうの<br/>MOD Trackerというカテゴリでは苦手な部分なんだよね。でもまあこれは「あれば便利」というレベルの話で必須ではないけどね。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1150332920596275201"
+            target="_blank">2019/7/14 18:15:15</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">トラックのつくりかたも独特で、パターンでフレーズを作ってそれをトラックに並べてくんだけど、それを入れ子にできるんだよね、Aodixは。なのですごく柔軟な音作りができるんだよな。言葉ではうまく説明できんところだけど。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1150334342062731264"
+            target="_blank">2019/7/14 18:20:53</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">モジュラー・ビューによるオーディオ・ルーティングもBuzzやPsycle譲り。Aodixがすごいのはチャンネルごとにルーティング接続ができるところ。 https://t.co/SjPlXtmIOA</p>
+        
+        <img loading="lazy" class="tweet-img" src="https://pbs.twimg.com/media/D_bO-2tUIAARRsi.jpg" />
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1150334827926712320"
+            target="_blank">2019/7/14 18:22:49</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">こういうマルチアウトなVSTもきちんと接続設定が視覚的にサポートされていた。よくできてるよね。。 https://t.co/tKDnO9JTbR</p>
+        
+        <img loading="lazy" class="tweet-img" src="https://pbs.twimg.com/media/D_bPbP5UIAAHANK.png" />
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1150335393801199616"
+            target="_blank">2019/7/14 18:25:04</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">Aodixもバージョンアップを重ねて洗練されていく途中で作者がお亡くなりになり、その後フリーウェア化されてしばらく公開されてたんだけど、どうもそのサイトも閉鎖されてしまったようだね。。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1149655375097896960"
+            target="_blank">2019/7/12 21:22:55</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">いやーこれはなかなか。。 https://t.co/ngwnkNfFUx</p>
+        
+        <img loading="lazy" class="tweet-img" src="https://pbs.twimg.com/media/D_Rld5cUYAIn_aa.jpg" />
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1149656331600551936"
+            target="_blank">2019/7/12 21:26:43</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">🕹が使いづらすぎて辛い。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1149774114841776129"
+            target="_blank">2019/7/13 5:14:45</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">このスティックでシューティングの微妙なコントロールは本当にきつい。。がどこか懐かしい感じがする。 https://t.co/GLYX52UHxc</p>
+        
+        <img loading="lazy" class="tweet-img" src="https://pbs.twimg.com/media/D_TRdeTU8AEBDZi.jpg" />
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1149776391140827136"
+            target="_blank">2019/7/13 5:23:48</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">なんか2019/12にフルサイズでちゃんとキーボードが動く「C64」ちゅうのが発売予定らしいね。。<br/><blockquote class="card card-default"><header><img loading="lazy" src="https://retrogames.biz/app/uploads/thec64-artwork.jpg" /><a href="https://retrogames.biz/the-c64" target="_blank">The C64 - Retro Games</a></header><div>The C64 is back, this time full-sized with a working keyboard for the dedicated retro home-computer fan.</div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1149776561052119040"
+            target="_blank">2019/7/13 5:24:28</a></p>
+      </header>
+      <section>
+        <p class="tweet-text"><div class="youtube" data-type="yt" id="4yOch48SScs"><div class="yt-title">Youtube - THEC64 — Coming December 2019</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/4yOch48SScs" class="youtube" src="https://i.ytimg.com/vi/4yOch48SScs/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1149778480193667073"
+            target="_blank">2019/7/13 5:32:06</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">BASICとアセンブラでプログラミング可能と書いてあるな。価格は15000円くらいですな。。2019/12発売か。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1149785849199915008"
+            target="_blank">2019/7/13 6:01:23</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">C64 MiniでもこのTrackerはBASICからロードすれば動くらしいね。。<br/><br/><blockquote class="card card-default"><header><img loading="lazy" src="http://csdb.dk/gfx/releases/165000/165302.png" /><a href="https://csdb.dk/release/?id=165302" target="_blank">[CSDb] - SID-Wizard 1.8 by Hermit and SIDRIP Alliance and Singular (2018)</a></header><div></div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1149785850512732160"
+            target="_blank">2019/7/13 6:01:23</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">エミュレータで開発してC64 Miniで動かして楽しむなんていうこともできるんですな。。ニッチだがなかなか奥の深い世界ですわ。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1149968077406138368"
+            target="_blank">2019/7/13 18:05:29</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">そもそもUSのPCに憧れがあって。まあ最初はApple IIなんだけどね。大阪日本橋に行ってはため息をついたもんだ。本体だけで３０万以上はしていたからね。当然中学生の私じゃ手が出ないわけ。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1149968078748258304"
+            target="_blank">2019/7/13 18:05:30</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">国内だとPC8001やMZ80K2くらいの頃だと思うんだな。魅力的に映ったのはそのグラフィックと本体筐体のデザインですわ。<br/><blockquote class="card card-default"><header><img loading="lazy" src="https://upload.wikimedia.org/wikipedia/commons/7/79/Apple_iieuroplus.jpg" /><a href="https://ja.wikipedia.org/wiki/Apple_II#/media/%E3%83%95%E3%82%A1%E3%82%A4%E3%83%AB:Apple_II_Plus.jpg" target="_blank">Apple II - Wikipedia</a></header><div></div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1149968776361701382"
+            target="_blank">2019/7/13 18:08:16</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">雑誌の広告見ても日本のはほんと無骨で事務的な香りがするのに対して、Apple IIは当時すでにエンターテイメント性を感じさせるものがあったんだよね。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1149969456682000384"
+            target="_blank">2019/7/13 18:10:58</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">グラフィックも280ドット×192ドット4色くらいなんだけど、当時のPC8001は疑似グラフィック160x100だからまあその表現力の差はかなり違ってた。アメリカはやっぱ違うわ。と当時思った。東レが代理店だったのはちょっと不思議に思ったけどね。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1149969978201821184"
+            target="_blank">2019/7/13 18:13:02</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">実物もショップのショーケースの中でしか見ることはできなかったし、本物を触ったことは結局一度もないんだけどね。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1149970605418123264"
+            target="_blank">2019/7/13 18:15:32</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ベーマガでもApple II のゲームは毎号掲載されてたような気がするんだよな。記憶にあるのは「カラテカ」と「バンディッツ」「ウィザードリィ」だよな。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1149971061485654016"
+            target="_blank">2019/7/13 18:17:21</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">当時シューティング好きだったから、「バンディッツ」の記事はかなり熟読した記憶があって。実際はクソゲーっぽいんだけどね。Youtubeみて「なるほどぉ」と。<br/><div class="youtube" data-type="yt" id="1f2pBfTO2Sw"><div class="yt-title">Youtube - Bandits longplay w/ cheats (Apple II - Sirius)</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/1f2pBfTO2Sw" class="youtube" src="https://i.ytimg.com/vi/1f2pBfTO2Sw/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1149971544690401281"
+            target="_blank">2019/7/13 18:19:16</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ただ動きに関してはピクセル単位で高速に動いてて当時の国産PCのスペック考えたら、「やっぱすげぇ！」ってなるんだけど。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1149972203267452928"
+            target="_blank">2019/7/13 18:21:53</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">CPUはMOSの6502。チップ単価が8080に比べてめちゃ安かったから採用したらしいんだけど。アーキテクチャ的には8080は確かに豪華な気がする。6502はいかにも回路が少なくて安く作れそうな感じ（笑）。でも動作速度は速いCPUなんだよな。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1149972812276174849"
+            target="_blank">2019/7/13 18:24:18</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">国産のPCは日立・富士通が6800/6809あたりで、その他はほぼZ80だったよな。6502使ってるPCはなかったと思うんだよ。C64も6510だったよな。アメリカではホーム・コンピュータ用のCPUはほぼ6502系で一時期占められてたんだよな。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1149973372249317376"
+            target="_blank">2019/7/13 18:26:32</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">「ウィザードリィ」はタイトル画面しか知らんが、「ロールプレイングゲーム」というジャンルを確立した金字塔のようなゲームだったよな。<br/><div class="youtube" data-type="yt" id="rxGVVI0d6-Y"><div class="yt-title">Youtube - Wizardry #1(AppleII Ver.) GamePlay part1</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/rxGVVI0d6-Y" class="youtube" src="https://i.ytimg.com/vi/rxGVVI0d6-Y/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1149973920948211713"
+            target="_blank">2019/7/13 18:28:42</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">シューティング・ゲームしか知らん私にとっては「何なん？」ていう感じだったけど（笑）。パーティを組んでプレイヤーを成長させながらシナリオをクリアしていくという。まあ画期的ですわな。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1149974826880122880"
+            target="_blank">2019/7/13 18:32:18</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">そんなクリエイティブで独創的なゲームが出現するのが「Apple II」というパソコンだった。すごいと思わない？</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1149974828163616770"
+            target="_blank">2019/7/13 18:32:19</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">あとでこのパソコンは2人のスティーブによって作られたことを知るんだけど。そりゃ出来はいいよねえ。だからあんなにクリエイティブな香りがしてたんだなと。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1149975391672471552"
+            target="_blank">2019/7/13 18:34:33</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">この「カラテカ」の画面もあちこちの雑誌で見かけたよ。。今は動く画面が見れるようになった。感涙ものですわ。。<br/><div class="youtube" data-type="yt" id="wKqk9kosCs4"><div class="yt-title">Youtube - Apple II Game: Karateka (1984 Brøderbund)</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/wKqk9kosCs4" class="youtube" src="https://i.ytimg.com/vi/wKqk9kosCs4/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1149976233490309120"
+            target="_blank">2019/7/13 18:37:54</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">まあそれでApple IIはあきらめて。それで白羽の矢がたったのがC64なわけだけど。確か10万を切る価格だったと思うんだよね。ただこの時期になると国産パソコンもまともなグラフィック機能を持つようになってたから、見た目低解像度なC64はちょっとチープに映ったんだよな。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1149977310101008384"
+            target="_blank">2019/7/13 18:42:10</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">VIC 1001とかマックス・マシーンなんちゅう廉価版のPCもあったんだけど、RAMの少なさが気になってしょうがなかった。でまあMZ-700というのがシャープから出て、79,800円なのでそれに飛びついたんだよね。実際はテープドライブつけたから89,800円なんだけどね。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1149977311443210240"
+            target="_blank">2019/7/13 18:42:11</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">そこから私は国産PCに流れていったので、アメリカ製の8ビットPCを手にすることはできなかった。かなり後に社会人になってIBMのノート<br/>PCを購入してアメリカ製のPCは手にすることができたはできたけどね。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1149977633100197889"
+            target="_blank">2019/7/13 18:43:27</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">グラフィックに注目してたのに、当時一番グラフィック機能が貧弱なMZ-700を買ってしまったのはなぜなのかはよくわからんのだけど（笑）。多分価格とRAMの多さに惹かれたんだと思う。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1149978402171977729"
+            target="_blank">2019/7/13 18:46:31</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">この流れでくると選択はPC6001のほうが自然なんだけど、なぜかMZ-700（笑）。なぜP6を買わなかったのかというとなぜかグラフィック機能に重きを置かずRAM容量だけで比較したから（笑）。「クリーンコンピュータ」という思想にもなぜか惹かれたんだよな。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1149979092554354688"
+            target="_blank">2019/7/13 18:49:15</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">C64を買わなかったのはC64の情報が雑誌にはほとんど載ってなかったから。C64がヒットしてから雑誌にちょこちょこ載るようになって。そこで「KAWASAKIシンセサイザー」のことを知ったわけ。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1149980321019908096"
+            target="_blank">2019/7/13 18:54:08</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">雑誌によるとC64はシンセのようなサウンドチップが載っていると。そしてこのソフトウェアの紹介をしてたわけなんだけど。Youtubeにもあって最近思い出して聞いたんだけど、PSGというかファミコンっぽい音でこれがなんでその雑誌に紹介されていたのかちょっと不思議で（笑）。<br/><div class="youtube" data-type="yt" id="1h5QJDDnVE0"><div class="yt-title">Youtube - Kawasaki Synthesizer Demo - C64</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/1h5QJDDnVE0" class="youtube" src="https://i.ytimg.com/vi/1h5QJDDnVE0/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1149981123054694401"
+            target="_blank">2019/7/13 18:57:20</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">これなんかイントロでフィルタのカットオフをいじってて。こういうことがSIDでは普通にできるんだよな。<br/><div class="youtube" data-type="yt" id="yarskQsDHuU"><div class="yt-title">Youtube - Mitch & Dane - "Gloria" (C64) [Oscilloscope View]</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/yarskQsDHuU" class="youtube" src="https://i.ytimg.com/vi/yarskQsDHuU/hqdefault.jpg" /></div>   <br/><br/>PSGと全然違うよね。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1149985637723852806"
+            target="_blank">2019/7/13 19:15:16</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">音は3音しか出ないので、高速アルペジオ疑似和音という、パソコンの自動演奏でしかなしえない奏法が開発されたりしてね。<br/><div class="youtube" data-type="yt" id="XDdDpqxMurM"><div class="yt-title">Youtube - C64 Jeroen Tel's "Kinetix" Oscilloscope View</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/XDdDpqxMurM" class="youtube" src="https://i.ytimg.com/vi/XDdDpqxMurM/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1149986063999328256"
+            target="_blank">2019/7/13 19:16:58</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">そしてソフトウェア技術が進化してサンプル音を鳴らすことができるようになるんだよな。<br/><div class="youtube" data-type="yt" id="OfYsDQqzhk8"><div class="yt-title">Youtube - C64 Jeroen Tel's "Turbo Outrun" Oscilloscope view</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/OfYsDQqzhk8" class="youtube" src="https://i.ytimg.com/vi/OfYsDQqzhk8/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1149986740716728320"
+            target="_blank">2019/7/13 19:19:39</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">矩形波のデューティ比を変えたサウンドなんかも余裕でこなす。このチップが1981年に開発されてたんだよね。<br/><div class="youtube" data-type="yt" id="1UzJUCPkCjo"><div class="yt-title">Youtube - C64 Matt Gray's Driller loader theme oscilloscope view</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/1UzJUCPkCjo" class="youtube" src="https://i.ytimg.com/vi/1UzJUCPkCjo/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1149987418621149185"
+            target="_blank">2019/7/13 19:22:20</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">国内のPCはPSG→FMと流れていったので、このような減算方式のシンセチップのLSIが開発され、発展することもなかった。USもSID以外はその流れのようだけどね。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1149992227638108166"
+            target="_blank">2019/7/13 19:41:27</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">FM音源は回路構成が単純なわりに複雑な音が出せる。コスト・パフォーマンスがいいんだよね。なので流行った。YAMAHAのPC界隈の音源の貢献度具合は半端ないよな。そしてサンプリング＋デジタルフィルタの音源に流れてくんだけどね。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1150134537420066817"
+            target="_blank">2019/7/14 5:06:56</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">MSX＋SCCで作られた「スペース・マンボウ」のドラムってPSGで作られたのか。。あの妙な音圧とアタックのパーカッシブな感じはソフトウェアのテクで作られているとのこと。<br/><br/><blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="https://cpu.dip.jp/3mhz/index/03/s-00.php" target="_blank">3MHz-コナミドラム</a></header><div></div></blockquote></p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1149966704128090112"
+            target="_blank">2019/7/13 18:00:02</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">おお、まだ残ってたか。うれしいね。<br/><blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="http://www.musicdsp.org/en/latest/" target="_blank">Musicdsp.org — Musicdsp.org documentation</a></header><div></div></blockquote></p>
+        
+      </section>
+      
+    </article>
+    
+  </div>
+  <footer>
+    CopyLight 2019 Satoshi Fujiwara
+  </footer>
+  <script async src="https://platform.twitter.com/widgets.js"></script>
+
+  <script async src="./index.js"></script>
+
+</body>
+
+</html>

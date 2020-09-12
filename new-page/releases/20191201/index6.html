@@ -1,0 +1,1388 @@
+<!DOCTYPE html>
+<html lang="ja" prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb# article: http://ogp.me/ns/article#">
+
+<head>
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-15457703-9"></script>
+  <script>
+    if (!location.hostname.match(/localhost/)) {
+      window.dataLayer = window.dataLayer || [];
+      function gtag() { dataLayer.push(arguments); }
+      gtag('js', new Date());
+      gtag('config', 'UA-15457703-9');
+    }
+  </script>
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>トップページをリニューアルする</title>
+  <meta name="description" content="リニューアル用のトップページデザインを考えて実装する" />
+  <meta name="keywords" content="Programming,Music,HTML5,WebGL,javascript,WebAudio" /> 	
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <meta itemprop="image" content="https://www.sfpgmr.net/img/sfweb.png" />
+  <meta itemprop="name" content="S.F. Web" />
+  
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:site" content="S.F. Web" />
+  <meta name="twitter:url" content="./index6.html" />
+  <meta name="twitter:title" content="リニューアル用のトップページデザイン" />
+  <meta name="twitter:description" content="リニューアル用のトップページデザインを考えて実装する" />
+  <meta name="twitter:image" content="https://www.sfpgmr.net/img/sfweb.png" />
+  
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="./index6.html" />
+  <meta property="og:title" content="リニューアル用のトップページデザイン"/>
+  <meta property="og:site_name" content="S.F. Web" />
+  <meta property="og:description" content="Programming,Music,HTML5,WebGL,javascript,WebAudio">
+  <meta property="og:image" content="https://www.sfpgmr.net/img/sfweb.png">
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    html {
+      margin: 0;
+      padding: 0;
+      font-size:10px;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      background: black;
+      color: white;
+    }
+
+    .top-nav {
+      position:fixed;
+      z-index:99999;
+      background: rgba(0,0,0,0.5);
+      display: block;
+      width:100%;
+      height:32px;
+      color:white;
+    }
+    #sentinel {
+      width:0px;
+      height:0px;
+    }
+    .contents {
+      padding-top:32px;
+      width: 100%;
+      position: relative;
+      content: strict;
+    }
+
+    @keyframes blinking {
+      0% {
+        color: black;
+      }
+
+      50% {
+        color: white;
+      }
+
+      100% {
+        color: black;
+      }
+    }
+
+    .loading {
+      font-family: monospace;
+      font-size: 24px;
+      position: fixed;
+      width: 100vw;
+      height: 100vh;
+      text-align: center;
+      padding-top: 50vh;
+      z-index: 32768;
+      background: black;
+      animation: blinking 2s infinite;
+      content: strict;
+    }
+
+
+    .contents > article {
+      background: #f0f0f0;
+      color: #202020;
+      position: absolute;
+      max-height: 960px;
+      overflow: auto;
+      border-radius: 3px;
+      transition: opacity 1s linear;
+      opacity: 0.0;
+    }
+
+    .tweet-header {
+      display: grid;
+      align-items: end;
+      grid-template-columns: 40px 2fr 1fr;
+      grid-template-rows: 1fr;
+      font-size: 12px;
+      font-weight: bold;
+    }
+
+
+    .tweet-img {
+      width: 100%;
+      object-fit: cover;
+    }
+
+    .youtube {
+      position: relative;
+      cursor: pointer;
+    }
+
+    .youtube > img {
+      width: 100%;
+      object-fit: cover;
+    }
+
+    .youtube > svg.player-play {
+      width:64px;
+      height:64px;
+      left:calc(50% - 32px);
+      top:calc(50% - 32px);
+      position:absolute;
+      z-index: 1000;
+      opacity: 0.5;
+    }
+    
+    .youtube:hover > svg.player-play {
+      opacity: 1.0;
+    }
+
+    .youtube:hover .player-play-1 {
+      stroke:#80808080;
+    }
+
+    
+    .youtube > div.yt-title {
+      /*text-shadow: #fff 1px 1px 0;*/
+      font-size: 1.2rem;
+      color:white;
+      background:rgba(0, 0,0,0.5);
+      position:absolute;
+      left:0;
+      top:0;
+      overflow: auto;
+      z-index:998;
+    }
+
+
+    .tweet-profile-img {
+      grid-column: 1/2;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+    }
+
+    .tweet-user-name {
+      grid-column: 2/3;
+    }
+
+    .tweet-date {
+      font-size: 8px;
+      text-align: right;
+      grid-column: 3/4;
+    }
+
+    .contents>twitter-widget {
+      overflow: auto;
+      max-height: 960px;
+      position: absolute;
+    }
+
+    .contents>article>section>.tweet-text {
+      display: block;
+      padding: 4px;
+      word-break: break-all;
+      font-size: 12px;
+    }
+
+    .contents>article>h3 {
+      font-size: 12px;
+    }
+
+    blockquote.card {
+      margin:4px;
+      padding:4px;
+      font-size:12px;
+      background:white;
+      border-radius: 4px;
+    }
+
+    blockquote.card > header {
+      display:grid;
+      grid-gap:4px;
+      gap:4px;
+    }
+
+    blockquote.card-default > header {
+      grid-template-columns:64px 1fr;
+    }
+
+    blockquote.card-large > header {
+      grid-template-columns:1fr;
+    }
+
+    blockquote.card > header > img {
+      width:100%;
+    }
+
+
+    div.no-image {
+      display: block;
+      width:64px;
+      height:64px;
+      background:gray;
+      color:white;
+      text-align: center;
+      line-height: 64px;
+    }
+
+  </style>
+</head>
+
+<body>
+  <div class="loading" id="loading">Loading</div>
+  <header class="top-nav">
+    <h1>S.F. Info.</h1>
+  </header>
+  <div class="contents" id="contents" rendersubtree="invisible skip-activation"> 
+    
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1185410589129994240"
+            target="_blank">2019/10/19 13:21:22</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">お、習志野ー前橋育英始まってるな。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1185411385032769537"
+            target="_blank">2019/10/19 13:24:32</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">https://t.co/mPt3iXZHLz</p>
+        
+        <img loading="lazy" class="tweet-img" src="https://pbs.twimg.com/media/EHNtXvqU8AAdERV.png" />
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1185413012166864897"
+            target="_blank">2019/10/19 13:31:00</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">二死１，2塁で和田君凡退。。 https://t.co/wSwn0nGrJc</p>
+        
+        <img loading="lazy" class="tweet-img" src="https://pbs.twimg.com/media/EHNu2dqU4AAOMQM.png" />
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1185413291138408448"
+            target="_blank">2019/10/19 13:32:07</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">県大会では和田君炸裂してたけどなあ。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1185414111846264832"
+            target="_blank">2019/10/19 13:35:22</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">2回終了。山内君調子よさそう。 https://t.co/VA4xSxyZqH</p>
+        
+        <img loading="lazy" class="tweet-img" src="https://pbs.twimg.com/media/EHNv2epUcAA30Of.png" />
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1185414408849117187"
+            target="_blank">2019/10/19 13:36:33</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">前橋育英は習志野が苦手な左投手を持ってきたか。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1185414618765651968"
+            target="_blank">2019/10/19 13:37:23</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">というより菊池君は1年生エースか！</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1185415274037530624"
+            target="_blank">2019/10/19 13:39:59</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">3回終了。うーむ。これは投手戦の様相。。 https://t.co/PpQZGW8nyP</p>
+        
+        <img loading="lazy" class="tweet-img" src="https://pbs.twimg.com/media/EHNw6IiVAAAiPYu.png" />
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1185415336822112256"
+            target="_blank">2019/10/19 13:40:14</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">あ、表が終わっただけだった。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1185416990686507010"
+            target="_blank">2019/10/19 13:46:49</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">3回終了<br/>習志野　０－０　前橋育英 https://t.co/SidnQyN9w7</p>
+        
+        <img loading="lazy" class="tweet-img" src="https://pbs.twimg.com/media/EHNyeCEUEAAjHRG.png" />
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1185417143459831808"
+            target="_blank">2019/10/19 13:47:25</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">前橋育英も打ちあぐねてる感あり。山内くんここまでで４K。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1185417574554591232"
+            target="_blank">2019/10/19 13:49:08</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">あ、５Kだった。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1185417792830357504"
+            target="_blank">2019/10/19 13:50:00</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">4回表　2死3塁で宮下君。<br/><br/>#秋季関東大会</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1185418313830031360"
+            target="_blank">2019/10/19 13:52:04</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">宮下君タイムリー！<br/>１－０<br/><br/>#秋季関東大会</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1185418510639349760"
+            target="_blank">2019/10/19 13:52:51</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">４回表終了<br/>習志野　１－０　前橋育英<br/>#秋季関東大会 https://t.co/RAvwCZcv7z</p>
+        
+        <img loading="lazy" class="tweet-img" src="https://pbs.twimg.com/media/EHNz2diU8AAKoYS.png" />
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1185419003755298817"
+            target="_blank">2019/10/19 13:54:49</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">4回裏<br/>前橋育英ノーアウト1塁で併殺。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1185420066940018688"
+            target="_blank">2019/10/19 13:59:02</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">４回裏終了<br/>習志野　１－０　前橋育英<br/><br/>前橋育英ヒット2本打つも0点。併殺が痛い。。<br/><br/>#秋季関東大会 https://t.co/enDQnnBWsI</p>
+        
+        <img loading="lazy" class="tweet-img" src="https://pbs.twimg.com/media/EHN1RHEUEAE-Jo6.png" />
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1185420237702778880"
+            target="_blank">2019/10/19 13:59:43</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">和田君このあたりでヒット一本ほしい。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1185420454770565121"
+            target="_blank">2019/10/19 14:00:35</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">1年生エース菊池君もよく投げている。。<br/><br/>#秋季関東大会</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1185420748208275456"
+            target="_blank">2019/10/19 14:01:45</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ウーム。角田くん当たってるな。。できれば和田君、小澤君が塁に出てほしかったね。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1185421009307832320"
+            target="_blank">2019/10/19 14:02:47</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">５回表終了<br/>習志野　１－０　前橋育英<br/><br/>櫻井くん繋げず。。<br/><br/>#秋季関東大会 https://t.co/76lvVfXef6</p>
+        
+        <img loading="lazy" class="tweet-img" src="https://pbs.twimg.com/media/EHN2H-kUcAA62nm.png" />
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1185421304889040897"
+            target="_blank">2019/10/19 14:03:57</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">前橋育英も2巡目以降はいい感じになってきてる。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1185421372463316992"
+            target="_blank">2019/10/19 14:04:13</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ヒット4本。点が欲しいところ。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1185422294073479168"
+            target="_blank">2019/10/19 14:07:53</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">前橋育英ワンアウト、1－2塁。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1185422696093384704"
+            target="_blank">2019/10/19 14:09:29</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">犠打でツーアウト、2－3塁。習志野ピンチ。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1185423371174965248"
+            target="_blank">2019/10/19 14:12:10</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">2死満塁</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1185423714671677440"
+            target="_blank">2019/10/19 14:13:32</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">こういうとこでリリーフできないのが今の習志野の課題ですわな。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1185423795265273857"
+            target="_blank">2019/10/19 14:13:51</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">飯塚くんはもういない。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1185424697246142464"
+            target="_blank">2019/10/19 14:17:26</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">５回裏終了<br/>習志野　１－２　前橋育英<br/><br/>2点タイムリーで前橋育英逆転！<br/><br/>#秋季関東大会 https://t.co/6niLlfe3ar</p>
+        
+        <img loading="lazy" class="tweet-img" src="https://pbs.twimg.com/media/EHN5enbU4AURu55.png" />
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1185424924959105027"
+            target="_blank">2019/10/19 14:18:20</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">やはり山内くん、ランナー背負うと制球が乱れるようですな。まあまだ2点取られただけですが。。打線に期待！</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1185425421862490113"
+            target="_blank">2019/10/19 14:20:19</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">しかし1年生エースの菊池くんは要所で締めるよいピッチングをしているようで、今後に期待が持てますな。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1185425866500624386"
+            target="_blank">2019/10/19 14:22:05</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">習志野は球場整備の間に気持ちを切り替えて、普段通りの野球をすればいけると思うけどね。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1185426572687241218"
+            target="_blank">2019/10/19 14:24:53</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">このペースだと習志野は負け試合っぽいね。。とにかく左投手に対して良い印象はない。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1185426875650170880"
+            target="_blank">2019/10/19 14:26:05</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">飴谷くんヒット。今日2安打か。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1185427563742547968"
+            target="_blank">2019/10/19 14:28:50</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">６回表終了<br/>習志野　１－２　前橋育英<br/><br/>１塁牽制死。。<br/><br/>#秋季関東大会 https://t.co/cj9zAYWDMV</p>
+        
+        <img loading="lazy" class="tweet-img" src="https://pbs.twimg.com/media/EHN8FemU4AA7VFW.png" />
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1185427773545836545"
+            target="_blank">2019/10/19 14:29:40</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">前橋育英ヒット。山内くんにタイミング合ってきた感じですな。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1185428202488918019"
+            target="_blank">2019/10/19 14:31:22</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">習志野はちょっと打線がいい感じなので、逆に力みというか、粗さが出てしまってる感じがするんだな。。いつものコツコツした緻密な野球をここでやらんといかんような気がするんだけども。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1185428648368586752"
+            target="_blank">2019/10/19 14:33:08</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">６回裏終了<br/>習志野　１－２　前橋育英<br/><br/>#秋季関東大会 https://t.co/MkgbwOnUTD</p>
+        
+        <img loading="lazy" class="tweet-img" src="https://pbs.twimg.com/media/EHN9EohU4AAlASg.png" />
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1185429578342232065"
+            target="_blank">2019/10/19 14:36:50</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">7回表。小林君ヒット！</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1185430499562381312"
+            target="_blank">2019/10/19 14:40:29</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">和田くん四球で一死１，２塁</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1185430968670117889"
+            target="_blank">2019/10/19 14:42:21</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">小澤君ヒット。２－２。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1185431195049287681"
+            target="_blank">2019/10/19 14:43:15</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">角田くん死球。一死満塁で櫻井君。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1185431323013304321"
+            target="_blank">2019/10/19 14:43:46</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">櫻井くん、つないでくれ～。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1185431493071368192"
+            target="_blank">2019/10/19 14:44:26</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">つないだ！！！！<br/>４－２。１死２－３塁。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1185431689729695745"
+            target="_blank">2019/10/19 14:45:13</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">前橋育英　菊池くん。ここで習志野に捕まる。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1185431799691767809"
+            target="_blank">2019/10/19 14:45:39</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">犠飛で習志野1点追加。５－２。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1185432011067932672"
+            target="_blank">2019/10/19 14:46:30</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">二死三塁で山内くん。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1185432894577135622"
+            target="_blank">2019/10/19 14:50:01</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">７回表終了<br/>習志野　４－２　前橋育英<br/><br/>でした。。<br/><br/>#秋季関東大会 https://t.co/rVmV1LaKHy</p>
+        
+        <img loading="lazy" class="tweet-img" src="https://pbs.twimg.com/media/EHOA7ylUcAAwy6F.png" />
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1185433179697532928"
+            target="_blank">2019/10/19 14:51:08</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">苦手な左投手から３点取れたのは大きいね。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1185433578957467648"
+            target="_blank">2019/10/19 14:52:44</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ありゃやっぱり５－２だよな。。 https://t.co/IYVVAqgSiO</p>
+        
+        <img loading="lazy" class="tweet-img" src="https://pbs.twimg.com/media/EHOBjofVUAAOBZT.png" />
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1185434011897753600"
+            target="_blank">2019/10/19 14:54:27</a></p>
+      </header>
+      <section>
+        <p class="tweet-text"><blockquote class="card card-default"><header><img loading="lazy" src="https://pbs.twimg.com/ext_tw_video_thumb/1185430910277042176/pu/img/06g3DoNFJ3_0OYIF.jpg" /><a href="https://twitter.com/kimama789/status/1185430999196241920?s=20" target="_blank">moriさんのツイート: "市習志野 000 100 1← 前橋育英 000 020 7回表 習志野 8番から ○宮下君 右飛 ○小林君 中前打→失策→1死2塁ﾅｲｽﾗﾝ ○和田君 ｽﾄﾚｰﾄの四球 1死12塁 ○小澤君 左前タイムリー 2-2 尚も1死12塁… https://t.co/7bpZzAZd1j"</a></header><div>“市習志野 000 100 1←<br/>前橋育英 000 020<br/><br/>7回表 習志野 8番から<br/>○宮下君 右飛<br/>○小林君 中前打→失策→1死2塁ﾅｲｽﾗﾝ<br/>○和田君 ｽﾄﾚｰﾄの四球 1死12塁<br/>○小澤君 左前タイムリー 2-2 尚も1死12塁 https://t.co/fIBgBi46g5”</div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1185434929032650752"
+            target="_blank">2019/10/19 14:58:06</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">前橋育英1点返したか。。これで5-3。<br/><blockquote class="card card-default"><header><img loading="lazy" src="https://pbs.twimg.com/ext_tw_video_thumb/1185434418501914626/pu/img/jDqbkrnfjUu-LiU2.jpg" /><a href="https://twitter.com/kimama789/status/1185434479562653698?s=20" target="_blank">moriさんのツイート: "市習志野 000 100 4 前橋育英 000 020 1← 6回裏 前橋育英 8番から ○代打半田君 三振 ○高橋(駿)君 空振り三振 ○皆川君 左前打 ○飯野君 右前打 2死13塁 ○諸田君 ✴️ワイルドピッチ 3-5 尚も2死2塁… https://t.co/IvrlKODWgC"</a></header><div>“市習志野 000 100 4<br/>前橋育英 000 020 1←<br/><br/>6回裏 前橋育英 8番から<br/>○代打半田君 三振<br/>○高橋(駿)君 空振り三振<br/>○皆川君 左前打<br/>○飯野君 右前打 2死13塁<br/>○諸田君<br/>✴️ワイルドピッチ 3-5 尚も2死2塁 https://t.co/hZYqCBoe5B”</div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1185435198592151552"
+            target="_blank">2019/10/19 14:59:10</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">７回裏終了<br/>習志野　５－３　前橋育英<br/><br/>#秋季関東大会 https://t.co/hpWBN4rXbT</p>
+        
+        <img loading="lazy" class="tweet-img" src="https://pbs.twimg.com/media/EHODB6PU4AInDdH.png" />
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1185435594500952064"
+            target="_blank">2019/10/19 15:00:44</a></p>
+      </header>
+      <section>
+        <p class="tweet-text"><blockquote class="card card-default"><header><img loading="lazy" src="https://pbs.twimg.com/profile_images/1140901789547413504/qw7Oe8cq_400x400.jpg" /><a href="https://twitter.com/Kiichi2013/status/1185435481015631872?s=20" target="_blank">soraさんのツイート: "前橋育英、 ピッチャー 菊池樂くん → 武藤くん 菊池くん、お疲れ様でした 習志野、8回表の攻撃 習志野 5-3 前橋育英 #関東大会"</a></header><div>“前橋育英、<br/>ピッチャー 菊池樂くん → 武藤くん <br/><br/>菊池くん、お疲れ様でした<br/><br/>習志野、8回表の攻撃<br/><br/>習志野 5-3 前橋育英<br/><br/>#関東大会”</div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1185435826529787904"
+            target="_blank">2019/10/19 15:01:40</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">やはり継投は左か。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1185436080985608192"
+            target="_blank">2019/10/19 15:02:40</a></p>
+      </header>
+      <section>
+        <p class="tweet-text"><blockquote class="card card-default"><header><img loading="lazy" src="https://pbs.twimg.com/media/EHODeBqUEAAYSlu.jpg:large" /><a href="https://twitter.com/eccentricky/status/1185435685081108480?s=20" target="_blank">エキセントリックさんのツイート: "秋季高校野球関東大会 上毛新聞敷島球場 習志野5-3前橋育英（7回） 前橋育英8回から選手及び守備位置変更。… "</a></header><div>“秋季高校野球関東大会 上毛新聞敷島球場 習志野5-3前橋育英（7回） 前橋育英8回から選手及び守備位置変更。”</div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1185436328856412160"
+            target="_blank">2019/10/19 15:03:39</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">東海大相模は7回コールドか。。やはりここで勝っても次が厳しいね。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1185436682457243648"
+            target="_blank">2019/10/19 15:05:04</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ここで習志野、死球→犠打→ヒットで1点追加６－３。この1点は大きいね。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1185436868357156869"
+            target="_blank">2019/10/19 15:05:48</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">８回表終了<br/>習志野　６－３　前橋育英<br/><br/>#秋季関東大会 https://t.co/LhHZKi9LVR</p>
+        
+        <img loading="lazy" class="tweet-img" src="https://pbs.twimg.com/media/EHOEjGKUcAE6-3a.png" />
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1185437151946690560"
+            target="_blank">2019/10/19 15:06:56</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">このへんで習志野も継投したいところだけど、この点差ではそうもいかんなあ。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1185437394608066561"
+            target="_blank">2019/10/19 15:07:53</a></p>
+      </header>
+      <section>
+        <p class="tweet-text"><blockquote class="card card-default"><header><img loading="lazy" src="https://pbs.twimg.com/ext_tw_video_thumb/1185436994047901697/pu/img/1Pm-SQlhkJpBLoly.jpg" /><a href="https://twitter.com/kimama789/status/1185437172632961024?s=20" target="_blank">moriさんのツイート: "市習志野 000 100 41 前橋育英 000 020 1 (8回表終了) 8回表 習志野 7番から ○飴谷君 右飛 ○宮下君 死球 ○小林君 バント 2死2塁 ○和田君 タイムリー 6-3 ○小澤君 三ゴ チェンジ ↓和田君タイムリー… https://t.co/KAkQgytpCm"</a></header><div>“市習志野 000 100 41<br/>前橋育英 000 020 1<br/>(8回表終了)<br/><br/>8回表 習志野 7番から<br/>○飴谷君 右飛<br/>○宮下君 死球<br/>○小林君 バント 2死2塁<br/>○和田君 タイムリー 6-3<br/>○小澤君 三ゴ チェンジ<br/><br/>↓和田君タイムリー https://t.co/6CQXYrZv9N”</div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1185437587831320576"
+            target="_blank">2019/10/19 15:08:39</a></p>
+      </header>
+      <section>
+        <p class="tweet-text"><blockquote class="card card-default"><header><img loading="lazy" src="https://pbs.twimg.com/profile_images/1140901789547413504/qw7Oe8cq_400x400.jpg" /><a href="https://twitter.com/Kiichi2013/status/1185437127363842049?s=20" target="_blank">soraさんのツイート: "敷島球場で圧倒的ホームを構築 する前橋育英を凌駕するかの 如く球場を包み込む応援を 繰り広げる習志野の応援団、 凄い→凄まじい 一番 和田くんのタイムリーで 追加点 習志野 6 - 3 前橋育英 【8回表終了】 ＊育英、学校イベントで ブラバン無し"</a></header><div>“敷島球場で圧倒的ホームを構築<br/>する前橋育英を凌駕するかの<br/>如く球場を包み込む応援を<br/>繰り広げる習志野の応援団、<br/>凄い→凄まじい<br/><br/>一番 和田くんのタイムリーで<br/>追加点<br/>習志野 6 - 3 前橋育英<br/>【8回表終了】<br/><br/>＊育英、学校イベントで<br/>    ブラバン無し”</div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1185437792190382080"
+            target="_blank">2019/10/19 15:09:28</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">堀井くん、山根くんに期待したいところだけど。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1185465995437043712"
+            target="_blank">2019/10/19 17:01:32</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ちょっと外出してしまったが、７－３で習志野の勝利か。。次はあの東海大相模かあ。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1185469692883791872"
+            target="_blank">2019/10/19 17:16:14</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">次は拓大紅陵かあ。花咲徳栄にもし勝てれば、センバツに近いのはむしろ拓大紅陵のほうかもしれん。。明日の試合は竹内くんのピッチングにかかっている。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1185788280295448576"
+            target="_blank">2019/10/20 14:22:11</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">あかん。序盤で大差がついてしまった。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1185788977443299329"
+            target="_blank">2019/10/20 14:24:57</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">6回で9-0かあ。。しかも無安打か。。厳しいなコリャ。。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/1021884273492549632/x-P_81YP_normal.jpg" />
+        <p class="tweet-user-name">ケンゼン@Kenzen_cg</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/Kenzen_cg/status/1185219485403205632"
+            target="_blank">2019/10/19 0:42:00</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">Blenderで蛇動かした！ https://t.co/sKmpOOd9l2</p>
+        
+        <video class="tweet-img" controls src="https://video.twimg.com/amplify_video/1185218524253343745/vid/640x360/esul4nJgtouyflgj.mp4?tag=13" />
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/778946041416605696/TnrttgMm_normal.jpg" />
+        <p class="tweet-user-name">D.S.A.@ym2413</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/ym2413/status/1185634104273817600"
+            target="_blank">2019/10/20 4:09:33</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">微妙な差ですが emu2413のリズム音と、アタックレートと、サンプリングレート変換時に意図しないローパスが掛かってた問題を修正したので比較です。v0.71が新しいバージョン。音が華やかになりすぎてるのはテーブル周り変えると直かなと期待...。 https://t.co/edECXwCFJa</p>
+        
+        <video class="tweet-img" controls src="https://video.twimg.com/ext_tw_video/1185634064201482240/pu/vid/480x480/6VxxmEaxfcywd44q.mp4?tag=10" />
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/1158683384744255488/ePVrpoL1_normal.jpg" />
+        <p class="tweet-user-name">と り@t0rry_</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/t0rry_/status/1185436925542289408"
+            target="_blank">2019/10/19 15:06:02</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">スザンヌフィギュア届いた！！！<br/><br/>組み立ててみたけど再現度高い！！！！ https://t.co/8Gp0Ljisej</p>
+        
+        <img loading="lazy" class="tweet-img" src="https://pbs.twimg.com/media/EHOEk6iUwAAG-2V.jpg" />
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1184927589661433856"
+            target="_blank">2019/10/18 5:22:06</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">明日は関東大会かあ。。習志野は前橋育英、拓大紅陵は花咲徳栄と。がんばれ千葉勢！</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1184927657521074176"
+            target="_blank">2019/10/18 5:22:23</a></p>
+      </header>
+      <section>
+        <p class="tweet-text"><a href="https://chbf.or.jp/wp-content/uploads/2019/10/%E7%AC%AC%EF%BC%97%EF%BC%92%E5%9B%9E%E7%A7%8B%E5%AD%A3%E9%96%A2%E6%9D%B1%E5%A4%A7%E4%BC%9A%E7%B5%84%E5%90%88%E3%81%9B.pdf" target="_blank">chbf.or.jp/wp-content/upl…</a></p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1184574599830237186"
+            target="_blank">2019/10/17 5:59:27</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">wsl2ってvhdなんで格納ディスクを移動できるんですな。。<br/><blockquote class="card card-default"><header><img loading="lazy" src="https://avatars2.githubusercontent.com/u/6154722?s=400&v=4" /><a href="https://github.com/microsoft/WSL/issues/4320#issuecomment-513378521" target="_blank">[WSL 2] move VHD File · Issue #4320 · microsoft/WSL · GitHub</a></header><div>Thanks for the good work of bringing WSL 2! I am wondering that if it is possible to move VHD File to another volume. Thanks in advance!</div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1184574600841007104"
+            target="_blank">2019/10/17 5:59:27</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">でも注意事項として、インポートするとデフォルトユーザーの設定は引き継がれないようなので、以下で対応するといいらしい。でもまだベータ的なやつだからほかに何かあるかもしれんが。。<br/><blockquote class="card card-default"><header><img loading="lazy" src="https://avatars2.githubusercontent.com/u/6154722?s=400&v=4" /><a href="https://github.com/microsoft/WSL/issues/3974#issuecomment-522921145" target="_blank">Impossible to set default user of distribution installed via wsl --import on 1903 · Issue #3974 · microsoft/WSL · GitHub</a></header><div>Windows Version 10.0.18362.30 (1903) The only way that&#39;s left to set the default user of a distribution is via its command line utility (ubuntu.exe for example). However, for Distributions inst...</div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1184575128224464897"
+            target="_blank">2019/10/17 6:01:33</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ということで、まずこれでvhdをワーク用のディスクに移動して、そしてwindowsのファイルシステム上にある作業用ファイルをext4にコピーしてるところ。win10からext4へのアクセスは以下のパスでアクセスできる。。<br/>\\wsl$\(ディストリビューション)</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1184575300937474048"
+            target="_blank">2019/10/17 6:02:14</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">こんな感じにwindowsからは見える。 https://t.co/RUOqwTtoBh</p>
+        
+        <img loading="lazy" class="tweet-img" src="https://pbs.twimg.com/media/EHB09RRVUAApf95.png" />
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1184575859643936768"
+            target="_blank">2019/10/17 6:04:27</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">しかしコピーは鬼のように遅い。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1184575956524003329"
+            target="_blank">2019/10/17 6:04:51</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">多分コピー後は快適になるはずだ❕</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1184796491463806976"
+            target="_blank">2019/10/17 20:41:10</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">コピー終了。試すとやはり全然スピードが違うわ。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1184799468845064192"
+            target="_blank">2019/10/17 20:53:00</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">これがWSL2の真の実力。。しかしもうwsl上でしかコード書いてないから、win10を使う意味が果たしてあるのだろうか。。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1184798030836289536"
+            target="_blank">2019/10/17 20:47:17</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ロッテ、専大松戸　横山くん獲った。さすが！</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1184574074183307264"
+            target="_blank">2019/10/17 5:57:22</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">wsl2ってディスクアクセス遅いなあ。。と思ってたら、このせいだったのか。<br/><blockquote class="card card-default"><header><img loading="lazy" src="https://cdn.qiita.com/assets/qiita-fb-2887e7b4aad86fd8c25cea84846f2236.png" /><a href="https://qiita.com/kunit/items/051196022763e64e91f6" target="_blank">Windows10 Insider 18917 で WSL2 が来たので雑にボリュームマウントのベンチマークとってみた（追記あり) - Qiita</a></header><div># WSL2 とは<br/><br/>2019年5月に開催された Build 2019 で発表されたもので、今までの Windows Subsystem for Linux(WSL) のアーキテクチャから大きく変えたものとして発表されたものになります...</div></blockquote><br/><br/>ext4ファイルシステムにデータを移行すれば解消するみたい。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1184575668270460928"
+            target="_blank">2019/10/17 6:03:42</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">簡単なcssのビルドも鬼のように時間がかかるのでこりゃおかしい。。と思ったんだな。。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1183650120295833600"
+            target="_blank">2019/10/14 16:45:54</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ServersMan VPSのOSをアップグレードしようとしたら死んだので、いきおいVPS自体を引っ越すことにした。新しいサーバーはConohaにした。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1183655279453278208"
+            target="_blank">2019/10/14 17:06:24</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">sshの設定からやり直しか。。たまらんな。。面倒くさい。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1183656850073350144"
+            target="_blank">2019/10/14 17:12:38</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ちゅうわけでサーバー構築中。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1183657275442905093"
+            target="_blank">2019/10/14 17:14:20</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ブログはしばらく更新してないけど、オリジナルのはメンテがもう面倒だし、Keystoneとかにすっかなあ。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1183658622363897856"
+            target="_blank">2019/10/14 17:19:41</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">この辺を参考にセットアップ中。iptablesの設定はがちがちにしとかんとなあ。。あとはSSHのポートも変えとかんとね。。<br/><blockquote class="card card-default"><header><img loading="lazy" src="https://cdn.qiita.com/assets/qiita-fb-2887e7b4aad86fd8c25cea84846f2236.png" /><a href="https://qiita.com/jqtype/items/e394fb9e027892e9a2a4" target="_blank">ConoHa VPS (ubuntu 16.04) 初期設定メモ - Qiita</a></header><div>さくらVPSをずっと使っていたが、ConoHa VPSへの乗り換えを検討中。お安くて悪くない。<br/><br/># ConoHa VPSの契約<br/>RAM1GB/SSD50GBプラン＠東京リージョンを契約。月900円。お安い。<br/>- ひとまずポート制限は...</div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1183659510402936832"
+            target="_blank">2019/10/14 17:23:13</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">nodeはこの情報でインストール。入れるのはLTS。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1183659530552397824"
+            target="_blank">2019/10/14 17:23:18</a></p>
+      </header>
+      <section>
+        <p class="tweet-text"><blockquote class="card card-default"><header><img loading="lazy" src="https://cdn.qiita.com/assets/qiita-fb-2887e7b4aad86fd8c25cea84846f2236.png" /><a href="https://qiita.com/seibe/items/36cef7df85fe2cefa3ea" target="_blank">Ubuntuに最新のNode.jsを難なくインストールする - Qiita</a></header><div>この記事は [慶應義塾大学SFC村井&amp;徳田研 Advent Calendar 2015](http://www.adventar.org/calendars/1053) の10日目の記事です。<br/><br/>---<br/>[UbuntuにNod...</div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1183856133196247040"
+            target="_blank">2019/10/15 6:24:31</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">仮レベルだがhttp/2でexpressを動かして、ウェブサーバーを復活した。。<br/><blockquote class="card card-default"><header><img loading="lazy" src="https://www.sfpgmr.net/img/sfweb.png" /><a href="https://www.sfpgmr.net/" target="_blank">S.F. Web</a></header><div>Programming,Music,Game,etc..</div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1183950787480670208"
+            target="_blank">2019/10/15 12:40:39</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">静的サイトジェネレータの部分をgatsby.jsで書き換えようかなと思ってるところ。。<br/><blockquote class="card card-default"><header><img loading="lazy" src="https://www.gatsbyjs.org/static/gatsby-icon-4a9773549091c227cd2eb82ccd9c5e3a.png" /><a href="https://www.gatsbyjs.org/" target="_blank">GatsbyJS</a></header><div></div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1184033242174775296"
+            target="_blank">2019/10/15 18:08:17</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">もうちょっとモダンなサイトにしたいよなあ。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1184034352600141825"
+            target="_blank">2019/10/15 18:12:42</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">starter のCMSサンプルがよくできてるので、ちょっと手を加えればいけそうなんだけどね。Reactは好みでないがまあ長い物に巻かれる感じですかな。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1184034539158421504"
+            target="_blank">2019/10/15 18:13:27</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">GraphQLとやらもちょっといじってみたいし。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1184209455317078017"
+            target="_blank">2019/10/16 5:48:30</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">と思ったが、やめとこう。CSSフレームワークを導入してデザインを変えるのと、TwitterとYoutubeのポストをまとめるコードを書くくらいに留めよう。あとやるとするとAMPのエラーを直すくらいだろうかね。トップページは作り直そうかなと思う。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1184209611647143936"
+            target="_blank">2019/10/16 5:49:07</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ここに自分のリソース費やすと音源を作る時間が無くなってしまうもんな。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1184209725073715200"
+            target="_blank">2019/10/16 5:49:34</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">そうでなくても忘れっぽくなってるというのに。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1184442284374249479"
+            target="_blank">2019/10/16 21:13:41</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">うーむ。HTMLのデザイン・テンプレートをベースにごにょごにょしようかなと思うけどいろいろあるなあ。。いいなあと思っても、jqueryやbootstrapゴリゴリで、それはちょっと避けたい。できるだけ軽量ですましたいなあ。AMP対応も考慮せんといかんしなあ。。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/778946041416605696/TnrttgMm_normal.jpg" />
+        <p class="tweet-user-name">D.S.A.@ym2413</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/ym2413/status/1183394696560705538"
+            target="_blank">2019/10/13 23:50:56</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">I have updated my ym2413 emulator in C, aka emu2413. The latest version v0.70's sound drastically changed from emu2413 v0.6x which was released at 2004, widely used or ported with many emulators. <a href="https://github.com/digital-sound-antiques/emu2413" target="_blank">github.com/digital-sound-…</a></p>
+        
+      </section>
+      
+    </article>
+    
+  </div>
+  <footer>
+    CopyLight 2019 Satoshi Fujiwara
+  </footer>
+  <script async src="https://platform.twitter.com/widgets.js"></script>
+
+  <script async src="./index.js"></script>
+
+</body>
+
+</html>

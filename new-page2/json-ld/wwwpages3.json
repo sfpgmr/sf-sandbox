@@ -1,0 +1,572 @@
+{
+  "@context": {
+    "@vocab": "http://schema.org/",
+    "@base": "https://www.sfpgmr.net/",
+    "sf":"https://www.sfpgmr.net/"
+  },
+  "@graph": [
+    {
+      "@type":"sf:WebPage",
+      "sf:template": "./src/browser/ejs/template-home.html",
+      "sf:baseUrl":"https://www.sfpgmr.net/",
+      "sf:stylesheet":"./css/sfstyle-home.css",
+      "sf:contents":[
+        {
+          "@type": "sf:content",
+          "sf:type":"link",
+          "url": "./webpages/web.html",
+          "name": "Web関連",
+          "headline": "Web関連",
+          "thumbnailUrl":"./img/web.svg",
+          "about": "HTML5,JS,WebGL,WebAudio,SNS API等のコンテンツ"
+        }
+        ,            
+        {
+          "@type": "sf:content",
+          "sf:type": "link",
+          "url": "./webpages/server-desktop.html",
+          "name": "Web Server/Dekstop関連",
+          "headline": "Web Server/Dekstop関連",
+          "thumbnailUrl":"./img/web-desktop.svg",
+          "about": "node.js,electron,nw.js,nginx等のコンテンツ"
+        },            
+        {
+          "@type": "sf:content",
+          "sf:type": "link",
+          "url": "./webpages/windows-cpp.html",
+          "name": "Windows/C++",
+          "headline": "Windows/C++",
+          "thumbnailUrl":"./img/win-cpp.svg",
+          "about": "Windowsアプリ/API/C++言語に関するコンテンツ。音楽/グラフィック(DirectX)系の話題が多いです。"
+        },            
+        {
+          "@type": "sf:content",
+          "sf:type": "link",
+          "url": "http://blog.sfpgmr.net/",
+          "name": "Blog",
+          "headline": "Blog",
+          "thumbnailUrl":"./img/hatenablog.svg",
+          "about": "Programming,Music,etc.いろいろな事を書いています。最近はHTML5,WebGL,JSの話題が多くなっています。"
+        },
+        {
+          "@type": "sf:content",
+          "sf:type": "link",
+          "url": "https://www.youtube.com/user/SFPG",
+          "thumbnailUrl":"./img/youtube.svg",
+          "name": "You Tube Channel",
+          "headline": "You Tube Channel",
+          "about": "<p>私のYou Tube Channelです。<br/>YMOのカバー曲を動画化したものを中心に置いています。</p>"
+        },
+        {
+          "@type": "sf:content",
+          "sf:type": "link",
+          "url": "http://qiita.com/SFPGMR",
+          "thumbnailUrl":"./img/qiita.svg",
+          "name": "Qiita",
+          "headline": "Qiita",
+          "about": "<p>技術的なTipsはこちらに書いています。</p>"
+        },
+
+        {
+          "@type": "sf:content",
+          "sf:type": "link",
+          "url": "https://github.com/sfpgmr?tab=repositories",
+          "name": "GitHub Respository",
+          "headline": "GitHub Respository",
+          "thumbnailUrl":"./img/github.svg",
+          "about": "<p>私のGitHubレポジトリです。</p>"
+        },
+        {
+          "@type": "sf:content",
+          "sf:type": "link",
+          "url": "http://sfpgmr.tumblr.com/",
+          "name": "Tumblr",
+          "headline": "Tumblr",
+          "thumbnailUrl":"./img/tumblr.svg",
+          "about": "ほとんどリブログしかしておりませんが。"
+        },
+        {
+          "@type": "sf:content",
+          "sf:type": "link",
+          "url": "https://twitter.com/SFPGMR",
+          "name": "Twitter",
+          "headline": "Twitter",
+          "thumbnailUrl":"./img/twitter.svg",
+          "about": "ごくたまに呟いています。あとはコンテンツの更新連絡用でしょうか。"
+        }
+      ],
+      "WebPage": {
+        "@type": "WebPage",
+        "@id": "./index.html",
+        "url": "./index.html",
+        "datePublished": "2017-01-10T08:00:00+08:00",
+        "dateModified": "2017-01-12T08:00:00+08:00",
+        "headline": "S.F. Web",
+        "image": {
+          "@type": "ImageObject",
+          "url": "./img/sfweb.png",
+          "width":"640",
+          "height":"640"
+        },
+        "name": "S.F. Web",
+        "about":"Programming,Music,Game,etc..",
+        "author": {
+          "@type": "Person",
+          "@id": "./profile.html#sfpgmr",
+          "name": "Satoshi Fujiwara",
+          "image": "https://zwruag-bn1305.files.1drv.com/y3mFBuAXaFp6eZEIswK7KTEL7DTVzrpSxGKqJ7xHWSLwz5MgMJHIM4lvatwuA3gOSZOw_SP2xK_OEpvkHsczcUpmUa-NiWXHZbOgoIMZX7JLAHo2q4wThQrFls8P-uT35rewqyT6GvvsGLzwqDWXunYCUEISi51cCxhE8UTbDiVTtc?width=100&height=100&cropmode=none",
+          "alternateName":"SFPGMR"
+        },
+        "keywords": "Programming,Music,HTML5,WebGL,javascript,WebAudio",
+        "description": "IT,Music,etc..",
+        "relatedLink": [
+          "http://github.sfpgmr.net",
+          "http://blog.sfgpmr.net/"
+        ]
+      }
+    },
+    {
+      "sf:template": "./src/browser/ejs/template-home.html",
+      "sf:baseUrl":"https://www.sfpgmr.net/webpages/",
+      "sf:stylesheet":"./css/sfstyle-home.css",
+      "sf:contents":[
+        {
+          "@type": "sf:content",
+          "sf:type":"link",
+          "url": "https://www.sfpgmr.net/metrop/",
+          "name": "Metro Info.",
+          "headline": "Metro Info.",
+          "thumbnailUrl":"../img/metrop.png",
+          "about": "東京メトロオープンデータAPIを使用したWebアプリケーションです。node.js,d3.jsを使用して作成しています。SVGで路線図に沿って列車位置を5分おきにプロットします。",
+          "mentions": [
+            {
+              "name": "開発記録",
+              "url": "http://blog.sfpgmr.net/archive/category/%E6%9D%B1%E4%BA%AC%E3%83%A1%E3%83%88%E3%83%AD%E3%82%AA%E3%83%BC%E3%83%97%E3%83%B3%E3%83%87%E3%83%BC%E3%82%BF"
+            },
+            {
+              "name": "GitHub",
+              "url": "https://github.com/sfpgmr/metrop"
+            }
+          ]
+        },
+        {
+          "@type": "sf:content",
+          "sf:type":"link",
+          "url": "https://www.sfpgmr.net/tumblr/",
+          "name": "Tumblr Posts Beta",
+          "headline": "Tumblr Posts Beta",
+          "thumbnailUrl":"../img/tumblr-posts.png",
+          "about": "Tumblr APIを使用した、ビューワーです。node.js,jqueryを使用して作ってます。投機的にXHRを発行して、コンテンツを先読みしておくことで、スムーズなページ遷移を実現しています。ただ動きがちょっと変な部分がありますが。。",
+          "mentions": [
+            {
+              "name": "開発記録",
+              "url": "http://blog.sfpgmr.net/archive/category/Tumblr%20Posts"
+            },
+            {
+              "name": "GitHub",
+              "url": "https://github.com/sfpgmr/tumblrclient"
+            }
+          ]
+        },
+        {
+          "@type": "sf:content",
+          "sf:type":"link",
+          "url": "http://bl.ocks.org/sfpgmr/raw/39f6fc206606353d2222/",
+          "name": "YouTube Viewer",
+          "headline": "YouTube Viewer",
+          "thumbnailUrl":"../img/youtube-viewer.png",
+          "about": "Youtube APIを使用した、YouTubeビューワーです。動画のサムネをマウスオーバーするとプレビュー再生したりします。",
+          "mentions": [
+            {
+              "name": "開発記録",
+              "url": "http://blog.sfpgmr.net/archive/category/YouTube%20Viewer"
+            },
+            {
+              "name": "bl.ocks.org",
+              "url": "http://bl.ocks.org/sfpgmr/39f6fc206606353d2222"
+            }
+          ]
+        },
+        {
+          "@type": "sf:content",
+          "sf:type":"link",
+          "url": "http://github.sfpgmr.net/webaudiomodular/dist/",
+          "name": "WebAudio Modular",
+          "headline": "WebAudio Modular",
+          "thumbnailUrl":"../img/webaudio-modular.png",
+          "about": "WebAudio API,d3.jsを使用した、Web Audioのモジュラー接続デモです。シーケンサーの実装までを目指しましたが、現在は作成を中断しています。",
+          "mentions": [
+            {
+              "name": "開発記録",
+              "url": "http://blog.sfpgmr.net/archive/category/WebAudioModular"
+            },
+            {
+              "name": "GitHub",
+              "url": "https://github.com/sfpgmr/webaudiomodular"
+            }
+          ]
+        },
+        {
+          "@type": "sf:content",
+          "sf:type":"link",
+          "url": "http://github.sfpgmr.net/graphics/",
+          "name": "古典的グラフィック技術を懐かしむ",
+          "headline": "古典的グラフィック技術を懐かしむ",
+          "thumbnailUrl":"../img/old-graphics.png",
+          "about": "WebGLやthree.jsを使って、レトロPCグラフィックス画面を再現し、古典的グラフィックスアルゴリズムを実装してみたり、MZ-700のキャラグラを再現してアニメーションに挑戦したりといろいろなことをしてます。",
+          "mentions": [
+            {
+              "name": "開発記録",
+              "url": "http://blog.sfpgmr.net/archive/category/%E5%8F%A4%E5%85%B8%E7%9A%84%E3%82%B0%E3%83%A9%E3%83%95%E3%82%A3%E3%83%83%E3%82%AF%E6%8A%80%E8%A1%93%E3%82%92%E6%87%90%E3%81%8B%E3%81%97%E3%82%80"
+            },
+            {
+              "name": "GitHub",
+              "url": "https://github.com/sfpgmr/graphics"
+            }
+          ]
+        },
+          {
+          "@type": "sf:content",
+          "sf:type":"link",
+          "url": "http://github.sfpgmr.net/graphics/",
+          "name": "シェーダーコードを書く",
+          "headline": "シェーダーコードを書く",
+          "thumbnailUrl":"../img/shader.png",
+          "about": "WebGLやthree.jsを使って、シェーダーコードを書いてみました。",
+          "mentions": [
+            {
+              "name": "開発記録",
+              "url": "http://blog.sfpgmr.net/archive/category/%E3%82%B7%E3%82%A7%E3%83%BC%E3%83%80%E3%83%BC%E3%82%B3%E3%83%BC%E3%83%89%E3%82%92%E6%9B%B8%E3%81%8F"
+            },
+            {
+              "name": "GitHub",
+              "url": "https://github.com/sfpgmr/3d_codes"
+            }
+          ]
+        },                                   
+        {
+          "@type": "sf:content",
+          "sf:type":"link",
+          "url": "http://bl.ocks.org/sfpgmr/raw/f23f5881365111e50544/",
+          "name": "スカッシュゲーム",
+          "headline": "スカッシュゲーム",
+          "thumbnailUrl":"../img/squash.png",
+          "about": "「ゲーム性とはなんなのか」を探求するという目的で、作ったものです。ただのスカッシュゲームです。three.jsを2Dグラフィックスエンジンとして使っています。",
+          "mentions": [
+            {
+              "name": "開発記録",
+              "url": "http://blog.sfpgmr.net/archive/category/%E3%82%B9%E3%82%AB%E3%83%83%E3%82%B7%E3%83%A5%E3%82%B2%E3%83%BC%E3%83%A0"
+            },
+            {
+              "name": "bl.ocks.org",
+              "url": "http://bl.ocks.org/sfpgmr/f23f5881365111e50544"
+            }
+          ]
+        },
+        {
+          "@type": "sf:content",
+          "sf:type":"link",
+          "url": "http://bl.ocks.org/sfpgmr/raw/39dfb82a46dda45ea597/",
+          "name": "ブロック崩し",
+          "headline": "ブロック崩し",
+          "thumbnailUrl":"../img/blocks.png",
+          "about": "「ゲーム性とはなんなのか」を探求するという目的で、作ったもの第2弾です。ただのブロック崩しです。",
+          "mentions": [
+            {
+              "name": "開発記録",
+              "url": "http://blog.sfpgmr.net/archive/category/%E3%82%B9%E3%82%AB%E3%83%83%E3%82%B7%E3%83%A5%E3%82%B2%E3%83%BC%E3%83%A0"
+            },
+            {
+              "name": "bl.ocks.org",
+              "url": "http://bl.ocks.org/sfpgmr/39dfb82a46dda45ea597"
+            }
+          ]
+        },
+        {
+          "@type": "sf:content",
+          "sf:type":"link",
+          "url": "/test/webgl/0009/webgl0009.html",
+          "name": "2D Shooting Game",
+          "headline": "2D Shooting Game",
+          "thumbnailUrl":"../img/shooting-game.png",
+          "about": "three.js、io.js、WebAudio APIを使用した2Dシューティングゲームです。io.jsを使って、ハイスコア管理をしています。かなり古いアプリのため、現在XHRの制約が当時よりもきつくなってハイスコア処理部分がうまく動いていません。また何かの仕様が変わったせいか、WebAudioの処理もちょっとおかしくなってしまってます。",
+          "mentions": [
+            {
+              "name": "開発記録",
+              "url": "http://blog.sfpgmr.net/archive/category/Web%202D%20Shooting%20Game"
+            },
+            {
+              "name": "GitHub",
+              "url": "https://github.com/sfpgmr/2dshooting"
+            }
+          ]
+        }
+      ],
+      "WebPage": {
+        "@type": "WebPage",
+        "@id": "./webpages/web.html",
+        "url": "./webpages/web.html",
+        "datePublished": "2017-01-10T08:00:00+08:00",
+        "dateModified": "2017-01-12T08:00:00+08:00",
+        "headline": "Web関連",
+        "image": {
+          "@type": "ImageObject",
+          "url": "./img/sfweb.png",
+          "width":"640",
+          "height":"640"
+        },
+        "name": "Web関連",
+        "about":"HTML5,JS,WebGL,WebAudio,SNS API",
+        "author": {
+          "@type": "Person",
+          "@id": "./profile.html#sfpgmr",
+          "name": "Satoshi Fujiwara",
+          "image": "https://zwruag-bn1305.files.1drv.com/y3mFBuAXaFp6eZEIswK7KTEL7DTVzrpSxGKqJ7xHWSLwz5MgMJHIM4lvatwuA3gOSZOw_SP2xK_OEpvkHsczcUpmUa-NiWXHZbOgoIMZX7JLAHo2q4wThQrFls8P-uT35rewqyT6GvvsGLzwqDWXunYCUEISi51cCxhE8UTbDiVTtc?width=100&height=100&cropmode=none",
+          "alternateName":"SFPGMR"
+        },
+        "keywords": "Programming,Music,HTML5,WebGL,javascript,WebAudio",
+        "description": "HTML5,JS,WebGL,WebAudio,SNS API等のコンテンツ",
+        "relatedLink": [
+          "http://github.sfpgmr.net",
+          "http://blog.sfgpmr.net/"
+        ],
+        "breadcrumb": {
+          "@type": "BreadcrumbList",
+          "itemListElement": [
+            {
+              "@type": "ListItem",
+              "position": 1,
+              "item": {
+                "url": "./webpages/web.html",
+                "name": "Web関連"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "sf:template": "./src/browser/ejs/template-home.html",
+      "sf:baseUrl":"https://www.sfpgmr.net/webpages/",
+      "sf:stylesheet":"./css/sfstyle-home.css",
+      "sf:contents":[
+        {
+          "@type": "sf:content",
+          "sf:type":"link",
+          "url": "http://blog.sfpgmr.net/archive/category/nginx",
+          "name": "NGINX関連",
+          "headline": "NGINX関連",
+          "thumbnailUrl":"../img/nginx.svg",
+          "about": "このWebサーバーはNGINXで運用しています。もともとはWordpress+apacheでブログをホストしていたのですが、高速化のためにNGINXを導入しました。その後ブログははてなに引越ししましたが、その後HTTP/2化なども行っています。今は再びこのサーバーにブログコンテンツを引っ越そうと画策しています。"
+        },
+        {
+          "@type": "sf:content",
+          "sf:type":"link",
+          "url": "http://blog.sfpgmr.net/archive/category/electron%E3%81%A7RYDEEN%E3%81%AE%E5%8B%95%E7%94%BB%E3%82%92%E4%BD%9C%E3%82%8B",
+          "name": "electronでRYDEENの動画を作る",
+          "headline": "electronでRYDEENの動画を作る",
+          "thumbnailUrl":"../img/rydeen.jpg",
+          "about": "自作したYMO Rydeenのカバー曲に合わせた動画をelectronで作りました。動画はthree.jsを使って作り、ffmpegでmp4化したあとYoutubeにアップロードしています。",
+          "mentions": [
+            {
+              "name": "GitHub",
+              "url": "https://github.com/sfpgmr/rydeen"
+            },
+            {
+              "name": "YouTube",
+              "url": "https://www.youtube.com/watch?v=IYoslHDmXnY&list=PLmZxXGcVDPAThOGr2p_5pi72Vgayu_Yx7"
+            }
+          ]
+        },
+        {
+          "@type": "sf:content",
+          "sf:type":"link",
+          "url": "https://github.com/sfpgmr/HTML5ToYouTube",
+          "name": "nw.jsでデスクトップアプリを作る",
+          "headline": "nw.jsでデスクトップアプリを作る",
+          "thumbnailUrl":"../img/nw-desktop.png",
+          "about": "WAVファイルに動画をつけて、ffmpegでmp4化したあとYoutubeにアップロードするデスクトップアプリです。nw.jsを使用しています。残念ながら完成までには至らずですが、アップロードできるところまでは作りました。",
+          "mentions": [
+            {
+              "name": "開発記録",
+              "url": "http://blog.sfpgmr.net/archive/category/nw.js%E3%81%A7%E3%83%87%E3%82%B9%E3%82%AF%E3%83%88%E3%83%83%E3%83%97%E3%82%A2%E3%83%97%E3%83%AA%E3%82%92%E4%BD%9C%E3%82%8B"
+            },
+            {
+              "name": "GitHub",
+              "url": "https://github.com/sfpgmr/HTML5ToYouTube"
+            }
+          ]
+        },
+        {
+          "@type": "sf:content",
+          "sf:type":"link",
+          "url": "https://github.com/sfpgmr/gigacapsule",
+          "name": "GigaCapsule Viewerを作る",
+          "headline": "GigaCapsule Viewerを作る",
+          "thumbnailUrl":"../img/gigacapsule-viewer.png",
+          "about": "YMO GigacapsuleがWindows Vista以降で再生できなくなってしまいました。Windows10以降でも再生できるように、コンテンツのViewerをelectronで作ってみようかなと思い、始めました。が、これも中途で飽きて制作をやめています。見どころは、トラック毎のサンプリングデータをWebAudioでミックスしたり、SVGでjingle ymoの動画を作ってみたりしたところでしょうか。",
+          "mentions": [
+            {
+              "name": "開発記録",
+              "url": "http://blog.sfpgmr.net/archive/category/GigaCapsule%20Viewer%E3%82%92%E4%BD%9C%E3%82%8B"
+            }
+          ]
+        } 
+      ],
+      "WebPage": {
+        "@type": "WebPage",
+        "@id": "./webpages/server-desktop.html",
+        "url": "./webpages/server-desktop.html",
+        "datePublished": "2017-01-10T08:00:00+08:00",
+        "dateModified": "2017-01-12T08:00:00+08:00",
+        "headline": "Web Server/Dekstop関連",
+        "image": {
+          "@type": "ImageObject",
+          "url": "./img/sfweb.png",
+          "width":"640",
+          "height":"640"
+        },
+        "name": "Web Server/Dekstop関連",
+        "about":"node.js,electron,nw.js,nginx等",
+        "author": {
+          "@type": "Person",
+          "@id": "./profile.html#sfpgmr",
+          "name": "Satoshi Fujiwara",
+          "image": "https://zwruag-bn1305.files.1drv.com/y3mFBuAXaFp6eZEIswK7KTEL7DTVzrpSxGKqJ7xHWSLwz5MgMJHIM4lvatwuA3gOSZOw_SP2xK_OEpvkHsczcUpmUa-NiWXHZbOgoIMZX7JLAHo2q4wThQrFls8P-uT35rewqyT6GvvsGLzwqDWXunYCUEISi51cCxhE8UTbDiVTtc?width=100&height=100&cropmode=none",
+          "alternateName":"SFPGMR"
+        },
+        "keywords": "node.js,electron,nw.js,nginx",
+        "description": "node.js,electron,nw.js,nginx等",
+        "relatedLink": [
+          "http://github.sfpgmr.net",
+          "http://blog.sfgpmr.net/"
+        ],
+        "breadcrumb": {
+          "@type": "BreadcrumbList",
+          "itemListElement": [
+            {
+              "@type": "ListItem",
+              "position": 1,
+              "item": {
+                "url": "./webpages/server-desktop.html",
+                "name": "Web Server/Dekstop関連"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "sf:template": "./src/browser/ejs/template-home.html",
+      "sf:baseUrl":"https://www.sfpgmr.net/webpages/",
+      "sf:stylesheet":"./css/sfstyle-home.css",
+      "WebPage": {
+        "@type": "WebPage",
+        "@id": "./webpages/windows-cpp.html",
+        "url": "./webpages/windows-cpp.html",
+        "datePublished": "2017-01-10T08:00:00+08:00",
+        "dateModified": "2017-01-12T08:00:00+08:00",
+        "headline": "Windows/C++関連",
+        "image": {
+          "@type": "ImageObject",
+          "url": "./img/sfweb.png",
+          "width":"640",
+          "height":"640"
+        },
+        "name": "Windows/C++関連",
+        "about":"App,C++,Windows API,Direct X,WASAPI,WPF,Tracker",
+        "author": {
+          "@type": "Person",
+          "@id": "./profile.html#sfpgmr",
+          "name": "Satoshi Fujiwara",
+          "image": "https://zwruag-bn1305.files.1drv.com/y3mFBuAXaFp6eZEIswK7KTEL7DTVzrpSxGKqJ7xHWSLwz5MgMJHIM4lvatwuA3gOSZOw_SP2xK_OEpvkHsczcUpmUa-NiWXHZbOgoIMZX7JLAHo2q4wThQrFls8P-uT35rewqyT6GvvsGLzwqDWXunYCUEISi51cCxhE8UTbDiVTtc?width=100&height=100&cropmode=none",
+          "alternateName":"SFPGMR"
+        },
+        "keywords": "App,C++,Windows API,Direct X,WASAPI,Tracker",
+        "description": "App,C++,Windows API,Direct X,WASAPI,WPF,Tracker",
+        "relatedLink": [
+          "http://github.sfpgmr.net",
+          "http://blog.sfgpmr.net/"
+        ],
+        "breadcrumb": {
+          "@type": "BreadcrumbList",
+          "itemListElement": [
+            {
+              "@type": "ListItem",
+              "position": 1,
+              "item": {
+                "url": "./webpages/windows-cpp.html",
+                "name": "Windows/C++関連"
+              }
+            }
+          ]
+        }
+      },
+      "sf:contents":[
+        {
+          "@type": "sf:content",
+          "sf:type":"link",
+          "url": "http://blog.sfpgmr.net/archive/category/Reaper",
+          "name": "REAPER",
+          "headline": "REAPER",
+          "thumbnailUrl":"../img/reaper.png",
+          "about": "REAPER DAWに関するBlogアーカイブです。YMOのカバー曲を作ったり、JSFXでエフェクトを作ってみたりしています。",
+          "mentions": [
+            {
+              "name": "REAPER公式HP",
+              "url": "http://www.reaper.fm/"
+            }
+          ]
+        },
+        {
+          "@type": "sf:content",
+          "sf:type":"link",
+          "url": "http://blog.sfpgmr.net/archive/category/%E9%9F%B3%E5%A3%B0%E5%8B%95%E7%94%BB%E5%87%BA%E5%8A%9B%E3%83%97%E3%83%AD%E3%82%B0%E3%83%A9%E3%83%A0",
+          "name": "音声動画出力プログラム",
+          "headline": "音声動画出力プログラム",
+          "thumbnailUrl":"../img/win-wav-movie.png",
+          "about": "WAVデータからmp4動画を作成するツールのBlogアーカイブ。Direct3D,Direct Composition,Media Foundation,WASAPIを使用しています。途中で制作を中断してますが。これも。。",
+          "mentions": [
+            {
+              "name": "github",
+              "url": "https://github.com/sfpgmr/sfmf2"
+            }
+          ]
+        },
+        {
+          "@type": "sf:content",
+          "sf:type":"link",
+          "url": "http://blog.sfpgmr.net/archive/category/Box2D%20%2B%20WinRT%E3%81%A7%E3%82%B2%E3%83%BC%E3%83%A0%E3%82%92%E4%BD%9C%E3%82%8B",
+          "name": "Box2D + WinRTでゲームを作る",
+          "headline": "Box2D + WinRTでゲームを作る",
+          "thumbnailUrl":"../img/box2d-winrt.png",
+          "about": "Box2D + WinRT + Direct3Dでゲーム作りを試みました。途中で制作を中断してます。これも。。",
+          "mentions": [
+            {
+              "name": "github",
+              "url": "https://github.com/sfpgmr/sfmf2"
+            }
+          ]
+        },
+        {
+          "@type": "sf:content",
+          "sf:type":"link",
+          "url": "http://blog.sfpgmr.net/archive/category/%E3%83%9F%E3%83%8B%E3%82%BF%E3%82%A4%E3%83%9E%E3%83%BC",
+          "name": "ミニタイマー",
+          "headline": "ミニタイマー",
+          "thumbnailUrl":"../img/mini-timer.png",
+          "about": "実用的かつWindows 7の新しいタスクバー関係のAPIを使ってみたくて作ったアプリケーションです。"
+        },
+        {
+          "@type": "sf:content",
+          "sf:type":"link",
+          "url": "http://blog.sfpgmr.net/archive/category/%E3%83%9F%E3%83%8B%E3%82%BF%E3%82%A4%E3%83%9E%E3%83%BC",
+          "name": "Psycle WTL",
+          "headline": "Psycle WTL",
+          "thumbnailUrl":"../img/mini-timer.png",
+          "about": "実用的かつWindows 7の新しいタスクバー関係のAPIを使ってみたくて作ったアプリケーションです。"
+        } 
+      ]      
+    }         
+  ]
+}

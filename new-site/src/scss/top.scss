@@ -1,0 +1,35 @@
+@import './style.scss';
+
+
+body {
+  background-image: url('../data/contents/img/top.jpg');
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+@media screen and (max-aspect-ratio:3/2) { 
+  body {
+    background-size: auto;
+  }
+}
+
+.header-top {
+  color:white;
+  position: relative;
+  margin:50vh auto 0;
+  text-align:center;
+  transform:translateY(-50%);
+
+}
+
+footer {
+  text-align: center;
+  color:white;
+}
+
+.top-img {
+  display:block;
+  position:absolute;
+  top:0;
+  left:0;
+}
