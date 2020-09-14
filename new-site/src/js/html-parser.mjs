@@ -213,9 +213,9 @@ var peg$r4 = /^[^"'<>` ]/;
   var peg$f20 = function(ch) {
       return new HtmlNode('text', null, ch.join(''));
     };
-  var peg$f21 = function(attrs) { return (attrs && attrs.length) ? reduceToObj(attrs) : null;};
-  var peg$f22 = function(name, s) { return s };
-  var peg$f23 = function(name, text) { return {name:name, text:text}; };
+  var peg$f21 = function(attrs) { return (attrs && attrs.length) ? attrs : null;};
+  var peg$f22 = function(namespace, name, s) { return s };
+  var peg$f23 = function(namespace, name, text) { return {namespace:namespace,name:name, text:text}; };
   var peg$f24 = function() { return null; };
   var peg$f25 = function(ch) { return ch.join(''); };
   var peg$f26 = function(h, t) { return h + t.join('') };
@@ -2533,7 +2533,7 @@ var peg$r4 = /^[^"'<>` ]/;
   }
 
   function peg$parseAttribute() {
-    var s0, s1, s2, s3, s4, s5, s6, s7;
+    var s0, s1, s2, s3, s4, s5, s6, s7, s8;
 
     var rule$expects = function (expected) {
       if (peg$silentFails === 0) peg$expect(expected);
@@ -2560,37 +2560,41 @@ var peg$r4 = /^[^"'<>` ]/;
     }
 
     s0 = peg$currPos;
-    s1 = peg$parseSymbol();
-    if (s1 !== peg$FAILED) {
-      s2 = peg$parse__();
-      s3 = peg$currPos;
-      s4 = peg$parse__();
+    s1 = peg$parseNameSpace();
+    if (s1 === peg$FAILED) {
+      s1 = null;
+    }
+    s2 = peg$parseSymbol();
+    if (s2 !== peg$FAILED) {
+      s3 = peg$parse__();
+      s4 = peg$currPos;
+      s5 = peg$parse__();
       if (input.charCodeAt(peg$currPos) === 61) {
-        s5 = peg$c20;
+        s6 = peg$c20;
         peg$currPos++;
       } else {
-        s5 = peg$FAILED;
+        s6 = peg$FAILED;
       }
-      if (s5 !== peg$FAILED) {
-        s6 = peg$parse__();
-        s7 = peg$parseString();
-        if (s7 !== peg$FAILED) {
-          peg$savedPos = s3;
-          s3 = peg$f22(s1, s7);
+      if (s6 !== peg$FAILED) {
+        s7 = peg$parse__();
+        s8 = peg$parseString();
+        if (s8 !== peg$FAILED) {
+          peg$savedPos = s4;
+          s4 = peg$f22(s1, s2, s8);
         } else {
-          peg$currPos = s3;
-          s3 = peg$FAILED;
+          peg$currPos = s4;
+          s4 = peg$FAILED;
         }
       } else {
-        peg$currPos = s3;
-        s3 = peg$FAILED;
+        peg$currPos = s4;
+        s4 = peg$FAILED;
       }
-      if (s3 === peg$FAILED) {
-        s3 = null;
+      if (s4 === peg$FAILED) {
+        s4 = null;
       }
-      s4 = peg$parse__();
+      s5 = peg$parse__();
       peg$savedPos = s0;
-      s0 = peg$f23(s1, s3);
+      s0 = peg$f23(s1, s2, s4);
     } else {
       peg$currPos = s0;
       s0 = peg$FAILED;

@@ -119,10 +119,10 @@ Text "text"
 /**
  * Element attributes
  */
-Attributes = __ attrs:Attribute* __ { return (attrs && attrs.length) ? reduceToObj(attrs) : null;}
+Attributes = __ attrs:Attribute* __ { return (attrs && attrs.length) ? attrs : null;}
 
 Attribute "attribute"
-  = name:Symbol __ text:(__ '=' __ s:String { return s })? __ { return {name:name, text:text}; }
+  = namespace:NameSpace? name:Symbol __ text:(__ '=' __ s:String { return s })? __ { return {namespace:namespace,name:name, text:text}; }
   / !'/>' [^> ]+ __ { return null; }
 
 /**
