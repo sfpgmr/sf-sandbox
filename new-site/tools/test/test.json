@@ -1,0 +1,79 @@
+[
+ {
+  "name": "doctype",
+  "root": "html",
+  "type": null
+ },
+ {
+  "namespace": "sf",
+  "name": "include",
+  "attributes": [
+   {
+    "namespace": null,
+    "name": "src",
+    "text": "head.html"
+   }
+  ]
+ },
+ {
+  "name": "html",
+  "attributes": [
+   {
+    "namespace": null,
+    "name": "amp",
+    "text": null
+   }
+  ],
+  "content": [
+   {
+    "name": "text"
+   },
+   {
+    "namespace": "sf",
+    "name": "apply",
+    "attributes": [
+     {
+      "namespace": null,
+      "name": "name",
+      "text": "head"
+     }
+    ]
+   },
+   {
+    "name": "head",
+    "attributes": [
+     {
+      "namespace": "sf",
+      "name": "if",
+      "text": "data == 1"
+     }
+    ],
+    "content": [
+     {
+      "name": "placeholder",
+      "expression": "title"
+     },
+     {
+      "name": "text",
+      "content": "\n    "
+     },
+     {
+      "name": "script",
+      "attributes": [
+       {
+        "namespace": null,
+        "name": "run-at",
+        "text": "local"
+       }
+      ],
+      "content": "{\n        let a = b;\n      }\n    "
+     }
+    ]
+   },
+   {
+    "name": "body",
+    "content": []
+   }
+  ]
+ }
+]

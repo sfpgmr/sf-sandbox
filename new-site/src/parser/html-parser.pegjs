@@ -1,4 +1,5 @@
 {
+  const nsPrefix = 'sf';
 
   class Node {
     constructor(name,attributes,content,namespace = null){
@@ -14,6 +15,18 @@
       super(name,attributes,content,namespace);
     }
   }
+
+  // function makeHtmlNode(name, attrs,null,namespace){
+  //   for(const attr of attrs) {
+  //     if(attr.namespace == nsPrefix){
+  //       switch(attr.name){
+  //         case 'if':
+            
+  //         break;
+  //       }
+  //     }
+  //   }
+  // }
  
   function reduceToObj (xs)
   {
@@ -68,7 +81,7 @@ HTMLDocument = __ nodes:Element* { return nodes; }
 /**
  * Elements - https://www.w3.org/TR/html5/syntax.html#elements-0
  */
-Element  = RawText / Nested / Void / Comment / DocType / Text
+Element  = RawText / Nested / Code / PlaceHolder / Void / Comment / DocType / Text
 
 RawText  = Script / Style / Textarea / Title / PlainText
 
@@ -115,6 +128,17 @@ Text "text"
   / ch:(!TagEnd !Void !Comment !DocType c:. { c })+ {
     return new HtmlNode('text', null, ch.join(''));
   }
+
+CodeStart = ![\\] '<%'
+CodeEnd = ![\\] '%>'
+
+Code 'code' = CodeStart CodeExpression CodeEnd { return {name:'code',expression:expression}; }
+CodeExpression 'code expression' = __ / (!CodeStart !CodeEnd .)* {return text();}
+
+PlaceHolder 'placeholder' = '${' expression:Expression '}' { return {name:'placeholder',expression:expression}; }
+
+Expression 'expression' = __ (Block / [^{}]+ __ )* {return text();}
+Block 'block' = '{' Expression '}' {return text();}
 
 /**
  * Element attributes
