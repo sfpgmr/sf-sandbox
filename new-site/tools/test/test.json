@@ -5,28 +5,29 @@
   "type": null
  },
  {
-  "namespace": "sf",
-  "name": "include",
-  "attributes": [
-   {
-    "namespace": null,
-    "name": "src",
-    "text": "head.html"
-   }
-  ]
+  "name": "code",
+  "expression": " let title = 'title'; "
+ },
+ {
+  "name": "text",
+  "content": "\n"
  },
  {
   "name": "html",
   "attributes": [
    {
     "namespace": null,
-    "name": "amp",
-    "text": null
+    "name": "amp"
    }
   ],
   "content": [
    {
-    "name": "text"
+    "name": "code",
+    "expression": " if(aaa = bb) { \n  let a = 10;\n  \\<% \n"
+   },
+   {
+    "name": "text",
+    "content": "\n  "
    },
    {
     "namespace": "sf",
@@ -34,8 +35,7 @@
     "attributes": [
      {
       "namespace": null,
-      "name": "name",
-      "text": "head"
+      "name": "name"
      }
     ]
    },
@@ -44,13 +44,31 @@
     "attributes": [
      {
       "namespace": "sf",
-      "name": "if",
-      "text": "data == 1"
+      "name": "if"
      }
     ],
     "content": [
      {
       "name": "placeholder",
+      "type": "@",
+      "expression": "title"
+     },
+     {
+      "name": "text",
+      "content": " "
+     },
+     {
+      "name": "placeholder",
+      "type": "@",
+      "expression": "title"
+     },
+     {
+      "name": "text",
+      "content": " "
+     },
+     {
+      "name": "placeholder",
+      "type": "$",
       "expression": "title"
      },
      {
@@ -62,11 +80,27 @@
       "attributes": [
        {
         "namespace": null,
-        "name": "run-at",
-        "text": "local"
+        "name": "run-at"
+       },
+       {
+        "name": "placeholder",
+        "type": "@",
+        "expression": "title"
+       },
+       {
+        "namespace": null,
+        "name": "type"
        }
       ],
       "content": "{\n        let a = b;\n      }\n    "
+     },
+     {
+      "name": "code",
+      "expression": "\n  }\n"
+     },
+     {
+      "name": "text",
+      "content": "\n  "
      }
     ]
    },

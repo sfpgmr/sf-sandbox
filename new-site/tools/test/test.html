@@ -1,16 +1,22 @@
 
 <!DOCTYPE html>
-<sf:include src="head.html" >
+<% let title = 'title'; >
 <html amp>
-<% if(aaa = bb) { %>
+<% if(aaa = bb) { 
+  let a = 10;
+  \<% 
+>
   <sf:apply name="head">
   <head sf:if="data == 1">
-    ${title}
-    <script run-at="local">
+    <@title> <@title> <$title>
+    <script run-at="local" <@title> type="bbbb<@title><@title>aaaaa<@title>}}" >
       {
         let a = b;
       }
     </script>
+<%
+  }
+>
   </head>
   <body>
   </body>

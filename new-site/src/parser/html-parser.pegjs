@@ -111,7 +111,7 @@ Comment   "comment"   = '<!--' text:CommentText '-->' __ {
     return new HtmlNode('comment', null, text);
   }
 
-CommentText = ch:(!'-->' c:. { return c; })* { return ch.join('') }
+CommentText = ch:$(!'-->' . )* { return ch; }
 
 DocType   "doctype"   = '<!DOCTYPE'i __ root:Symbol __ type:('public'i / 'system'i)? __ text:String* '>' __ {
     const node = new HtmlNode('doctype');
@@ -122,23 +122,28 @@ DocType   "doctype"   = '<!DOCTYPE'i __ root:Symbol __ type:('public'i / 'system
   }
 
 Text "text"
-  = ch:(c:[^<] { return c })+ {
-    return new HtmlNode('text', null,ch.join(''));
+  =  ch:$(!PlaceHolder [^<])+ {
+    return new HtmlNode('text', null,ch);
   }
-  / ch:(!TagEnd !Void !Comment !DocType c:. { c })+ {
+  / ch:(!PlaceHolder !TagEnd !Void !Comment !DocType c:. { c })+ {
     return new HtmlNode('text', null, ch.join(''));
   }
 
-CodeStart = ![\\] '<%'
-CodeEnd = ![\\] '%>'
+CodeStart =  ![\\] '<%'
+CodeEnd = ![\\] '>'
 
-Code 'code' = CodeStart CodeExpression CodeEnd { return {name:'code',expression:expression}; }
-CodeExpression 'code expression' = __ / (!CodeStart !CodeEnd .)* {return text();}
+Code 'code' = CodeStart expression:$(!CodeEnd .)+ CodeEnd { return {name:'code',expression:expression}; }
+CodeExpression 'code expression' = __ / (!CodeStart !CodeEnd . )+ {return text();}
 
-PlaceHolder 'placeholder' = '${' expression:Expression '}' { return {name:'placeholder',expression:expression}; }
 
-Expression 'expression' = __ (Block / [^{}]+ __ )* {return text();}
-Block 'block' = '{' Expression '}' {return text();}
+PlaceHolderStart = ![\\] '<' @[@$]
+PlaceHolderEnd = ![\\] '>'
+PlaceHolder 'placeholder' = type:PlaceHolderStart expression:$(!PlaceHolderEnd .)+  PlaceHolderEnd { return {name:'placeholder',type:type,expression:expression}; }
+
+
+
+// Expression 'expression' = __ (Block / [^{}]+ __ )* {return text();}
+//Block 'block' = '{' Expression '}' {return text();}
 
 /**
  * Element attributes
@@ -146,16 +151,17 @@ Block 'block' = '{' Expression '}' {return text();}
 Attributes = __ attrs:Attribute* __ { return (attrs && attrs.length) ? attrs : null;}
 
 Attribute "attribute"
-  = namespace:NameSpace? name:Symbol __ text:(__ '=' __ s:String { return s })? __ { return {namespace:namespace,name:name, text:text}; }
+  = namespace:NameSpace? name:Symbol __ value:(__ '=' __ @(PlaceHolder / String))? __ { return {namespace:namespace,name:name, value:text}; }
+  / @PlaceHolder __ 
   / !'/>' [^> ]+ __ { return null; }
 
 /**
  * String - single, double, w/o quotes
  */
 String "string"
-  = '"'  ch:[^"]*      '"'  __ { return ch.join(''); }
-  / '\'' ch:[^']*      '\'' __ { return ch.join(''); }
-  /      ch:[^"'<>` ]+      __ { return ch.join(''); }
+  =  '"'  ch:(PlaceHolder / $(!PlaceHolder [^"])+)* '"'  __ { return ch; }
+  / '\'' ch:(PlaceHolder / $(!PlaceHolder [^'])+)*  '\'' __ { return ch; }
+  /      ch:(PlaceHolder / $(!PlaceHolder [^"'<>` ])+)+  __ { return ch; }
 
 /**
  * Tag name, attribute name
