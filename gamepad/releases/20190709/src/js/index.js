@@ -23,6 +23,7 @@
 // リリース時にはコメントアウトすること
 
 "use strict";
+import Vue from 'vue.js';
 import {Key,BasicDevice,GamePad,BasicInput} from './input.js';
 
 // メイン

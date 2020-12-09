@@ -1024,13 +1024,7 @@
 
     requestAnimationFrame(step);
 
-
-
-    var WIDTH = window.innerWidth , HEIGHT = window.innerHeight;
-
     window.addEventListener( 'resize', ()=>{
-          WIDTH = window.innerWidth;
-          HEIGHT = window.innerHeight;
     }
     , false );
 

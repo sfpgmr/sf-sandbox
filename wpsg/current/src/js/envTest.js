@@ -1,5 +1,5 @@
-"use strict";
-const fs = require('fs');
+import fs from 'fs';
+
 function getInstance(obj, imports = {}) {
   const bin = new WebAssembly.Module(obj);
   const inst = new WebAssembly.Instance(bin, imports);
@@ -37,7 +37,7 @@ function getSize(prop){
   wpsg.keyOnEnvelope(envWork);
 
   for(let i = 0,e = (2 * sampleRate) | 0;i < e;++i){
-    console.log(wpsg.doEnvelope(envParam,envWork))
+    console.log(wpsg.doEnvelope(envParam,envWork));
   }
 
   wpsg.keyOffEnvelope(envWork);

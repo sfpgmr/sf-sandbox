@@ -1,36 +1,39 @@
 import parser from '../src/js/html-parser.mjs';
 import fs from 'fs-extra';
 
+const needCloseTag = /script|title/i;
+
+const plugins = [
+  ['sf',builtIn]
+];
+
+const pluginsAttr = [
+  ['sf',builtInAttr]
+];
+
+
+
+const namespaceMap = new Map(plugins);
+const namespaceMapForAttrs  = new Map(pluginsAttr);
+
+function builtIn(obj,render){
+
+}
+
+function builtInAttr(attr,obj,render_){
+  switch(attr.name){
+    case 'if':
+      break;
+  }
+  return true;
+}
 
 function module (){
 
-  const needCloseTag = /script|title/i;
 
-  const plugins = [
-    ['sf',builtIn]
-  ];
-  
-  const pluginsAttr = [
-    ['sf',builtInAttr]
-  ];
-  
-  
-  const namespaceMap = new Map(plugins);
-  const namespaceMapForAttrs  = new Map(pluginsAttr);
-  
-  function builtIn(obj,render){
-  
-  }
-  
-  function builtInAttr(attr,obj,render_){
-    switch(attr.name){
-      case 'if':
-        break;
-    }
-    return true;
-  }
   
   //buildInAttr.cache = new Map();
+  let outputStr = '';
   
   function stringize(target,stringizeBool = false){
     let str  = '';
@@ -44,93 +47,18 @@ function module (){
     return { result:true,value:str };
   }
   
-  function attr(name,value){
-    if(!value) {
-      if(name) {
-        return  ` ${name}`;
-      } 
+
+
+  function output(obj){
+    if(typeof(obj) == 'string' || obj instanceof String){
+      outputStr += obj;
+    } else if (typeof(obj) == 'number' || typeof(obj) instanceof Number){
+      outputStr += obj;
     } else {
-      if(name){
-        return `${name}="${value}"`;
-      } 
+      outputStr += JSON.stringify(obj,null,1);
     }
-    return '';
   }
 
-  function render_(obj) {
-    let src = '';
-    if (obj instanceof Array) {
-      for (const o of obj) {
-        src += render_(o);
-      }
-    } else if(obj.namespace){
-      const plugin = namespaceMap.get(obj.name);
-      if(plugin){
-        const result = stringize(plugin(obj,render_),true);
-        if(result.result){
-          src += `output += '${result.value}';`;
-        }
-      }
-    } else if((typeof(obj) == 'string') || (obj instanceof String)){
-      src += `output += '${obj}';`;
-    } else {
-      switch (obj.name) {
-        case 'doctype':
-          src += `output += '<!DOCTYPE${attr(obj.root)}${attr(obj.type)}${attr(obj.text)}>';`;
-          break;
-        case 'text':
-          src += `output += '${obj.content || ''}';`;
-          break;
-        default:
-          {
-            maketag:{
-              let temp = '<' + obj.name;
-              if (obj.attributes) {
-                for (const attr of obj.attributes) {
-                  if(attr.namespace){
-                    const attrMethod = namespaceMapForAttrs.get(attr.namespace);
-                    if(attrMethod){
-                      const result = stringize(attrMethod(attr,obj,render_));
-                      if(!result.result){
-                        break maketag;
-                      } else {
-                        if(result.value){
-                          temp += result.value;
-                        }
-                      }
-                    } else {
-                      if(attr.text) {
-                        temp += ` ${attr.namespace?attr.namespace + ':':''}${attr.name}="${attr.text}"`;
-                      } else {
-                        temp += ` ${attr.namespace?attr.namespace + ':':''}${attr.name}`;
-                      }
-                    }
-                  } else {
-                    if(attr.text) {
-                      temp += ` ${attr.name}="${attr.text ? attr.text : ''}"`;
-                    } else {
-                      temp += ` ${attr.name}`;
-                    }
-                  }
-                }
-              }
-              if (obj.content) {
-                temp += '>';
-                temp += render_(obj.content);
-                temp += `</${obj.name}>`;
-              } else {
-                temp += '>';
-                if(obj.name.match(needCloseTag)){
-                  temp += `</${obj.name}>`;
-                }
-              }
-              output += temp;
-            }
-          }
-      }
-    }
-    return output;
-  }
   
   
   // function render(jsonString,options = {}){
@@ -150,25 +78,140 @@ function module (){
   // return render;
 }
 
+function attr(name,value){
+  if(!value) {
+    if(name) {
+      return  ` ${name}`;
+    } 
+  } else {
+    if(name){
+      return `${name}="${value}"`;
+    } 
+  }
+  return '';
+}
+
+function render_(obj,inString = false) {
+  let src = '';
+  if (obj instanceof Array) {
+    for (const o of obj) {
+      src += render_(o,inString);
+    }
+  } else if(obj.namespace){
+    const plugin = namespaceMap.get(obj.name);
+    if(plugin){
+      const result = stringize(plugin(obj,render_),true);
+      if(result.result){
+        if(inString){
+          src += result.value;
+        } else {
+          src += `output(\`${result.value}\`);`;
+        }
+      }
+    }
+  } else if((typeof(obj) == 'string') || (obj instanceof String)){
+    if(inString){
+      src += `${obj}`;
+    } else {
+      src += `output(\`${obj}\`);`;
+    }
+  } else {
+    switch (obj.name) {
+      case 'doctype':
+        if(inString){
+          src += `<!DOCTYPE${attr(obj.root)}${attr(obj.type)}${attr(obj.text)}>`;
+        } else {
+          src += `output('<!DOCTYPE${attr(obj.root)}${attr(obj.type)}${attr(obj.text)}>');\n`;
+        }
+        break;
+      case 'text':
+        if(inString){
+          src += `${obj.content || ''}`;
+        } else {
+          src += `output(\`${obj.content || ''}\`);\n`;
+        }
+        break;
+      default:
+        {
+            let temp = '<' + obj.name;
+            let condition;
+            if (obj.attributes) {
+              for (const attr of obj.attributes) {
+                if(attr.namespace){
+                  if(attr.namespace == 'sf' && attr.name == 'if'){
+                    condition = attr.value;
+                  } else {
+                    // const attrMethod = namespaceMapForAttrs.get(attr.namespace);
+                    // if(attrMethod){
+                    //   const result = stringize(attrMethod(attr,obj,render_));
+                    // } else {
+                    //   if(attr.text) {
+                    //     temp += ` ${attr.namespace?attr.namespace + ':':''}${attr.name}="${attr.text}"`;
+                    //   } else {
+                    //     temp += ` ${attr.namespace?attr.namespace + ':':''}${attr.name}`;
+                    //   }
+                    // }
+                  }
+                } else {
+                  if(attr.text) {
+                    temp += ` ${attr.name}="${attr.text ? attr.text : ''}"`;
+                  } else {
+                    temp += ` ${attr.name}`;
+                  }
+                }
+              }
+            }
+            if (obj.content) {
+              temp += '>';
+              temp += render_(obj.content,true);
+              temp += `</${obj.name}>` ;
+              //temp += (inString ? `</${obj.name}>` : `</${obj.name}>\`);`);
+            } else {
+              temp += '>';
+              if(obj.name.match(needCloseTag)){
+                if(inString){
+                  temp += `</${obj.name}>`;
+                } else {
+                  temp += `</${obj.name}>\`);`;
+                }
+              }
+            }
+            if(condition){
+                src += `if(${condition}) {output(\`${temp}\`)}`;
+            } else {
+              if(inString){
+                src += `${temp}`;
+              } else {
+                src += `output(\`${temp}\`);\n`;
+              }
+            }
+          }
+    }
+  }
+  return src;
+}
+
 function render(jsonString,options){
   const values = [JSON.parse(jsonString)];
   const args = ['obj'];
-  const src = module.toString().replace(/function module \(\)\{(.*)\}/msg,'$1');
+  let src = module.toString().replace(/function module \(\)\{(.*)\}/msg,'$1');
   if(options){
     args.push(...Object.keys(options));
     values.push(...Object.keys(options));
   }
 
+  src += render_(values[0]);
   const FuncSrc = `
-${src}
-return render_(obj);
-  `;
+   ${src}
+   return outputStr;`;
   const fn = new Function(...args,FuncSrc);
+  //console.log(render_(values[0]));
   return fn(...values);
 }
 
 (async () => {
   const json = await fs.readFile(process.argv[2], 'utf8');
   const html = render(json);
+  console.log(html);
   await fs.writeFile(process.argv[3], html, 'utf8');
 })();  

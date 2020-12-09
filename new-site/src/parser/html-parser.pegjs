@@ -16,6 +16,23 @@
     }
   }
 
+
+  function makeNode(name,attributes,content,namespace){
+    // attributesの中にifが含まれるか確認する
+    if(attributes && attributes.length){
+      for(let i = 0,e = attributes.length;i < e;++i){
+        const attr = attributes[i];
+        if(attr.namespace == 'sf' && attr.name == 'if'){
+          attributes = attributes.splice(i,1);
+          const elm  = new HtmlNode(attr.name,[{value:attr.value}],new HtmlNode(name,attributes,content,namespace),attr.namespace);
+          elm.if = true;
+          return elm;
+        }
+      }
+    }
+    return new HtmlNode(name,attributes,content,namespace);
+  }
+
   // function makeHtmlNode(name, attrs,null,namespace){
   //   for(const attr of attrs) {
   //     if(attr.namespace == nsPrefix){
@@ -81,22 +98,25 @@ HTMLDocument = __ nodes:Element* { return nodes; }
 /**
  * Elements - https://www.w3.org/TR/html5/syntax.html#elements-0
  */
-Element  = RawText / Nested / Code / PlaceHolder / Void / Comment / DocType / Text
+Element  = RawText / Nested / PlaceHolder / Void / Comment / DocType / Text
 
 RawText  = Script / Style / Textarea / Title / PlainText
 
-Script    "script"    = '<script'i    attrs:Attributes '>' __ content:(ch:(!('</script'i    __ '>') c:. { return c })* { return ch.join('') }) __ '</script'i    __ '>' __ { return new HtmlNode('script', attrs, content); }
-Style     "style"     = '<style'i     attrs:Attributes '>' __ content:(ch:(!('</style'i     __ '>') c:. { return c })* { return ch.join('') }) __ '</style'i     __ '>' __ { return new HtmlNode('style', attrs, content); }
-Textarea  "textarea"  = '<textarea'i  attrs:Attributes '>' __ content:(ch:(!('</textarea'i  __ '>') c:. { return c })* { return ch.join('') }) __ '</textarea'i  __ '>' __ { return new HtmlNode('textarea', attrs, content); }
-Title     "title"     = '<title'i     attrs:Attributes '>' __ content:(ch:(!('</title'i     __ '>') c:. { return c })* { return ch.join('') }) __ '</title'i     __ '>' __ { return new HtmlNode('title', attrs, content); }
-PlainText "plaintext" = '<plaintext'i attrs:Attributes '>' __ content:(ch:(!('</plaintext'i __ '>') c:. { return c })* { return ch.join('') }) __ '</plaintext'i __ '>' __ { return new HtmlNode('plaintext', attrs, content); }
+Script    "script"    = '<script'i    attrs:Attributes '>' __ content:(ch:(!('</script'i    __ '>') c:. { return c })* { return ch.join('') }) __ '</script'i    __ '>' __ { return makeNode('script', attrs, content); }
+Style     "style"     = '<style'i     attrs:Attributes '>' __ content:(ch:(!('</style'i     __ '>') c:. { return c })* { return ch.join('') }) __ '</style'i     __ '>' __ { return makeNode('style', attrs, content); }
+Textarea  "textarea"  = '<textarea'i  attrs:Attributes '>' __ content:(ch:(!('</textarea'i  __ '>') c:. { return c })* { return ch.join('') }) __ '</textarea'i  __ '>' __ { return makeNode('textarea', attrs, content); }
+Title     "title"     = '<title'i     attrs:Attributes '>' __ content:(ch:(!('</title'i     __ '>') c:. { return c })* { return ch.join('') }) __ '</title'i     __ '>' __ { return makeNode('title', attrs, content); }
+PlainText "plaintext" = '<plaintext'i attrs:Attributes '>' __ content:(ch:(!('</plaintext'i __ '>') c:. { return c })* { return ch.join('') }) __ '</plaintext'i __ '>' __ { return makeNode('plaintext', attrs, content); }
 
-Nested    "element"   = begin:TagBegin __ content:Element* __ end:TagEnd __ &{ return begin.name == end.name && ((!begin.namespace && !end.namespace) || (begin.namespace && (begin.namespace == end.namespace)) ); } {
+Nested    "element"   = begin:TagBegin __ content:Element* __ end:TagEnd __ &{
+  let begin_ = begin.if ? begin.content : begin;
+  if(begin_.name == end.name && ((!begin_.namespace && !end.namespace) || (begin_.namespace && (begin_.namespace == end.namespace)) )){return true} else {error('Start tag and end tag do not match.')}; 
+} {
   begin.content = content;
   return begin;
 }
 
-TagBegin  "begin tag" = '<'  namespace:NameSpace? name:Symbol attrs:Attributes? '>' { return new HtmlNode(name.toLowerCase(), attrs,null,namespace); }
+TagBegin  "begin tag" = '<'  namespace:NameSpace? name:Symbol attrs:Attributes? '>' { return makeNode(name.toLowerCase(), attrs,null,namespace); }
 TagEnd    "end tag"   = '</' namespace:NameSpace? name:Symbol __               '>' { return {name:name.toLowerCase(),namespace:namespace}; }
 
 NameSpace 'namespace' = @Symbol ':'
@@ -105,16 +125,16 @@ NameSpace 'namespace' = @Symbol ':'
  * Void element (with self closing tag, w/o content)
  * - 'area'i / 'base'i / 'br'i / 'col'i / 'embed'i / 'hr'i / 'img'i / 'input'i / 'keygen'i / 'link'i / 'meta'i / 'param'i / 'source'i / 'track'i / 'wbr'i
  */
-Void      "element"   = '<' namespace:NameSpace? name:Symbol attrs:Attributes ('/>' / '>') __ { return new HtmlNode(name, attrs,null,namespace); }
+Void      "element"   = '<' namespace:NameSpace? name:Symbol attrs:Attributes ('/>' / '>') __ { return makeNode(name, attrs,null,namespace); }
 
 Comment   "comment"   = '<!--' text:CommentText '-->' __ {
-    return new HtmlNode('comment', null, text);
+    return makeNode('comment', null, text);
   }
 
 CommentText = ch:$(!'-->' . )* { return ch; }
 
 DocType   "doctype"   = '<!DOCTYPE'i __ root:Symbol __ type:('public'i / 'system'i)? __ text:String* '>' __ {
-    const node = new HtmlNode('doctype');
+    const node = makeNode('doctype');
     node.root = root && root.toLowerCase();
     node.type = type && type.toLowerCase();
     //node.content = content && content.toLowerCase();
@@ -123,21 +143,21 @@ DocType   "doctype"   = '<!DOCTYPE'i __ root:Symbol __ type:('public'i / 'system
 
 Text "text"
   =  ch:$(!PlaceHolder [^<])+ {
-    return new HtmlNode('text', null,ch);
+    return makeNode('text', null,ch);
   }
   / ch:(!PlaceHolder !TagEnd !Void !Comment !DocType c:. { c })+ {
-    return new HtmlNode('text', null, ch.join(''));
+    return makeNode('text', null, ch.join(''));
   }
 
-CodeStart =  ![\\] '<%'
-CodeEnd = ![\\] '>'
+// TemplateTagStart =  ![\\] '<sf'
+// TemplateTagEnd = ![\\] '/sf>'
 
-Code 'code' = CodeStart expression:$(!CodeEnd .)+ CodeEnd { return {name:'code',expression:expression}; }
-CodeExpression 'code expression' = __ / (!CodeStart !CodeEnd . )+ {return text();}
+// Code 'code' = CodeStart expression:$(!CodeEnd .)+ CodeEnd { return {name:'code',expression:expression}; }
+// CodeExpression 'code expression' = __ / (!CodeStart !CodeEnd . )+ {return text();}
 
 
-PlaceHolderStart = ![\\] '<' @[@$]
-PlaceHolderEnd = ![\\] '>'
+PlaceHolderStart = ![\\] type:[$@#] '{' {return type;}
+PlaceHolderEnd = ![\\] '}'
 PlaceHolder 'placeholder' = type:PlaceHolderStart expression:$(!PlaceHolderEnd .)+  PlaceHolderEnd { return {name:'placeholder',type:type,expression:expression}; }
 
 
@@ -151,7 +171,7 @@ PlaceHolder 'placeholder' = type:PlaceHolderStart expression:$(!PlaceHolderEnd .
 Attributes = __ attrs:Attribute* __ { return (attrs && attrs.length) ? attrs : null;}
 
 Attribute "attribute"
-  = namespace:NameSpace? name:Symbol __ value:(__ '=' __ @(PlaceHolder / String))? __ { return {namespace:namespace,name:name, value:text}; }
+  = namespace:NameSpace? name:Symbol __ value:(__ '=' __ @(PlaceHolder / String))? __ { return {namespace:namespace,name:name, value:value?value[0]:undefined}; }
   / @PlaceHolder __ 
   / !'/>' [^> ]+ __ { return null; }
 

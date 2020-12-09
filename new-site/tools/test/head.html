@@ -16,13 +16,14 @@
 <meta sf:if="img" name="twitter:image" content="${img}" />
   
 <meta property="og:type" content="article">
-<meta property="og:url" content="<%-meta.url%>" />
+<meta property="og:url" content="<if meta.url%>" />
 <meta property="og:title" content="<%=meta.title%>"/>
-<meta property="og:site_name" content="<%=meta.site_name%>" />
+<meta property="og:site_name" content="<%=meta.name%>" />
 <meta property="og:description" content="<%=meta.description%>">
 <meta property="og:image" content="<%- img_ %>">
 
   <script type="application/ld+json">
+    <@meta>
     {
      "@type": "WebPage",
      "@id": "./webpages/web.html",

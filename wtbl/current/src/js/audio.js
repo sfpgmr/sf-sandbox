@@ -1077,6 +1077,7 @@ function parseMML_(mml) {
   });
   return seqArray;
 }
+
 export class SoundEffects {
   constructor(sequencer,data){
     this.soundEffects = [];

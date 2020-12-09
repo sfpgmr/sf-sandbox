@@ -5,108 +5,116 @@
   "type": null
  },
  {
-  "name": "code",
-  "expression": " let title = 'title'; "
- },
- {
-  "name": "text",
-  "content": "\n"
- },
- {
   "name": "html",
   "attributes": [
    {
     "namespace": null,
     "name": "amp"
+   },
+   {
+    "namespace": "xmlns",
+    "name": "sf",
+    "value": "https://sfpgmr.net/sf-template"
    }
   ],
   "content": [
    {
-    "name": "code",
-    "expression": " if(aaa = bb) { \n  let a = 10;\n  \\<% \n"
-   },
-   {
-    "name": "text",
-    "content": "\n  "
-   },
-   {
     "namespace": "sf",
-    "name": "apply",
+    "name": "if",
     "attributes": [
      {
-      "namespace": null,
-      "name": "name"
-     }
-    ]
-   },
-   {
-    "name": "head",
-    "attributes": [
-     {
-      "namespace": "sf",
-      "name": "if"
+      "value": "data"
      }
     ],
-    "content": [
-     {
-      "name": "placeholder",
-      "type": "@",
-      "expression": "title"
-     },
-     {
-      "name": "text",
-      "content": " "
-     },
-     {
-      "name": "placeholder",
-      "type": "@",
-      "expression": "title"
-     },
-     {
-      "name": "text",
-      "content": " "
-     },
-     {
-      "name": "placeholder",
-      "type": "$",
-      "expression": "title"
-     },
-     {
-      "name": "text",
-      "content": "\n    "
-     },
-     {
-      "name": "script",
-      "attributes": [
-       {
-        "namespace": null,
-        "name": "run-at"
-       },
-       {
-        "name": "placeholder",
-        "type": "@",
-        "expression": "title"
-       },
-       {
-        "namespace": null,
-        "name": "type"
-       }
-      ],
-      "content": "{\n        let a = b;\n      }\n    "
-     },
-     {
-      "name": "code",
-      "expression": "\n  }\n"
-     },
-     {
-      "name": "text",
-      "content": "\n  "
-     }
-    ]
+    "content": [],
+    "if": true
    },
    {
     "name": "body",
-    "content": []
+    "content": [
+     {
+      "namespace": "sf",
+      "name": "if",
+      "attributes": [
+       {
+        "value": "title"
+       }
+      ],
+      "content": [
+       {
+        "name": "text",
+        "content": "title"
+       },
+       {
+        "name": "placeholder",
+        "type": "$",
+        "expression": "alt"
+       },
+       {
+        "name": "text",
+        "content": "\n"
+       }
+      ],
+      "if": true
+     },
+     {
+      "name": "p",
+      "content": [
+       {
+        "name": "placeholder",
+        "type": "$",
+        "expression": "title"
+       },
+       {
+        "name": "text",
+        "content": " "
+       },
+       {
+        "name": "placeholder",
+        "type": "$",
+        "expression": "title"
+       },
+       {
+        "name": "text",
+        "content": " "
+       },
+       {
+        "name": "placeholder",
+        "type": "$",
+        "expression": "title"
+       },
+       {
+        "name": "text",
+        "content": "\n"
+       }
+      ]
+     },
+     {
+      "namespace": "sf",
+      "name": "md",
+      "content": []
+     },
+     {
+      "name": "sf",
+      "content": [
+       {
+        "name": "text",
+        "content": "if(aaa = bb) { \n    let a = 10;\n  }\n"
+       }
+      ]
+     },
+     {
+      "namespace": "sf",
+      "name": "if",
+      "attributes": [
+       {
+        "value": "aaaa"
+       }
+      ],
+      "content": [],
+      "if": true
+     }
+    ]
    }
   ]
  }

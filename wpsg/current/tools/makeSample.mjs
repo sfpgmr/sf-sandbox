@@ -1,8 +1,7 @@
-"use strict";
-let fs = require('fs');
-let path = require('path');
-let decoder = require('wav-decoder');
-let lzbase62 = require('lzbase62');
+import fs from 'fs';
+import path from 'path';
+import decoder from 'wav-decoder';
+import lzbase62 from 'lzbase62';
 
 function denodeify(nodeFunc){
     var baseArgs = Array.prototype.slice.call(arguments, 1);
@@ -23,9 +22,9 @@ function denodeify(nodeFunc){
     }
 }
 
-var readFile = denodeify(fs.readFile);
-var readDir = denodeify(fs.readdir);
-var writeFile = denodeify(fs.writeFile);
+const readFile = denodeify(fs.readFile);
+const readDir = denodeify(fs.readdir);
+const writeFile = denodeify(fs.writeFile);
 
 readDir('./res/out/')
 .then((files)=>{
