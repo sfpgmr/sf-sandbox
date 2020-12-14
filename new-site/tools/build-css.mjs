@@ -8,7 +8,7 @@ const sassp = util.promisify(sass.render.bind(sass));
 
 export default async function buildCss() {
   const result = await sassp({
-    file:'../src/scss/style.scss',
+    file:'../src/css/bulma/bulma.sass',
     outputStyle:'compressed'
   });
   //console.log(result);

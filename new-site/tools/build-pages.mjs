@@ -9,10 +9,14 @@ import util from 'util';
 import path from 'path';
 import { setFlagsFromString } from 'v8';
 import { EEXIST } from 'constants';
+import marked from './marked.mjs';
+// marked用カスタムレンダラ
+import {NormalRenderer,AmpRenderer,saveCache} from './sf-renderer.mjs';
+
 
 const sassp = util.promisify(sass.render.bind(sass));
 
-let debug = true;
+let debug = false;
 
 if(process.argv[2] == 'release'){
   debug = false;
@@ -29,7 +33,7 @@ async function buildPage({templatePath,scssPath,outputPath,contentPath}) {
     outputStyle:'compressed'
   });
 
-  const css = resultCss.css.toString() + (await fs.readFile('../src/css/icons.css','utf-8'));
+  const  css = resultCss.css.toString() + (await fs.readFile('../src/css/icons.css','utf-8'));
 
   //console.log(css);
   
@@ -111,18 +115,18 @@ async function buildPage({templatePath,scssPath,outputPath,contentPath}) {
  const pages = [
   { 
     
-    templatePath:'../src/templates/template-top.ejs',
-    scssPath:'../src/scss/top.scss',
-    outputPath:'../dist/top.html'
-  },{
-    templatePath:'../src/templates/template-top-grid.ejs',
-    scssPath:'../src/scss/top-grid.scss',
-    outputPath:'../dist/index.html'
-  },{
-    templatePath:'../src/templates/template-top-menu.ejs',
-    scssPath:'../src/scss/top-menu.scss',
-    outputPath:'../dist/top-menu.html'
-  },'dev/break/'
+    templatePath:'../src/templates/template-index.ejs',
+    scssPath:'../src/css/bulma/bulma.sass',
+    outputPath:debug?'../dist/index.html':'/home/sfpg/www/html/contents/index.html'
+   }//,{
+  //   templatePath:'../src/templates/template-top-grid.ejs',
+  //   scssPath:'../src/scss/top-grid.scss',
+  //   outputPath:'../dist/index.html'
+  // },{
+  //   templatePath:'../src/templates/template-top-menu.ejs',
+  //   scssPath:'../src/scss/top-menu.scss',
+  //   outputPath:'../dist/top-menu.html'
+  // },'dev/break/'
  ];
 
 
