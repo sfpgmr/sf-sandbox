@@ -1,0 +1,1282 @@
+<!DOCTYPE html>
+
+<html lang="ja" prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb# article: http://ogp.me/ns/article#">
+
+<head>
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-15457703-9"></script>
+  <script>
+    if (!location.hostname.match(/localhost/)) {
+      window.dataLayer = window.dataLayer || [];
+      function gtag() { dataLayer.push(arguments); }
+      gtag('js', new Date());
+      gtag('config', 'UA-15457703-9');
+    }
+  </script>
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Twitter Viewer</title>
+  <meta name="description" content="自作Twitter Viewerによる自分のつぶやきの記録。Programming,Music,HTML5,WebGL,javascript,WebAudio,Gameなど" />
+  <meta name="keywords" content="Programming,Music,HTML5,WebGL,javascript,WebAudio" /> 	
+
+  <meta itemprop="image" content="https://www.sfpgmr.net/img/sfweb.png" />
+  <meta itemprop="name" content="S.F. Web" />
+  
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:site" content="S.F. Web" />
+  <meta name="twitter:url" content="./index24.html" />
+  <meta name="twitter:title" content="Twitter Viewer" />
+  <meta name="twitter:description" content="自作Twitter Viewerによる自分のつぶやきの記録。Programming,Music,HTML5,WebGL,javascript,WebAudio,Gameなど" />
+  <meta name="twitter:image" content="https://www.sfpgmr.net/img/sfweb.png" />
+  
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="./index24.html" />
+  <meta property="og:title" content="Twitter Viewer"/>
+  <meta property="og:site_name" content="S.F. Web" />
+  <meta property="og:description" content="Programming,Music,HTML5,WebGL,javascript,WebAudio">
+  <meta property="og:image" content="https://www.sfpgmr.net/img/sfweb.png">
+
+  <style>
+  * {
+  margin: 0;
+  padding: 0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+
+html {
+  margin: 0;
+  padding: 0;
+  font-size: 10px; }
+
+body {
+  margin: 0;
+  padding-left: 8px;
+  padding-right: 8px;
+  background: black;
+  color: white; }
+
+.top-nav {
+  position: fixed;
+  z-index: 99999;
+  background: rgba(0, 0, 0, 0.5);
+  display: block;
+  width: 100%;
+  height: 32px;
+  color: white; }
+
+#sentinel {
+  width: 0px;
+  height: 0px; }
+
+.contents {
+  padding-top: 32px;
+  width: 100%;
+  position: relative;
+  content: strict; }
+
+@keyframes blinking {
+  0% {
+    color: black; }
+  50% {
+    color: white; }
+  100% {
+    color: black; } }
+
+.loading {
+  font-family: monospace;
+  font-size: 24px;
+  position: fixed;
+  width: 100vw;
+  height: 100vh;
+  text-align: center;
+  padding-top: 50vh;
+  z-index: 32768;
+  background: black;
+  animation: blinking 2s infinite;
+  content: strict; }
+
+.contents > article {
+  background: #f0f0f0;
+  color: #202020;
+  position: absolute;
+  max-height: 95vh;
+  overflow: auto;
+  border-radius: 3px;
+  /* transition: opacity 1s linear;*/
+  opacity: 1.0; }
+
+.tweet-header {
+  display: grid;
+  align-items: end;
+  grid-template-columns: 40px 2fr 1fr;
+  grid-template-rows: 1fr;
+  font-size: 12px;
+  font-weight: bold; }
+
+.tweet-img {
+  width: 100%;
+  object-fit: cover; }
+
+.youtube {
+  position: relative;
+  cursor: pointer; }
+
+.youtube > img {
+  width: 100%;
+  object-fit: cover; }
+
+.youtube > svg.player-play {
+  width: 64px;
+  height: 64px;
+  left: calc(50% - 32px);
+  top: calc(50% - 32px);
+  position: absolute;
+  z-index: 1000;
+  opacity: 0.5; }
+
+.youtube:hover > svg.player-play {
+  opacity: 1.0; }
+
+.youtube:hover .player-play-1 {
+  stroke: #80808080; }
+
+.youtube > div.yt-title {
+  /*text-shadow: #fff 1px 1px 0;*/
+  font-size: 1.2rem;
+  color: white;
+  background: rgba(0, 0, 0, 0.5);
+  position: absolute;
+  left: 0;
+  top: 0;
+  overflow: auto;
+  z-index: 998; }
+
+.tweet-profile-img {
+  grid-column: 1/2;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%; }
+
+.tweet-user-name {
+  grid-column: 2/3; }
+
+.tweet-date {
+  font-size: 8px;
+  text-align: right;
+  grid-column: 3/4; }
+
+.contents > twitter-widget {
+  overflow: auto;
+  max-height: 960px;
+  position: absolute; }
+
+.contents > article > section > .tweet-text {
+  display: block;
+  padding: 4px;
+  word-break: break-all;
+  font-size: 12px; }
+
+.contents > article > h3 {
+  font-size: 12px; }
+
+blockquote.card {
+  margin: 4px;
+  padding: 4px;
+  font-size: 12px;
+  background: white;
+  border-radius: 4px; }
+
+blockquote.card > header {
+  display: grid;
+  grid-gap: 4px;
+  gap: 4px; }
+
+blockquote.card-default > header {
+  grid-template-columns: 64px 1fr; }
+
+blockquote.card-large > header {
+  grid-template-columns: 1fr; }
+
+blockquote.card > header > img {
+  width: 100%; }
+
+div.no-image {
+  display: block;
+  width: 64px;
+  height: 64px;
+  background: gray;
+  color: white;
+  text-align: center;
+  line-height: 64px; }
+ 
+  </style>
+</head>
+
+<body>
+  <div class="loading" id="loading">Loading</div>
+  <header class="top-nav">
+    <h1>S.F. Info.</h1>
+  </header>
+  <div class="contents" id="contents" rendersubtree="invisible skip-activation"> 
+    
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1212701145379946496/pSDVrvWj_normal.png" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1259288928038731776"
+            target="_blank">2020/5/10 10:07:31</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">構文を考えながらこれをぼちぼち読んでる。<br/><br/>低レイヤを知りたい人のためのCコンパイラ作成入門<br/><blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="https://www.sigbus.info/compilerbook" target="_blank">低レイヤを知りたい人のためのCコンパイラ作成入門</a></header><div></div></blockquote></p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/858198338444836864/OFlImt8f_normal.jpg" />
+        <p class="tweet-user-name">V@voluntas</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/voluntas/status/1259147784948559872"
+            target="_blank">2020/5/10 0:46:40</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">時雨堂を支えるマネージメント <a href="https://gist.github.com/voluntas/fa1a3c50ce988b5c187e5036419b145a" target="_blank">gist.github.com/voluntas/fa1a3…</a> 更新した。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/731335621789147137/bWURa4wY_normal.jpg" />
+        <p class="tweet-user-name">トモカズ@tomo0354</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/tomo0354/status/1253509971951497218"
+            target="_blank">2020/4/24 11:24:01</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">SHARP ポケコン PC-G850Vの液晶に縦線が入ってしまった。<br/>※写真では2本だけですが電源投入直後は4本でした<br/><br/>同様の症状で修理している方も多くいらっしゃるようで、私も同様の処置をしたら直りました。<br/><br/>現在、ポケコンの使途は（プログラミングでは無く）主に電卓としてなのですが、無いと不便です。 https://t.co/IRVNNJcp3t</p>
+        
+        <img  class="tweet-img" src="https://pbs.twimg.com/media/EWVZPeAUEAEfPf_.jpg" />
+        
+        <img  class="tweet-img" src="https://pbs.twimg.com/media/EWVZRNpUEAIZ0zt.jpg" />
+        
+        <img  class="tweet-img" src="https://pbs.twimg.com/media/EWVZSWXU4AAeDjQ.jpg" />
+        
+        <img  class="tweet-img" src="https://pbs.twimg.com/media/EWVZTzgUMAA5C3l.jpg" />
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1212701145379946496/pSDVrvWj_normal.png" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1259050338491006978"
+            target="_blank">2020/5/9 18:19:27</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">10問中、10問正解です！絶対関西人や！｜ガチで関西人しか解けない大阪弁クイズ！ #関西弁クイズ #関西弁 #kuizy<br/>@kuizy_netより <blockquote class="card card-large"><header><img  src="https://d1khcm40x1j0f.cloudfront.net/words/61391167c200ba671a5dc6acf3e3d9a4.png" /><a href="https://kuizy.net/quiz/229" target="_blank">ガチで関西人しか解けない大阪弁クイズ！ #関西弁クイズ #関西弁</a></header><div>大阪人にしかわからないコテコテの関西弁をクイズにしてみました！解いてみてや〜！</div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1259050591969398784"
+            target="_blank">2020/5/9 18:20:27</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">人生の前半を関西、後半を関東で過ごしております。もうすぐ関東のほうが長くなります。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1259051404682903552"
+            target="_blank">2020/5/9 18:23:41</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">関西の中でも微妙に方言があるからなあ。例えば神戸に勤めてた時に「やっとぉ。」「しっとぉ。」「ダボ！」という言葉を聞いて地域によって言葉って少しずつ違うんだなあと思ったね。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1259051746636075008"
+            target="_blank">2020/5/9 18:25:03</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ちなみに私が住んでた堺の南のほうなんかは「まずい」を「もむない」って言ってたもんなあ。「もむない」は大阪市から上ではあまり通用しない。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1259052071870844929"
+            target="_blank">2020/5/9 18:26:20</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">大阪市内でもいわゆる大阪の地の言葉をきちんとしゃべる人は少ないんじゃないだろうかと思うなあ。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1259052375471321088"
+            target="_blank">2020/5/9 18:27:33</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">そして「そうけぇ」「やるんけぇ」とか「けぇ」を語尾につける地域でもあった。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1259053427419574275"
+            target="_blank">2020/5/9 18:31:43</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">「しはる」「いいはる」とかいうのもあるよなあ。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1259054181278560257"
+            target="_blank">2020/5/9 18:34:43</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">「おます」とか「だす」とかも使うのは落語家くらいではないかと思われる。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1259054863779901443"
+            target="_blank">2020/5/9 18:37:26</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">そうそう、うちのおやじ世代だと「しち（７）」を「ひち」っていうなあ。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1259055492082499584"
+            target="_blank">2020/5/9 18:39:56</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">そうかあ大阪と京都で同じ言葉でも意味が違うというのもあるんだなあ。。<br/><br/>・行けへん 大阪：行かない 京都：行けない<br/><br/>大阪では「行けない」は「行かれへん」というなあ。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1259056060377165826"
+            target="_blank">2020/5/9 18:42:11</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">そういえば「いきっとる」という言葉もこちらではほとんど聞かれない。「いきっとる」は「格好つけている」の意味だ。小藪さんが何かのTVで「いきっとる」使ってるの聞いて懐かしい。。と思ったね。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1259056486933622787"
+            target="_blank">2020/5/9 18:43:53</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">・「おまえなにいきっとんねん。」<br/>・「こいついきっとる。」<br/>・「いきっとんなあ。。」<br/><br/>みたいな感じで友達は連発してたなあ。。私はいきっていたのだろうか（笑）容姿的には「いきる」要素はなにひとつないのだが（笑）</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1259058247572418560"
+            target="_blank">2020/5/9 18:50:53</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">「居る」「居ない」とかも「おる」「おれへん」とかいうなあ。関西の中でも通じるところと通じないところがあるような気もするね。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1259059365421563904"
+            target="_blank">2020/5/9 18:55:19</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">さっきの「もむない」という言葉ってわりと広い地域で使われてたみたいだなあ。「まずい」というよりも「うまくない」っていう感じなのかな。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1259059488687919104"
+            target="_blank">2020/5/9 18:55:48</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">広いって言っても近畿圏内だと思うけどね。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1212701145379946496/pSDVrvWj_normal.png" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1259042675199578112"
+            target="_blank">2020/5/9 17:49:00</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">そういえばユーロ・ビートは割と早く国産歌謡曲に取り入れられたよな。ポップで生産性が高いからだろうか。Winkがまず挙げられるか。<br/><br/>愛が止まらない ～Turn it Into Love～ / Wink<br/><div class="youtube" data-type="yt" id="wcvnmwrsJn8"><div class="yt-title">Youtube - 愛が止まらない ～Turn it Into Love～ / Wink【Official Music Video】</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img  data-href="https://youtu.be/wcvnmwrsJn8" class="youtube" src="https://i.ytimg.com/vi/wcvnmwrsJn8/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1259043171465441280"
+            target="_blank">2020/5/9 17:50:58</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">この曲はあのカイリーミノーグのカバーだけど、雰囲気をうまく残してると思うんだよな。歌謡曲がカバーすると変なアレンジになってしまうことも多いもんね。。<br/><br/>Kylie Minogue - Turn It Into Love [1988] Music Video from DVD source<br/><div class="youtube" data-type="yt" id="p8uZiIIP-EA"><div class="yt-title">Youtube - Kylie Minogue - Turn It Into Love [1988] Music Video from DVD source</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img  data-href="https://youtu.be/p8uZiIIP-EA" class="youtube" src="https://i.ytimg.com/vi/p8uZiIIP-EA/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1259044623638384642"
+            target="_blank">2020/5/9 17:56:44</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ダンシングヒーローとかもそうかね。登美丘高校で有名になったな。そういえば。登美丘高校ってあの北野田にある高校だよな。<br/><br/>荻野目洋子 ダンシングヒーロー<br/><div class="youtube" data-type="yt" id="3JbbP941bmE"><div class="yt-title">Youtube - 荻野目洋子 ダンシングヒーロー</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img  data-href="https://youtu.be/3JbbP941bmE" class="youtube" src="https://i.ytimg.com/vi/3JbbP941bmE/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1259045047447633920"
+            target="_blank">2020/5/9 17:58:25</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">もともとの曲ももちろんいいね。<br/><br/>Eat You Up<br/><div class="youtube" data-type="yt" id="kAIb1niNvts"><div class="yt-title">Youtube - Eat You Up</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img  data-href="https://youtu.be/kAIb1niNvts" class="youtube" src="https://i.ytimg.com/vi/kAIb1niNvts/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1259045640450891776"
+            target="_blank">2020/5/9 18:00:47</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">だが私は荻野目洋子の曲であれば「フラミンゴInパラダイス」いち推しであるが（笑）。フェアライトのリズムが炸裂しているので。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1212701145379946496/pSDVrvWj_normal.png" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1259008827220869121"
+            target="_blank">2020/5/9 15:34:30</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">レゲエもほんのちょっとだけ聴いてた。Ace Of Baseの曲を聴いたのがきっかけ。<br/><br/>Ace of Base - All That She Wants <br/><div class="youtube" data-type="yt" id="d73tiBBzvFM"><div class="yt-title">Youtube - Ace of Base - All That She Wants (Official Music Video)</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img  data-href="https://youtu.be/d73tiBBzvFM" class="youtube" src="https://i.ytimg.com/vi/d73tiBBzvFM/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1259009125784010752"
+            target="_blank">2020/5/9 15:35:41</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">Ace of Baseはレゲエのフレームを借りたポップスといったほうがいいね。<br/><br/>Ace of Base - The Sign<br/><div class="youtube" data-type="yt" id="iqu132vTl5Y"><div class="yt-title">Youtube - Ace of Base - The Sign (Official Music Video)</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img  data-href="https://youtu.be/iqu132vTl5Y" class="youtube" src="https://i.ytimg.com/vi/iqu132vTl5Y/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1259009994562793472"
+            target="_blank">2020/5/9 15:39:08</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ちょっと興味が出たのでボブ・マーリィの「Catch A Fire」を入手して聴いたりした。ボブ・マーリィはちょっとロックっぽぃ色が入ってる気がする。そこがいいんだろうな。<br/><br/>Concrete Jungle<br/><div class="youtube" data-type="yt" id="SBRMz_QV8Kg"><div class="yt-title">Youtube - Concrete Jungle</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img  data-href="https://youtu.be/SBRMz_QV8Kg" class="youtube" src="https://i.ytimg.com/vi/SBRMz_QV8Kg/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1259010665345216513"
+            target="_blank">2020/5/9 15:41:48</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ボブ・マーリィ＆ウェイラーズはスカが前身だったんだよね。間違って買ったCDがスカだったんでちょっとびっくりした。でもスカもいいなあと思ったんだよね。<br/><br/>The Wailing Wailers - Simmer Down<br/><div class="youtube" data-type="yt" id="7xo-BCAjMiM"><div class="yt-title">Youtube - The Wailing Wailers - Simmer Down</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img  data-href="https://youtu.be/7xo-BCAjMiM" class="youtube" src="https://i.ytimg.com/vi/7xo-BCAjMiM/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1259011397746167815"
+            target="_blank">2020/5/9 15:44:43</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ジャミロクワィもVirtual Insanityのヒットによってラジオ経由で私の耳に入ってきてCDゲット。その中に入ってる曲。太いベースがかなりのお気に入り。<br/><br/>Jamiroquai - Drifting Along<br/><div class="youtube" data-type="yt" id="xEa1Zxeqauo"><div class="yt-title">Youtube - Jamiroquai - Drifting Along (Audio)</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img  data-href="https://youtu.be/xEa1Zxeqauo" class="youtube" src="https://i.ytimg.com/vi/xEa1Zxeqauo/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1259011885778604033"
+            target="_blank">2020/5/9 15:46:39</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">これもよく聴いたよね。<br/><br/>Dawn Penn - No, No No<br/><div class="youtube" data-type="yt" id="j4vjVetZPpM"><div class="yt-title">Youtube - Dawn Penn - No, No No (Official Video)</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img  data-href="https://youtu.be/j4vjVetZPpM" class="youtube" src="https://i.ytimg.com/vi/j4vjVetZPpM/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1259012177169494018"
+            target="_blank">2020/5/9 15:47:49</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">しかしこの曲、Dawn Penn自身のセルフ・カバーだというのをさっき知って驚いてたところ。<br/><br/>Dawn Penn You Dont Love Me aka No No No - Coxsone - Studio One<br/><div class="youtube" data-type="yt" id="_29o3bSZti0"><div class="yt-title">Youtube - Dawn Penn No No No Original Cut You Dont Love Me  - Coxsone - Studio One</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img  data-href="https://youtu.be/_29o3bSZti0" class="youtube" src="https://i.ytimg.com/vi/_29o3bSZti0/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1259012674651750401"
+            target="_blank">2020/5/9 15:49:47</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">さらに調べるとこれ自体もカバーだったという。<br/><br/>Willie Cobbs / You Don't Love Me<br/><div class="youtube" data-type="yt" id="ZsJMfYDUNCE"><div class="yt-title">Youtube - Willie Cobbs / You Don't Love Me</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img  data-href="https://youtu.be/ZsJMfYDUNCE" class="youtube" src="https://i.ytimg.com/vi/ZsJMfYDUNCE/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1259023414448144384"
+            target="_blank">2020/5/9 16:32:28</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">Youtubeの音楽関係の情報量がすごすぎる。掘り下げに要する労力が30年前とは全然違うわ。断然楽だ。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1259033998380040194"
+            target="_blank">2020/5/9 17:14:31</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">でもわからない曲もあるんだよな。さっきReaperでベースとリズムを打ち込んだ。こんなフレーズの曲なんだよね。。これがどうしても思い出せんのよね。。<br/><br/>Unknown Song<br/><div class="youtube" data-type="yt" id="myC1GJt2HgM"><div class="yt-title">Youtube - Unknown Song</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img  data-href="https://youtu.be/myC1GJt2HgM" class="youtube" src="https://i.ytimg.com/vi/myC1GJt2HgM/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1259038238603268096"
+            target="_blank">2020/5/9 17:31:22</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">自己解決できてしまった。これだった。<br/><br/>Lisa Lisa &amp; The Cult Jam feat. Full Force - I Wonder If I Take You Home<br/><div class="youtube" data-type="yt" id="UJLhG8YKbII"><div class="yt-title">Youtube - Lisa Lisa & The Cult Jam feat. Full Force - I Wonder If I Take You Home</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img  data-href="https://youtu.be/UJLhG8YKbII" class="youtube" src="https://i.ytimg.com/vi/UJLhG8YKbII/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1259040519591731200"
+            target="_blank">2020/5/9 17:40:26</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">こういうのも思い出したな。ついでに。ちょっとこれは90年代だが。<br/><br/>C+C Music Factory - Gonna Make You Sweat (Everybody Dance Now) ft. Freedom Williams<br/><div class="youtube" data-type="yt" id="LaTGrV58wec"><div class="yt-title">Youtube - C+C Music Factory - Gonna Make You Sweat (Everybody Dance Now) ft. Freedom Williams</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img  data-href="https://youtu.be/LaTGrV58wec" class="youtube" src="https://i.ytimg.com/vi/LaTGrV58wec/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1259041556821995520"
+            target="_blank">2020/5/9 17:44:33</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">さっきのLisa Lisa Cult Jamあたりの1985年代のエレ・ポップよりのR＆Bなんかも掘り出すと面白いかもね。ほとんど忘れてしまってるけどね。。このあたりレンタルで済ましてるものが多い（笑）。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1212701145379946496/pSDVrvWj_normal.png" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1258926601779077120"
+            target="_blank">2020/5/9 10:07:46</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">Acid Jazzというのが1990年頭くらいからジャンルとして確立してくるわけですが。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1258926733320785920"
+            target="_blank">2020/5/9 10:08:17</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">私も何かの雑誌でその情報を得た。当時。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1258927131515482112"
+            target="_blank">2020/5/9 10:09:52</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">その記事によればTalking Loud レーベルのものがよいということで聴いてみた。確かに良かった。しかしジャズというジャンルはものすごく幅広いんだなということを同時に知ったんだな。正直ジャズというジャンルはまともに聴いたことはもちろんない。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1258927476190752769"
+            target="_blank">2020/5/9 10:11:14</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">Young Disciplesのこのアルバムもすごく聴いた。でこのリズムを聴いてて「あ！」と思うことがあったんだな。気づいたというか。<br/><br/>Apparently Nothin' <br/><div class="youtube" data-type="yt" id="jNzBMK7zcKE"><div class="yt-title">Youtube - Apparently Nothin' (Soul River)</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img  data-href="https://youtu.be/jNzBMK7zcKE" class="youtube" src="https://i.ytimg.com/vi/jNzBMK7zcKE/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1258927944547725314"
+            target="_blank">2020/5/9 10:13:06</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">このころになってくるとシーケンサーで「ノリ」を細かく表現できるようになってきてる。そしてこの曲もリズムはシーケンサーでプログラミングされてるんだけど。なんでこんなノリを表現できるんだろうなあ。すごいなあと思ってたんだよね。である時気づいた。大したことじゃないんだけどね。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1258928447704817664"
+            target="_blank">2020/5/9 10:15:06</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">リズムはサンプリングしたものをステップとゲートでシーケンサーに入力するんだよね。このころはリアルタイムレコーディングも普通になってるから、リアルタイム＋クォンタイズでやってたのかもしれん。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1258928919761154048"
+            target="_blank">2020/5/9 10:16:58</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ノリを表現するポイントとしては<br/><br/>・発音タイミング<br/>・ベロシティ<br/><br/>が重要というのは理解してたんだな。でも何かが足りないなあと思ってたんだよね。それがヤング・ディサプルズのこの曲を聴いてて気づいたんだな。それは何かというと「音の切り方」つまりゲートタイム！</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1258929315078483970"
+            target="_blank">2020/5/9 10:18:33</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">「当たり前ですがな」という話だが、私はポンコツなのでなかなかそういうことに気づけないわけですよ（笑）。多分この曲がそれがわかりやすかったんだろうなあ。ハイハットにエフェクトがかかってなくて割と素の音だったせいもあるかもね。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1258930201171341313"
+            target="_blank">2020/5/9 10:22:04</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">リズムがNJSほどではないけどハネてたのも理解の手助けになったのかもしれんねえ。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1258930670723690496"
+            target="_blank">2020/5/9 10:23:56</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">As We Comeのイントロもいいなあと思ってたなあ。。<br/><br/>As We Come (To Be)<br/><div class="youtube" data-type="yt" id="56surtxJtfg"><div class="yt-title">Youtube - As We Come (To Be)</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img  data-href="https://youtu.be/56surtxJtfg" class="youtube" src="https://i.ytimg.com/vi/56surtxJtfg/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1258932388588949504"
+            target="_blank">2020/5/9 10:30:45</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">オマーのボーカルは癒されるわ。こういうちょっと大人な音楽なんだよね。Acid Jazzはね。<br/><br/>Omar - There's Nothing Like This<br/><div class="youtube" data-type="yt" id="7pqoQP7WlV4"><div class="yt-title">Youtube - Omar - There's Nothing Like This</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img  data-href="https://youtu.be/7pqoQP7WlV4" class="youtube" src="https://i.ytimg.com/vi/7pqoQP7WlV4/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1258933965697593345"
+            target="_blank">2020/5/9 10:37:01</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">Incognitoもアシッド・ジャズに分類されてた。ジャズ・ファンクとしてのキャリアが長いようなんだけどね。よく知らないが。アシッド・ジャズのコンピレーションに入ってたんだな。リズムはハウスのフレームだけどね。流行に巻き込まれた（笑）<br/><br/>Incognito - Always there<br/><div class="youtube" data-type="yt" id="JjhnqFruT9I"><div class="yt-title">Youtube - Incognito - Always there</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img  data-href="https://youtu.be/JjhnqFruT9I" class="youtube" src="https://i.ytimg.com/vi/JjhnqFruT9I/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1258934509942128641"
+            target="_blank">2020/5/9 10:39:11</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ええ曲ですわな。ジャズ・ファンクですわな。<br/><br/>Incognito - Don't You Worry 'Bout A Thing<br/><div class="youtube" data-type="yt" id="MWd5379FMGU"><div class="yt-title">Youtube - Incognito - Don't You Worry 'Bout A Thing</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img  data-href="https://youtu.be/MWd5379FMGU" class="youtube" src="https://i.ytimg.com/vi/MWd5379FMGU/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1258935998953648129"
+            target="_blank">2020/5/9 10:45:06</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">この流れでいくとThe Brand New Heaviesも聴くことになるんだな（笑）まあよく聴きましたわ。確かに。<br/><br/>The Brand New Heavies - Dream On Dreamer<br/><div class="youtube" data-type="yt" id="FB8nIGKbpJY"><div class="yt-title">Youtube - The Brand New Heavies - Dream On Dreamer</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img  data-href="https://youtu.be/FB8nIGKbpJY" class="youtube" src="https://i.ytimg.com/vi/FB8nIGKbpJY/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1258936445630181376"
+            target="_blank">2020/5/9 10:46:53</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">この「Back to Love」という曲聴いたときドラムの人歌うまいなと思ったな。逆にドラムの腕のほうはそうでもないような気が。怒られるなこんなこと言ったら（笑）<br/><br/><div class="youtube" data-type="yt" id="eemhWAZMAcU"><div class="yt-title">Youtube - The Brand New Heavies - Back To Love</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img  data-href="https://youtu.be/eemhWAZMAcU" class="youtube" src="https://i.ytimg.com/vi/eemhWAZMAcU/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1258936898602467328"
+            target="_blank">2020/5/9 10:48:41</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">hip hopとのコラボレーション。「Heavy Rhyme」もいいアルバムですわ。<br/><br/>The Brand New Heavies - Bonafied Funk (feat. Main Source)<br/><div class="youtube" data-type="yt" id="2QfqLOvr7Wk"><div class="yt-title">Youtube - The Brand New Heavies - Bonafied Funk (feat. Main Source)</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img  data-href="https://youtu.be/2QfqLOvr7Wk" class="youtube" src="https://i.ytimg.com/vi/2QfqLOvr7Wk/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1259003969965142016"
+            target="_blank">2020/5/9 15:15:12</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">United Future Organization.今一つ実体を把握していないグループ。当時はAcid Jazzに分類されていた。<br/><br/>United Future Organization - The Sixth Sense<br/><div class="youtube" data-type="yt" id="trDnFUK5dLo"><div class="yt-title">Youtube - United Future Organization - The Sixth Sense (1993)</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img  data-href="https://youtu.be/trDnFUK5dLo" class="youtube" src="https://i.ytimg.com/vi/trDnFUK5dLo/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1212701145379946496/pSDVrvWj_normal.png" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1257478368267694081"
+            target="_blank">2020/5/5 10:13:00</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">v8ブログに載ってたwabtに入ってるwasm-decompileを使って作成中のモジュールをdecompileしてみた。抽象的な言語コードにデコンパイルされるのだが、確かに読みやすくてデバッグに有効かも。左がデコンパイルしたやつで、右がwat版の同じ関数。<br/>#webassembly<br/><br/><blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="https://v8.dev/blog/wasm-decompile" target="_blank">What’s in that .wasm? Introducing: wasm-decompile · V8</a></header><div></div></blockquote> https://t.co/UtDo6kMRBx</p>
+        
+        <img  class="tweet-img" src="https://pbs.twimg.com/media/EXN1IW5UEAAuzhc.png" />
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1257496176305160192"
+            target="_blank">2020/5/5 11:23:46</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">音楽やシンセのことをtweetしてたら作りかけてほったらかしにしてた波形メモリシンセの続きが作りたくなったので。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1258166314713018369"
+            target="_blank">2020/5/7 7:46:39</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">波形メモリシンセのコードいじってるが、wasmも半分くらい忘れており、さらには自分で作ったはずのmwasmというマクロアセンブラもどきの構文にも悩まされる始末（笑）</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1258166623719964675"
+            target="_blank">2020/5/7 7:47:53</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">web再構築の話はどこに行ってしまったのやら。sqliteのラッパーは少し寝かせておこう。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1258167346830573570"
+            target="_blank">2020/5/7 7:50:45</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">rustという言語も少しだけ仕様を読んだけど、ifも式な感じはwasmと似た感じがしないでもない。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1258671759475146753"
+            target="_blank">2020/5/8 17:15:07</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ちょっと前にwatで<br/><br/>・JSによるメタプログラミング<br/>・マクロ<br/>・メモリアドレスのラベル付け<br/><br/>できるようにするプリプロセッサを作った。<br/><br/><blockquote class="card card-large"><header><img  src="https://qiita-user-contents.imgix.net/https%3A%2F%2Fcdn.qiita.com%2Fassets%2Fpublic%2Farticle-ogp-background-1150d8b18a7c15795b701a55ae908f94.png?ixlib=rb-1.2.2&w=1200&mark=https%3A%2F%2Fqiita-user-contents.imgix.net%2F~text%3Fixlib%3Drb-1.2.2%26w%3D840%26h%3D380%26txt%3Dmwasm%2528webassembly%25E3%2583%2586%25E3%2582%25AD%25E3%2582%25B9%25E3%2583%2588%25E3%2583%2595%25E3%2582%25A9%25E3%2583%25BC%25E3%2583%259E%25E3%2583%2583%25E3%2583%2588%25E7%2594%25A8%25E3%2583%2597%25E3%2583%25AA%25E3%2583%2597%25E3%2583%25AD%25E3%2582%25BB%25E3%2583%2583%25E3%2582%25B5%2529%2520%25E3%2581%25AE%25E8%25A3%25BD%25E4%25BD%259C%26txt-color%3D%2523333%26txt-font%3DHiragino%2520Sans%2520W6%26txt-size%3D54%26txt-clip%3Dellipsis%26txt-align%3Dcenter%252Cmiddle%26s%3D846ff3530045c7501e8d635fec3bd030&mark-align=center%2Cmiddle&blend=https%3A%2F%2Fqiita-user-contents.imgix.net%2F~text%3Fixlib%3Drb-1.2.2%26w%3D840%26h%3D500%26txt%3D%2540SFPGMR%26txt-color%3D%2523333%26txt-font%3DHiragino%2520Sans%2520W6%26txt-size%3D45%26txt-align%3Dright%252Cbottom%26s%3Dc23b0952f5b9bbd73a7e2c18c323897d&blend-align=center%2Cmiddle&blend-mode=normal&s=4aae7106376f4b9b10c798eea0556b21" /><a href="https://qiita.com/SFPGMR/items/427a0ac38338e659fe4a" target="_blank">mwasm(webassemblyテキストフォーマット用プリプロセッサ) の製作 - Qiita</a></header><div><br/><br/>mwasm(wasmテキストフォーマット用プリプロセッサ) の製作<br/><br/><br/>はじめに<br/><br/>mwasmはWebAssesembly Text Format （S式）用のプリプロセッサである。<br/>独自仕様+JavaScriptの構文を採用し、...</div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1258681138161147905"
+            target="_blank">2020/5/8 17:52:23</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">これはまだプロトタイプもいいところなのだが、つかえないこともない。が１つこれはないとちょっときついなと思ったのがポインタ＆ポインタメンバ指定によるメモリオフセットの取得である。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1258682686303961088"
+            target="_blank">2020/5/8 17:58:32</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">線形メモリの配置を絶対オフセットで指定するのではなくてデータ型とラベルで定義して、オフセットはラベルでアクセスできるようにするということですな。 https://t.co/ooYrqdliVk</p>
+        
+        <img  class="tweet-img" src="https://pbs.twimg.com/media/EXe8868VcAAWo_H.png" />
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1258683129138606080"
+            target="_blank">2020/5/8 18:00:17</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">アセンブラでいうDWとかDBとかそういうやつですわ。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1258684408845840384"
+            target="_blank">2020/5/8 18:05:22</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">それをC風なデータ型で指定できるようにしたんだよな。watはS式なので、ほんとはブレスじゃなくてS式で統一ししたほうがきれいな気もするけど、ここはプリプロセスする箇所だというのをソース中でわかるようにしたかったんだよね。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1258684646927118337"
+            target="_blank">2020/5/8 18:06:19</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">しかしwatはS式でスタートしたもの今はフラット形式のほうがメインになっているようである。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1258685153343238149"
+            target="_blank">2020/5/8 18:08:20</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">そして次に構造体を定義できるようにしたのですな。 https://t.co/I9EbTOL7oT</p>
+        
+        <img  class="tweet-img" src="https://pbs.twimg.com/media/EXe_beHUEAAbj_N.png" />
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1258686401853353984"
+            target="_blank">2020/5/8 18:13:18</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">でこれ使うとこんな感じでオフセットアドレスを取得できるわけですな。これがないとすべて絶対値（数字）でオフセット指定しなくてはならず、可読性が著しく下がってしまう。 https://t.co/Kln7b0fxoy</p>
+        
+        <img  class="tweet-img" src="https://pbs.twimg.com/media/EXfAXSyUMAARH1G.png" />
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1258686918180564994"
+            target="_blank">2020/5/8 18:15:21</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">watはそもそも人が書くフォーマットではないのでこんな機能はいらないが、watでどうしても書きたい私はこういうプリプロセッサを作ったのだ。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1258688342784225282"
+            target="_blank">2020/5/8 18:21:00</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">でさっきいってたポインタ機能というのはこういうことですわな。構造体に*をつけて定義すると、構造体の領域を確保するのではなく構造体のオフセットアドレスを格納する領域を確保するという意味になる。 https://t.co/jjwIlTAOLm</p>
+        
+        <img  class="tweet-img" src="https://pbs.twimg.com/media/EXfB8V7U0AA5Bgk.png" />
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1258688710578630663"
+            target="_blank">2020/5/8 18:22:28</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">今はどうしてるかというとオフセット・アドレスというのは単なるi32の値なので、i32という型で定義してそこに構造体のオフセットアドレスを入れている。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1258689572281520131"
+            target="_blank">2020/5/8 18:25:54</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">そしてC言語と同じように<br/><br/>sequence-&gt;tempo<br/><br/>とすればsequenceに入ってるオフセットからtempoのオフセットを求めて返せるようにする。<br/><br/>この機能は今ないが、やっぱり必要かなあと思っている。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1258728698892546048"
+            target="_blank">2020/5/8 21:01:22</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">これ自体大した機能ではない。実はこのメモリ配置や構造体の情報はメタデータとして保存し、JS側と情報共有することを指向している。実際今も使っているが、現在の仕様ではJS側ではi32の整数値が構造体のポインタかどうかを判別できない。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1212701145379946496/pSDVrvWj_normal.png" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1258644997944913920"
+            target="_blank">2020/5/8 15:28:46</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">Inner CityのKevin Saunderson。デトロイト・テクノのパイオニアの一人なんだろうな。英語字幕にするとなんとか理解できる。ニューヨーク生まれなんですな。この方。<br/><br/>Kevin Saunderson on the History of Techno<br/><div class="youtube" data-type="yt" id="MVo8ld3F-s4"><div class="yt-title">Youtube - Kevin Saunderson on the History of Techno | Red Bull Music Academy</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img  data-href="https://youtu.be/MVo8ld3F-s4" class="youtube" src="https://i.ytimg.com/vi/MVo8ld3F-s4/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1258645768635772930"
+            target="_blank">2020/5/8 15:31:50</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">英語→日本語自動翻訳はまだまだ難しい。余計に頭に入ってこないね。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1258651551242936322"
+            target="_blank">2020/5/8 15:54:49</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">The Reese Projectのこの曲のこの曲のRemixがよい。<br/><br/>Direct Me (Remix)<br/><div class="youtube" data-type="yt" id="y4ItnLwpdis"><div class="yt-title">Youtube - Direct Me (Remix)</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img  data-href="https://youtu.be/y4ItnLwpdis" class="youtube" src="https://i.ytimg.com/vi/y4ItnLwpdis/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1212701145379946496/pSDVrvWj_normal.png" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1258491869341728768"
+            target="_blank">2020/5/8 5:20:17</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ジャニス・ジョプリン。今聴いてもこのライブのボーカルは鳥肌が立ってしまう。<br/><br/>Janis Joplin - Down On Me<br/><div class="youtube" data-type="yt" id="s40vz3xeanY"><div class="yt-title">Youtube - Janis Joplin - Down On Me</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img  data-href="https://youtu.be/s40vz3xeanY" class="youtube" src="https://i.ytimg.com/vi/s40vz3xeanY/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1258492568729313280"
+            target="_blank">2020/5/8 5:23:04</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">プロコル・ハルム。ロックでこれほどオルガンが効果的に使われている曲もないよな。。<br/><br/>PROCOL HARUM - A Whiter Shade Of Pale<br/><div class="youtube" data-type="yt" id="2puubv2e0L4"><div class="yt-title">Youtube - PROCOL HARUM - A Whiter Shade Of Pale - promo film #2 (Official Video)</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img  data-href="https://youtu.be/2puubv2e0L4" class="youtube" src="https://i.ytimg.com/vi/2puubv2e0L4/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1258495816848666624"
+            target="_blank">2020/5/8 5:35:59</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">アレンジがやっぱりすごいよなあ。<br/><br/>Shocking Blue - Venus 1969<br/><div class="youtube" data-type="yt" id="TFZPBSh0Wl0"><div class="yt-title">Youtube - Shocking Blue - Venus 1969 (High Quality)</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img  data-href="https://youtu.be/TFZPBSh0Wl0" class="youtube" src="https://i.ytimg.com/vi/TFZPBSh0Wl0/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1258496366759653376"
+            target="_blank">2020/5/8 5:38:10</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ギターのフレーズですな。この。<br/><br/>T. Rex - Get It On (1971) <br/><div class="youtube" data-type="yt" id="wZkTh_T75QY"><div class="yt-title">Youtube - T. Rex - Get It On (1971) HD 0815007</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img  data-href="https://youtu.be/wZkTh_T75QY" class="youtube" src="https://i.ytimg.com/vi/wZkTh_T75QY/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1258497170753286146"
+            target="_blank">2020/5/8 5:41:21</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">先に聴いたのはこっちだったが。これもカバーと聴いたので逆にT.Rexのアルバムを探しにいったという。デュラン・デュランのメンバーが2人がキーマン。あのアイドル的なエレ・ポップとは全く違う完全なロック。<br/><br/>The Power Station - Get It On (Bang A Gong)<br/><div class="youtube" data-type="yt" id="O2vHbXI2p4k"><div class="yt-title">Youtube - The Power Station - Get It On (Bang A Gong) (Official Music Video)</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img  data-href="https://youtu.be/O2vHbXI2p4k" class="youtube" src="https://i.ytimg.com/vi/O2vHbXI2p4k/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1258497755925737472"
+            target="_blank">2020/5/8 5:43:41</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">アンディ・テイラーがこのバンドで鬱憤を晴らしたっぽいね。<br/><br/>The Power Station - Some Like It Hot<br/><div class="youtube" data-type="yt" id="Hw1t7OCESUw"><div class="yt-title">Youtube - The Power Station - Some Like It Hot</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img  data-href="https://youtu.be/Hw1t7OCESUw" class="youtube" src="https://i.ytimg.com/vi/Hw1t7OCESUw/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1258498523592396800"
+            target="_blank">2020/5/8 5:46:44</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ギター・フレーズが印象的な曲を集めよう。<br/><br/>Aerosmith - Walk This Way<br/><div class="youtube" data-type="yt" id="4c8O2n1Gfto"><div class="yt-title">Youtube - Aerosmith - Walk This Way (Official Audio)</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img  data-href="https://youtu.be/4c8O2n1Gfto" class="youtube" src="https://i.ytimg.com/vi/4c8O2n1Gfto/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1258498911796252672"
+            target="_blank">2020/5/8 5:48:17</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">エアロスミスの曲を知ったのはRUN DMCのおかげ。当時はロック色の強いヒップ・ホップという売りだったな。<br/><br/>RUN DMC - Walk This Way<br/><div class="youtube" data-type="yt" id="4B_UYYPb-Gk"><div class="yt-title">Youtube - RUN DMC - Walk This Way (Video) ft. Aerosmith</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img  data-href="https://youtu.be/4B_UYYPb-Gk" class="youtube" src="https://i.ytimg.com/vi/4B_UYYPb-Gk/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1258500774050455552"
+            target="_blank">2020/5/8 5:55:41</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">今聴いてもかっこいいな。このフレーズは。ひょっとしてこのフレーズってオルガン重ねてる？<br/><br/>Deep Purple - Smoke On The Water 1972<br/><div class="youtube" data-type="yt" id="ikGyZh0VbPQ"><div class="yt-title">Youtube - Deep Purple - Smoke On The Water 1972 (High Quality)</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img  data-href="https://youtu.be/ikGyZh0VbPQ" class="youtube" src="https://i.ytimg.com/vi/ikGyZh0VbPQ/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1258502117196619776"
+            target="_blank">2020/5/8 6:01:01</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">デイ・トリッパーもそうだよなあ…<br/><br/>The Beatles - Day Tripper<br/><div class="youtube" data-type="yt" id="AYZlME0mQB8"><div class="yt-title">Youtube - The Beatles - Day Tripper (Official Video)</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img  data-href="https://youtu.be/AYZlME0mQB8" class="youtube" src="https://i.ytimg.com/vi/AYZlME0mQB8/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1258502594055397376"
+            target="_blank">2020/5/8 6:02:54</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">もうギターフレーズ関係なくなってるけど（笑）<br/>もうこれは中学生のころお気に入りでしたわ。<br/>もちろんリアルタイムではないよ（笑）<br/><br/>I Saw Her Standing There <br/><div class="youtube" data-type="yt" id="oxwAB3SECtc"><div class="yt-title">Youtube - I Saw Her Standing There (Remastered 2009)</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img  data-href="https://youtu.be/oxwAB3SECtc" class="youtube" src="https://i.ytimg.com/vi/oxwAB3SECtc/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1258503121514319872"
+            target="_blank">2020/5/8 6:05:00</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">オーソドックスなやつが好きなんだろうな。<br/><br/>The Beatles - Twist &amp; Shout <br/><div class="youtube" data-type="yt" id="b-VAxGJdJeQ"><div class="yt-title">Youtube - The Beatles - Twist & Shout - Performed Live On The Ed Sullivan Show 2/23/64</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img  data-href="https://youtu.be/b-VAxGJdJeQ" class="youtube" src="https://i.ytimg.com/vi/b-VAxGJdJeQ/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1258503894658723840"
+            target="_blank">2020/5/8 6:08:05</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">Twist &amp; Shoutはカバーだということは知ってたが、これが元なのかな？この時代カバーが多い中でビートルズはオリジナル中心で勝負したとこがすごいとか聞いたな。それでも売り出しのときはカバーが結構入ってんだよな。。<br/><br/>Isley Brothers - Twist and Shout<br/><div class="youtube" data-type="yt" id="cTaqn8_gMR0"><div class="yt-title">Youtube - Isley Brothers - Twist and Shout</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img  data-href="https://youtu.be/cTaqn8_gMR0" class="youtube" src="https://i.ytimg.com/vi/cTaqn8_gMR0/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1258505371125047296"
+            target="_blank">2020/5/8 6:13:57</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">確かラブ・ミー・ドゥってリンゴ・スターじゃなくてアンディ・ホワイトっていう人が演奏してるとか聞いたよな。でもこのテイクってひょっとしてリンゴ・スターがたたいてるやつか。これがデビュー・シングルか。<br/><br/>Love me do - The Beatles<br/><div class="youtube" data-type="yt" id="0JWl_wUOQc4"><div class="yt-title">Youtube - Love me do - The Beatles (HD-HQ)</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img  data-href="https://youtu.be/0JWl_wUOQc4" class="youtube" src="https://i.ytimg.com/vi/0JWl_wUOQc4/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1258505700373753856"
+            target="_blank">2020/5/8 6:15:15</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">私が聴きなれてるのってこっちだもんなあ…<br/>このジャケットのCDも大人になってからゲットしたなあ。。<br/><br/>Love Me Do (Remastered 2009)<br/><div class="youtube" data-type="yt" id="0pGOFX1D_jg"><div class="yt-title">Youtube - Love Me Do (Remastered 2009)</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img  data-href="https://youtu.be/0pGOFX1D_jg" class="youtube" src="https://i.ytimg.com/vi/0pGOFX1D_jg/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1258506264444694528"
+            target="_blank">2020/5/8 6:17:30</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">TVでビートルズのアニメの再放送が昔あって、それも欠かさず観てたな。そこでこの曲がよく聴けた記憶が。<br/><br/>Do You Want To Know A Secret<br/><div class="youtube" data-type="yt" id="uRQ7ecvU56k"><div class="yt-title">Youtube - Do You Want To Know A Secret (Remastered 2009)</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img  data-href="https://youtu.be/uRQ7ecvU56k" class="youtube" src="https://i.ytimg.com/vi/uRQ7ecvU56k/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1258507261929906177"
+            target="_blank">2020/5/8 6:21:27</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">これのような気がするなあ。。<br/><br/>"DO YOU WANT TO KNOW A SECRET?" BEATLES CARTOONS<br/><a href="https://youtu.be/DhnPzyKWag8" target="_blank">youtu.be/DhnPzyKWag8</a></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1258507844061552640"
+            target="_blank">2020/5/8 6:23:46</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">私英語ほとんど聴き取れないんで、歌詞の意味ほとんど解していないのですよ（笑）ほんとインストルメンタルとして聴いてる（笑）</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1258508724789866496"
+            target="_blank">2020/5/8 6:27:16</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">この曲は、ビートルズを聴くことを禁止された世界を描いたNHKのドラマで流れていた記憶がある。<br/><br/>Yesterday (Remastered 2009)<br/><div class="youtube" data-type="yt" id="NrgmdOz227I"><div class="yt-title">Youtube - Yesterday (Remastered 2009)</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img  data-href="https://youtu.be/NrgmdOz227I" class="youtube" src="https://i.ytimg.com/vi/NrgmdOz227I/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1258551135893286912"
+            target="_blank">2020/5/8 9:15:48</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">「その街を消せ！」というNHKの少年ドラマだった！この少年ドラマ観てたなあ。。しかしこのドラマで流れる「イエスタデイ」はビートルズではないな。。なんで。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1258556299773534208"
+            target="_blank">2020/5/8 9:36:19</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">「未来からの挑戦」ちゅうのも観ましたな。。</p>
+        
+      </section>
+      
+    </article>
+    
+  </div>
+  <footer>
+    CopyLight 2019 Satoshi Fujiwara
+  </footer>
+  <script async src="https://platform.twitter.com/widgets.js"></script>
+
+  <script async src="./index.js"></script>
+
+</body>
+
+</html>

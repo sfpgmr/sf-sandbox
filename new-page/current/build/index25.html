@@ -1,0 +1,2328 @@
+<!DOCTYPE html>
+
+<html lang="ja" prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb# article: http://ogp.me/ns/article#">
+
+<head>
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-15457703-9"></script>
+  <script>
+    if (!location.hostname.match(/localhost/)) {
+      window.dataLayer = window.dataLayer || [];
+      function gtag() { dataLayer.push(arguments); }
+      gtag('js', new Date());
+      gtag('config', 'UA-15457703-9');
+    }
+  </script>
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Twitter Viewer</title>
+  <meta name="description" content="自作Twitter Viewerによる自分のつぶやきの記録。Programming,Music,HTML5,WebGL,javascript,WebAudio,Gameなど" />
+  <meta name="keywords" content="Programming,Music,HTML5,WebGL,javascript,WebAudio" /> 	
+
+  <meta itemprop="image" content="https://www.sfpgmr.net/img/sfweb.png" />
+  <meta itemprop="name" content="S.F. Web" />
+  
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:site" content="S.F. Web" />
+  <meta name="twitter:url" content="./index25.html" />
+  <meta name="twitter:title" content="Twitter Viewer" />
+  <meta name="twitter:description" content="自作Twitter Viewerによる自分のつぶやきの記録。Programming,Music,HTML5,WebGL,javascript,WebAudio,Gameなど" />
+  <meta name="twitter:image" content="https://www.sfpgmr.net/img/sfweb.png" />
+  
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="./index25.html" />
+  <meta property="og:title" content="Twitter Viewer"/>
+  <meta property="og:site_name" content="S.F. Web" />
+  <meta property="og:description" content="Programming,Music,HTML5,WebGL,javascript,WebAudio">
+  <meta property="og:image" content="https://www.sfpgmr.net/img/sfweb.png">
+
+  <style>
+  * {
+  margin: 0;
+  padding: 0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+
+html {
+  margin: 0;
+  padding: 0;
+  font-size: 10px; }
+
+body {
+  margin: 0;
+  padding-left: 8px;
+  padding-right: 8px;
+  background: black;
+  color: white; }
+
+.top-nav {
+  position: fixed;
+  z-index: 99999;
+  background: rgba(0, 0, 0, 0.5);
+  display: block;
+  width: 100%;
+  height: 32px;
+  color: white; }
+
+#sentinel {
+  width: 0px;
+  height: 0px; }
+
+.contents {
+  padding-top: 32px;
+  width: 100%;
+  position: relative;
+  content: strict; }
+
+@keyframes blinking {
+  0% {
+    color: black; }
+  50% {
+    color: white; }
+  100% {
+    color: black; } }
+
+.loading {
+  font-family: monospace;
+  font-size: 24px;
+  position: fixed;
+  width: 100vw;
+  height: 100vh;
+  text-align: center;
+  padding-top: 50vh;
+  z-index: 32768;
+  background: black;
+  animation: blinking 2s infinite;
+  content: strict; }
+
+.contents > article {
+  background: #f0f0f0;
+  color: #202020;
+  position: absolute;
+  max-height: 95vh;
+  overflow: auto;
+  border-radius: 3px;
+  /* transition: opacity 1s linear;*/
+  opacity: 1.0; }
+
+.tweet-header {
+  display: grid;
+  align-items: end;
+  grid-template-columns: 40px 2fr 1fr;
+  grid-template-rows: 1fr;
+  font-size: 12px;
+  font-weight: bold; }
+
+.tweet-img {
+  width: 100%;
+  object-fit: cover; }
+
+.youtube {
+  position: relative;
+  cursor: pointer; }
+
+.youtube > img {
+  width: 100%;
+  object-fit: cover; }
+
+.youtube > svg.player-play {
+  width: 64px;
+  height: 64px;
+  left: calc(50% - 32px);
+  top: calc(50% - 32px);
+  position: absolute;
+  z-index: 1000;
+  opacity: 0.5; }
+
+.youtube:hover > svg.player-play {
+  opacity: 1.0; }
+
+.youtube:hover .player-play-1 {
+  stroke: #80808080; }
+
+.youtube > div.yt-title {
+  /*text-shadow: #fff 1px 1px 0;*/
+  font-size: 1.2rem;
+  color: white;
+  background: rgba(0, 0, 0, 0.5);
+  position: absolute;
+  left: 0;
+  top: 0;
+  overflow: auto;
+  z-index: 998; }
+
+.tweet-profile-img {
+  grid-column: 1/2;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%; }
+
+.tweet-user-name {
+  grid-column: 2/3; }
+
+.tweet-date {
+  font-size: 8px;
+  text-align: right;
+  grid-column: 3/4; }
+
+.contents > twitter-widget {
+  overflow: auto;
+  max-height: 960px;
+  position: absolute; }
+
+.contents > article > section > .tweet-text {
+  display: block;
+  padding: 4px;
+  word-break: break-all;
+  font-size: 12px; }
+
+.contents > article > h3 {
+  font-size: 12px; }
+
+blockquote.card {
+  margin: 4px;
+  padding: 4px;
+  font-size: 12px;
+  background: white;
+  border-radius: 4px; }
+
+blockquote.card > header {
+  display: grid;
+  grid-gap: 4px;
+  gap: 4px; }
+
+blockquote.card-default > header {
+  grid-template-columns: 64px 1fr; }
+
+blockquote.card-large > header {
+  grid-template-columns: 1fr; }
+
+blockquote.card > header > img {
+  width: 100%; }
+
+div.no-image {
+  display: block;
+  width: 64px;
+  height: 64px;
+  background: gray;
+  color: white;
+  text-align: center;
+  line-height: 64px; }
+ 
+  </style>
+</head>
+
+<body>
+  <div class="loading" id="loading">Loading</div>
+  <header class="top-nav">
+    <h1>S.F. Info.</h1>
+  </header>
+  <div class="contents" id="contents" rendersubtree="invisible skip-activation"> 
+    
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1272778265820725249/Z8AcrCER_normal.jpg" />
+        <p class="tweet-user-name">PC Watch@pc_watch</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/pc_watch/status/1258381392397778950"
+            target="_blank">2020/5/7 22:01:18</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">約15,000円でCore i7-7700K相当。AMD「Ryzen 3 3300X」が23日発売～廉価ながらPCIe 4.0対応のAMD B550の詳細も公開 <a href="https://pc.watch.impress.co.jp/docs/news/1250974.html" target="_blank">pc.watch.impress.co.jp/docs/news/1250…</a> https://t.co/QIo7ry3mc5</p>
+        
+        <img  class="tweet-img" src="https://pbs.twimg.com/media/EXarNCWUcAIB8Cy.jpg" />
+        
+        <img  class="tweet-img" src="https://pbs.twimg.com/media/EXarNKYUEAE5oG_.jpg" />
+        
+        <img  class="tweet-img" src="https://pbs.twimg.com/media/EXarNSAVAAAnm9L.jpg" />
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1212701145379946496/pSDVrvWj_normal.png" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1258120610934210561"
+            target="_blank">2020/5/7 4:45:03</a></p>
+      </header>
+      <section>
+        <p class="tweet-text"><blockquote class="card card-large"><header><img  src="https://images.rollingstonejapan.com/articles/33000/33803/OG/c259c8dadff713a5853689d39566a92d.jpg" /><a href="https://rollingstonejapan.com/articles/detail/33803" target="_blank">クラフトワークの共同創設者、フローリアン・シュナイダーが73歳で死去 | Rolling Stone Japan(ローリングストーン ジャパン）</a></header><div>クラフトワークの共同創設者でキーボーディストのフローリアン・シュナイダーが73歳で亡くなった。「クラフトワークの共同創設者で、エレクトロニック・ミュージックのパイオニアでもあるラルフ・ヒュッターが、何十年もの付き合いとなる友人であり仲間であ</div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1258121290797309954"
+            target="_blank">2020/5/7 4:47:45</a></p>
+      </header>
+      <section>
+        <p class="tweet-text"><div class="youtube" data-type="yt" id="UGEYNEz62jg"><div class="yt-title">Youtube - Kraftwerk - Ralf Und Florian - Tranzmusik HD</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img  data-href="https://youtu.be/UGEYNEz62jg" class="youtube" src="https://i.ytimg.com/vi/UGEYNEz62jg/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1258121653902389249"
+            target="_blank">2020/5/7 4:49:11</a></p>
+      </header>
+      <section>
+        <p class="tweet-text"><div class="youtube" data-type="yt" id="jwwWMkUpfsk"><div class="yt-title">Youtube - Endless Endless (2009 Remaster)</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img  data-href="https://youtu.be/jwwWMkUpfsk" class="youtube" src="https://i.ytimg.com/vi/jwwWMkUpfsk/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1258122060489875456"
+            target="_blank">2020/5/7 4:50:48</a></p>
+      </header>
+      <section>
+        <p class="tweet-text"><div class="youtube" data-type="yt" id="vNoFHdlMrtI"><div class="yt-title">Youtube - Kraftwerk live | Rockpalast | 1970</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img  data-href="https://youtu.be/vNoFHdlMrtI" class="youtube" src="https://i.ytimg.com/vi/vNoFHdlMrtI/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1258122550430691329"
+            target="_blank">2020/5/7 4:52:45</a></p>
+      </header>
+      <section>
+        <p class="tweet-text"><div class="youtube" data-type="yt" id="UIbSkw4yvec"><div class="yt-title">Youtube - Kraftwerk mit "Tanzmusik" 1973 im ZDF-aspekte-Studio</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img  data-href="https://youtu.be/UIbSkw4yvec" class="youtube" src="https://i.ytimg.com/vi/UIbSkw4yvec/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1258122823484112897"
+            target="_blank">2020/5/7 4:53:50</a></p>
+      </header>
+      <section>
+        <p class="tweet-text"><div class="youtube" data-type="yt" id="ry64e6SVQGs"><div class="yt-title">Youtube - Kraftwerk - Kakteen, Wüste, Sonne 1971</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img  data-href="https://youtu.be/ry64e6SVQGs" class="youtube" src="https://i.ytimg.com/vi/ry64e6SVQGs/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1258123076564213761"
+            target="_blank">2020/5/7 4:54:50</a></p>
+      </header>
+      <section>
+        <p class="tweet-text"><div class="youtube" data-type="yt" id="PJM9xpvMbJ0"><div class="yt-title">Youtube - kraftwerk - Autobahn midnight special (us tv 1975)</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img  data-href="https://youtu.be/PJM9xpvMbJ0" class="youtube" src="https://i.ytimg.com/vi/PJM9xpvMbJ0/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1258123582640492544"
+            target="_blank">2020/5/7 4:56:51</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">Kraftwerk - Kraftwerk<br/><div class="youtube" data-type="yt" id="E4b0-juTiQ8"><div class="yt-title">Youtube - Kraftwerk - Kraftwerk (Full Album)</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img  data-href="https://youtu.be/E4b0-juTiQ8" class="youtube" src="https://i.ytimg.com/vi/E4b0-juTiQ8/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1258352107859505152"
+            target="_blank">2020/5/7 20:04:56</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">「クラフトワークが脱帽し、ディーボが絶賛したイエローマジックーケストラ」というLPジャケットの帯の文言を読んで「クラフトワーク」というグループの存在を知ったのですが。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1258354381524733953"
+            target="_blank">2020/5/7 20:13:58</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">そうかあ、フローリアン・シュナイダーは脱退してたなあ。たしか。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1258354480115879937"
+            target="_blank">2020/5/7 20:14:21</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">そんときも体調面かなんかだったような気がするなあ。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1258355352153673728"
+            target="_blank">2020/5/7 20:17:49</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">違うか。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1258360927457390593"
+            target="_blank">2020/5/7 20:39:58</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">クラフトワークってすごいメンバーが入れかわってんだな。。そういう感じしないんだけど。まあ私の場合「The Mix」以降はまったくノータッチだったんでね。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1258361479939493889"
+            target="_blank">2020/5/7 20:42:10</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">結局まあ「放射能」から「The Mix」までは全部レコードかCDでそろえた。なぜか「アウトバーン」以前は食指が動かずスキップ。だが「ラルフ・アンド・フローリアン」か「Kraftwerk」のどっちかは知人よりただでレコードをもらった。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1258364756039053312"
+            target="_blank">2020/5/7 20:55:11</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">「エレクトリック・カフェ」の中ではやっぱりこれが一番好きかなあ。このフランジャーを強くかけたハイハットがいいんだよね。また。<br/><br/>Musique Non Stop<br/><div class="youtube" data-type="yt" id="rJgj2JoLVGc"><div class="yt-title">Youtube - Musique Non Stop (2009 Remaster)</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img  data-href="https://youtu.be/rJgj2JoLVGc" class="youtube" src="https://i.ytimg.com/vi/rJgj2JoLVGc/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1258365815268667392"
+            target="_blank">2020/5/7 20:59:24</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">この音どこかで聴いたことあるなあと思ったら、BGMの「音楽の計画」なんですな。2:00くらいで聴くことができる。ひょっとしたらクラフト・ワークもBGM聴いてるのかもしれないねえ。。<br/><br/>Music Plans - Yellow Magic Orchestra<br/><a href="https://youtu.be/v5WJ3BiJ5jg?t=121" target="_blank">youtu.be/v5WJ3BiJ5jg?t=…</a></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1258367084142014464"
+            target="_blank">2020/5/7 21:04:26</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">しかしこのサンプリング・サウンドの取り入れ方は1984年にしてはちょっと古い感じがしないでもない。<br/><br/>Kraftwerk - Tour de France<br/><div class="youtube" data-type="yt" id="LTZyXlLhvxs"><div class="yt-title">Youtube - Kraftwerk - Tour de France [Original Version, 1984] HD</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img  data-href="https://youtu.be/LTZyXlLhvxs" class="youtube" src="https://i.ytimg.com/vi/LTZyXlLhvxs/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1258373366521540608"
+            target="_blank">2020/5/7 21:29:24</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">コメット・メロディーもいいよなあ。このハンド・メイドな感じがほんといいわ。<br/><br/>Kraftwerk - Kometenmelodie 2<br/><div class="youtube" data-type="yt" id="hlHFlrXZmKQ"><div class="yt-title">Youtube - Kraftwerk - Kometenmelodie 2</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img  data-href="https://youtu.be/hlHFlrXZmKQ" class="youtube" src="https://i.ytimg.com/vi/hlHFlrXZmKQ/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1258374474233044992"
+            target="_blank">2020/5/7 21:33:48</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">このジャケット見て思い出したわ。。このハネた感じのリズムですよ。ディレイをうまく使ってるんだよなあ。しかし長いんだよね。20分以上あるからね。<br/><br/>Kraftwerk Autobahn full<br/><div class="youtube" data-type="yt" id="x-G28iyPtz0"><div class="yt-title">Youtube - Kraftwerk Autobahn full</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img  data-href="https://youtu.be/x-G28iyPtz0" class="youtube" src="https://i.ytimg.com/vi/x-G28iyPtz0/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1258374889033003009"
+            target="_blank">2020/5/7 21:35:27</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">このアルバムも持っていたことを思い出したということ。レコードだと思うんだよなあ。レコードは残念ながらすべて処分している。残っているのはCDだけ。しかし今はCDさえ貴重になりつつある時代。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1258375264871919616"
+            target="_blank">2020/5/7 21:36:57</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">Airwavesもおそらくリズムは手動演奏ではないだろうか。aceやドンカマのような音だが。<br/><br/>Kraftwerk - Airwaves<br/><div class="youtube" data-type="yt" id="UsCbws2brM4"><div class="yt-title">Youtube - Kraftwerk - Airwaves</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img  data-href="https://youtu.be/UsCbws2brM4" class="youtube" src="https://i.ytimg.com/vi/UsCbws2brM4/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1258376852306976771"
+            target="_blank">2020/5/7 21:43:15</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">やっぱり「Trans Europe Express」までがリズム手動演奏なんだろうな。「Man Machine」はMC-8つかってリズム演奏してると思うね。でもこの「Europe Endless」と「Trans Europe Express」はリズムの音いい音してるなあ。<br/><br/><div class="youtube" data-type="yt" id="Ms6kC-3yq0k"><div class="yt-title">Youtube - Europe Endless (2009 Remaster)</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img  data-href="https://youtu.be/Ms6kC-3yq0k" class="youtube" src="https://i.ytimg.com/vi/Ms6kC-3yq0k/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1258377439757008903"
+            target="_blank">2020/5/7 21:45:35</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">そうそう。このモジュレーションかかってるベースがいいなあと思ったんだよなあ。そして途中で入るガラスが割れる音。<br/><br/>Showroom Dummies<br/><div class="youtube" data-type="yt" id="q47EltFPHUU"><div class="yt-title">Youtube - Showroom Dummies (2009 Remaster)</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img  data-href="https://youtu.be/q47EltFPHUU" class="youtube" src="https://i.ytimg.com/vi/q47EltFPHUU/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1258378451494375424"
+            target="_blank">2020/5/7 21:49:37</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ストリングスはOrchestronというメロトロンのような楽器で演奏されているらしい。<br/><br/>Franz Schubert <br/><div class="youtube" data-type="yt" id="twlZ9t4Gg1E"><div class="yt-title">Youtube - Franz Schubert (2009 Remaster)</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img  data-href="https://youtu.be/twlZ9t4Gg1E" class="youtube" src="https://i.ytimg.com/vi/twlZ9t4Gg1E/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1258378750875414528"
+            target="_blank">2020/5/7 21:50:48</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">Orchestron<br/><br/>Vako Orchestron Optical Disc Playback Sampler<br/><div class="youtube" data-type="yt" id="JCybRH8gIBI"><div class="yt-title">Youtube - Vako Orchestron Optical Disc Playback Sampler</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img  data-href="https://youtu.be/JCybRH8gIBI" class="youtube" src="https://i.ytimg.com/vi/JCybRH8gIBI/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1258379258440773637"
+            target="_blank">2020/5/7 21:52:49</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ヒューマン・ボイスのような音色もOrchestronなんですな。<br/><br/>Kraftwerk - Geiger Counter - Radioactivity<br/><div class="youtube" data-type="yt" id="VPymqvtbFSA"><div class="yt-title">Youtube - Kraftwerk - Geiger Counter - Radioactivity</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img  data-href="https://youtu.be/VPymqvtbFSA" class="youtube" src="https://i.ytimg.com/vi/VPymqvtbFSA/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1071777629114531841/HWvSv06R_normal.jpg" />
+        <p class="tweet-user-name">yuta@yyuta342</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/yyuta342/status/1258020107231522816"
+            target="_blank">2020/5/6 22:05:41</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">個人開発でそこそこのボリュームのゲームを完成させた人類全員すごいと思うので「完成させたの偉いね～！」って褒めると次回作がリリースされます。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/875608588458131456/bTSQG-Qy_normal.jpg" />
+        <p class="tweet-user-name">がたろう TTLでCPUを作る爺（コンパイラやOSも手作りです）@duo6750</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/duo6750/status/721506033537933312"
+            target="_blank">2016/4/17 10:10:17</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">【就職後の創作活動は1/10のスピードで】<br/>　<br/>「社会人は時間がない」と言い、創作活動を止めてしまう方々へ<br/><br/>在学中は3時間で作れた物は3日かける。<br/>在学中は3日で作れた物は1ヶ月かける。<br/>在学中は1ヶ月で作れた物は1年かける。<br/><br/>これが社会人になっても創作活動を続けるコツです。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1212701145379946496/pSDVrvWj_normal.png" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1257716664491106305"
+            target="_blank">2020/5/6 1:59:54</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">また地震か。。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1212701145379946496/pSDVrvWj_normal.png" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1257632776976601088"
+            target="_blank">2020/5/5 20:26:34</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">伝説のバンド。Apryl Fool。サイケデリック・ロックなのかなあ。。<br/><br/>Apryl Fool-Tanger<br/><div class="youtube" data-type="yt" id="zipoDx1TD4Q"><div class="yt-title">Youtube - Apryl Fool-Tanger</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img  data-href="https://youtu.be/zipoDx1TD4Q" class="youtube" src="https://i.ytimg.com/vi/zipoDx1TD4Q/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1212701145379946496/pSDVrvWj_normal.png" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1257612659031109633"
+            target="_blank">2020/5/5 19:06:37</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">@RyuTakegami @goripon_tw ありがとうございます。MMLをボックス側に転送というのは記憶がありますね。私もググってみたりしたのですが、ステレオ・ミュージック・ボックスの情報は皆無に近いですね。譜面で入力するシーケンサーのようなソフトウェアも記憶があるのですが、それはほとんど使ってなかったですね。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1257613563960586243"
+            target="_blank">2020/5/5 19:10:13</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">@RyuTakegami @goripon_tw もう一つお伺いしたいことがあるのですが。。ボックス単体で単独のMIDI音源のような使い方もできたような気もするのですが、気のせいでしょうか。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1257615548663226368"
+            target="_blank">2020/5/5 19:18:06</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">@RyuTakegami @goripon_tw ひょっとしてOh!FMをお持ちなのでしょうか？<br/>Oh!MZもあわせて私の中ではこれほど熟読した書籍はほかになかったのではないかと思います。理解できたかどうかは別にして（笑）付録の6809のインストラクション・カードなんかもボロボロになるまでリファレンスとして使ってました。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1212701145379946496/pSDVrvWj_normal.png" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1257603278407229441"
+            target="_blank">2020/5/5 18:29:21</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">あかん。スーパー・ナチュラルが面白くて時間が取られる。。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1212701145379946496/pSDVrvWj_normal.png" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1257087418018041856"
+            target="_blank">2020/5/4 8:19:30</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">私が今保有しているDTM機材は<br/><br/>・AKAI MPK Mini<br/>・Roland SC-88 Pro<br/>・UR22 mk II<br/><br/>のみである。 https://t.co/jUIHlt1IBX</p>
+        
+        <img  class="tweet-img" src="https://pbs.twimg.com/media/EXISRbeUwAICAfQ.jpg" />
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1257087711476736000"
+            target="_blank">2020/5/4 8:20:40</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">あ、あとポケミクもあった。忘れてた。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1257088471992131585"
+            target="_blank">2020/5/4 8:23:41</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">SC-88 Proはハード・オフで転がってたのを安価に購入した。機器の寿命的には相当ヤバイ気がしているが、DTM機材として何か１つ持っておきたくてとりあえず置いている。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1257089376854532099"
+            target="_blank">2020/5/4 8:27:17</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">機器としての寿命は来てると思うので、果たして鳴るのかどうかわからんが、SWは入った。購入動機としてはSTED2をC++化するときのチェック用のようだ。<br/><br/><blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="https://www.sfpgmr.net/blog/entry/sted2%E3%82%B3%E3%83%BC%E3%83%89%E3%81%AEc%E5%8C%96-%E3%83%A2%E3%83%8B%E3%82%BF%E3%83%BC%E7%94%A8%E3%81%ABsc88pro%E8%B3%BC%E5%85%A5.html" target="_blank">S.F. Blog:STED2コードのC++化 - モニター用にSC88Pro購入</a></header><div>STED2からMIDI出力されているか全然わからなかったので、モニタ用に中古SC88Proを購入した。15K円だった。貧乏な私にはちょっと高い買い物だったけれども、故レイ・ハラカミさんの愛機であるし（レイ・ハラカミさんの曲の音色はSC88Proで作られているらしい）前から欲しいと思っていたので思い切って購入。STED2でMIDIファイルを開いてPLAYするとちゃんと再生できていた。SC88Pro音...</div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1257089840962658304"
+            target="_blank">2020/5/4 8:29:08</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">STED2のC++化も途中で面倒くさくなって放置した感じですな。こういうのが多い。仕事ではないからいつでもやめられるからね。根性なしですな。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1257090801902874625"
+            target="_blank">2020/5/4 8:32:57</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">あとソフトウェアとしてはREAPERというDAWとフリーのソフトシンセか。 https://t.co/42rBQfAQ14</p>
+        
+        <img  class="tweet-img" src="https://pbs.twimg.com/media/EXIVPfQUYAA8MlB.png" />
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1257091528440209408"
+            target="_blank">2020/5/4 8:35:50</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">今はほとんどいじっていないが。たまに立ち上げてアップデートしているぐらい。いちおうREAPERは正式ユーザーなので。購入してるソフトウェアってOSとこれくらいだよなあ。。すごい時代になったなあ。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1257092033912569856"
+            target="_blank">2020/5/4 8:37:51</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">この話も繰り返しツイートしてるような気がするが、歳を取ると忘れっぽくなり、同じことを繰り返すのも抵抗がなくなってくる（笑）</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1257092546808803328"
+            target="_blank">2020/5/4 8:39:53</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">耳も高域の音が聴こえなくなってくる。加齢による身体の衰えはひょっとすると遅らせることはできるのかの知れないが、確実に進行していく。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1257093029229236224"
+            target="_blank">2020/5/4 8:41:48</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">私がPCを購入したのはもう35年近く前になるが、動機としては<br/><br/>１．ゲーム<br/>２．YMOのカバー<br/><br/>の２つである。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1257093804739293184"
+            target="_blank">2020/5/4 8:44:53</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">YMOのファイアークラッカーを聞いて、コンピュータの自動演奏というものに興味を持った。そしてしばらくしてシャープのMZ-700を購入した。当初はゲームで遊びたいという欲求が強かったので、当時バイブル的な雑誌であったベーマガ、I/Oに掲載されているゲームを頑張って打ち込んで遊んでいた。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1257094205958062080"
+            target="_blank">2020/5/4 8:46:29</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">しかし音楽の自動演奏については期待したようなものではけっしてなかった。MZ-700で鳴らすことができるのは矩形波一音のみで、とてもとてもYMOのような自動演奏ができるようなものではなかった。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1257095119271940096"
+            target="_blank">2020/5/4 8:50:06</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">そういうわけでもっぱらゲームで遊ぶ、ゲームつくりを試みることを中心にしてたが、あるときFMラジオでPC-6001によるライディーンともう一つクラシックの曲を演奏する番組があったんだな。それを聴いてちょっとモチベーションが上がったんだよな。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1257095533182676994"
+            target="_blank">2020/5/4 8:51:45</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">PC6001はPSGというやはり矩形波のみだけど3音同時に発音できるので、表現力がMZ-700とはかなり違っていて、これはPSG搭載のPCを買わないといけないと思った。そしてX1Cを購入したんだな。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1257096192984375297"
+            target="_blank">2020/5/4 8:54:22</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">当時はすでにCMU800が販売されてたから、これをMZ700につなぐという手もあったんじゃないかなと思うんだけど、グラフィックがきれいなPCへの憧れもあって、X1Cを購入したとおもうんだよね。<br/><br/><blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="http://retropc.net/ohishi/museum/cmu800.htm" target="_blank">CMU-800</a></header><div></div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1257096889133985792"
+            target="_blank">2020/5/4 8:57:08</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">当時ゲームで遊ぶというモチベーションは常に高かったので、音楽による自動演奏というのは2の次なんだけど（笑）。PSGの表現力は高かった。各音ごとに時間的な音量変化もできるし、ノイズは出るし。ゲームにもってこいだよな（笑）。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1257097796152262656"
+            target="_blank">2020/5/4 9:00:45</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">そしてYMOのスコアを買ってBASICのPLAY文で演奏プログラムを書いて演奏することを始めたんだよな。それが現在まで続いてるという。しかしPSG3音ではYMOのパートすべてを演奏することは無理である。FMラジオで聴いたPC-6001の演奏もPSG用にアレンジされたものだった。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1257098253872422913"
+            target="_blank">2020/5/4 9:02:34</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">コード・パートをアルペジオにしてオクターブで上げ下げしてベースパートも兼ねるみたいな感じだったと思うんだよね。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1257099489891868672"
+            target="_blank">2020/5/4 9:07:28</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">で思いついたのは持っていたダブルカセットで多重録音する技である。カセットデッキが２つついているものを使って、最初にカセットでベースとリズムを録って、次にそれを鳴らしながらリードとシーケンスを演奏して重ねて2つ目のカセットに録るわけ。そういうことがラジカセでできたんだな。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1257099840707678208"
+            target="_blank">2020/5/4 9:08:52</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">この機能はテープをダビング（複製）するための機能なんだけど、同時にマイク音、もしくはライン入力をミックスして別のカセットに録音することができたんだな。それを使って発音不足を解消することに成功した。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1257103965822451712"
+            target="_blank">2020/5/4 9:25:15</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ダブルラジカセというのはこういうやつですな。私が持ってたのはアイワというメーカーのものですな。簡単なミキサーもついてたような気がする。<br/><br/><div class="youtube" data-type="yt" id="ilsPXlpJepM"><div class="yt-title">Youtube - SHARP GF-787  The Searcher-WF Vintage Boombox Ghettoblaster Made in Japan ラジカセ</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img  data-href="https://youtu.be/ilsPXlpJepM" class="youtube" src="https://i.ytimg.com/vi/ilsPXlpJepM/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1257105457736384513"
+            target="_blank">2020/5/4 9:31:11</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">そしてPSGの音というのはこういう感じ。これはX1Cのデモ。懐かしいわ。聴いてわかるのはテンポの揺れ。これはこういうアレンジではない（笑）。X1は演奏用タイマーがないので正確なテンポでの演奏が難しかったのだ。<br/><br/>SHARP X1 DEMO<br/><div class="youtube" data-type="yt" id="HDt2r1bkpMI"><div class="yt-title">Youtube - SHARP X1 DEMO</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img  data-href="https://youtu.be/HDt2r1bkpMI" class="youtube" src="https://i.ytimg.com/vi/HDt2r1bkpMI/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1257106199138336768"
+            target="_blank">2020/5/4 9:34:08</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">CPUの負荷によって演奏のテンポに揺れが発生してしまう。これに私は悩まされた。同じテンポなのに音を重ねて録るとずれてしまうのだ。友達のFM-7だとテンポの揺れがそんなにないのに何で？と思った。FM-7はタイマー演奏だったのでテンポは正確だったのだ。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1257106436057792512"
+            target="_blank">2020/5/4 9:35:04</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">正直タイマーとかそういうの知らんかった。知ってたらX1C買ってなかったと思う（笑）</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1257108099585806336"
+            target="_blank">2020/5/4 9:41:41</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">しかしFM-7はスピーカーから出る音がいまいちだったんだよな。そこは家電メーカーが作るシャープ製品だから、オーディオ面には若干の配慮があったんじゃないかなあと思ったりもする。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1257108289252278272"
+            target="_blank">2020/5/4 9:42:26</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">でもどのみちライン録りするんだからどうでもいいことだが（笑）。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1257110725534732288"
+            target="_blank">2020/5/4 9:52:07</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">どういう感じかというと、最初は演奏があってるんだけど最後のほうになると下手すると4分音符くらいずれるんだよね。なのでこれは途中でずれを補正しないといけないなと思った。そして思いついたのは演奏パートを何小節かに区切ってキーボードにアサインして鳴らす方法。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1257111047992864768"
+            target="_blank">2020/5/4 9:53:24</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">各パートの繰り返しの頭とかでキーボードを押して、ずれを補正するわけ。これでこの問題は何とか解消できた。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1257111393712484353"
+            target="_blank">2020/5/4 9:54:46</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">でもたとえタイマー演奏ができたとしても、テープに録って再生した時点で、ラジカセによる機械的なずれが発生するから、何らかの方法でずれを補正しなければならなかったろうと思う。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1257111971335335937"
+            target="_blank">2020/5/4 9:57:04</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">実際プロの現場ではMTR（マルチトラックレコーダー）を使って各パートを録るし、同期用の信号を同時に録音してその信号を使ってシーケンサーと同期を取っているということを後で知った。当時は当然知らない。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1257112225560489984"
+            target="_blank">2020/5/4 9:58:05</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">当時でも4トラックのMTRなら一般人でも購入できたかもしれないけどね。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1257112815082471424"
+            target="_blank">2020/5/4 10:00:25</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">しかしこの多重録音による方法、ものすごくノイズが入る。パソコンのノイズもさることながら、テープの「サー」というヒスノイズがすごい。これが耳障りでしょうがない。このヒスノイズを軽減する仕組みがあったんだけど、それでも目立ってしょうがない。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1257112927347212289"
+            target="_blank">2020/5/4 10:00:52</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">まあこれはしょうがないと思った（笑）。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1257113484908613633"
+            target="_blank">2020/5/4 10:03:05</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">問題となったのはこれだけではない。音色の問題がある。PSGでも音量の増減はコントロールできたが、発生する波形は矩形波のみ、フィルタなどはもちろんない。音色が全然似てこない。ただ昔は矩形波とか波形がいろいろあるというのも知らんかったと思う。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1257114081485414400"
+            target="_blank">2020/5/4 10:05:27</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">これもしょうがないと思ってたんだけど、友達のFM-7ユーザーが、2音使って片方の音のピッチをずらすといい音になるということを発見したんですな。これはデチューン効果とでもいうのだろうか。これは世紀の大発見だと当時思った。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1257115323657973760"
+            target="_blank">2020/5/4 10:10:23</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">あともう１つ。ピッチの時間変化もできるので、これをドラムパートに使うとシンセ・ドラムのような音になるということも発見したのである。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1257117059130912768"
+            target="_blank">2020/5/4 10:17:17</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">自作のPSGエミュレータを使ってデチューン効果というのを再現してみた。これデチューン効果っていうのかな。<br/><br/><div class="youtube" data-type="yt" id="1QJgV2bEf98"><div class="yt-title">Youtube - PSGエミュレータによる2音使ったデチューン効果</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img  data-href="https://youtu.be/1QJgV2bEf98" class="youtube" src="https://i.ytimg.com/vi/1QJgV2bEf98/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1257117500740825088"
+            target="_blank">2020/5/4 10:19:02</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">あとはユニゾンとかね。いろいろな効果を自分で編み出したような気持ちにはなってたね（笑）</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1257118464763760640"
+            target="_blank">2020/5/4 10:22:52</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">最終的には以下のような作業手順に落ち着いた。<br/><br/>１．シーケンスとパーカッションパートをまず入れる。これはリズムキープ用のガイドも兼ねる<br/>２．コードやリードの重ね合わせ（先ほどのテクで）<br/>３．ドラムパート（完全手動）</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1257118887524491267"
+            target="_blank">2020/5/4 10:24:33</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">そしてデチューンした音を重ねるときは、PCキーボードを鍵盤にするソフトを書いてそれで手動で演奏することで解決した。手弾きで難しいところはPlay文で補っていた。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1257121006340038656"
+            target="_blank">2020/5/4 10:32:58</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">そのときのスコアは今でも持ってるんだけど、BASICの変数定義の書き込みとか残ってて懐かしい。。 https://t.co/tL9WkGifMg</p>
+        
+        <img  class="tweet-img" src="https://pbs.twimg.com/media/EXIw2NDUYAAeKq3.jpg" />
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1257121730369208320"
+            target="_blank">2020/5/4 10:35:51</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">これは東風のスコアだけどね。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1257122134263910400"
+            target="_blank">2020/5/4 10:37:27</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">まあこういうことをしていたんだけど、あるときログインというPCの雑誌で、コモドール64というPCの紹介をしていたんですな。コモドール64というよりはKAWASAKI Synthesizerの紹介だったかな？</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1257123016216997888"
+            target="_blank">2020/5/4 10:40:57</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">コモドール64にはほぼシンセサイザーと同じ構成のチップが載っていて、表現力がすごく高いみたいな感じの記事だったと思うんだな。そのKAWASAKI Synthesizerのデモというのがこれ。<br/><br/><div class="youtube" data-type="yt" id="0N2qA8G5rHM"><div class="yt-title">Youtube - Kawasaki Synthesizer DEMO COMMODORE 64</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img  data-href="https://youtu.be/0N2qA8G5rHM" class="youtube" src="https://i.ytimg.com/vi/0N2qA8G5rHM/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1257123500449357824"
+            target="_blank">2020/5/4 10:42:53</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">正直このデモからすごさをうかがうことはちょっとむずかしいが（笑）。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1257124242006523906"
+            target="_blank">2020/5/4 10:45:50</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">このイントロの矩形波のデューティー比を変える感じの音とか、シンセっぽいよね。<br/><br/>C64 Matt Gray's Driller loader theme oscilloscope view<br/><div class="youtube" data-type="yt" id="1UzJUCPkCjo"><div class="yt-title">Youtube - C64 Matt Gray's Driller loader theme oscilloscope view</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img  data-href="https://youtu.be/1UzJUCPkCjo" class="youtube" src="https://i.ytimg.com/vi/1UzJUCPkCjo/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1257125331414081536"
+            target="_blank">2020/5/4 10:50:09</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">C64のSIDってすごいでしょ。<br/><br/>C64 Jeroen Tel's "Myth" Oscilloscope View<br/><div class="youtube" data-type="yt" id="VzRH1B2tjRE"><div class="yt-title">Youtube - C64 Jeroen Tel's "Myth" Oscilloscope View</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img  data-href="https://youtu.be/VzRH1B2tjRE" class="youtube" src="https://i.ytimg.com/vi/VzRH1B2tjRE/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1257125620321902594"
+            target="_blank">2020/5/4 10:51:18</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">LPF/HPF/BPFがあるっていうのもすごいんだよね。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1257126138725273601"
+            target="_blank">2020/5/4 10:53:22</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">フィルタの時間的変化があるのがシンセっぽい。<br/><br/>C64 Last Ninja 3 complete sound track by Reyn Ouwehand<br/><div class="youtube" data-type="yt" id="MU-w6E0qQTc"><div class="yt-title">Youtube - C64 Last Ninja 3 complete sound track by Reyn Ouwehand</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img  data-href="https://youtu.be/MU-w6E0qQTc" class="youtube" src="https://i.ytimg.com/vi/MU-w6E0qQTc/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1257126571908857856"
+            target="_blank">2020/5/4 10:55:05</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">どうやらサウンド・チップというのはいろいろあるんだなということをこの時知った。ただC64の音をまともに聴いたのはここ10年くらいのことだけどね。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1257127640088997890"
+            target="_blank">2020/5/4 10:59:20</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">これとか相当Funkyですわ。<br/><br/>C64 Jammer's "Mr Marvellous" oscilloscope view <br/><div class="youtube" data-type="yt" id="iTsdA5lR3jg"><div class="yt-title">Youtube - C64 Jammer's "Mr Marvellous" oscilloscope view (FIXED)</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img  data-href="https://youtu.be/iTsdA5lR3jg" class="youtube" src="https://i.ytimg.com/vi/iTsdA5lR3jg/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1257128938477768704"
+            target="_blank">2020/5/4 11:04:29</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ゲームセンターに足を運ぶと、主にナムコのゲームの音色があきらかにPSGとは違うということに気づいた。単にゲーセンだと音がでかいからと思ってたけど、いやいや違うなと。<br/><br/>1982 [60fps] Dig Dug 4452990pts Hardest Round256<br/><div class="youtube" data-type="yt" id="V8jX85rOlX0"><div class="yt-title">Youtube - 1982 [60fps] Dig Dug 4452990pts Hardest Round256</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img  data-href="https://youtu.be/V8jX85rOlX0" class="youtube" src="https://i.ytimg.com/vi/V8jX85rOlX0/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1257130085548560385"
+            target="_blank">2020/5/4 11:09:03</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ポールポジション２とかもいい音してるなあと思ったしね。<br/><br/>［AC］ポールポジションⅡ（POLE POSITION 2）BGM集<br/><div class="youtube" data-type="yt" id="ida5HBq0uJU"><div class="yt-title">Youtube - ［AC］ポールポジションⅡ（POLE POSITION 2）BGM集</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img  data-href="https://youtu.be/ida5HBq0uJU" class="youtube" src="https://i.ytimg.com/vi/ida5HBq0uJU/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1257130821464363008"
+            target="_blank">2020/5/4 11:11:58</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">マッピーとかもそうだなよなあ。<br/><br/>1983 [60fps] Mappy 1075810pts Nomiss Round50<br/><div class="youtube" data-type="yt" id="7ssb1ppkrj0"><div class="yt-title">Youtube - 1983 [60fps] Mappy 1075810pts Nomiss Round50</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img  data-href="https://youtu.be/7ssb1ppkrj0" class="youtube" src="https://i.ytimg.com/vi/7ssb1ppkrj0/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1257131242274709505"
+            target="_blank">2020/5/4 11:13:39</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">リブルラブルとかもね。こういうサウンドチップなんでPCに搭載しないのかなあと思ったんだよね。<br/><br/>983 [60fps] Libble Rabble <br/><div class="youtube" data-type="yt" id="t-LxxYYCnGg"><div class="yt-title">Youtube - 1983 [60fps] Libble Rabble 1775070pts 20miracles</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img  data-href="https://youtu.be/t-LxxYYCnGg" class="youtube" src="https://i.ytimg.com/vi/t-LxxYYCnGg/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1257131594856333313"
+            target="_blank">2020/5/4 11:15:03</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">これらのサウンドチップはナムコが自社開発したものだったんだよな。なので一般には市販されてないものなんだよね。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1257131744467120130"
+            target="_blank">2020/5/4 11:15:38</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">いわゆる波形メモリ音源というやつですわ。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1257132331342589952"
+            target="_blank">2020/5/4 11:17:58</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ゼビウスもよく聴くと違うやんけ！と。ゼビウスはさらに爆発音用の音源も持ってたようで。それでこのいいノイズの爆発音なのですな。<br/><br/>1983 [60fps] Xevious 582880pts<br/><div class="youtube" data-type="yt" id="P24bjcvnxd8"><div class="yt-title">Youtube - 1983 [60fps] Xevious 582880pts</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img  data-href="https://youtu.be/P24bjcvnxd8" class="youtube" src="https://i.ytimg.com/vi/P24bjcvnxd8/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1257134035345616896"
+            target="_blank">2020/5/4 11:24:45</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">これは自作（もちろん未完成）ゲームの波形メモリ音源でゼビウスのBGMを演奏してみたもの。まあまあリアルかもしれん。波形メモリの表現力の高さに驚嘆しましたな。<br/><br/>自作ゲームのBGMにゼビウスのBGMを入れてみる<br/><div class="youtube" data-type="yt" id="u7zQhKuiXLA"><div class="yt-title">Youtube - 自作ゲームのBGMにゼビウスのBGMを入れてみる</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img  data-href="https://youtu.be/u7zQhKuiXLA" class="youtube" src="https://i.ytimg.com/vi/u7zQhKuiXLA/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1257134802869731329"
+            target="_blank">2020/5/4 11:27:48</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">SIDに関しては自分でも仕様を調べたんだよね。SIDはアナログシンセですよ。うん。<br/><br/><blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="https://www.sfpgmr.net/blog/entry/mos-sid-6581%E3%82%92%E8%AA%BF%E3%81%B9%E3%81%9F.amp.html" target="_blank">S.F. Blog:Commodore 64 の音源チップMOS SID 6581を調べた</a></header><div>はじめにMOSのSIDチップは性能で他のPSGとは一線を画していた。当時の私のあこがれの的だった。今回チップの詳細について調べてみた。 内容は『Commodore SID 6581 Datasheet - http://www.waitingforfriday.com/?p=661』・『MOS Technology SID - http://en.wikipedia.org/wiki/6581 』...</div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1257135192965144576"
+            target="_blank">2020/5/4 11:29:21</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">そうこうしてるうちに待望の音源チップがYAMAHAから発売されたんですな。<br/><br/>YM2149（SSG）<br/><br/>って違うがな（笑）。これはPSG互換チップですわ。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1257136167851446272"
+            target="_blank">2020/5/4 11:33:13</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">YM2203ですな。いわゆる４オペFM音源。I/Oという雑誌にチップの紹介記事が載っていて、それで知った。いやーとうとう来たなと。いやしかしFM音源ってなんだ？と思ったね。その記事には発音の仕組みとかチップの仕様にまで書いてあったと思うんだけど多分理解できなかったと思う。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1257136654885609473"
+            target="_blank">2020/5/4 11:35:09</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">YM2203は設計がよかったと思うんですよ。特にSSG互換音源を搭載したところがね。それにFM音源を追加するような仕様になっている。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1257136878572015616"
+            target="_blank">2020/5/4 11:36:02</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">過去の互換性を維持しやすい仕様というかね。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1257137490059649025"
+            target="_blank">2020/5/4 11:38:28</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">でこれ用の音源ボードを自作するという記事がパソコン雑誌に載りだして、私も作ってみようと思ったんだよね。記事通りにパーツを買い集めようと思ったんだけど、途中で小遣いが尽きてそのままお蔵入りになった。たしかYM2203のチップも買ったんじゃなかったかなあ。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1257137784592064512"
+            target="_blank">2020/5/4 11:39:38</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">あのチップはいったいどこに行ってしまったのだろうか。でもまあパーツをそろえられたとしても組み上げることができたかというと疑問だけどね。手先は不器用ですからな。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1257184509541269505"
+            target="_blank">2020/5/4 14:45:19</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">そうこうしているうちにFM音源搭載パソコンがぼちぼち現れはじめたんですな。そしてFM77AVを購入。待望のFM音源が手に入った。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1257188320418754563"
+            target="_blank">2020/5/4 15:00:27</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">FM音源はBASICからPlay命令で制御する。Play命令に渡すデータはMMLというマクロ言語。これはいわゆるシーケンスデータに相当するものである。譜面データやテンポ、音量などをMMLデータ化するわけですな。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1257189441141002241"
+            target="_blank">2020/5/4 15:04:54</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">そして同じフレーズの繰り返しなどは適宜BASICの制御命令（GOTO/IF/FOR～NEXT/REPEAT～UNTIL/WHILE～WEND）を併用して実現する。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1257189861418627072"
+            target="_blank">2020/5/4 15:06:35</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">パワー・ユーザーになるとアセンブラで演奏ルーチンを自作したりするんだよな。確かMZ-700で高速アルペジオによる3和音同時再生プログラムなんてのもあった気がする。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1257190337228890117"
+            target="_blank">2020/5/4 15:08:28</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">一方でゲームを作ろうとしてたので、アセンブラの知識はあったが、面倒くさいのでBASICで済むのならそれでいいじゃないとうお気楽な感じであった。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1257190885411786752"
+            target="_blank">2020/5/4 15:10:39</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">このPLAY命令を使ってSSG3音+FM3音計6音の音を鳴らすことができる。FM音源部はもちろんだが、SSG3音というのが非常にありがたいんですな。私はもっぱらリズムパートで使用してたような気もする。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1257194692313137155"
+            target="_blank">2020/5/4 15:25:46</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">音色もエディタ使って作ってたような気もするんだけどな。なぜかほとんど記憶にないんだよなあ。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1257194982487625728"
+            target="_blank">2020/5/4 15:26:56</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ただこのブログ記事をみてこのHGPlayとか、音色エディタの画面を見て何か引っかかるものがあって。なんかこのエディタをつかってたような気もするなあ。いや使ってはないか。。<br/><blockquote class="card card-large"><header><img  src="https://stat.ameba.jp/user_images/20150103/14/noz-music/1b/49/j/o0640048013178747320.jpg" /><a href="https://ameblo.jp/noz-music/entry-11971456705.html" target="_blank">「Oh!FM」HGPLAY用のFM音源音色を「DX21」に移植♪ | NOZ's Stylish Sound♪</a></header><div>私が10代の頃に使っていた、富士通パソコン「FM77AV」内蔵FM音源の音色データを、昨年12月に入手したYAMAHA FMシンセサイザー「DX21」に移植す…</div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1257195333806784519"
+            target="_blank">2020/5/4 15:28:19</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">「Oh!FM」1988年2月号だとするともう就職してたからなあ。雑誌のプログラムを打ち込んでる暇はなかったと思う。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1257200697629569025"
+            target="_blank">2020/5/4 15:49:38</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">「Oh!FM」という雑誌に「Let's Play Music」とかいうコーナーがあって、読者が作った演奏データを紹介＋データ掲載してたんだけど、そこに作ったデータを送ったら採用されたんだよね。ちょっとうれしい出来事でしたな。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1257203135640027137"
+            target="_blank">2020/5/4 15:59:19</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">FM77AVのオプション機器でステレオ・ミュージック・ボックスというのがあって、結局それを購入したんだよな。これはYM2151+MIDIインターフェースという代物。BASICのPLAY命令が拡張されて、FM11音＋SSG3音＋MIDI音源を鳴らすことができた。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1257203440251478016"
+            target="_blank">2020/5/4 16:00:32</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">YM2203＋YM2151＋MIDIという感じになるんだな。なかなか豪勢ですな。家は貧乏だったのになんでこんなもの買えたのか。。多分分割ローンですな（笑）</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1257204015311405057"
+            target="_blank">2020/5/4 16:02:49</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">音楽をやりたいなら、ひょっとするとMZ-700＋CMU800のほうが結果的に安上がりなのではと思うが、ゲームやりたい欲のほうが勝ってたんで、両方できるものという感じでとなるとこういう選択になるんだよなあ。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1257205841150668801"
+            target="_blank">2020/5/4 16:10:04</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">このあたりでゲーム会社に就職して、2-3年はゲーム作りたい欲は仕事で満たされるようになった。PCの使い道は音楽データ作り中心となっていく。土日には寝てるか、三宮の星電社の楽器コーナーをうろうろする感じでしたな。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1257206795648421893"
+            target="_blank">2020/5/4 16:13:52</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">しかしヘタレなため、「パソコンで一から自分の手で納得のいくゲームを作る」という夢が叶うことはいまだない。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1257207799290793987"
+            target="_blank">2020/5/4 16:17:51</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">たまにガス抜きのような感じで簡単なゲームを作ってみたりするけどね。<br/><br/><blockquote class="card card-large"><header><img  src="https://sfpgmr.github.io/images/2018/02/20180211.png" /><a href="https://www.sfpgmr.net/dev/break/0002/index.html" target="_blank">three.jsで作ったブロック崩し</a></header><div>three.jsで作ったブロック崩し</div></blockquote> https://t.co/Xly85J6g02</p>
+        
+        <img  class="tweet-img" src="https://pbs.twimg.com/media/EXJ_zTQU0AAKsbY.jpg" />
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1257208310526140416"
+            target="_blank">2020/5/4 16:19:53</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">でそこでCASIO RZ-1という本物の楽器（笑）を手にすることになるのだが、１つその前に買っていた楽器（これはおもちゃに近い）があったんだよな。確かSONYのサンプリングできるパーカッションみたいなやつ。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1257208736550027265"
+            target="_blank">2020/5/4 16:21:35</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">それともう１つ思い出したのはフェイザーというエフェクタを自作したことだろうか。これは大阪日本橋でパーツとかケースを買い求めて作成した。X1Cをメインで使ってた頃だろうかね。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1257209003014098944"
+            target="_blank">2020/5/4 16:22:38</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">多重録音時にエフェクタを入れるんですな。結構音が変化したので感動したわ。でもフェイザーなんで使いどころは限られるけど。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1257209153849704450"
+            target="_blank">2020/5/4 16:23:14</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">フェイザーで「しゅわしゅわ」してましたわ（笑）</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1257210036247355392"
+            target="_blank">2020/5/4 16:26:45</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">よく行ってた星電社とはここ。なんと今はヤマダ電機の傘下なのか。。存在してくれててよかった。<br/><br/><blockquote class="card card-default"><header><img  src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/8f/The_gate_of_LABI_Sannomiya_by_Seiden.jpg/1200px-The_gate_of_LABI_Sannomiya_by_Seiden.jpg" /><a href="https://commons.wikimedia.org/wiki/File:The_gate_of_LABI_Sannomiya_by_Seiden.jpg" target="_blank">File:The gate of LABI Sannomiya by Seiden.jpg - Wikimedia Commons</a></header><div></div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1257210578801582083"
+            target="_blank">2020/5/4 16:28:54</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">残念ながらフロアガイドを見る限り楽器コーナーは消滅してしまったようだ。悲しいね。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1257211131535319040"
+            target="_blank">2020/5/4 16:31:06</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">2-3年前に帰省した時に三宮まで足を運んだんだけど、センター街もちょっとさびれた気もしたなあ。。海岸通は相変わらずきれいで私を寄せ付けない街だったけれど（笑）</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1257211968261197826"
+            target="_blank">2020/5/4 16:34:25</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">SONYのサンプラーはググっても出てこないねえ。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1257213000257122305"
+            target="_blank">2020/5/4 16:38:31</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">それとBOSSのデジタル・ディレイも買ったような気もする。多分このDD-3だと思う。<br/><br/><blockquote class="card card-default"><header><img  src="https://static.roland.com/assets/images/products/main/dd3_main.jpg" /><a href="https://www.boss.info/jp/products/dd-3/" target="_blank">BOSS - DD-3 | Digital Delay</a></header><div>DD-3: Digital Delay - 本格機能が凝縮された、ロングセラー定番ディレイ</div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1257214235072851968"
+            target="_blank">2020/5/4 16:43:26</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">このころになると「Sound &amp; Recording Magazine」や「Keyboard Magazine」を読むようになって、知識だけは肥えてきたんだよな。実践はほとんどしてないけど（笑）</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1257214700871249920"
+            target="_blank">2020/5/4 16:45:17</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">そしてその雑誌で<br/><br/>・4トラックカセットMTRの存在<br/>・ディレイやリバーブなどのエフェクター<br/>・ハードウェア・シーケンサーおよびテープ・シンクの存在<br/><br/>を理解した。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1257217296700850177"
+            target="_blank">2020/5/4 16:55:36</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">それを知るまで我流でダブルラジカセ・ミキシングでやってたが、やはりこういう洗練されたシステマチックなものがあったんだと感動したのである（笑）</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1257218869426454528"
+            target="_blank">2020/5/4 17:01:51</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">星電社の楽器コーナーというのは展示機器が割に充実していて、音を出したりすることもできたんだよな。そこでドラムマシンをいじってた時にバイトの子にRZ-1の中古の話を持ちかけられて購入したんだよね。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1257219771218620416"
+            target="_blank">2020/5/4 17:05:26</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">CDなどのメディアも売ってたんで、そこで初めてCDを買ったりもしたな。最初に買ったCDは立花ハジメさんの「太陽さん」である。この神戸にいた1年くらいはそんなに洋モノに手を出してなかったんだよね。<br/><br/>CHICKEN CONSOMME<br/><div class="youtube" data-type="yt" id="CAaZ_U7veGk"><div class="yt-title">Youtube - CHICKEN CONSOMME</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img  data-href="https://youtu.be/CAaZ_U7veGk" class="youtube" src="https://i.ytimg.com/vi/CAaZ_U7veGk/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1257220489862246401"
+            target="_blank">2020/5/4 17:08:17</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">このCDはフェアライトCMIを使って作られてるので、私の好きなローファイサンプリング音が堪能できる。高域が足りなくなるんでどうしても中低域が強調される音作りになってしまうんだろうな。。でもそれがいいんだよね。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1257220842833862656"
+            target="_blank">2020/5/4 17:09:41</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">このXP-41とかいいよなあ。DEVOのマーク・マザスポーとの共作らしいけど。。<br/><br/>XP-41<br/><div class="youtube" data-type="yt" id="_HeEIlQ_Qhs"><div class="yt-title">Youtube - XP-41</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img  data-href="https://youtu.be/_HeEIlQ_Qhs" class="youtube" src="https://i.ytimg.com/vi/_HeEIlQ_Qhs/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1257222924869615617"
+            target="_blank">2020/5/4 17:17:58</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">思い出した。そう。これ。SK-1も持ってた。<br/><br/>Casio SK-1 - Is a full production possible with only this?<br/><div class="youtube" data-type="yt" id="HFlyxQLwicQ"><div class="yt-title">Youtube - Casio SK-1 - Is a full production possible with only this?</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img  data-href="https://youtu.be/HFlyxQLwicQ" class="youtube" src="https://i.ytimg.com/vi/HFlyxQLwicQ/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1257223589146722304"
+            target="_blank">2020/5/4 17:20:36</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">リズムは電子音なんだけど、ストリングとかピアノはPCMなんだよね。そしてサンプリングもできるという。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1257224360663760896"
+            target="_blank">2020/5/4 17:23:40</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">そしてBOSSはデジタル・ディレイではなくてこっちだった。サンプラーとしても使えたやつだったわ。<br/><br/>【試奏動画】BOSS DSD-2 Digital Sampler / Delay <br/><div class="youtube" data-type="yt" id="LooAgthEBy0"><div class="yt-title">Youtube - 【試奏動画】BOSS DSD-2 Digital Sampler / Delay 【BOSS COMPACT PEDAL 100th ANNIVERSARY!!】</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img  data-href="https://youtu.be/LooAgthEBy0" class="youtube" src="https://i.ytimg.com/vi/LooAgthEBy0/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1257225319196454913"
+            target="_blank">2020/5/4 17:27:28</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">さらに間違ってたのはSONYのはサンプラじゃなくてドラム・パッドだった。<br/><br/>SONY DRP-1 Drum Pad demo<br/><div class="youtube" data-type="yt" id="5YSkcY5QI1s"><div class="yt-title">Youtube - SONY DRP-1 Drum Pad demo</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img  data-href="https://youtu.be/5YSkcY5QI1s" class="youtube" src="https://i.ytimg.com/vi/5YSkcY5QI1s/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1257225811418968065"
+            target="_blank">2020/5/4 17:29:26</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">よって<br/><br/>・FM77AVとSK-1による演奏<br/>・DRP-1によるリズム<br/>・DSD2によるブレーク・ビーツ<br/><br/>とこうグレードアップしてたわけですな。これにRZ-1が加わったのだった。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1257226206652411904"
+            target="_blank">2020/5/4 17:31:00</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">この時はなにをやってたかというと自作曲を作ろうとしてたわけですな。1・2曲くらいはできたが、とても人に聞かせられるような代物ではない（笑）。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1257226423502163968"
+            target="_blank">2020/5/4 17:31:52</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">4CHぐらいのミキサーも買ってた気がするね。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1257227259565322241"
+            target="_blank">2020/5/4 17:35:11</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">勤めてたところはゲームのBGMに力を入れてる会社で、サウンド関係の人たちはたくさんいた。一人仲良くなった人がいて、六甲道の自宅に招かれたことがある。そこで機材を見せてもらったけど、スタジオのようだった（笑）</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1257227856490291201"
+            target="_blank">2020/5/4 17:37:33</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">六甲道の山のほうの神大の近くにある家で、大阪湾を見下ろせる立地でとても景観がよかった。２Ｆにキッチンがあってそこで夕食をごちそうになったんだけど、まあ場違いですわ。私のような貧民は（笑）。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1257228990885924864"
+            target="_blank">2020/5/4 17:42:04</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">私は残念ながらプログラマの能力としてはいまいちで、製作に絡んだゲームはバグが多くて、バグ技や突然死が起こるなどとなかなかの酷評ぶりだった（笑）。ゲームセンターミカドの動画観たら最近でもそういう評価で。ただし音楽だけは良いと（笑）。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1257229579338440704"
+            target="_blank">2020/5/4 17:44:24</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">そりゃそうだわなあ。サウンド・チームの中でもピカイチだといわれてた人が曲を作ってるんだもんなあ。サウンドの評価は悪いわけがない。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1257230432870924289"
+            target="_blank">2020/5/4 17:47:48</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">そのゲームで最も後悔してる部分というのは衝突判定。知識が未熟でいい加減な実装してしまったせいで、突然死とか判定が大きくなってしまった。今だったらきちんと実装できる自信はある。ネットのおかげで（笑）</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1257231139715964929"
+            target="_blank">2020/5/4 17:50:36</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">そのころのゲームの音楽はYM2151とサンプリング（そこではD/Aと呼んでた）で作られてた。FM音源全盛ですな。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1257232494321004545"
+            target="_blank">2020/5/4 17:55:59</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">FM音源サウンドに囲まれながら仕事をし、そして家に帰ればFM音源とSK-1で趣味の曲つくり（笑）をして過ごしてて、１年ほどで勤めていた会社を退職する。そして大阪にある別のゲーム会社に転職した。この時に出会った方がまたすごい方で。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1257232729784979456"
+            target="_blank">2020/5/4 17:56:55</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">この転職した先でようやくまともなシンセサイザーを購入した。でもやっぱり中古。そしてまたCASIO（笑）</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1257233107117211649"
+            target="_blank">2020/5/4 17:58:25</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">CASIOのCZ101ですわ。<br/><br/>Casio CZ-101 | How Does it Sound?<br/><div class="youtube" data-type="yt" id="zQ12td8JP30"><div class="yt-title">Youtube - Casio CZ-101 | How Does it Sound?</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img  data-href="https://youtu.be/zQ12td8JP30" class="youtube" src="https://i.ytimg.com/vi/zQ12td8JP30/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1257233987208003592"
+            target="_blank">2020/5/4 18:01:55</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">CASIO独自のPD音源。位相歪み音源（笑）。原理的にはFM音源とほぼ同じような気がする。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1257236596127981569"
+            target="_blank">2020/5/4 18:12:17</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">大体のところ、デジタルシンセのオシレータは基本波形をメモリ（ROM）に持つんだよね。そしてそれを時系列で読み出すことで波形を生み出すんだよな。サイン波形をメモリに保存しておいて順に読み出すということ。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1257237249961242624"
+            target="_blank">2020/5/4 18:14:53</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">そしてその読み出し速度を早くすると音程が高くなり、遅くすると音程が低くなるというわけ。そして線形（一定速度）で読みだすことによってメモリされた波形は保存された通り波形で再生される。ではこの線形の読出しを非線形にしたらどうなる？ということなんだよな。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1257237654552244224"
+            target="_blank">2020/5/4 18:16:29</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">非線形に読み出せば、再生させる波形は保存された波形とは異なるものになるんだよな。これがFM音源の原理でもあり、PD音源の原理でもある。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1257238812628881408"
+            target="_blank">2020/5/4 18:21:05</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">FM音源はオシレータ（キャリア）の読み出し位置を別のオシレータ（モジュレータ）の波形が出力する値にするんだよな。ではPDは？</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1257245530620481541"
+            target="_blank">2020/5/4 18:47:47</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">PD音源はモジュレータ側の波形が８種類ある２オペのFM音源とみることができる。<br/><br/><blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="https://electricdruid.net/phase-distortion-synthesis/" target="_blank">Phase Distortion Synthesis | Electric Druid</a></header><div></div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1257245830567755781"
+            target="_blank">2020/5/4 18:48:59</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ただしキャリア側の波形がコサイン波らしい。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1257246548179599361"
+            target="_blank">2020/5/4 18:51:50</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">PD音源がFMに比べて易しく感じるのはアルゴリズム固定だからということになるよな。PDはこのユニットが8基あって、2つ使って音を作ることができる。この時は4音ポリとなる。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1257248191772102656"
+            target="_blank">2020/5/4 18:58:22</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">DCWというパラメータはモジュレータのEGということになるね。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1257252477830696961"
+            target="_blank">2020/5/4 19:15:23</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">音作りの容易さはモジュレータに用意されている波形のおかげもあるようだ。しかし私は残念ながらCZ101での音作りの記憶はほとんどないに等しい。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1257253123438989313"
+            target="_blank">2020/5/4 19:17:57</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">そういうわけで自宅の環境は<br/><br/>・FM77AV+ステレオ・ミュージック・ボックス<br/>・CZ-101<br/>・RZ-1<br/>・SONYのドラムパッド<br/>・SK-1<br/><br/>とこうなってきたわけですな。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1257260879843745792"
+            target="_blank">2020/5/4 19:48:47</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">CASIO勢が占めとる感じですな。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1257263044188487680"
+            target="_blank">2020/5/4 19:57:23</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">そして次に購入したのが何なのか。購入した機器の記憶はあるのだが、順序がわからないのである。おそらくYAMAHAのSY-55だと思う。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1257273167262838784"
+            target="_blank">2020/5/4 20:37:36</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">そしてどこかで4トラックMTRも購入したのであるがこれもいつなのか記憶にないんだな。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1257275242772226048"
+            target="_blank">2020/5/4 20:45:51</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">たしかtascamのportastudioだと思うのだが。違うかな。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1257276375695683585"
+            target="_blank">2020/5/4 20:50:21</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">このSY-55というのはAWM2音源というもので、FM音源ではないんだな。やはりM1の影響が大きくて、YAMAHAもPCM音源＋デジタルフィルタという方向に舵を切っていくんだよな。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1257276685667295237"
+            target="_blank">2020/5/4 20:51:35</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ただ上位機種のSY-77はAFM音源というFM音源が搭載されていた。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1257277651619741697"
+            target="_blank">2020/5/4 20:55:25</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">いや、RCM音源か。でもDASS音源とか継続してFM音源はサポートされてるんだな。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1257278154374148097"
+            target="_blank">2020/5/4 20:57:25</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">現在では上位機種にFM-X音源というのが搭載されてるのか。。MONTAGEという機種は「8オペレーター128音ポリフォニックのFM-X音源」なのね。すごいな。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1257279412954783746"
+            target="_blank">2020/5/4 21:02:25</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">うーむ1990年～1995年あたりの保有楽器の変遷が謎が多いや。あまり記憶がないんだなあ。。1989年あたりでMK-80とか購入した記憶もあるしなあ。ちょっとピアノ習ってたりしてたんだよね。今はもう全く弾けませんが（笑）。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1257280016842256386"
+            target="_blank">2020/5/4 21:04:49</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">自分のブログにも書いてあるなあ。これは2005年にポストしたものか。全然覚えてない（笑）。<br/><blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="https://www.sfpgmr.net/blog/entry/%E6%A5%BD%E5%99%A8%E3%82%B3%E3%83%AC%E3%82%AF%E3%82%BF.html" target="_blank">S.F. Blog:楽器コレクタ</a></header><div>今は欲しいとは思わないが、15年位前はシンセ＆シーケンサを所持していた。ほとんど中古だが。持っていたものを挙げると（すべてを同時期に所持していたわけではないが）AKAI S900YAMAHA TX16WYAMAHA SY55YAMAHA のビデオサイズの音源YAMAHA SU10Rhodes MK80（これは新品、買って後悔した。）CASIO CZ-101CASIO RZ-1ROLAND MV30...</div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1257280176548835329"
+            target="_blank">2020/5/4 21:05:27</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">このリストの大半は中古だと思う。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1257280279347032065"
+            target="_blank">2020/5/4 21:05:52</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">そうそう、ハードウェアのシーケンサーも持ってたんだよなあ。MCシリーズですよ。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1257281208733495298"
+            target="_blank">2020/5/4 21:09:33</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">結局一番愛用したHWはRolandのMV-30ですよ。うん。これと何かキーボードを接続して、内臓のシーケンサーを使って遊んでた時が一番楽しかった気がするな。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1257282308203143169"
+            target="_blank">2020/5/4 21:13:56</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">あとは結婚前にすべて売却しちゃったんだよなあ。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1257282734289899520"
+            target="_blank">2020/5/4 21:15:37</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">その時のお世話になってたのが昭和町にある中古楽器屋さんで、市場の価格よりかなり安く売ってくれた記憶がある。そこのおばちゃんと懇意だったんだよなあ。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1257283660098592768"
+            target="_blank">2020/5/4 21:19:18</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">例えば9万くらいの機器を買おうかどうか迷ってると、そーっとやってきて「兄ちゃん、買うんやったら7万でええよ、どうする？」とか言ってくれる感じなんだよね（笑）。9万という価格も大手の相場だと安いほうなんだけどね。そこから勝手に値引いてくれるわけ。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1257287137050808321"
+            target="_blank">2020/5/4 21:33:07</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">しかし今のシンセのスペックってどうなんだろうと思ってMODXあたり見てみたけど、恐ろしいスペックですわ。AWM2 128ポリ/FM-X 64ポリ、16パートマルチティンバー、ユーザーサンプル用メモリ1GB！そしてマルチエフェクトか。。<br/><blockquote class="card card-default"><header><img  src="https://jp.yamaha.com/files/modx_index_4000x4000_b70d93ea4d13e9c6ab768018f833ed43.png" /><a href="https://jp.yamaha.com/products/music_production/synthesizers/modx/specs.html#product-tabs" target="_blank">ヤマハ | MODX - シンセサイザー - 仕様</a></header><div>"AWM2 & FM-X ハイブリッド音源"とダイナミックな音色変化を生み出す"Motion Control"を組み合わせた「Motion Control Synthesis Engine」を搭載。シンセサイザーとして基本性能の高さだけでなく、7インチのタッチパネルディスプレイを中心に据えた操作性の高いユーザーインターフェース、そして2000種類以上もの豊富なプリセット音色を備え、キーボーディストにとって即戦力となるユーザビリティを実現。コンパクト＆ライトウェイト デザインのMODXは専用ケース(別売り)と組み合わせる事によりアクティブなステージキーボーディストの活動を強力にサポート。高音域の鍵盤タッチは軽く、低音域になるほど重くなっていくアコースティックピアノの鍵盤タッチを再現した。</div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1257287320262316033"
+            target="_blank">2020/5/4 21:33:51</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">これが12万程度で手に入るという恐ろしい時代ですな。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1257498824899084288"
+            target="_blank">2020/5/5 11:34:17</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">1987年ころは洋物だけではなくバンド・サウンドもちょこちょこ聴いてた。PINKとか。個人的にはものすごく洗練された音を出すバンドだと思ってた。こういう音出す人たちが日本にもいたんだぁという感じ。<br/><br/>PINK - Zean Zean<br/><div class="youtube" data-type="yt" id="45CFdOsVdn0"><div class="yt-title">Youtube - PINK -  Zean Zean  (1985)</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img  data-href="https://youtu.be/45CFdOsVdn0" class="youtube" src="https://i.ytimg.com/vi/45CFdOsVdn0/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1257499198200528897"
+            target="_blank">2020/5/5 11:35:46</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">とにかくベースですよ。まずベース。ベースがすごいんですよ。岡野ハジメさんだよなあ。これ。<br/><br/>PINK - 光の子<br/><div class="youtube" data-type="yt" id="Ez_K_2d-pEw"><div class="yt-title">Youtube - PINK - 光の子</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img  data-href="https://youtu.be/Ez_K_2d-pEw" class="youtube" src="https://i.ytimg.com/vi/Ez_K_2d-pEw/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1257499426718793729"
+            target="_blank">2020/5/5 11:36:41</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">このエスニック的な要素を入れてくるところとかね。すごいなあと思いましたわ。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1257499719930003456"
+            target="_blank">2020/5/5 11:37:51</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">これね。エスニックという言葉が適切かわからんが。<br/><br/>PINK - SHISUNO<br/><div class="youtube" data-type="yt" id="zgqe_agGVP0"><div class="yt-title">Youtube - PINK - SHISUNO</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img  data-href="https://youtu.be/zgqe_agGVP0" class="youtube" src="https://i.ytimg.com/vi/zgqe_agGVP0/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1257500153692295171"
+            target="_blank">2020/5/5 11:39:34</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ベースが歌ってますわ。ベースしか頭に入ってこない。ほかのメンバーもすごい人たちなんだけどね。このバンド。<br/><br/>PINK - ISOLATED RUNNER<br/><div class="youtube" data-type="yt" id="GFhxxVFPXtc"><div class="yt-title">Youtube - PINK - ISOLATED RUNNER</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img  data-href="https://youtu.be/GFhxxVFPXtc" class="youtube" src="https://i.ytimg.com/vi/GFhxxVFPXtc/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1257500294549614592"
+            target="_blank">2020/5/5 11:40:08</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">スラップベースが一番格好いいと思ってた。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1257500804497301505"
+            target="_blank">2020/5/5 11:42:09</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">オーソドックスだけど、これもよく聴いたなあ。<br/><br/>PINK - 星のピクニック<br/><div class="youtube" data-type="yt" id="231BFqwUt2s"><div class="yt-title">Youtube - PINK - 星のピクニック</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img  data-href="https://youtu.be/231BFqwUt2s" class="youtube" src="https://i.ytimg.com/vi/231BFqwUt2s/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1257501445600862208"
+            target="_blank">2020/5/5 11:44:42</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">PINKで最高だと思ってるのはやっぱり「psycho-delicious  」というCDですよ。これとかイントロのベースのフレーズがかっこいいね。福岡ハジメさんのボーカルもいい。<br/><br/>PINK - Body And Soul<br/><div class="youtube" data-type="yt" id="_AsB6_dLUOc"><div class="yt-title">Youtube - PINK - Body And Soul</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img  data-href="https://youtu.be/_AsB6_dLUOc" class="youtube" src="https://i.ytimg.com/vi/_AsB6_dLUOc/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1257502074515775489"
+            target="_blank">2020/5/5 11:47:12</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">イントロのカッティング・ギターがいいわ。今聴いてもいいね。<br/><br/>PINK - Naked Child<br/><div class="youtube" data-type="yt" id="AgFTntLHJDM"><div class="yt-title">Youtube - PINK - Naked Child</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img  data-href="https://youtu.be/AgFTntLHJDM" class="youtube" src="https://i.ytimg.com/vi/AgFTntLHJDM/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1257502325423214592"
+            target="_blank">2020/5/5 11:48:12</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">しかしこの曲のベースもすごいな。なんなんだこの音は。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1257502557796134912"
+            target="_blank">2020/5/5 11:49:07</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">PINKではこれが一番有名じゃないのかなあ。。なんかちょっと泣けてきた（笑）<br/><br/>PINK - Keep Your View<br/><div class="youtube" data-type="yt" id="kXdHGZPrXoI"><div class="yt-title">Youtube - PINK - Keep Your View</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img  data-href="https://youtu.be/kXdHGZPrXoI" class="youtube" src="https://i.ytimg.com/vi/kXdHGZPrXoI/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1257502825883394048"
+            target="_blank">2020/5/5 11:50:11</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">近田春夫さん作詞。なぜか曲も近田さんぽくなってるという（笑）<br/><br/>PINK - Scanner<br/><div class="youtube" data-type="yt" id="TOIr4ASRguY"><div class="yt-title">Youtube - PINK - Scanner</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img  data-href="https://youtu.be/TOIr4ASRguY" class="youtube" src="https://i.ytimg.com/vi/TOIr4ASRguY/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1257503586528817152"
+            target="_blank">2020/5/5 11:53:12</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">そして「千年コメッツ」。変わり者ですみません（笑）。でもいい曲でしたよ。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1257504347807576069"
+            target="_blank">2020/5/5 11:56:14</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">残念なことにマイナーなのかYoutubeにもほとんど転がってないという。「Access In Access」とかあるんだけどなあ。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1257504579303796736"
+            target="_blank">2020/5/5 11:57:09</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">これはあった。<br/><br/>千年コメッツ - Lonely Dancer<br/><div class="youtube" data-type="yt" id="HH0A5A0q134"><div class="yt-title">Youtube - 千年コメッツ - Lonely Dancer - edit</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img  data-href="https://youtu.be/HH0A5A0q134" class="youtube" src="https://i.ytimg.com/vi/HH0A5A0q134/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1257505150249259008"
+            target="_blank">2020/5/5 11:59:25</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">なんでこのバンド聴いてたかというと「Access In Access」とか「ジレンマ」という曲のためですな。シンセによるシーケンスを効果的に使っていたのでね。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1257507369673605120"
+            target="_blank">2020/5/5 12:08:14</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">この1-2年前にもそういえば吉川晃司の曲がいい感じだなああと思っていた時期があって（笑）。モニカとかそういう時期のものではない。ベースが際立っていいと思ってた曲があってですね。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1257507995681865729"
+            target="_blank">2020/5/5 12:10:44</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">これこれ。この曲。16分で入るカウンター的に入ってくるベースのフレーズがかっこいいと思ったんだな。当時ね。で誰がアレンジをやってるんだということなった。やはり後藤次利さんであった。<br/><br/>CAN'T YOU HEAR THE RAIN DANCE<br/><div class="youtube" data-type="yt" id="oWKyqGHquvk"><div class="yt-title">Youtube - CAN'T YOU HEAR THE RAIN DANCE / 吉川晃司</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img  data-href="https://youtu.be/oWKyqGHquvk" class="youtube" src="https://i.ytimg.com/vi/oWKyqGHquvk/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1257508675154935813"
+            target="_blank">2020/5/5 12:13:26</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">これ弾いてる人ですよね。たぶん。ティン・パン・アレー<br/><br/>Tin Pan Alley - Choppers Boogie<br/><div class="youtube" data-type="yt" id="2v1Z42K9CNc"><div class="yt-title">Youtube - Tin Pan Alley - Choppers Boogie</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img  data-href="https://youtu.be/2v1Z42K9CNc" class="youtube" src="https://i.ytimg.com/vi/2v1Z42K9CNc/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1257509013706571776"
+            target="_blank">2020/5/5 12:14:46</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">スラップ・ベースと呼ばれる前はチョッパー・ベースって言われてたよな。確か。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1257511751295238144"
+            target="_blank">2020/5/5 12:25:39</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">歌謡曲もアレンジャーが割と新しもの好きな人だと最新の技術や手法を使ったりするんで、チェックすると面白いんですよね。。これも後から気づいたことですが。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1212701145379946496/pSDVrvWj_normal.png" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1257303434098651136"
+            target="_blank">2020/5/4 22:37:52</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">また揺れた</p>
+        
+      </section>
+      
+    </article>
+    
+  </div>
+  <footer>
+    CopyLight 2019 Satoshi Fujiwara
+  </footer>
+  <script async src="https://platform.twitter.com/widgets.js"></script>
+
+  <script async src="./index.js"></script>
+
+</body>
+
+</html>

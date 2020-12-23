@@ -1,0 +1,80 @@
+<sf:define-template name="header">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+<meta name="description" content="リニューアル用のトップページデザインを考えて実装する" />
+<meta name="keywords" content="Programming,Music,HTML5,WebGL,javascript,WebAudio" /> 	
+<title sf:if="title">${title}</title>
+<meta sf:if="img" itemprop="image" content="${img}" />
+<meta sf:if="title" itemprop="name" content="${title}" />
+<meta name="twitter:card" content="summary" />
+<meta sf:if="site_name" name="twitter:site" content="${site_name}" />
+<meta sf:if="url" name="twitter:url" content="${url}" />
+<meta sf:if="title" name="twitter:title" content="${title}" />
+<meta sf:if="description" name="twitter:description" content="${description}" />
+<meta sf:if="img" name="twitter:image" content="${img}" />
+  
+<meta property="og:type" content="article">
+<meta property="og:url" content="<if meta.url%>" />
+<meta property="og:title" content="<%=meta.title%>"/>
+<meta property="og:site_name" content="<%=meta.name%>" />
+<meta property="og:description" content="<%=meta.description%>">
+<meta property="og:image" content="<%- img_ %>">
+
+  <script type="application/ld+json">
+    <@meta>
+    {
+     "@type": "WebPage",
+     "@id": "./webpages/web.html",
+     "url": "./webpages/web.html",
+     "datePublished": "2017-01-10T08:00:00+08:00",
+     "dateModified": "2017-01-12T08:00:00+08:00",
+     "headline": "Web関連",
+     "keywords": "Programming,Music,HTML5,WebGL,javascript,WebAudio",
+     "description": "HTML5,JS,WebGL,WebAudio,SNS API等のコンテンツ",
+     "image": {
+      "@type": "ImageObject",
+      "url": "./img/sfweb.png",
+      "width": "640",
+      "height": "640"
+     },
+     "name": "Web関連",
+     "about": "HTML5,JS,WebGL,WebAudio,SNS API",
+     "author": {
+      "@type": "Person",
+      "@id": "./profile.html#sfpgmr",
+      "name": "Satoshi Fujiwara",
+      "image": "https://sfpgmr.net/img/sfpgmr.png",
+      "alternateName": "SFPGMR"
+     },
+     "relatedLink": [
+      "http://github.sfpgmr.net",
+      "http://blog.sfgpmr.net/"
+     ],
+     "breadcrumb": {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+       {
+        "@type": "ListItem",
+        "position": 1,
+        "item": {
+         "url": "./webpages/web.html",
+         "name": "Web関連"
+        }
+       }
+      ]
+     },
+     "@context": {
+      "@vocab": "http://schema.org/",
+      "@base": "https://www.sfpgmr.net/",
+      "sf": "https://www.sfpgmr.net/"
+     }
+    }
+    </script>
+    <style amp-custom >
+      <%- (meta.css ? meta.css : '/*@css@*/') %>
+    </style>
+
+</head>
+</sf:define-template>

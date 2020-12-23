@@ -1,0 +1,771 @@
+<!DOCTYPE html>
+
+<html lang="ja" prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb# article: http://ogp.me/ns/article#">
+
+<head>
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-15457703-9"></script>
+  <script>
+    if (!location.hostname.match(/localhost/)) {
+      window.dataLayer = window.dataLayer || [];
+      function gtag() { dataLayer.push(arguments); }
+      gtag('js', new Date());
+      gtag('config', 'UA-15457703-9');
+    }
+  </script>
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>トップページをリニューアルする</title>
+  <meta name="description" content="リニューアル用のトップページデザインを考えて実装する" />
+  <meta name="keywords" content="Programming,Music,HTML5,WebGL,javascript,WebAudio" /> 	
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <meta itemprop="image" content="https://www.sfpgmr.net/img/sfweb.png" />
+  <meta itemprop="name" content="S.F. Web" />
+  
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:site" content="S.F. Web" />
+  <meta name="twitter:url" content="./index26.html" />
+  <meta name="twitter:title" content="リニューアル用のトップページデザイン" />
+  <meta name="twitter:description" content="リニューアル用のトップページデザインを考えて実装する" />
+  <meta name="twitter:image" content="https://www.sfpgmr.net/img/sfweb.png" />
+  
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="./index26.html" />
+  <meta property="og:title" content="リニューアル用のトップページデザイン"/>
+  <meta property="og:site_name" content="S.F. Web" />
+  <meta property="og:description" content="Programming,Music,HTML5,WebGL,javascript,WebAudio">
+  <meta property="og:image" content="https://www.sfpgmr.net/img/sfweb.png">
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    html {
+      margin: 0;
+      padding: 0;
+      font-size:10px;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      background: black;
+      color: white;
+    }
+
+    .top-nav {
+      position:fixed;
+      z-index:99999;
+      background: rgba(0,0,0,0.5);
+      display: block;
+      width:100%;
+      height:32px;
+      color:white;
+    }
+    #sentinel {
+      width:0px;
+      height:0px;
+    }
+    .contents {
+      padding-top:32px;
+      width: 100%;
+      position: relative;
+      content: strict;
+    }
+
+    @keyframes blinking {
+      0% {
+        color: black;
+      }
+
+      50% {
+        color: white;
+      }
+
+      100% {
+        color: black;
+      }
+    }
+
+    .loading {
+      font-family: monospace;
+      font-size: 24px;
+      position: fixed;
+      width: 100vw;
+      height: 100vh;
+      text-align: center;
+      padding-top: 50vh;
+      z-index: 32768;
+      background: black;
+      animation: blinking 2s infinite;
+      content: strict;
+    }
+
+
+    .contents > article {
+      background: #f0f0f0;
+      color: #202020;
+      position: absolute;
+      max-height: 960px;
+      overflow: auto;
+      border-radius: 3px;
+     /* transition: opacity 1s linear;*/
+      opacity: 1.0;
+    }
+
+    .tweet-header {
+      display: grid;
+      align-items: end;
+      grid-template-columns: 40px 2fr 1fr;
+      grid-template-rows: 1fr;
+      font-size: 12px;
+      font-weight: bold;
+    }
+
+
+    .tweet-img {
+      width: 100%;
+      object-fit: cover;
+    }
+
+    .youtube {
+      position: relative;
+      cursor: pointer;
+    }
+
+    .youtube > img {
+      width: 100%;
+      object-fit: cover;
+    }
+
+    .youtube > svg.player-play {
+      width:64px;
+      height:64px;
+      left:calc(50% - 32px);
+      top:calc(50% - 32px);
+      position:absolute;
+      z-index: 1000;
+      opacity: 0.5;
+    }
+    
+    .youtube:hover > svg.player-play {
+      opacity: 1.0;
+    }
+
+    .youtube:hover .player-play-1 {
+      stroke:#80808080;
+    }
+
+    
+    .youtube > div.yt-title {
+      /*text-shadow: #fff 1px 1px 0;*/
+      font-size: 1.2rem;
+      color:white;
+      background:rgba(0, 0,0,0.5);
+      position:absolute;
+      left:0;
+      top:0;
+      overflow: auto;
+      z-index:998;
+    }
+
+
+    .tweet-profile-img {
+      grid-column: 1/2;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+    }
+
+    .tweet-user-name {
+      grid-column: 2/3;
+    }
+
+    .tweet-date {
+      font-size: 8px;
+      text-align: right;
+      grid-column: 3/4;
+    }
+
+    .contents>twitter-widget {
+      overflow: auto;
+      max-height: 960px;
+      position: absolute;
+    }
+
+    .contents>article>section>.tweet-text {
+      display: block;
+      padding: 4px;
+      word-break: break-all;
+      font-size: 12px;
+    }
+
+    .contents>article>h3 {
+      font-size: 12px;
+    }
+
+    blockquote.card {
+      margin:4px;
+      padding:4px;
+      font-size:12px;
+      background:white;
+      border-radius: 4px;
+    }
+
+    blockquote.card > header {
+      display:grid;
+      grid-gap:4px;
+      gap:4px;
+    }
+
+    blockquote.card-default > header {
+      grid-template-columns:64px 1fr;
+    }
+
+    blockquote.card-large > header {
+      grid-template-columns:1fr;
+    }
+
+    blockquote.card > header > img {
+      width:100%;
+    }
+
+
+    div.no-image {
+      display: block;
+      width:64px;
+      height:64px;
+      background:gray;
+      color:white;
+      text-align: center;
+      line-height: 64px;
+    }
+
+  </style>
+</head>
+
+<body>
+  <div class="loading" id="loading">Loading</div>
+  <header class="top-nav">
+    <h1>S.F. Info.</h1>
+  </header>
+  <div class="contents" id="contents" rendersubtree="invisible skip-activation"> 
+    
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1155106816931483649/wOIDQ1Y-_normal.png" />
+        <p class="tweet-user-name">Tierney Cyren@bitandbang</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/bitandbang/status/1136549425659162624"
+            target="_blank">2019/6/6 17:24:33</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">Top-level Await is now Stage 3 💛<br/><br/><a href="https://github.com/tc39/proposal-top-level-await" target="_blank">github.com/tc39/proposal-…</a></p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1136918768595099649"
+            target="_blank">2019/6/7 17:52:12</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">なんだこのむしむしした感じは。。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1134055573383573504"
+            target="_blank">2019/5/30 20:14:53</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">無性に都こんぶが食べたくなってファミマで購入。。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1133337066241028096"
+            target="_blank">2019/5/28 20:39:47</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">宮っ子ラーメン食べたいなあ。。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1133306192099282944"
+            target="_blank">2019/5/28 18:37:06</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">wasmのテキストフォーマットでコードを書いてるが、なかなか面白い。S式の簡潔さが心地よい。lispをきちんと学習したくなる。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1126599529829036032"
+            target="_blank">2019/5/10 6:27:13</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">とりあえず動画化してアップ。ちょっと地味ですな。<br/><br/><div class="youtube" data-type="yt" id="a6D_FiexY7Y"><div class="yt-title">Youtube - YMO - RYDEEN (91)</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img  data-href="https://youtu.be/a6D_FiexY7Y" class="youtube" src="https://i.ytimg.com/vi/a6D_FiexY7Y/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1129697918183591937"
+            target="_blank">2019/5/18 19:39:07</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">トータルコンプ・EQを主に調整。ちょっとバスドラの音量も下げてみた。。<br/><br/><div class="youtube" data-type="yt" id="DOLBXwisM5A"><div class="yt-title">Youtube - YMO - RYDEEN (92)</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img  data-href="https://youtu.be/DOLBXwisM5A" class="youtube" src="https://i.ytimg.com/vi/DOLBXwisM5A/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1130059602622423040"
+            target="_blank">2019/5/19 19:36:19</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ベースとバランス調整、そしてWebGL(three.js) + electronで作っている波形描画動画？を変えてみた。ちょっと見やすくなったかも。。<br/><div class="youtube" data-type="yt" id="9zGiQcrImpY"><div class="yt-title">Youtube - YMO - RYDEEN (93)</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img  data-href="https://youtu.be/9zGiQcrImpY" class="youtube" src="https://i.ytimg.com/vi/9zGiQcrImpY/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1130060506960502785"
+            target="_blank">2019/5/19 19:39:55</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">electronで1フレームずつjpegに落として、それを音声とffmpegで動画化しているというベタなやり方。結構時間がかかる。10分くらいかかるよなあ。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1130061963000569857"
+            target="_blank">2019/5/19 19:45:42</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">youtubeはおそらくカメラ撮影した動画をターゲットにチューニングしてるだろうから、画面全体が動くようなのを作ると途端に画像が荒れる。そういうのって圧縮効率が悪くなるからだろうなあとか思ってる。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1132225473784606720"
+            target="_blank">2019/5/25 19:02:43</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ハイハットを差し替え。そして微調整。<br/><br/><div class="youtube" data-type="yt" id="4TphvABArpI"><div class="yt-title">Youtube - YMO - RYDEEN (94)</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img  data-href="https://youtu.be/4TphvABArpI" class="youtube" src="https://i.ytimg.com/vi/4TphvABArpI/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1132761508314664961"
+            target="_blank">2019/5/27 6:32:43</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">久しぶりに「TECHNOPOLIS」をいじる。この曲もいろいろ調整しないとな。。難しいわ。。<br/><div class="youtube" data-type="yt" id="Ca5QiJ8RWE4"><div class="yt-title">Youtube - YMO - TECHNOPOLIS (6)</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img  data-href="https://youtu.be/Ca5QiJ8RWE4" class="youtube" src="https://i.ytimg.com/vi/Ca5QiJ8RWE4/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1132566692863758336"
+            target="_blank">2019/5/26 17:38:36</a></p>
+      </header>
+      <section>
+        <p class="tweet-text"><div class="youtube" data-type="yt" id="MY4hyWds6Qk"><div class="yt-title">Youtube - Optigan TV Commercial</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img  data-href="https://youtu.be/MY4hyWds6Qk" class="youtube" src="https://i.ytimg.com/vi/MY4hyWds6Qk/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1132562196334927872"
+            target="_blank">2019/5/26 17:20:44</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">KRAFTWERKが使ってるのはメロトロンではなくオーケストロンなのか？<br/><br/><div class="youtube" data-type="yt" id="JCybRH8gIBI"><div class="yt-title">Youtube - Vako Orchestron Optical Disc Playback Sampler</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img  data-href="https://youtu.be/JCybRH8gIBI" class="youtube" src="https://i.ytimg.com/vi/JCybRH8gIBI/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1132563428722167809"
+            target="_blank">2019/5/26 17:25:38</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">Wikipediaにはこう書いてあるな。。<br/>The band Kraftwerk made heavy use of the Orchestron on their albums Radio-Activity (1975), Trans Europe Express (1977) and The Man-Machine (1978).</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1132563903290830851"
+            target="_blank">2019/5/26 17:27:31</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">メロトロンではないのね。。光学ディスクってなんだろうな。さっきの動画に映ってたけどね。。<br/><div class="youtube" data-type="yt" id="JCybRH8gIBI"><div class="yt-title">Youtube - Vako Orchestron Optical Disc Playback Sampler</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img  data-href="https://youtu.be/JCybRH8gIBI" class="youtube" src="https://i.ytimg.com/vi/JCybRH8gIBI/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1132564208699101184"
+            target="_blank">2019/5/26 17:28:44</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">Europe Endlessのコーラス・ボイスもオーケストロンなんですな。。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1130056267378987010"
+            target="_blank">2019/5/19 19:23:04</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">この試合を観てから「シダックス・ファイヤー」を口ずさまない日はない。。<br/><div class="youtube" data-type="yt" id="B7v9ygOO_Lw"><div class="yt-title">Youtube - シダックスファイヤー　2018秋決勝　中央学院1回表</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img  data-href="https://youtu.be/B7v9ygOO_Lw" class="youtube" src="https://i.ytimg.com/vi/B7v9ygOO_Lw/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1130056451601252352"
+            target="_blank">2019/5/19 19:23:48</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">千葉の高校の応援は全国的にみてもレベルが高いのではないかと個人的には思ってる。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1130056933430317056"
+            target="_blank">2019/5/19 19:25:43</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">私大阪出身だが、夏の予選でもこんなにガッツリ応援してなかったと思うんだけどね。でも府大会のテレビ中継なんて観てたのもう25年以上前だから今どうなってるかわからんけど。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1130057326717575169"
+            target="_blank">2019/5/19 19:27:16</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">この一回の中央学院の攻撃がすごかったんだよなあ。ストライク取りにきた甘い球を逃さないんだよな。。中央学院って強い。。てこの時思った。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1130058042462969860"
+            target="_blank">2019/5/19 19:30:07</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">中央学院もピッチャーが今年は課題かもしれんね。。打撃は素晴らしいものがある。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1130058545301340160"
+            target="_blank">2019/5/19 19:32:07</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">専大松戸に7-3で負けたんだけど、あの横山くんから3点取ってるのはやっぱりすごいんじゃないかな。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1130419838550077440"
+            target="_blank">2019/5/20 19:27:46</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">専大松戸は10-6で桐光学園に勝利。専大松戸の先発は千葉県大会でも決勝で先発で投げた西村くん。杉田くんかな？と思ってたけど、違った。ただ西村くんは捕まって杉田くんにスイッチ。杉田くんはそのあとはしっかり抑えた。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1130419839711948802"
+            target="_blank">2019/5/20 19:27:46</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">やっぱり横山くんと杉田君の二本柱はすごいよなあ。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1130420151470264320"
+            target="_blank">2019/5/20 19:29:00</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">次は東海大相模。おそらく明日は雨だから中1日空くんじゃないだろうか。そうすると横山くん先発ー杉田くんリリーフの黄金の継投で最少失点で勝利の可能性も出てきたな。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1130440536400121856"
+            target="_blank">2019/5/20 20:50:01</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">投手力・打力で見るといまいまのベスト４の順位は<br/><br/>１.専大松戸<br/>２.木更津総合<br/>３.習志野<br/>４.銚子商<br/><br/>の順になるよなあ。ピッチャーの枚数と完成度は専大松戸が1つ頭出てる気がする。習志野と木更津総合がどれだけ伸びてくるかだけど、ポテンシャルは木更津総合のほうに分があるように思うなあ。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1130440537654288384"
+            target="_blank">2019/5/20 20:50:01</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">木総は根本くんがどれだけ復調するかにかかってるよな。習志野は2人目のピッチャーの安定性にかかってる。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1130440833486843905"
+            target="_blank">2019/5/20 20:51:11</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ベスト５となると中央学院がやっぱり入ってくるよな。あとは畔柳くんと2番手の出来次第。打線は申し分ないんじゃなかろうか。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1130441500351819776"
+            target="_blank">2019/5/20 20:53:50</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">春から夏予選にかけては1年生も入ってくきて戦力も多少変わるし、他のメンバーも2-3か月の過ごし方でコロっと変わるから、わからんよなあ。。思いもよらぬチームが行く可能性もなくはない。八千代東を思い出すなあ。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1131120193617289216"
+            target="_blank">2019/5/22 17:50:44</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">うーむ。専大松戸負けたか。。杉田くん先発とは意外でしたな。。横山くん登板なしか。。黄金の投手リレーは夏におあずけですな。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1131120336085250048"
+            target="_blank">2019/5/22 17:51:17</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">まあでも杉田くんの投球内容はそんなに悪くないよね。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1131120916174270465"
+            target="_blank">2019/5/22 17:53:36</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">山村学園は和田くんが4試合連投なんじゃないの？しかも延長で勝ち越されるまであの東海大相模を一点に抑えたのは大したもんだ。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1131504816218288128"
+            target="_blank">2019/5/23 19:19:05</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">そして東海大の冠を背負った同士の春季関東大会の決勝、下馬評通り東海大相模が優勝した。東海大相模はあの打力で結構細やかな野球をするのですな。これは手ごわいですわ。とはいえ神奈川は激戦区だから夏の甲子園はそう簡単には行けないんだな。これが。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1131505637026742272"
+            target="_blank">2019/5/23 19:22:20</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">春季大会が終了すると次はいよいよ夏の予選。千葉県予選が始まる7月10日までは1か月半ほどある。この1か月半をどう過ごすかで結果が変わってくるわけですな。。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1131491730425991168"
+            target="_blank">2019/5/23 18:27:05</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">KRAFTWERKの「Franz Schubert」。このストリングスの音を聴いたとき、1977年でまさかサンプリングか！と思った。がこれは「メロトロン」というアナログ・サンプラの音らしい。テープ・サンプラと言ったほうが正確だろうか。。<br/><div class="youtube" data-type="yt" id="twlZ9t4Gg1E"><div class="yt-title">Youtube - Franz Schubert (2009 Remastered Version)</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img  data-href="https://youtu.be/twlZ9t4Gg1E" class="youtube" src="https://i.ytimg.com/vi/twlZ9t4Gg1E/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1131493493195436035"
+            target="_blank">2019/5/23 18:34:05</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">メロトロンはキーボード一つ一つにテーププレーヤーがついてて、キーボードを押すと再生して、話すとテープが巻き戻るというものすごいメカニカルなものである。。<br/><div class="youtube" data-type="yt" id="N07-YAKtRAw"><div class="yt-title">Youtube - The Mellotron: Famous Songs!</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img  data-href="https://youtu.be/N07-YAKtRAw" class="youtube" src="https://i.ytimg.com/vi/N07-YAKtRAw/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1131494262493700096"
+            target="_blank">2019/5/23 18:37:08</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ビートルズの「Strawberry Fields Forever」のイントロでも使われてるよね。。<br/><div class="youtube" data-type="yt" id="HtUH9z_Oey8"><div class="yt-title">Youtube - The Beatles - Strawberry Fields Forever</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img  data-href="https://youtu.be/HtUH9z_Oey8" class="youtube" src="https://i.ytimg.com/vi/HtUH9z_Oey8/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1131495144908156929"
+            target="_blank">2019/5/23 18:40:39</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">これを知った当時（1980年後半）実物をみたことはなかったし、そんなメカニカルなものできちんと演奏できるのか？と思ってたが、Youtubeのおかげで実物の構造や演奏を見ることができた。<br/>これはポールマッカトニーよるメロトロンの紹介動画。<br/><br/><div class="youtube" data-type="yt" id="TUcfB5Whp4I"><div class="yt-title">Youtube - Paul McCartney shows the Mellotron</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img  data-href="https://youtu.be/TUcfB5Whp4I" class="youtube" src="https://i.ytimg.com/vi/TUcfB5Whp4I/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1131495252567584770"
+            target="_blank">2019/5/23 18:41:05</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">よい時代になったものだ。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1131498070938570752"
+            target="_blank">2019/5/23 18:52:16</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">こういうメロトロンもあったのか。。左手でバッキング・トラックを弾いて、右手でソロを弾くという。この時代(1965年)でこれができてるのもすごいよね。音色のスイッチもできるような。<br/><div class="youtube" data-type="yt" id="HdkixaxjZCM"><div class="yt-title">Youtube - The Mellotron: A Keyboard with the Power of an Orchestra (1965) | British Pathé</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img  data-href="https://youtu.be/HdkixaxjZCM" class="youtube" src="https://i.ytimg.com/vi/HdkixaxjZCM/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1131499398775488512"
+            target="_blank">2019/5/23 18:57:33</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">若いときには全然知りえなかったことが、いまいろいろ知ることができるようになって、ほんと楽しい世の中になったよな。。逆もあるけど。</p>
+        
+      </section>
+      
+    </article>
+    
+  </div>
+  <footer>
+    CopyLight 2019 Satoshi Fujiwara
+  </footer>
+  <script async src="https://platform.twitter.com/widgets.js"></script>
+
+  <script async src="./index.js"></script>
+
+</body>
+
+</html>

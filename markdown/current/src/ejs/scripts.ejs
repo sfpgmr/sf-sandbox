@@ -1,0 +1,26 @@
+<script async src="https://cdn.ampproject.org/v0.js"></script>
+<style amp-boilerplate="">body{-webkit-animation:-amp-start 8s steps(1,end) 0s 1 normal both;-moz-animation:-amp-start 8s steps(1,end) 0s 1 normal both;-ms-animation:-amp-start 8s steps(1,end) 0s 1 normal both;animation:-amp-start 8s steps(1,end) 0s 1 normal both}@-webkit-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@-moz-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@-ms-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@-o-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}</style><noscript><style amp-boilerplate="">body{-webkit-animation:none;-moz-animation:none;-ms-animation:none;animation:none}</style></noscript>
+<% 
+const content = page.content || '';
+const social = page.social;
+const elements = page.scripts || [
+  {name:"amp-carousel",url:"https://cdn.ampproject.org/v0/amp-carousel-0.1.js",required:true},
+  {name:"amp-sidebar",url:"https://cdn.ampproject.org/v0/amp-sidebar-0.1.js",required:true},
+  {name:"amp-accordion",url:"https://cdn.ampproject.org/v0/amp-accordion-0.1.js",required:true},
+  {name:"amp-instagram",url:"https://cdn.ampproject.org/v0/amp-instagram-0.1.js",required:true},
+  {name:"amp-social-share",url:"https://cdn.ampproject.org/v0/amp-social-share-0.1.js",required:true},
+  {name:"amp-iframe",url:"https://cdn.ampproject.org/v0/amp-iframe-0.1.js",required:true},
+  {name:"amp-analytics",url:"https://cdn.ampproject.org/v0/amp-analytics-0.1.js"},
+  {name:"amp-ad",url:"https://cdn.ampproject.org/v0/amp-ad-0.1.js"},
+  {name:"amp-youtube",url:"https://cdn.ampproject.org/v0/amp-youtube-0.1.js"},
+  {name:"amp-twitter",url:"https://cdn.ampproject.org/v0/amp-twitter-0.1.js"},
+  {name:"amp-gist",url:"https://cdn.ampproject.org/v0/amp-gist-0.1.js"}
+  ];
+  elements.forEach(e=>{
+    if(e.required || content.match(e.name)){
+%>
+<script async custom-element="<%-e.name%>" src="<%-e.url%>"></script>
+<%
+  }
+});
+%>

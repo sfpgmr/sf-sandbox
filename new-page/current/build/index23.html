@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+
+<html lang="ja" prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb# article: http://ogp.me/ns/article#">
+
+<head>
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-15457703-9"></script>
+  <script>
+    if (!location.hostname.match(/localhost/)) {
+      window.dataLayer = window.dataLayer || [];
+      function gtag() { dataLayer.push(arguments); }
+      gtag('js', new Date());
+      gtag('config', 'UA-15457703-9');
+    }
+  </script>
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Twitter Viewer</title>
+  <meta name="description" content="自作Twitter Viewerによる自分のつぶやきの記録。Programming,Music,HTML5,WebGL,javascript,WebAudio,Gameなど" />
+  <meta name="keywords" content="Programming,Music,HTML5,WebGL,javascript,WebAudio" /> 	
+
+  <meta itemprop="image" content="https://www.sfpgmr.net/img/sfweb.png" />
+  <meta itemprop="name" content="S.F. Web" />
+  
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:site" content="S.F. Web" />
+  <meta name="twitter:url" content="./index23.html" />
+  <meta name="twitter:title" content="Twitter Viewer" />
+  <meta name="twitter:description" content="自作Twitter Viewerによる自分のつぶやきの記録。Programming,Music,HTML5,WebGL,javascript,WebAudio,Gameなど" />
+  <meta name="twitter:image" content="https://www.sfpgmr.net/img/sfweb.png" />
+  
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="./index23.html" />
+  <meta property="og:title" content="Twitter Viewer"/>
+  <meta property="og:site_name" content="S.F. Web" />
+  <meta property="og:description" content="Programming,Music,HTML5,WebGL,javascript,WebAudio">
+  <meta property="og:image" content="https://www.sfpgmr.net/img/sfweb.png">
+
+  <style>
+  * {
+  margin: 0;
+  padding: 0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+
+html {
+  margin: 0;
+  padding: 0;
+  font-size: 10px; }
+
+body {
+  margin: 0;
+  padding-left: 8px;
+  padding-right: 8px;
+  background: black;
+  color: white; }
+
+.top-nav {
+  position: fixed;
+  z-index: 99999;
+  background: rgba(0, 0, 0, 0.5);
+  display: block;
+  width: 100%;
+  height: 32px;
+  color: white; }
+
+#sentinel {
+  width: 0px;
+  height: 0px; }
+
+.contents {
+  padding-top: 32px;
+  width: 100%;
+  position: relative;
+  content: strict; }
+
+@keyframes blinking {
+  0% {
+    color: black; }
+  50% {
+    color: white; }
+  100% {
+    color: black; } }
+
+.loading {
+  font-family: monospace;
+  font-size: 24px;
+  position: fixed;
+  width: 100vw;
+  height: 100vh;
+  text-align: center;
+  padding-top: 50vh;
+  z-index: 32768;
+  background: black;
+  animation: blinking 2s infinite;
+  content: strict; }
+
+.contents > article {
+  background: #f0f0f0;
+  color: #202020;
+  position: absolute;
+  max-height: 95vh;
+  overflow: auto;
+  border-radius: 3px;
+  /* transition: opacity 1s linear;*/
+  opacity: 1.0; }
+
+.tweet-header {
+  display: grid;
+  align-items: end;
+  grid-template-columns: 40px 2fr 1fr;
+  grid-template-rows: 1fr;
+  font-size: 12px;
+  font-weight: bold; }
+
+.tweet-img {
+  width: 100%;
+  object-fit: cover; }
+
+.youtube {
+  position: relative;
+  cursor: pointer; }
+
+.youtube > img {
+  width: 100%;
+  object-fit: cover; }
+
+.youtube > svg.player-play {
+  width: 64px;
+  height: 64px;
+  left: calc(50% - 32px);
+  top: calc(50% - 32px);
+  position: absolute;
+  z-index: 1000;
+  opacity: 0.5; }
+
+.youtube:hover > svg.player-play {
+  opacity: 1.0; }
+
+.youtube:hover .player-play-1 {
+  stroke: #80808080; }
+
+.youtube > div.yt-title {
+  /*text-shadow: #fff 1px 1px 0;*/
+  font-size: 1.2rem;
+  color: white;
+  background: rgba(0, 0, 0, 0.5);
+  position: absolute;
+  left: 0;
+  top: 0;
+  overflow: auto;
+  z-index: 998; }
+
+.tweet-profile-img {
+  grid-column: 1/2;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%; }
+
+.tweet-user-name {
+  grid-column: 2/3; }
+
+.tweet-date {
+  font-size: 8px;
+  text-align: right;
+  grid-column: 3/4; }
+
+.contents > twitter-widget {
+  overflow: auto;
+  max-height: 960px;
+  position: absolute; }
+
+.contents > article > section > .tweet-text {
+  display: block;
+  padding: 4px;
+  word-break: break-all;
+  font-size: 12px; }
+
+.contents > article > h3 {
+  font-size: 12px; }
+
+blockquote.card {
+  margin: 4px;
+  padding: 4px;
+  font-size: 12px;
+  background: white;
+  border-radius: 4px; }
+
+blockquote.card > header {
+  display: grid;
+  grid-gap: 4px;
+  gap: 4px; }
+
+blockquote.card-default > header {
+  grid-template-columns: 64px 1fr; }
+
+blockquote.card-large > header {
+  grid-template-columns: 1fr; }
+
+blockquote.card > header > img {
+  width: 100%; }
+
+div.no-image {
+  display: block;
+  width: 64px;
+  height: 64px;
+  background: gray;
+  color: white;
+  text-align: center;
+  line-height: 64px; }
+ 
+  </style>
+</head>
+
+<body>
+  <div class="loading" id="loading">Loading</div>
+  <header class="top-nav">
+    <h1>S.F. Info.</h1>
+  </header>
+  <div class="contents" id="contents" rendersubtree="invisible skip-activation"> 
+    
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1212701145379946496/pSDVrvWj_normal.png" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1261038007856984064"
+            target="_blank">2020/5/15 5:57:44</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">deno 1.0かあ。これ面白いよなあ。<br/><br/><blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="https://deno.land/" target="_blank">Deno - A secure runtime for JavaScript and TypeScript</a></header><div></div></blockquote></p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1212701145379946496/pSDVrvWj_normal.png" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1260839103429373952"
+            target="_blank">2020/5/14 16:47:22</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">この曲のサンプリング・ボイスはコルグSDD 1000あたりが使われてるらしいね。これはデジタル・ディレイで２秒くらいサンプリングできるもの。トリガーで鳴らすことができたようだ。<br/><br/>Haruomi Hosono - S-F-X - 01 - Body Snatchers<br/><div class="youtube" data-type="yt" id="d4gypiuQt5E"><div class="yt-title">Youtube - Haruomi Hosono - S-F-X - 01 - Body Snatchers</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img  data-href="https://youtu.be/d4gypiuQt5E" class="youtube" src="https://i.ytimg.com/vi/d4gypiuQt5E/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1267819337026420739/GBuq7wjs_normal.jpg" />
+        <p class="tweet-user-name">Deno@deno_land</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/deno_land/status/1260199156037169153"
+            target="_blank">2020/5/12 22:24:26</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">v1.0.0-rc3 released with some last minute changes. v1.0.0 will be released tomorrow.<br/><a href="https://github.com/denoland/deno/releases/tag/v1.0.0-rc3" target="_blank">github.com/denoland/deno/…</a></p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1264791071038435329/qVBo7vx7_normal.jpg" />
+        <p class="tweet-user-name">Mr.doob@mrdoob</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/mrdoob/status/1260669193965297665"
+            target="_blank">2020/5/14 5:32:12</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">Tried loading one of the UE5 demo models.<br/>The power of 8K textures... (and GI.. 😅) https://t.co/QcDjS2koXD</p>
+        
+        <img  class="tweet-img" src="https://pbs.twimg.com/media/EX7LoDVU4AAhmRl.jpg" />
+        
+        <img  class="tweet-img" src="https://pbs.twimg.com/media/EX7LqVzU0AAkRaU.jpg" />
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/971802364834299904/207NnRMF_normal.jpg" />
+        <p class="tweet-user-name">アンリアルエンジン@UnrealEngineJP</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/UnrealEngineJP/status/1260598595314573314"
+            target="_blank">2020/5/14 0:51:40</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">発表された #UE5 の機能紹介動画の日本語版を公開いたしました。（先程こちらが 最新デモの動画とツイートしましたが誤りでした。大変申し訳ありません ）<br/><br/>Unreal Engine 5 Feature Highlights  | Next-Gen Real-Time Demo Running on... <a href="https://youtu.be/JhvsJ30Kl4c" target="_blank">youtu.be/JhvsJ30Kl4c</a> @YouTubeさんから</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1257117657125584896/9ZPyJqE8_normal.jpg" />
+        <p class="tweet-user-name">Psychedelic Art@VisuallySt</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/VisuallySt/status/1259928271925456897"
+            target="_blank">2020/5/12 4:28:03</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">By Francois Vogel https://t.co/cYjB1FhCn8</p>
+        
+        <video class="tweet-img" controls src="https://video.twimg.com/ext_tw_video/1259928174852521984/pu/vid/480x480/qnW8CS-xAF4OqwUC.mp4?tag=10" />
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1284434525741670402/2Dj_1WyL_normal.jpg" />
+        <p class="tweet-user-name">だー1@da_itch</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/da_itch/status/1260260125278793729"
+            target="_blank">2020/5/13 2:26:43</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">息抜きにシンプルなゲームを作りたいなって https://t.co/o3NDORorJW</p>
+        
+        <video class="tweet-img" controls src="https://video.twimg.com/ext_tw_video/1260259358106980352/pu/vid/318x566/P4pX98QRm8iCBT57.mp4?tag=10" />
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1212701145379946496/pSDVrvWj_normal.png" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1260491012641824770"
+            target="_blank">2020/5/13 17:44:10</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">スイング・アウト・シスターも私の音楽鑑賞全盛期（笑）のころよく聴いたんだよね。DX7ベース全盛で食傷気味であったころに出たこのアナログチックなシンセベース。SOSの中でもすごくベースの音がいいと思ってる曲。<br/><br/>Swing Out Sister - Another Lost Weekend<br/><div class="youtube" data-type="yt" id="8aE5igfW4lk"><div class="yt-title">Youtube - Swing Out Sister - Another Lost Weekend [Long Version]</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img  data-href="https://youtu.be/8aE5igfW4lk" class="youtube" src="https://i.ytimg.com/vi/8aE5igfW4lk/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1260491768975458305"
+            target="_blank">2020/5/13 17:47:11</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">Blue Moodのこのベースもいいわ。<br/><br/>Swing Out Sister - Blue Mood<br/><div class="youtube" data-type="yt" id="ZrtFz2MD3o8"><div class="yt-title">Youtube - Swing Out Sister - Blue Mood</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img  data-href="https://youtu.be/ZrtFz2MD3o8" class="youtube" src="https://i.ytimg.com/vi/ZrtFz2MD3o8/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1260492464332431361"
+            target="_blank">2020/5/13 17:49:56</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">このいい意味で古さを感じさせるアレンジはアンディ・コーネルさんのセンスなんだろうなあ。いいね。。シーケンス・プログラミングも緻密だなあと思ったんだよね。<br/><br/>Breakout<br/><div class="youtube" data-type="yt" id="sPp9lQyEdNk"><div class="yt-title">Youtube - Breakout</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img  data-href="https://youtu.be/sPp9lQyEdNk" class="youtube" src="https://i.ytimg.com/vi/sPp9lQyEdNk/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1260493138604498951"
+            target="_blank">2020/5/13 17:52:37</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">これは２枚目だよな。ボーカルのコリーン・ドリュリーさんのボーカルも力が抜けてだんだんうまくなってきてる感じ。<br/><br/>Waiting Game<br/><div class="youtube" data-type="yt" id="82eAX9AsPL4"><div class="yt-title">Youtube - Waiting Game</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img  data-href="https://youtu.be/82eAX9AsPL4" class="youtube" src="https://i.ytimg.com/vi/82eAX9AsPL4/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1260493583444041737"
+            target="_blank">2020/5/13 17:54:23</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">日本でもこの曲ヒットしたよなあ。。<br/><br/>Swing Out Sister - Now You're Not Here<br/><div class="youtube" data-type="yt" id="67L4GARwuvA"><div class="yt-title">Youtube - Swing Out Sister - Now You're Not Here</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img  data-href="https://youtu.be/67L4GARwuvA" class="youtube" src="https://i.ytimg.com/vi/67L4GARwuvA/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1260494185372758027"
+            target="_blank">2020/5/13 17:56:47</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">これはカバー曲だけど、カバーしている人多いよなあ。この曲も。。<br/><br/>Swing Out Sister - Am I the Same Girl<br/><div class="youtube" data-type="yt" id="hZPgCQDcXBE"><div class="yt-title">Youtube - Swing Out Sister   Am I the Same Girl</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img  data-href="https://youtu.be/hZPgCQDcXBE" class="youtube" src="https://i.ytimg.com/vi/hZPgCQDcXBE/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1260494850635509760"
+            target="_blank">2020/5/13 17:59:25</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">これは相当古いけど、これもカバー曲らしいんだな。でもこのねえ、タンバリンの音がなんともいえんいいグルーブを出しとるわ。。<br/><br/>Barbara Acklin - Am I the Same Girl 1968<br/><div class="youtube" data-type="yt" id="qzuifcwDqIo"><div class="yt-title">Youtube - Barbara Acklin - Am I the Same Girl 1968.</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img  data-href="https://youtu.be/qzuifcwDqIo" class="youtube" src="https://i.ytimg.com/vi/qzuifcwDqIo/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1260495620164538371"
+            target="_blank">2020/5/13 18:02:29</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">これがオリジナルなのかな。いいリズムですわ。。このイントロのフィルってヤング・ディサプルズのあの曲のイントロで使われてるんじゃないかなあ。。<br/><br/>Young-Holt Unlimited "Soulful Strut" 1968 HQ<br/><div class="youtube" data-type="yt" id="XKYgtwsqnxs"><div class="yt-title">Youtube - Young-Holt Unlimited "Soulful Strut"  1968    HQ</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img  data-href="https://youtu.be/XKYgtwsqnxs" class="youtube" src="https://i.ytimg.com/vi/XKYgtwsqnxs/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1260496105684512768"
+            target="_blank">2020/5/13 18:04:25</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">やっぱりそうだな。。<br/><br/>Apparently Nothin' (12" Mix)<br/><div class="youtube" data-type="yt" id="NhIt9FBlh1A"><div class="yt-title">Youtube - Apparently Nothin' (12" Mix)</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img  data-href="https://youtu.be/NhIt9FBlh1A" class="youtube" src="https://i.ytimg.com/vi/NhIt9FBlh1A/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1260497588043886598"
+            target="_blank">2020/5/13 18:10:18</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">こういうブレーク・ビーツのサンプリングを聴いてるうちに古いファンクにも興味が出てきますわな。。なんとなくジェームス・ブラウンの感じにも似ている。。<br/><br/>The Fatback Band-Wicky Wacky<br/><div class="youtube" data-type="yt" id="CMpTzxRHuio"><div class="yt-title">Youtube - The Fatback Band-Wicky Wacky</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img  data-href="https://youtu.be/CMpTzxRHuio" class="youtube" src="https://i.ytimg.com/vi/CMpTzxRHuio/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1260497911722455043"
+            target="_blank">2020/5/13 18:11:35</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">こういうレア・グルーブもののコンピレーションCDを買ってよく聴いてたんだよね。やっぱりこのあたりの人たちのグルーブ感というかノリは尋常ではないなと思いましたわ。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1260498587257102337"
+            target="_blank">2020/5/13 18:14:16</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">YMOがカバーしたので知ってる「Tighten up」。地獄の黙示録という映画でも流れてたような気がする。<br/><br/>Archie Bell &amp; The Drells - Tighten up (1968)<br/><div class="youtube" data-type="yt" id="Wro3bqi4Eb8"><div class="yt-title">Youtube - Archie Bell & The Drells - Tighten up (1968)</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img  data-href="https://youtu.be/Wro3bqi4Eb8" class="youtube" src="https://i.ytimg.com/vi/Wro3bqi4Eb8/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1260499012635054082"
+            target="_blank">2020/5/13 18:15:58</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">これはYMOのカバーのほうだけど、バスドラの打つタイミングが妙にずれてるの、これわざとだよなあ。。<br/><br/>Yellow Magic Orchestra - Tighten Up<br/><div class="youtube" data-type="yt" id="wijrWMd9wvQ"><div class="yt-title">Youtube - Yellow Magic Orchestra - Tighten Up (Japanese Gentlemen Stand Up Please!) (1980)</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img  data-href="https://youtu.be/wijrWMd9wvQ" class="youtube" src="https://i.ytimg.com/vi/wijrWMd9wvQ/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1260499263764803585"
+            target="_blank">2020/5/13 18:16:58</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">この「Tighten Up」という曲もいろいろなカバーがあるんだよね。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1260499515594936321"
+            target="_blank">2020/5/13 18:17:58</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">かのJBもカバーしているという。。<br/><br/>Tighten Up<br/><div class="youtube" data-type="yt" id="7XaAXeUACA4"><div class="yt-title">Youtube - Tighten Up</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img  data-href="https://youtu.be/7XaAXeUACA4" class="youtube" src="https://i.ytimg.com/vi/7XaAXeUACA4/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1260500193142857728"
+            target="_blank">2020/5/13 18:20:39</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">クール＆ザ・ギャングもきらきらしてた時よりも古い物のほうが妙なグルーブがあってものすごくよかったりするんだよね。このキラキラしたのもいいんだけど。<br/><br/>Kool &amp; The Gang - Celebration<br/><div class="youtube" data-type="yt" id="3GwjfUFyY6M"><div class="yt-title">Youtube - Kool & The Gang - Celebration (Official Music Video)</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img  data-href="https://youtu.be/3GwjfUFyY6M" class="youtube" src="https://i.ytimg.com/vi/3GwjfUFyY6M/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1260500580964937728"
+            target="_blank">2020/5/13 18:22:12</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">この曲のドラムのバスドラのノリがすごすぎると思ったんだよね。フィルのスネアも別次元でハネてるし。。<br/><br/>Chocolate Buttermilk<br/><div class="youtube" data-type="yt" id="cROOfFnisDk"><div class="yt-title">Youtube - Chocolate Buttermilk</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img  data-href="https://youtu.be/cROOfFnisDk" class="youtube" src="https://i.ytimg.com/vi/cROOfFnisDk/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1260501116506329088"
+            target="_blank">2020/5/13 18:24:19</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">この曲もまあ何回聴いたことか。。やっぱりこのグルーブとリズムはどうやったらこうなるんだという感じがする。<br/><br/>N.T.<br/><div class="youtube" data-type="yt" id="erkW4vPY5ZQ"><div class="yt-title">Youtube - N.T.</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img  data-href="https://youtu.be/erkW4vPY5ZQ" class="youtube" src="https://i.ytimg.com/vi/erkW4vPY5ZQ/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1260501683311915010"
+            target="_blank">2020/5/13 18:26:34</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">このリッキング・スティックも。リム・ショットとハイハット、ベースの織り成すえげつないグルーブ。<br/><br/>Licking Stick, Licking Stick by James Brown<br/><div class="youtube" data-type="yt" id="AWVd-UHov0Q"><div class="yt-title">Youtube - Licking Stick, Licking Stick by James Brown</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img  data-href="https://youtu.be/AWVd-UHov0Q" class="youtube" src="https://i.ytimg.com/vi/AWVd-UHov0Q/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1260502725483098112"
+            target="_blank">2020/5/13 18:30:43</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">JBの中で一番好きなのがこれ。このハイハットは音切れのタイミングがハネてるんだよね。それでこのノリ。いや、ベースか。それにしてもリズムがえげつない。<br/><br/>Give It Up Or Turnit A Loose<br/><div class="youtube" data-type="yt" id="gLjXWiZVCrs"><div class="yt-title">Youtube - Give It Up Or Turnit A Loose (Remix)</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img  data-href="https://youtu.be/gLjXWiZVCrs" class="youtube" src="https://i.ytimg.com/vi/gLjXWiZVCrs/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1260503154514259968"
+            target="_blank">2020/5/13 18:32:25</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ヤング・ディサプルズの曲聴いて、ゲートタイムがハネていることに気づいたんだけど、古いファンク聴くとそうなってるやんけ！っていう感じだった。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1260504329695289344"
+            target="_blank">2020/5/13 18:37:05</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">この曲は少しそういうファンク臭を感じるんだな。なぜか。林立夫さんと細野さんという強力なリズム隊のせいなのか。。<br/><br/>Haruomi Hosono - 薔薇と野獣<br/><div class="youtube" data-type="yt" id="MjcwyLQbH-o"><div class="yt-title">Youtube - Haruomi Hosono - 薔薇と野獣</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img  data-href="https://youtu.be/MjcwyLQbH-o" class="youtube" src="https://i.ytimg.com/vi/MjcwyLQbH-o/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1212701145379946496/pSDVrvWj_normal.png" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1259409994744659972"
+            target="_blank">2020/5/10 18:08:36</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">息子がruby on railsで作ったWebアプリのデプロイのお手伝い。スマブラ用だとか。rubyやruby on railsよくできてるわ。。作ったアプリはherokuにデプロイ。なかなか便利ですわ。まだこれから作りこむみたいだけどね。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1259411210677612545"
+            target="_blank">2020/5/10 18:13:26</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">heroku使うとgithubと連携して自動デプロイとか普通にできるんだなあ。私は全部自前でやってたけど、hobbyプランとかで自分の環境もそっちに引っ越そうかなと思ったな。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1259431069545193473"
+            target="_blank">2020/5/10 19:32:20</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">しかし息子にgitによるソースコード管理の方法を教えることになるとは。。いうても私もそんなに詳しくないし、ローカルとリモートリポジトリの関係と、commitしてリモートにpushするやり方を教えただけだけどね。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1247390378635845632/-ltyS1Gy_normal.jpg" />
+        <p class="tweet-user-name">すぴかあやか（角田綾佳）＠キテレツ@spicagraph</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/spicagraph/status/1259316806755348485"
+            target="_blank">2020/5/10 11:58:18</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">映画でもデザインでも、なんでもこれだと思います https://t.co/GOKlyUY0hm</p>
+        
+        <img  class="tweet-img" src="https://pbs.twimg.com/media/EXn93xRVAAEfC6d.jpg" />
+        
+      </section>
+      
+    </article>
+    
+  </div>
+  <footer>
+    CopyLight 2019 Satoshi Fujiwara
+  </footer>
+  <script async src="https://platform.twitter.com/widgets.js"></script>
+
+  <script async src="./index.js"></script>
+
+</body>
+
+</html>

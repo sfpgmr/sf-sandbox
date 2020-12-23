@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+
+<html lang="ja" prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb# article: http://ogp.me/ns/article#">
+
+<head>
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-15457703-9"></script>
+  <script>
+    if (!location.hostname.match(/localhost/)) {
+      window.dataLayer = window.dataLayer || [];
+      function gtag() { dataLayer.push(arguments); }
+      gtag('js', new Date());
+      gtag('config', 'UA-15457703-9');
+    }
+  </script>
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Twitter Viewer</title>
+  <meta name="description" content="自作Twitter Viewerによる自分のつぶやきの記録。Programming,Music,HTML5,WebGL,javascript,WebAudio,Gameなど" />
+  <meta name="keywords" content="Programming,Music,HTML5,WebGL,javascript,WebAudio" /> 	
+
+  <meta itemprop="image" content="https://www.sfpgmr.net/img/sfweb.png" />
+  <meta itemprop="name" content="S.F. Web" />
+  
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:site" content="S.F. Web" />
+  <meta name="twitter:url" content="./index4.html" />
+  <meta name="twitter:title" content="Twitter Viewer" />
+  <meta name="twitter:description" content="自作Twitter Viewerによる自分のつぶやきの記録。Programming,Music,HTML5,WebGL,javascript,WebAudio,Gameなど" />
+  <meta name="twitter:image" content="https://www.sfpgmr.net/img/sfweb.png" />
+  
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="./index4.html" />
+  <meta property="og:title" content="Twitter Viewer"/>
+  <meta property="og:site_name" content="S.F. Web" />
+  <meta property="og:description" content="Programming,Music,HTML5,WebGL,javascript,WebAudio">
+  <meta property="og:image" content="https://www.sfpgmr.net/img/sfweb.png">
+
+  <style>
+  * {
+  margin: 0;
+  padding: 0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+
+html {
+  margin: 0;
+  padding: 0;
+  font-size: 10px; }
+
+body {
+  margin: 0;
+  padding-left: 8px;
+  padding-right: 8px;
+  background: black;
+  color: white; }
+
+.top-nav {
+  position: fixed;
+  z-index: 99999;
+  background: rgba(0, 0, 0, 0.5);
+  display: block;
+  width: 100%;
+  height: 32px;
+  color: white; }
+
+#sentinel {
+  width: 0px;
+  height: 0px; }
+
+.contents {
+  padding-top: 32px;
+  width: 100%;
+  position: relative;
+  content: strict; }
+
+@keyframes blinking {
+  0% {
+    color: black; }
+  50% {
+    color: white; }
+  100% {
+    color: black; } }
+
+.loading {
+  font-family: monospace;
+  font-size: 24px;
+  position: fixed;
+  width: 100vw;
+  height: 100vh;
+  text-align: center;
+  padding-top: 50vh;
+  z-index: 32768;
+  background: black;
+  animation: blinking 2s infinite;
+  content: strict; }
+
+.contents > article {
+  background: #f0f0f0;
+  color: #202020;
+  position: absolute;
+  max-height: 95vh;
+  overflow: auto;
+  border-radius: 3px;
+  /* transition: opacity 1s linear;*/
+  opacity: 1.0; }
+
+.tweet-header {
+  display: grid;
+  align-items: end;
+  grid-template-columns: 40px 2fr 1fr;
+  grid-template-rows: 1fr;
+  font-size: 12px;
+  font-weight: bold; }
+
+.tweet-img {
+  width: 100%;
+  object-fit: cover; }
+
+.youtube {
+  position: relative;
+  cursor: pointer; }
+
+.youtube > img {
+  width: 100%;
+  object-fit: cover; }
+
+.youtube > svg.player-play {
+  width: 64px;
+  height: 64px;
+  left: calc(50% - 32px);
+  top: calc(50% - 32px);
+  position: absolute;
+  z-index: 1000;
+  opacity: 0.5; }
+
+.youtube:hover > svg.player-play {
+  opacity: 1.0; }
+
+.youtube:hover .player-play-1 {
+  stroke: #80808080; }
+
+.youtube > div.yt-title {
+  /*text-shadow: #fff 1px 1px 0;*/
+  font-size: 1.2rem;
+  color: white;
+  background: rgba(0, 0, 0, 0.5);
+  position: absolute;
+  left: 0;
+  top: 0;
+  overflow: auto;
+  z-index: 998; }
+
+.tweet-profile-img {
+  grid-column: 1/2;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%; }
+
+.tweet-user-name {
+  grid-column: 2/3; }
+
+.tweet-date {
+  font-size: 8px;
+  text-align: right;
+  grid-column: 3/4; }
+
+.contents > twitter-widget {
+  overflow: auto;
+  max-height: 960px;
+  position: absolute; }
+
+.contents > article > section > .tweet-text {
+  display: block;
+  padding: 4px;
+  word-break: break-all;
+  font-size: 12px; }
+
+.contents > article > h3 {
+  font-size: 12px; }
+
+blockquote.card {
+  margin: 4px;
+  padding: 4px;
+  font-size: 12px;
+  background: white;
+  border-radius: 4px; }
+
+blockquote.card > header {
+  display: grid;
+  grid-gap: 4px;
+  gap: 4px; }
+
+blockquote.card-default > header {
+  grid-template-columns: 64px 1fr; }
+
+blockquote.card-large > header {
+  grid-template-columns: 1fr; }
+
+blockquote.card > header > img {
+  width: 100%; }
+
+div.no-image {
+  display: block;
+  width: 64px;
+  height: 64px;
+  background: gray;
+  color: white;
+  text-align: center;
+  line-height: 64px; }
+ 
+  </style>
+</head>
+
+<body>
+  <div class="loading" id="loading">Loading</div>
+  <header class="top-nav">
+    <h1>S.F. Info.</h1>
+  </header>
+  <div class="contents" id="contents" rendersubtree="invisible skip-activation"> 
+    
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/2507664307/viccruw2m1zb0xkkisil_normal.jpeg" />
+        <p class="tweet-user-name">@mizchi@mizchi</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/mizchi/status/1295345305936752642"
+            target="_blank">2020/8/17 22:02:41</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">書いた / 1件のコメント <a href="https://b.hatena.ne.jp/entry?url=https%3A%2F%2Fmizchi.dev%2F202008172159-firebase-authentication&utm_campaign=bookmark_share&utm_content=mizchi.dev&utm_medium=social&utm_source=twitter&utm_term=%E5%AD%A6%E3%81%B3" target="_blank">b.hatena.ne.jp/entry?url=http…</a> “ちょっとでもセキュリティに自信がないなら、 Firebase Authentication を検討しよう - mizdev” <a href="https://htn.to/3akGDDUTJg" target="_blank">htn.to/3akGDDUTJg</a></p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1171795194624086016/BZhp45Gm_normal.png" />
+        <p class="tweet-user-name">ただすめん@tadasumen</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/tadasumen/status/1295267248962117632"
+            target="_blank">2020/8/17 16:52:31</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">胸筋のピクピクだけで冒険するゲーム、ほぼ完成しましたけど https://t.co/nbsqq2Dv88</p>
+        
+        <video class="tweet-img" controls src="https://video.twimg.com/ext_tw_video/1295266734346100738/pu/vid/640x360/hvXUS_mjH_nI8yiU.mp4?tag=10" />
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1117418195931947008/wBgf-Fm1_normal.png" />
+        <p class="tweet-user-name">あめろん@Ameron001</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/Ameron001/status/1295384038903967749"
+            target="_blank">2020/8/18 0:36:36</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">世界のコンピュターゲームアッターリ！の<br/><br/>MAJOR HAVOC【メジャーハボック】はやはり何度見ても表現など凄くて関心してしまいます☺️<br/>1983年でコノクオリティ！<br/><br/>#ATARI #Nintendoswitch <br/>#レトロコンシューマー愛好会 https://t.co/VHZBnfxqn2</p>
+        
+        <video class="tweet-img" controls src="https://video.twimg.com/ext_tw_video/1295383554130501633/pu/vid/486x360/wa_E5d07P_Q74pqr.mp4?tag=10" />
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1163320881055031296/iN8r5TIl_normal.jpg" />
+        <p class="tweet-user-name">チバテレ【公式】@chiba3ch</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/chiba3ch/status/1295290166316158976"
+            target="_blank">2020/8/17 18:23:35</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">#2020夏季千葉県高等学校野球大会<br/>#チバテレ ＨＰに決勝トーナメントのダイジェスト掲載📺<br/><br/><a href="https://www.chiba-tv.com/info/detail/38475" target="_blank">chiba-tv.com/info/detail/38…</a><br/><br/>＃市立船橋 ＶＳ #専修大松戸<br/><br/>＃準決勝 実力校同士の戦いは6回表に大きく動く…<br/><br/>拡大したい場合は、動画の右下の❑四角マークを押して全画面（f）表示にしてください。<br/>＃高校野球 https://t.co/Mrbl3uJjm8</p>
+        
+        <img  class="tweet-img" src="https://pbs.twimg.com/media/EfnLZrQUwAMlB5V.jpg" />
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/817864664851750912/hN2kbele_normal.jpg" />
+        <p class="tweet-user-name">阿部@ave620</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/ave620/status/1295282121221607424"
+            target="_blank">2020/8/17 17:51:37</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">なんとかしてやる気を出すより、やる気がなくても動ける環境作りの方が大事だと思ったおんなのこのまんがをかきました… https://t.co/ioGpEZkva5</p>
+        
+        <img  class="tweet-img" src="https://pbs.twimg.com/media/EfnEOOsU0AEAxnK.jpg" />
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1210534203307069440/ZueFJm4M_normal.jpg" />
+        <p class="tweet-user-name">ひでまる＠悪の誇りを舞掲げます@hidemaru0503</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/hidemaru0503/status/1294965633352740866"
+            target="_blank">2020/8/16 20:54:00</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">お盆休みもあと数時間で終わりですね( ◠‿ ◠ ) https://t.co/F7W6t7IuEu</p>
+        
+        <img  class="tweet-img" src="https://pbs.twimg.com/media/EfikQ6IU8AEaqir.jpg" />
+        
+        <img  class="tweet-img" src="https://pbs.twimg.com/media/EfikTNNUEAcHOAc.jpg" />
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/274433732/Rolex_normal.png" />
+        <p class="tweet-user-name">Kurozumi@kurozumi_jp</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/kurozumi_jp/status/1294656129952227328"
+            target="_blank">2020/8/16 0:24:09</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">SceneCity使えば数分でこんなの作れる。SceneCity専用のNode Editorで色々カスタマイズできるけど、まだ使い方把握してない。使いこなせば細かいカスタマイズとか地形に合わせた配置とかもできるはず。#Blender #3DCG #SceneCity #Addon https://t.co/6buIsVK6es</p>
+        
+        <img  class="tweet-img" src="https://pbs.twimg.com/media/EfeKG2JVoAAYTAC.jpg" />
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1026843577878343681/nhRb6hdM_normal.jpg" />
+        <p class="tweet-user-name">バラルバレル@BalalBarrel</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/BalalBarrel/status/1294786577185435648"
+            target="_blank">2020/8/16 9:02:30</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">久々に宣伝を兼ねた紹介を。現在このようなアクションゲームを制作しています。4種類のショットと強力なパイルバンカーでステージを突き進みます。完成度は低めですが、楽しいゲームを目指しています。#gamedev #indiedev https://t.co/TKhllYmsDn</p>
+        
+        <video class="tweet-img" controls src="https://video.twimg.com/ext_tw_video/1294786533891874816/pu/vid/480x360/J1Ab1DG3DdG16tf4.mp4?tag=10" />
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/498295898749681664/FWEysZPG_normal.jpeg" />
+        <p class="tweet-user-name">𝘾𝙖𝙥𝙩 𝙍𝙖𝙗𝙞𝙣𝙙𝙚𝙧 𝙎𝙞𝙣𝙜𝙝 77K@captsingh</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/captsingh/status/1294466618697764865"
+            target="_blank">2020/8/15 11:51:06</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">Coffee time on the mountain top.<br/>https://t.co/fx5gds2Gkv</p>
+        
+        <video class="tweet-img" controls src="https://video.twimg.com/amplify_video/1294406094845087745/vid/720x900/8ItfHDy_Abj3D_a9.mp4?tag=13" />
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1212701145379946496/pSDVrvWj_normal.png" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1293422518884130819"
+            target="_blank">2020/8/12 14:42:13</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ちょっとまた作りかけのTwitter Viewerをいじってみてる。ある程度スレッドでまとまる感じ＋Infinite Scrollなやつを志向している。<br/><br/><div class="youtube" data-type="yt" id="Kr4l1FVWxlE"><div class="yt-title">Youtube - Twitter Viewerを作る</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img  data-href="https://youtu.be/Kr4l1FVWxlE" class="youtube" src="https://i.ytimg.com/vi/Kr4l1FVWxlE/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1293794499508879360"
+            target="_blank">2020/8/13 15:20:20</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">Twitter API V2がリリースされたのもあるしね。少し進めようかなと。<br/><br/><blockquote class="card card-default"><header><img  src="https://blog.twitter.com/content/dam/blog-twitter/developer/en_us/tools/2020/TwitterAPIGalaxy.png" /><a href="https://blog.twitter.com/developer/en_us/topics/tools/2020/introducing_new_twitter_api.html" target="_blank">Introducing a new and improved Twitter API</a></header><div>Introducing the new Twitter API - rebuilt from the ground up to deliver new features faster so developers can help the world connect to the public conversation happening on Twitter. <br/></div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1294185834174767104"
+            target="_blank">2020/8/14 17:15:22</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">挙動的にはちょっとあれだけど、一応の成果物。デスクトップ版のchrome/edgeでそこそこまともに動く状況。<br/><blockquote class="card card-default"><header><img  src="https://www.sfpgmr.net/img/sfweb.png" /><a href="https://www.sfpgmr.net/twitter/" target="_blank">Twitter Viewer</a></header><div>Programming,Music,HTML5,WebGL,javascript,WebAudio</div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1294186228984639489"
+            target="_blank">2020/8/14 17:16:56</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">これにService Workerによるbackground fetchを追加しようと思っているんだな。<br/><br/><blockquote class="card card-default"><header><img  src="https://jxck.io/assets/img/jxck.png" /><a href="https://blog.jxck.io/entries/2020-01-24/background-fetch.html" target="_blank">Service Worker の Background Fetch によるメディアのキャッシュ | blog.jxck.io</a></header><div>Podcast を PWA 対応するために、待望だった機能の 1 つが Background Fetch だ。これにより、通常 Range Request で取得するような、大きなファイルを事前にダウンロードしておくことができるようになる。この API と、 Service...</div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1294410130558087169"
+            target="_blank">2020/8/15 8:06:38</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">このViewer Page、FirefoxだとTwitterでアップした画像がほぼ全部表示不可となってしまうのだな。chrome/edgeでは表示される。これはFirefoxの「強化型トラッキング機能」に引っかかっているのが原因である。<br/><br/><blockquote class="card card-default"><header><img  src="https://www.sfpgmr.net/img/sfweb.png" /><a href="https://www.sfpgmr.net/twitter/" target="_blank">Twitter Viewer</a></header><div>Programming,Music,HTML5,WebGL,javascript,WebAudio</div></blockquote> https://t.co/vrWyiGrAas</p>
+        
+        <img  class="tweet-img" src="https://pbs.twimg.com/media/Efaq1J0VoAAdSpK.png" />
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1294410322736869377"
+            target="_blank">2020/8/15 8:07:24</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">間違った。「強化型トラッキング防止機能」だった。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1294417201743589376"
+            target="_blank">2020/8/15 8:34:44</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">Twitterコンテンツへのリンクが軒並みトラッキングするとみなされてるようですな。「強化型トラッキング防止機能」はサードパーティのコンテンツがトラッキングしているとみなせる場合、ドメイン単位でブロックする機能のようだ。twitterのwebクライアントではこのエラーは当然でない。 https://t.co/h30nRDsIHo</p>
+        
+        <img  class="tweet-img" src="https://pbs.twimg.com/media/EfawpfTUMAAAWEi.png" />
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1294417884496633857"
+            target="_blank">2020/8/15 8:37:27</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ちなみにこの「強化型トラッキング防止機能」によってTwitterのwebページのgaはブロックされとります🤔 https://t.co/J3S8r2UR3G</p>
+        
+        <img  class="tweet-img" src="https://pbs.twimg.com/media/EfayBZDUEAA5P9a.png" />
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1294418673164152833"
+            target="_blank">2020/8/15 8:40:35</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">この機能はドメインとの関係性でトラッキングとみなすようで、そのコンテンツ自体がトラッキングするコードを含んでいるかどうかまでは見ていないようだ。まあ疑わしい関係性であればとりあえずブロックすると。確認の上問題なければオフにする運用ですな。。 https://t.co/Z9b298tNTX</p>
+        
+        <img  class="tweet-img" src="https://pbs.twimg.com/media/EfayYMqUYAE8H6Q.png" />
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1294419800983183361"
+            target="_blank">2020/8/15 8:45:04</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ブロックを解除すると表示されるコンテンツを見てみると、画像ファイルを直接取得しているし、トラッキングのためのリダイレクトページなんかもはさんでないので、問題なさそうに見えるのだが、なぜこのような判定をされてしまうのか。なにかおかしなことを私がしでかしてるのかもしれんね🤔 https://t.co/6rR1mvUqyB</p>
+        
+        <img  class="tweet-img" src="https://pbs.twimg.com/media/EfazcXOU0AEtXuI.png" />
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1294420065765343232"
+            target="_blank">2020/8/15 8:46:07</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">まあこういう判定をされとるわけですな。 https://t.co/r22kohMZbP</p>
+        
+        <img  class="tweet-img" src="https://pbs.twimg.com/media/Efa0IHlU0AAVWWe.png" />
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1294420799936294913"
+            target="_blank">2020/8/15 8:49:02</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">しかしこの機能でブロックされるページなんて、普通の人は恐くて見れんよなあ。。正当な方法でこの防止機能を回避する方法はありそうだが、今のところはよくわからんね。TwitterのWebクライアントではこのエラーはでないんだからね。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1294513589127061504"
+            target="_blank">2020/8/15 14:57:45</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">と思ったら私のFirefoxの設定ほぼプライベートブラウジングと同じきつい設定にしてるので表示されないだけだった😅通常の設定だと問題なく表示されますな。 https://t.co/8Vha6kFanL</p>
+        
+        <img  class="tweet-img" src="https://pbs.twimg.com/media/EfcJAMGUYAAwU9j.jpg" />
+        
+      </section>
+      
+    </article>
+    
+  </div>
+  <footer>
+    CopyLight 2019 Satoshi Fujiwara
+  </footer>
+  <script async src="https://platform.twitter.com/widgets.js"></script>
+
+  <script async src="./index.js"></script>
+
+</body>
+
+</html>

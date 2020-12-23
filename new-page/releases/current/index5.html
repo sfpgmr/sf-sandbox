@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+
+<html lang="ja" prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb# article: http://ogp.me/ns/article#">
+
+<head>
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-15457703-9"></script>
+  <script>
+    if (!location.hostname.match(/localhost/)) {
+      window.dataLayer = window.dataLayer || [];
+      function gtag() { dataLayer.push(arguments); }
+      gtag('js', new Date());
+      gtag('config', 'UA-15457703-9');
+    }
+  </script>
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Twitter Viewer</title>
+  <meta name="description" content="自作Twitter Viewerによる自分のつぶやきの記録。Programming,Music,HTML5,WebGL,javascript,WebAudio,Gameなど" />
+  <meta name="keywords" content="Programming,Music,HTML5,WebGL,javascript,WebAudio" /> 	
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <meta itemprop="image" content="https://www.sfpgmr.net/img/sfweb.png" />
+  <meta itemprop="name" content="S.F. Web" />
+  
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:site" content="S.F. Web" />
+  <meta name="twitter:url" content="./index5.html" />
+  <meta name="twitter:title" content="Twitter Viewer" />
+  <meta name="twitter:description" content="自作Twitter Viewerによる自分のつぶやきの記録。Programming,Music,HTML5,WebGL,javascript,WebAudio,Gameなど" />
+  <meta name="twitter:image" content="https://www.sfpgmr.net/img/sfweb.png" />
+  
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="./index5.html" />
+  <meta property="og:title" content="Twitter Viewer"/>
+  <meta property="og:site_name" content="S.F. Web" />
+  <meta property="og:description" content="Programming,Music,HTML5,WebGL,javascript,WebAudio">
+  <meta property="og:image" content="https://www.sfpgmr.net/img/sfweb.png">
+
+  <style>
+  * {
+  margin: 0;
+  padding: 0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+
+html {
+  margin: 0;
+  padding: 0;
+  font-size: 10px; }
+
+body {
+  margin: 0;
+  padding-left: 8px;
+  padding-right: 8px;
+  background: black;
+  color: white; }
+
+.top-nav {
+  position: fixed;
+  z-index: 99999;
+  background: rgba(0, 0, 0, 0.5);
+  display: block;
+  width: 100%;
+  height: 32px;
+  color: white; }
+
+#sentinel {
+  width: 0px;
+  height: 0px; }
+
+.contents {
+  padding-top: 32px;
+  width: 100%;
+  position: relative;
+  content: strict; }
+
+@keyframes blinking {
+  0% {
+    color: black; }
+  50% {
+    color: white; }
+  100% {
+    color: black; } }
+
+.loading {
+  font-family: monospace;
+  font-size: 24px;
+  position: fixed;
+  width: 100vw;
+  height: 100vh;
+  text-align: center;
+  padding-top: 50vh;
+  z-index: 32768;
+  background: black;
+  animation: blinking 2s infinite;
+  content: strict; }
+
+.contents > article {
+  background: #f0f0f0;
+  color: #202020;
+  position: absolute;
+  max-height: 960px;
+  overflow: auto;
+  border-radius: 3px;
+  /* transition: opacity 1s linear;*/
+  opacity: 1.0; }
+
+.tweet-header {
+  display: grid;
+  align-items: end;
+  grid-template-columns: 40px 2fr 1fr;
+  grid-template-rows: 1fr;
+  font-size: 12px;
+  font-weight: bold; }
+
+.tweet-img {
+  width: 100%;
+  object-fit: cover; }
+
+.youtube {
+  position: relative;
+  cursor: pointer; }
+
+.youtube > img {
+  width: 100%;
+  object-fit: cover; }
+
+.youtube > svg.player-play {
+  width: 64px;
+  height: 64px;
+  left: calc(50% - 32px);
+  top: calc(50% - 32px);
+  position: absolute;
+  z-index: 1000;
+  opacity: 0.5; }
+
+.youtube:hover > svg.player-play {
+  opacity: 1.0; }
+
+.youtube:hover .player-play-1 {
+  stroke: #80808080; }
+
+.youtube > div.yt-title {
+  /*text-shadow: #fff 1px 1px 0;*/
+  font-size: 1.2rem;
+  color: white;
+  background: rgba(0, 0, 0, 0.5);
+  position: absolute;
+  left: 0;
+  top: 0;
+  overflow: auto;
+  z-index: 998; }
+
+.tweet-profile-img {
+  grid-column: 1/2;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%; }
+
+.tweet-user-name {
+  grid-column: 2/3; }
+
+.tweet-date {
+  font-size: 8px;
+  text-align: right;
+  grid-column: 3/4; }
+
+.contents > twitter-widget {
+  overflow: auto;
+  max-height: 960px;
+  position: absolute; }
+
+.contents > article > section > .tweet-text {
+  display: block;
+  padding: 4px;
+  word-break: break-all;
+  font-size: 12px; }
+
+.contents > article > h3 {
+  font-size: 12px; }
+
+blockquote.card {
+  margin: 4px;
+  padding: 4px;
+  font-size: 12px;
+  background: white;
+  border-radius: 4px; }
+
+blockquote.card > header {
+  display: grid;
+  grid-gap: 4px;
+  gap: 4px; }
+
+blockquote.card-default > header {
+  grid-template-columns: 64px 1fr; }
+
+blockquote.card-large > header {
+  grid-template-columns: 1fr; }
+
+blockquote.card > header > img {
+  width: 100%; }
+
+div.no-image {
+  display: block;
+  width: 64px;
+  height: 64px;
+  background: gray;
+  color: white;
+  text-align: center;
+  line-height: 64px; }
+ 
+  </style>
+</head>
+
+<body>
+  <div class="loading" id="loading">Loading</div>
+  <header class="top-nav">
+    <h1>S.F. Info.</h1>
+  </header>
+  <div class="contents" id="contents" rendersubtree="invisible skip-activation"> 
+    
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/954659095906144256/WewaVAuN_normal.jpg" />
+        <p class="tweet-user-name">龍 lilea@lileaLab</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/lileaLab/status/1281599770327347207"
+            target="_blank">2020/7/10 23:42:50</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">こちらの軍艦島3Dプロジェクトの最新版。<br/><a href="https://www.akira-demizu.com/gunkanjima" target="_blank">akira-demizu.com/gunkanjima</a><br/><br/>#Photogrammetry https://t.co/3JNJGyHfJf</p>
+        
+        <img  class="tweet-img" src="https://pbs.twimg.com/media/EckoMjjU8AIiJ8j.jpg" />
+        
+        <img  class="tweet-img" src="https://pbs.twimg.com/media/EckoMjkU0AEtdkn.jpg" />
+        
+        <img  class="tweet-img" src="https://pbs.twimg.com/media/EckoMjjU4AEub8V.jpg" />
+        
+        <img  class="tweet-img" src="https://pbs.twimg.com/media/EckoMjkU8AMq_d3.jpg" />
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1122008308250894336/ro5-q2OP_normal.jpg" />
+        <p class="tweet-user-name">イナガキヤスト@inagakiyasuto</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/inagakiyasuto/status/1281188895325974529"
+            target="_blank">2020/7/9 20:30:10</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">本気で焼けた富山の港町。 https://t.co/nGmOwQJxxi</p>
+        
+        <img  class="tweet-img" src="https://pbs.twimg.com/media/EceyeTNUEAIhroV.jpg" />
+        
+        <img  class="tweet-img" src="https://pbs.twimg.com/media/EceyeTOU4AAdfnR.jpg" />
+        
+        <img  class="tweet-img" src="https://pbs.twimg.com/media/EceyeTQUYAA7S6q.jpg" />
+        
+        <img  class="tweet-img" src="https://pbs.twimg.com/media/EceyeTRUcAIgWLb.jpg" />
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1212701145379946496/pSDVrvWj_normal.png" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1280972225504399360"
+            target="_blank">2020/7/9 6:09:12</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">はあ。。ビビった。。地震。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1280972280974065664"
+            target="_blank">2020/7/9 6:09:25</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">心臓に悪い。。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1266754325075775489/Fdq9GNBn_normal.jpg" />
+        <p class="tweet-user-name">基地司令@軍用車コレクター@Military_AFV</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/Military_AFV/status/1280758405058068480"
+            target="_blank">2020/7/8 15:59:33</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ここでハッキリとさせておくぞ。<br/>(๑•̀д•́๑)ｷﾘｯ https://t.co/ROKioduH2c</p>
+        
+        <img  class="tweet-img" src="https://pbs.twimg.com/media/EcYq-LEUEAE0zuR.jpg" />
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/2147731556/twitter_miyayou_normal.jpg" />
+        <p class="tweet-user-name">三宅陽一郎MiyakeYouichiro@miyayou</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/miyayou/status/1280361658976632833"
+            target="_blank">2020/7/7 13:43:02</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ゲームで「心」をつくりたい。ゲーム開発者三宅陽一郎氏・北山功氏が語りあう、インディーシーンにおけるAIと哲学の可能性 <a href="https://automaton-media.com/devlog/interview/20180807-73719/" target="_blank">automaton-media.com/devlog/intervi…</a> @AUTOMATONJapanより</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1084039145859629056/NpwWWaFh_normal.jpg" />
+        <p class="tweet-user-name">寺島壽久/ゲームキャストの中の人@gamecast_blog</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/gamecast_blog/status/1280413627745353729"
+            target="_blank">2020/7/7 17:09:32</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">『ファイナルソード』は主人公の攻撃判定がガバガバと言われるけど、敵ボスですら同じ条件なのでフェア。 https://t.co/zixC46bZYm</p>
+        
+        <video class="tweet-img" controls src="https://video.twimg.com/ext_tw_video/1280413595256250368/pu/vid/360x270/0n96gYHrsBAomx9R.mp4?tag=10" />
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1212701145379946496/pSDVrvWj_normal.png" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1280460413096718336"
+            target="_blank">2020/7/7 20:15:26</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">風がほんと強いな。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/739357739328012288/xWltLV4u_normal.jpg" />
+        <p class="tweet-user-name">Miya the king(そいちろ)@MiyasouKing</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/MiyasouKing/status/1280423839223042054"
+            target="_blank">2020/7/7 17:50:07</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">SEGA announces Astro City Mini Arcade, To Get 36 Classics » SEGAbits - #1 Source for SEGA News <a href="http://segabits.com/blog/2020/07/07/sega-announces-astro-city-mini-arcade-to-get-36-classics/" target="_blank">segabits.com/blog/2020/07/0…</a><br/><br/>結構スゴいニュースだと思うのだ。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/817864664851750912/hN2kbele_normal.jpg" />
+        <p class="tweet-user-name">阿部@ave620</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/ave620/status/1280059447167995906"
+            target="_blank">2020/7/6 17:42:09</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">「旅行など遊びに行く」ことを考える時、最初に「何を食べようかな」を考えてしまうようになったのは年を取ったからだろうか…… https://t.co/CKMZ4I9J4F</p>
+        
+        <img  class="tweet-img" src="https://pbs.twimg.com/media/EcOvR7vUwAMcbJP.jpg" />
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/875611464563687424/lVTDx6Yd_normal.jpg" />
+        <p class="tweet-user-name">AKIBA PC Hotline!@watch_akiba</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/watch_akiba/status/1280246663383150592"
+            target="_blank">2020/7/7 6:06:05</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">更新：43台も2.5インチSSDが搭載できる純国産PCケース「AX2 Ver1.2」 標準構成で実売49,500円から、汐見板金製 <a href="https://akiba-pc.watch.impress.co.jp/docs/news/news/1263426.html" target="_blank">akiba-pc.watch.impress.co.jp/docs/news/news…</a> #自作PC https://t.co/z380cycVbP</p>
+        
+        <img  class="tweet-img" src="https://pbs.twimg.com/media/EcRZjdXU4AEC_3L.jpg" />
+        
+        <img  class="tweet-img" src="https://pbs.twimg.com/media/EcRZjj0VAAEJBL3.jpg" />
+        
+      </section>
+      
+    </article>
+    
+  </div>
+  <footer>
+    CopyLight 2019 Satoshi Fujiwara
+  </footer>
+  <script async src="https://platform.twitter.com/widgets.js"></script>
+
+  <script async src="./index.js"></script>
+
+</body>
+
+</html>

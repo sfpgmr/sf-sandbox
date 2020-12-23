@@ -1,0 +1,1068 @@
+<!DOCTYPE html>
+<html lang="ja" prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb# article: http://ogp.me/ns/article#">
+
+<head>
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-15457703-9"></script>
+  <script>
+    if (!location.hostname.match(/localhost/)) {
+      window.dataLayer = window.dataLayer || [];
+      function gtag() { dataLayer.push(arguments); }
+      gtag('js', new Date());
+      gtag('config', 'UA-15457703-9');
+    }
+  </script>
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>トップページをリニューアルする</title>
+  <meta name="description" content="リニューアル用のトップページデザインを考えて実装する" />
+  <meta name="keywords" content="Programming,Music,HTML5,WebGL,javascript,WebAudio" /> 	
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <meta itemprop="image" content="https://www.sfpgmr.net/img/sfweb.png" />
+  <meta itemprop="name" content="S.F. Web" />
+  
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:site" content="S.F. Web" />
+  <meta name="twitter:url" content="./index19.html" />
+  <meta name="twitter:title" content="リニューアル用のトップページデザイン" />
+  <meta name="twitter:description" content="リニューアル用のトップページデザインを考えて実装する" />
+  <meta name="twitter:image" content="https://www.sfpgmr.net/img/sfweb.png" />
+  
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="./index19.html" />
+  <meta property="og:title" content="リニューアル用のトップページデザイン"/>
+  <meta property="og:site_name" content="S.F. Web" />
+  <meta property="og:description" content="Programming,Music,HTML5,WebGL,javascript,WebAudio">
+  <meta property="og:image" content="https://www.sfpgmr.net/img/sfweb.png">
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    html {
+      margin: 0;
+      padding: 0;
+      font-size:10px;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      background: black;
+      color: white;
+    }
+
+    #sentinel {
+      width:1px;
+      height:1px;
+    }
+    .contents {
+      width: 100%;
+      position: relative;
+      content: strict;
+    }
+
+    @keyframes blinking {
+      0% {
+        color: black;
+      }
+
+      50% {
+        color: white;
+      }
+
+      100% {
+        color: black;
+      }
+    }
+
+    .loading {
+      font-family: monospace;
+      font-size: 24px;
+      position: fixed;
+      width: 100vw;
+      height: 100vh;
+      text-align: center;
+      padding-top: 50vh;
+      z-index: 32768;
+      background: black;
+      animation: blinking 2s infinite;
+      content: strict;
+    }
+
+
+    .contents>article {
+      background: #f0f0f0;
+      color: #202020;
+      position: absolute;
+      max-height: 960px;
+      overflow: auto;
+      border-radius: 3px;
+    }
+
+    .tweet-header {
+      display: grid;
+      align-items: end;
+      grid-template-columns: 40px 2fr 1fr;
+      grid-template-rows: 1fr;
+      font-size: 12px;
+      font-weight: bold;
+    }
+
+
+    .tweet-img {
+      width: 100%;
+      object-fit: cover;
+    }
+
+    .youtube {
+      position: relative;
+      cursor: pointer;
+    }
+
+    .youtube > img {
+      width: 100%;
+      object-fit: cover;
+    }
+
+    .youtube > svg.player-play {
+      width:64px;
+      height:64px;
+      left:calc(50% - 32px);
+      top:calc(50% - 32px);
+      position:absolute;
+      z-index: 1000;
+      opacity: 0.5;
+    }
+    
+    .youtube:hover > svg.player-play {
+      opacity: 1.0;
+    }
+
+    .youtube:hover .player-play-1 {
+      stroke:#80808080;
+    }
+
+    
+    .youtube > div.yt-title {
+      /*text-shadow: #fff 1px 1px 0;*/
+      font-size: 1.2rem;
+      color:white;
+      background:rgba(0, 0,0,0.5);
+      position:absolute;
+      left:0;
+      top:0;
+      overflow: auto;
+      z-index:998;
+    }
+
+
+    .tweet-profile-img {
+      grid-column: 1/2;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+    }
+
+    .tweet-user-name {
+      grid-column: 2/3;
+    }
+
+    .tweet-date {
+      font-size: 8px;
+      text-align: right;
+      grid-column: 3/4;
+    }
+
+    .contents>twitter-widget {
+      overflow: auto;
+      max-height: 960px;
+      position: absolute;
+    }
+
+    .contents>article>section>.tweet-text {
+      display: block;
+      padding: 4px;
+      word-break: break-all;
+      font-size: 12px;
+    }
+
+    .contents>article>h3 {
+      font-size: 12px;
+    }
+
+    blockquote.card {
+      margin:4px;
+      padding:4px;
+      font-size:12px;
+      background:white;
+      border-radius: 4px;
+    }
+
+    blockquote.card > header {
+      display:grid;
+      grid-gap:4px;
+      gap:4px;
+    }
+
+    blockquote.card-default > header {
+      grid-template-columns:64px 1fr;
+    }
+
+    blockquote.card-large > header {
+      grid-template-columns:1fr;
+    }
+
+    blockquote.card > header > img {
+      width:100%;
+    }
+
+
+    div.no-image {
+      display: block;
+      width:64px;
+      height:64px;
+      background:gray;
+      color:white;
+      text-align: center;
+      line-height: 64px;
+    }
+
+  </style>
+</head>
+
+<body>
+  <div class="loading" id="loading">Loading</div>
+  <header class="top-nav">
+    <h1>S.F. Info.</h1>
+  </header>
+  <div class="contents" id="contents" rendersubtree="invisible skip-activation"> 
+    
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1094769660757594112"
+            target="_blank">2019/2/11 10:26:41</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">しかしwebhookのペイロードの更新情報って、やっぱりおかしいよなあ。。仕様上の制約とあるんだろうか。更新情報はダイジェストなので、正確にはちゃんとgit diffして確認せよとか。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1094820031978848256"
+            target="_blank">2019/2/11 13:46:51</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">とりあえずこの問題はペイロードの情報は見ないで改めて更新情報をgit diffで取り直すことによって解消させた。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/1112718225244971011/zQIau2HO_normal.jpg" />
+        <p class="tweet-user-name">如月 二重 6@KisaragiHutae6</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/KisaragiHutae6/status/1094112323814416386"
+            target="_blank">2019/2/9 14:54:40</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ノートにスーパーマリオブラザーズを描きました。 https://t.co/560ROIyZcq</p>
+        
+        <video class="tweet-img" controls src="https://video.twimg.com/ext_tw_video/1094112265626742784/pu/vid/1280x720/jWTPtwgFx0mNGyjD.mp4?tag=6" />
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1094727638957023232"
+            target="_blank">2019/2/11 7:39:42</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">久しぶりにブログを更新したが、markdownのレンダラにバグがあることを発見した。。<br/><br/><blockquote class="card card-default"><header><img loading="lazy" src="https://www.sfpgmr.net/img/sf.png" /><a href="https://www.sfpgmr.net/blog/entry/2019/02/c064a49aa7a58d04d8cf9c19dfc308b5.html" target="_blank">S.F. Blog:静的サイトジェネレータのアップデート（nginx→express）</a></header><div>はじめに去年からWebサーバをnginxからexpressにアップデートした。途中放置気味であったがようやくまとも動くようになったので、テストを兼ねてこの記事を書くことにする。約8か月振りのブログ更新となる。静的サイト・ジェネレータ私が今使っているServers Man VPSは月額467円のエントリープラン、メモリ1GB/HDD50GBのものを使用している。最初はメモリ256MBであったがだんだ...</div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1094727639732908032"
+            target="_blank">2019/2/11 7:39:43</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ヘッダ&lt;hxx&gt;のID。ヘッダ内のIDはヘッダ内のテキストをベースにして"-"でつないで生成してるのだが、日本語が混じるとそこで切れてしまうようだ。英語だと単語間がスペースあので単純にスペースを"-"でつなぐだけでよいが、日本語はそうはいかないよな。。多分それだな。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1094728036405075968"
+            target="_blank">2019/2/11 7:41:17</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">問題なのはIDはその文書内でユニークでないといけないのに、このバグのせいでIDが"-"だけになってたりして重複してしまってるのが非常にまずい。markdown.jsをアップデートするか、pegかなんかで書き直すか、単純にバグだけつぶすか。。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1094728299320725505"
+            target="_blank">2019/2/11 7:42:20</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">こんな感じになっちゃってんだよなあ。。<br/>&lt;h2 id="-"&gt;その他&lt;/h2&gt;</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1094729340691066880"
+            target="_blank">2019/2/11 7:46:28</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ほんとは日本語をurlエンコードするとかして、idに埋め込むべきなんだろうけど。。marked.jsって修正が大変なんだよなあ。。何しろ正規表現の塊のような代物だからね。。よくこんなの書いたなあってリスペクトはしてるんだけど。。<br/><br/><blockquote class="card card-default"><header><img loading="lazy" src="https://avatars2.githubusercontent.com/u/19886934?s=400&v=4" /><a href="https://github.com/markedjs/marked" target="_blank">GitHub - markedjs/marked: A markdown parser and compiler. Built for speed.</a></header><div>A markdown parser and compiler. Built for speed. Contribute to markedjs/marked development by creating an account on GitHub.</div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1094729910558420992"
+            target="_blank">2019/2/11 7:48:44</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">さあ、どうしようか。。なかなか「オレオレ言語」作りに戻れんわ。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1094733635607977984"
+            target="_blank">2019/2/11 8:03:32</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">以外にすぐわかった。。<br/><br/>heading(text, level, raw) {<br/>return '&lt;h'<br/>+ level <br/>+ ' id="'<br/>+ this.options.headerPrefix<br/>+ raw.toLowerCase().replace(/[^\w]+/g, '-')<br/>　・<br/>（略）<br/>　・　<br/>}<br/><br/>raw.toLowerCase().replace(/[^\w]+/g, '-')<br/><br/>日本語が混じるとまずいわな。<br/><br/><blockquote class="card card-default"><header><img loading="lazy" src="https://avatars0.githubusercontent.com/u/3806814?s=400&v=4" /><a href="https://github.com/sfpgmr/webservices/blob/master/wwwmaker/commands/marked.js#L839" target="_blank">webservices/marked.js at master · sfpgmr/webservices · GitHub</a></header><div>node.jsで作ったWebサービスたち. Contribute to sfpgmr/webservices development by creating an account on GitHub.</div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1094733636673298432"
+            target="_blank">2019/2/11 8:03:32</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">このソースは本家をforkしたものを私が改造したバージョンであるが。<br/>本家ではこの部分は改良されている。<br/><br/>+ raw.toLowerCase().replace(/[^\w]+/g, '-')<br/>↓<br/>+ slugger.slug(raw)<br/><br/><blockquote class="card card-default"><header><img loading="lazy" src="https://avatars2.githubusercontent.com/u/19886934?s=400&v=4" /><a href="https://github.com/markedjs/marked/blob/master/lib/marked.js#L956" target="_blank">marked/marked.js at master · markedjs/marked · GitHub</a></header><div>A markdown parser and compiler. Built for speed. Contribute to markedjs/marked development by creating an account on GitHub.</div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1094734703234437120"
+            target="_blank">2019/2/11 8:07:47</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">slugger.slug()はこのままだとちとまずいかもしれん。検証するか。<br/><br/>Slugger.prototype.slug = function (value) {<br/>var slug = value<br/>.toLowerCase()<br/>.trim()<br/>.replace(/[\u2000-\u206F\u2E00-\u2E7F\\'!"#$%&amp;()*+,./:;&lt;=&gt;?@[\]^`{|}~]/g, '')<br/>.replace(/\s/g, '-');<br/><br/><blockquote class="card card-default"><header><img loading="lazy" src="https://avatars2.githubusercontent.com/u/19886934?s=400&v=4" /><a href="https://github.com/markedjs/marked/blob/master/lib/marked.js#L1300" target="_blank">marked/marked.js at master · markedjs/marked · GitHub</a></header><div>A markdown parser and compiler. Built for speed. Contribute to markedjs/marked development by creating an account on GitHub.</div></blockquote> https://t.co/J5r7UTcIlf</p>
+        
+        <img loading="lazy" class="tweet-img" src="https://pbs.twimg.com/media/DzFGxdeVAAEX-bU.jpg" />
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1094756939072909312"
+            target="_blank">2019/2/11 9:36:08</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">やっぱりurlエンコーディングせんといかんよなあ。。<br/><br/><blockquote class="card card-default"><header><img loading="lazy" src="https://developer.mozilla.org/static/img/opengraph-logo.72382e605ce3.png" /><a href="https://developer.mozilla.org/ja/docs/Web/JavaScript/Reference/Global_Objects/encodeURIComponent" target="_blank">encodeURIComponent() - JavaScript | MDN</a></header><div>encodeURIComponent() 関数は、特定の文字を UTF-8 文字エンコーディングで表された 1 個から 4 個のエスケープシーケンスに置き換えることで、URI (Uniform Resource Identifier) 構成要素をエンコードします（サロゲートペアで構成される文字のみ 4 個のエスケープシーケンスになります）。</div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1094756940045938688"
+            target="_blank">2019/2/11 9:36:08</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">slugはこれでエンコーディングしとくか。。<br/><br/>function fixedEncodeURIComponent (str) {<br/>  return encodeURIComponent(str).replace(/[!'()*]/g, function(c) {<br/>    return '%' + c.charCodeAt(0).toString(16);<br/>  });<br/>}</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1094759107477745664"
+            target="_blank">2019/2/11 9:44:45</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">取り急ぎパッチを当てて対応しておこう。コンテンツを今のまま放っておくことはできんしな。。 https://t.co/X03yber2zz</p>
+        
+        <img loading="lazy" class="tweet-img" src="https://pbs.twimg.com/media/DzFdJNxUYAApLuN.jpg" />
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1094760445620043776"
+            target="_blank">2019/2/11 9:50:04</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">私がforkした時点のmarked.jsは、htmlタグ中にネストしたmd記法がきちんと解釈されない問題もある。本家バージョンは対応済だろうか。正規表現で書いた文法のコードがちょっと読みにくいかも。。と思ってたが現バージョンは書き方が変わってるわ。。<br/><br/><blockquote class="card card-default"><header><img loading="lazy" src="https://avatars2.githubusercontent.com/u/19886934?s=400&v=4" /><a href="https://github.com/markedjs/marked/blob/master/lib/marked.js" target="_blank">marked/marked.js at master · markedjs/marked · GitHub</a></header><div>A markdown parser and compiler. Built for speed. Contribute to markedjs/marked development by creating an account on GitHub.</div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1094760673119133696"
+            target="_blank">2019/2/11 9:50:58</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ウーム。文法部分はpegで書き直したくなってきたわ。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1094769009084424192"
+            target="_blank">2019/2/11 10:24:06</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">とりあえずパッチを当てて対応したコンテンツがこれ。&lt;Hxx&gt;に飛ぶことができるようになったな。<br/><br/><blockquote class="card card-default"><header><img loading="lazy" src="https://www.sfpgmr.net/img/sf.png" /><a href="https://www.sfpgmr.net/blog/entry/2019/02/c064a49aa7a58d04d8cf9c19dfc308b5.html#%E5%BD%93%E5%88%9D%E3%81%AE%E3%81%97%E3%81%8F%E3%81%BF" target="_blank">S.F. Blog:静的サイトジェネレータのアップデート（nginx→express）</a></header><div>はじめに去年からWebサーバをnginxからexpressにアップデートした。途中放置気味であったがようやくまとも動くようになったので、テストを兼ねてこの記事を書くことにする。約8か月振りのブログ更新となる。静的サイト・ジェネレータ私が今使っているServers Man VPSは月額467円のエントリープラン、メモリ1GB/HDD50GBのものを使用している。最初はメモリ256MBであったがだんだ...</div></blockquote></p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1094723949072510981"
+            target="_blank">2019/2/11 7:25:03</a></p>
+      </header>
+      <section>
+        <p class="tweet-text"><blockquote class="card card-large"><header><img loading="lazy" src="https://cdn-ak.f.st-hatena.com/images/fotolife/a/about_hiroppy/20180925/20180925085430.gif" /><a href="https://blog.hiroppy.me/entry/nodejs-event-loop" target="_blank">Node.jsでのイベントループの仕組みとタイマーについて - 技術探し</a></header><div>Node.jsでのイベントループとタイマーを解説します。</div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1094730279158046720"
+            target="_blank">2019/2/11 7:50:12</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">イベントループの概要をようやく理解した。。なるほど。。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1094729534073520128"
+            target="_blank">2019/2/11 7:47:14</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">そうかあ。。fork使えるんだ。。ということはzip圧縮の処理はプロセス分離することが可能だな。さらに実行ユーザーも変えられるな。。安全性を高められるわ。。<br/><br/><blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="https://nodejs.org/api/child_process.html#child_process_child_process_fork_modulepath_args_options" target="_blank">Child Process | Node.js v13.2.0 Documentation</a></header><div></div></blockquote></p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/1181602577206542336/YTFBW7BY_normal.jpg" />
+        <p class="tweet-user-name">たかゆき - Son@masayoshi1223sn</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/masayoshi1223sn/status/1093819131919425539"
+            target="_blank">2019/2/8 19:29:37</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">【劇場版 みずほ銀行（予告編）】<br/>毎月恒例<br/>「みずほ銀行のATM停止」を<br/>映画の予告っぽくしてお知らせいたします。<br/><br/>停止までまだ4時間くらいあります。<br/> 安心して3連休中を過ごせるよう<br/>今すぐATMでお金下ろしましょう！！ https://t.co/ao0l4urauT</p>
+        
+        <video class="tweet-img" controls src="https://video.twimg.com/ext_tw_video/1093819005612089344/pu/vid/320x180/x957zF4KotG-vEVu.mp4?tag=6" />
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/1050411381369929728/BtqZX2ZX_normal.jpg" />
+        <p class="tweet-user-name">特殊映画研究室@クリマ・セントレア11/30〜12/1 M-541@tokuken20091</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/tokuken20091/status/1092044018261716992"
+            target="_blank">2019/2/3 21:55:57</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">3月の九条湯フリーマーケットでは今までお店のスペースの都合で出展できなかった、大型サイズのミニチュアもいくつか販売したいと考えています！<br/>画像は現在制作中のガレキのビルのミニチュアです。詳細は今後また発信していきます！<br/><br/>#特研ミニチュアセット https://t.co/w1INFUmbxs</p>
+        
+        <img loading="lazy" class="tweet-img" src="https://pbs.twimg.com/media/Dye3i5jVAAA1-QP.jpg" />
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1094556806578298881"
+            target="_blank">2019/2/10 20:20:53</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">@tokuken20091 やはりあべの筋でしたか。。懐かしい。。ミニチュアがすごいですね。驚きました。。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1094555277519540224"
+            target="_blank">2019/2/10 20:14:48</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">まさに超人。。絶句。。 <blockquote class="card card-default"><header><img loading="lazy" src="https://pbs.twimg.com/media/DzBHFSKUwAEULYR.jpg:large" /><a href="https://twitter.com/openspc/status/1094452934308286465" target="_blank">古籏一浩さんのツイート: "レトロ：過去のツイートから迎霧浪漫氏(@info_ymcat)の開発の秘密をまとめてる最中ですが、制作期間が明示されてるのが2ゲームしかありませんでした。他のゲームの開発期間ってどうだったんでしょう？… "</a></header><div></div></blockquote></p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1094548086938955776"
+            target="_blank">2019/2/10 19:46:14</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">確かにこれは言える。カセット側にカスタムチップが入ってたことを割り引いてもね。。 <blockquote class="card card-default"><header><img loading="lazy" src="https://pbs.twimg.com/profile_images/1549995796/110919-210443_400x400.JPG" /><a href="https://twitter.com/kmoroboshi/status/1094513629414645761" target="_blank">Kei Moroboshi(諸星圭)さんのツイート: "ある程度ファミコンっていうハードウエアを理解した段階でグラディウスIIみると頭おかしいと思うわ。私的究極トンチレベルだわさ"</a></header><div></div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1094554942734458880"
+            target="_blank">2019/2/10 20:13:28</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">あれだけのキャラ動かして、その上サンプリングドラム鳴ってるので、当時「ファミコンハードでこんなことできるなんてちょっとおかしい。」と思ったな。。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/1050411381369929728/BtqZX2ZX_normal.jpg" />
+        <p class="tweet-user-name">特殊映画研究室@クリマ・セントレア11/30〜12/1 M-541@tokuken20091</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/tokuken20091/status/1094212821686968323"
+            target="_blank">2019/2/9 21:34:00</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ビル破壊シーンのメイキングです。ビルの裏側にはガレキが積まれていて、破壊した時に飛び散って効果を上げてくれました！やり直しの効かない一発勝負の撮影だったので、撮影終了後はほっと一息…<br/><br/>#特殊映画研究室<br/>#HADZILLAvsKINGDEATHRA https://t.co/RVLpjxulmT</p>
+        
+        <img loading="lazy" class="tweet-img" src="https://pbs.twimg.com/media/Dy9sfx0VAAAYt5T.jpg" />
+        
+        <img loading="lazy" class="tweet-img" src="https://pbs.twimg.com/media/Dy9sjeWV4AAWrGb.jpg" />
+        
+        <img loading="lazy" class="tweet-img" src="https://pbs.twimg.com/media/Dy9snmsU0AAPWpY.jpg" />
+        
+        <img loading="lazy" class="tweet-img" src="https://pbs.twimg.com/media/Dy9ssBzVAAEvFsO.jpg" />
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1094553273028079617"
+            target="_blank">2019/2/10 20:06:50</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">阪堺線が。。あべのかな。。 <blockquote class="card card-default"><header><img loading="lazy" src="https://pbs.twimg.com/ext_tw_video_thumb/1093862376909156358/pu/img/lutQ9BdCL45C8LDx.jpg" /><a href="https://twitter.com/tokuken20091/status/1093863154113699841" target="_blank">特殊映画研究室@クリマ・セントレア11/30〜12/1 M-541さんのツイート: "ハジラvsキングデスラよりビル破壊のカットです。 ビルは石膏製でフラッシュはビルの破壊と同じタイミングでカメラのストロボを焚いたものです。 #特殊映画研究室 #HADZILLAvsKINGDEATHRA… "</a></header><div></div></blockquote></p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/1191705344818335749/4_UDObui_normal.jpg" />
+        <p class="tweet-user-name">upusen H21a@upusen</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/upusen/status/1094046334124883968"
+            target="_blank">2019/2/9 10:32:27</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">各地で雪が降ってるそうなので、セクシーなビルゲイツ貼っておきます https://t.co/nUl35pGcgJ</p>
+        
+        <img loading="lazy" class="tweet-img" src="https://pbs.twimg.com/media/Dy7VV02VYAAgxBb.jpg" />
+        
+        <img loading="lazy" class="tweet-img" src="https://pbs.twimg.com/media/Dy7VV03UUAA3_d-.jpg" />
+        
+        <img loading="lazy" class="tweet-img" src="https://pbs.twimg.com/media/Dy7VV05UcAA-9fm.jpg" />
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1094540256710254593"
+            target="_blank">2019/2/10 19:15:07</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">「カッ」て鳴るバスドラの処理が当時珍しい感じがしたんだな。。それとこのベースのフレーズ。それとまあ日本人でこんな本格的なラップ・ミュージックやってたのってこれくらいしかなかったと思う。。<br/><br/><div class="youtube" data-type="yt" id="FTNRMngrDS0"><div class="yt-title">Youtube - Friends of Earth - Dance Hall</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/FTNRMngrDS0" class="youtube" src="https://i.ytimg.com/vi/FTNRMngrDS0/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1094541132799733760"
+            target="_blank">2019/2/10 19:18:36</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">さかのぼると細野さんはこの「ラップ現象」という曲を作ったところからすると1980年ころにはラップも聴いてたのかなと思うんだけど。でもストレートないかにも「ラップ」らしいアレンジではまるでないわな。。<br/><br/><div class="youtube" data-type="yt" id="MHZ1GWEoiP0"><div class="yt-title">Youtube - Rap Phenomena - Yellow Magic Orchestra</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/MHZ1GWEoiP0" class="youtube" src="https://i.ytimg.com/vi/MHZ1GWEoiP0/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1094542522905292800"
+            target="_blank">2019/2/10 19:24:07</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">BGMでどれが一番好きかというと「BALLET」。生のバスドラと808のバスドラのミックスした音。大音量でヘッドフォンで聴くとよくわかりますわ。「ズーン」って耳に圧迫するところがなんともいえずよい。それとコードのシンセの音色も変な音なんだよなあ。。<br/><br/><div class="youtube" data-type="yt" id="IwHmOuAMJi4"><div class="yt-title">Youtube - YMO - Ballet HD</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/IwHmOuAMJi4" class="youtube" src="https://i.ytimg.com/vi/IwHmOuAMJi4/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1094543451046129665"
+            target="_blank">2019/2/10 19:27:49</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">スネアの音の処理も変わってるわ。試行錯誤のたまものかもしれんけど。いわゆるゲートリバーブっちゅうのではないですわな。。もちろんこのアルバムの他の曲ではもろにそういう音も入ってるんだけど。なんかフェイザーかけてるような音だよなあ。ノイズの質が違うというかなんというか。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1094543847336534016"
+            target="_blank">2019/2/10 19:29:23</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ベースのシーケンス・パターンもなんか凝った感じなんだよなあ。この曲。。いやあ。何度聴いてもいい曲だ。。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1094537497256681472"
+            target="_blank">2019/2/10 19:04:09</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">⚡️ "YMO RYDEENをカバーする"<br/><br/><blockquote class="card card-default"><header><img loading="lazy" src="[object Object]" /><a href="https://twitter.com/i/moments/1094535687775252481" target="_blank">YMO RYDEENをカバーする</a></header><div>YMOのカバー曲作成に関するツィートをまとめたものでございます。</div></blockquote></p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1094493457941295104"
+            target="_blank">2019/2/10 16:09:09</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">tmuxも使うと便利だなあ。どんどん分割してしまう。。 https://t.co/NwEaToFXpT</p>
+        
+        <img loading="lazy" class="tweet-img" src="https://pbs.twimg.com/media/DzBr_iCUUAAmoVf.jpg" />
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1094470576830242817"
+            target="_blank">2019/2/10 14:38:14</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">こういう制度のある会社が日本にもあるんだな。。すごいな。。 <blockquote class="card card-default"><header><img loading="lazy" src="https://pbs.twimg.com/profile_images/415663191658467328/S6Nr1RSi_400x400.jpeg" /><a href="https://twitter.com/koizuka/status/1094453633570156549" target="_blank">KOIZUKA, Akihikoさんのツイート: "うちもマネジメントに向かわずに給与グレードが上がる制度があって、私もそれでやってる… "</a></header><div></div></blockquote></p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1094423505557286913"
+            target="_blank">2019/2/10 11:31:11</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">⚡️ "node/expressでpushで受け取るデータが大きい場合の対応"<br/><br/><blockquote class="card card-default"><header><img loading="lazy" src="[object Object]" /><a href="https://twitter.com/i/moments/1094421344341581824" target="_blank">node/expressでpushで受け取るデータが大きい場合の対応</a></header><div>結論：4.16バージョンでは app.use(express.json({limit:'10mb'})); する。 </div></blockquote></p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1094379857545375744"
+            target="_blank">2019/2/10 8:37:45</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">⚡️ "11.x以降のバージョンでspdyモジュールが対応してない件"<br/><br/><blockquote class="card card-default"><header><img loading="lazy" src="[object Object]" /><a href="https://twitter.com/i/moments/1094377903851106304" target="_blank">node 11.x以降のバージョンでspdyモジュールが対応してない件</a></header><div>node 11.x以降のバージョンでspdyモジュールが対応してない件。結論からいうと、LTSバージョンに落とすことでこの問題を回避した。。</div></blockquote></p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1094219546993426437"
+            target="_blank">2019/2/9 22:00:44</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">昔作った適当ハウス風デモ曲の音色をいじってアップしてみた。。<br/><br/><div class="youtube" data-type="yt" id="ejPAHRFAWlk"><div class="yt-title">Youtube - DEMO0003</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/ejPAHRFAWlk" class="youtube" src="https://i.ytimg.com/vi/ejPAHRFAWlk/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1093859365335924737"
+            target="_blank">2019/2/8 22:09:30</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">しかし古い撮影のはずなのになんでこんなにクリアなんだ。。<br/><br/><div class="youtube" data-type="yt" id="uLRiGX3L-kw"><div class="yt-title">Youtube - The Beatles - Lady Madonna</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/uLRiGX3L-kw" class="youtube" src="https://i.ytimg.com/vi/uLRiGX3L-kw/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1093859801069539328"
+            target="_blank">2019/2/8 22:11:14</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">Paperback Writerもクリアだ。。しかもいい音だし。。好きなんですわ。この曲。。<br/><div class="youtube" data-type="yt" id="yYvkICbTZIQ"><div class="yt-title">Youtube - The Beatles - Paperback Writer</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/yYvkICbTZIQ" class="youtube" src="https://i.ytimg.com/vi/yYvkICbTZIQ/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1093860228490133506"
+            target="_blank">2019/2/8 22:12:56</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">この服装の色使い。。サイケデリックちゅうやつですかな。。<br/><br/><div class="youtube" data-type="yt" id="rblYSKz_VnI"><div class="yt-title">Youtube - The Beatles - Hello, Goodbye</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/rblYSKz_VnI" class="youtube" src="https://i.ytimg.com/vi/rblYSKz_VnI/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1093843222038687745"
+            target="_blank">2019/2/8 21:05:21</a></p>
+      </header>
+      <section>
+        <p class="tweet-text"><div class="youtube" data-type="yt" id="vUQjdwRno5g"><div class="yt-title">Youtube - HIROSHI SATOH - Say Goodbye</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/vUQjdwRno5g" class="youtube" src="https://i.ytimg.com/vi/vUQjdwRno5g/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1093618266491121664"
+            target="_blank">2019/2/8 6:11:27</a></p>
+      </header>
+      <section>
+        <p class="tweet-text"><blockquote class="card card-default"><header><img loading="lazy" src="https://www.sfpgmr.net/img/sf.png" /><a href="https://www.sfpgmr.net/blog/" target="_blank">S.F. Blog:S.F. Blog</a></header><div>IT技術や音楽に関する制作物の公開、情報発信を行っています。</div></blockquote> のPageSpeed InsightでのPC版のスピード計測結果。<br/>結構いい数字が出た。ちょっとうれしい。。 https://t.co/HUyHT1DQwN</p>
+        
+        <img loading="lazy" class="tweet-img" src="https://pbs.twimg.com/media/Dy1PmyKVYAAWarg.jpg" />
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1093618697682341888"
+            target="_blank">2019/2/8 6:13:10</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ほとんどテキストだけだから、そりゃまあそうかと。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1093618698529566720"
+            target="_blank">2019/2/8 6:13:10</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">対してモバイルでの計測はいまいちな感じ。。 https://t.co/W0cd4dIoWY</p>
+        
+        <img loading="lazy" class="tweet-img" src="https://pbs.twimg.com/media/Dy1QZojVYAA0vaz.jpg" />
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1093619273321201664"
+            target="_blank">2019/2/8 6:15:27</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">画像が入ったページだとやっぱりちょっと落ちるな。。でもまあ96点だからいいか。。 https://t.co/YL4jLiIJdh</p>
+        
+        <img loading="lazy" class="tweet-img" src="https://pbs.twimg.com/media/Dy1Q7W9VYAEKKNR.jpg" />
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1093619368221523968"
+            target="_blank">2019/2/8 6:15:50</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">そこそこチューニングしたからなあ。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1093620274807767040"
+            target="_blank">2019/2/8 6:19:26</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">こういうインラインSVGとか画像が入ってるのでもいい数字がでるなあ。。Texもあるけどコンテンツ生成時にMathJaxでプリレンダリングしてSVG化してる。その効果もでてるなあ。<br/><br/><blockquote class="card card-default"><header><img loading="lazy" src="https://www.sfpgmr.net/img/sf.png" /><a href="https://www.sfpgmr.net/blog/entry/2016/05/06/173430.html" target="_blank">S.F. Blog:ブレゼンハム・アルゴリズムの原典を読み、理解する - WebGLでレトロPCグラフィックスを楽しむ（２３）</a></header><div>さて、ブレゼンハム・アルゴリズムである。ブレゼンハム・アルゴリズムは整数化・加減算およびシフト演算のみで実装できるということでよく紹介されているけれども、ブレゼンハム・アルゴリズムやDDAの文献を読んでみて、実はそこがポイントではないのではないかと考えるようになった。離散座標系において理想直線に最も近い描画点を求めることができる点が、ブレゼンハム・アルゴリズムの優れたところなのだろうと今は思ってい...</div></blockquote> https://t.co/hrEPpWaA1F</p>
+        
+        <img loading="lazy" class="tweet-img" src="https://pbs.twimg.com/media/Dy1RbjdU8AALLPU.jpg" />
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1093620828988571648"
+            target="_blank">2019/2/8 6:21:38</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ただモバイル版での計測だと落ちる。。モバイルでのパフォーマンスアップが課題ちゅうことですわな。。パソコン版はそこそこ頑張った結果が出てる。 https://t.co/wPBUFYeLff</p>
+        
+        <img loading="lazy" class="tweet-img" src="https://pbs.twimg.com/media/Dy1SGs2UwAACsK4.jpg" />
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1093632250783006720"
+            target="_blank">2019/2/8 7:07:01</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">cssもプリロードするようにしたらPC版で100点になった！！ちょっと嬉しい。 https://t.co/p26gdX4y8O</p>
+        
+        <img loading="lazy" class="tweet-img" src="https://pbs.twimg.com/media/Dy1cum2VAAANNlf.jpg" />
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1093640769238233088"
+            target="_blank">2019/2/8 7:40:52</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">と思ったらcssが反映されてない。。もとに戻そう。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1093642967934357504"
+            target="_blank">2019/2/8 7:49:37</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">もとに戻した。。99点に落ちた。。 https://t.co/S0c4WEWMaC</p>
+        
+        <img loading="lazy" class="tweet-img" src="https://pbs.twimg.com/media/Dy1mecKUYAEWuWj.jpg" />
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1093636662200918016"
+            target="_blank">2019/2/8 7:24:33</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">マイクロソフトはビルとポール、アップルは2 人のスティーブが力をあわせたからこその成功だと思うのよね。どちらか一人が欠けていたらどうなっていたか。。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1093483770206810118"
+            target="_blank">2019/2/7 21:17:01</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">あかん。花粉がきとる。体が反応しとるわ。。</p>
+        
+      </section>
+      
+    </article>
+    
+  </div>
+  <footer>
+    CopyLight 2019 Satoshi Fujiwara
+  </footer>
+  <script async src="https://platform.twitter.com/widgets.js"></script>
+
+  <script async src="./index.js"></script>
+
+</body>
+
+</html>

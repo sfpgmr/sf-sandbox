@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang="ja" prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb# article: http://ogp.me/ns/article#">
+
+<head>
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-15457703-9"></script>
+  <script>
+    if (!location.hostname.match(/localhost/)) {
+      window.dataLayer = window.dataLayer || [];
+      function gtag() { dataLayer.push(arguments); }
+      gtag('js', new Date());
+      gtag('config', 'UA-15457703-9');
+    }
+  </script>
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>トップページをリニューアルする</title>
+  <meta name="description" content="リニューアル用のトップページデザインを考えて実装する" />
+  <meta name="keywords" content="Programming,Music,HTML5,WebGL,javascript,WebAudio" /> 	
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <meta itemprop="image" content="https://www.sfpgmr.net/img/sfweb.png" />
+  <meta itemprop="name" content="S.F. Web" />
+  
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:site" content="S.F. Web" />
+  <meta name="twitter:url" content="./index52.html" />
+  <meta name="twitter:title" content="リニューアル用のトップページデザイン" />
+  <meta name="twitter:description" content="リニューアル用のトップページデザインを考えて実装する" />
+  <meta name="twitter:image" content="https://www.sfpgmr.net/img/sfweb.png" />
+  
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="./index52.html" />
+  <meta property="og:title" content="リニューアル用のトップページデザイン"/>
+  <meta property="og:site_name" content="S.F. Web" />
+  <meta property="og:description" content="Programming,Music,HTML5,WebGL,javascript,WebAudio">
+  <meta property="og:image" content="https://www.sfpgmr.net/img/sfweb.png">
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    html {
+      margin: 0;
+      padding: 0;
+      font-size:10px;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      background: black;
+      color: white;
+    }
+
+    .top-nav {
+      position:fixed;
+      z-index:99999;
+      background: rgba(0,0,0,0.5);
+      display: block;
+      width:100%;
+      height:32px;
+      color:white;
+    }
+    #sentinel {
+      width:0px;
+      height:0px;
+    }
+    .contents {
+      padding-top:32px;
+      width: 100%;
+      position: relative;
+      content: strict;
+    }
+
+    @keyframes blinking {
+      0% {
+        color: black;
+      }
+
+      50% {
+        color: white;
+      }
+
+      100% {
+        color: black;
+      }
+    }
+
+    .loading {
+      font-family: monospace;
+      font-size: 24px;
+      position: fixed;
+      width: 100vw;
+      height: 100vh;
+      text-align: center;
+      padding-top: 50vh;
+      z-index: 32768;
+      background: black;
+      animation: blinking 2s infinite;
+      content: strict;
+    }
+
+
+    .contents > article {
+      background: #f0f0f0;
+      color: #202020;
+      position: absolute;
+      max-height: 960px;
+      overflow: auto;
+      border-radius: 3px;
+      transition: opacity 1s linear;
+      opacity: 0.0;
+    }
+
+    .tweet-header {
+      display: grid;
+      align-items: end;
+      grid-template-columns: 40px 2fr 1fr;
+      grid-template-rows: 1fr;
+      font-size: 12px;
+      font-weight: bold;
+    }
+
+
+    .tweet-img {
+      width: 100%;
+      object-fit: cover;
+    }
+
+    .youtube {
+      position: relative;
+      cursor: pointer;
+    }
+
+    .youtube > img {
+      width: 100%;
+      object-fit: cover;
+    }
+
+    .youtube > svg.player-play {
+      width:64px;
+      height:64px;
+      left:calc(50% - 32px);
+      top:calc(50% - 32px);
+      position:absolute;
+      z-index: 1000;
+      opacity: 0.5;
+    }
+    
+    .youtube:hover > svg.player-play {
+      opacity: 1.0;
+    }
+
+    .youtube:hover .player-play-1 {
+      stroke:#80808080;
+    }
+
+    
+    .youtube > div.yt-title {
+      /*text-shadow: #fff 1px 1px 0;*/
+      font-size: 1.2rem;
+      color:white;
+      background:rgba(0, 0,0,0.5);
+      position:absolute;
+      left:0;
+      top:0;
+      overflow: auto;
+      z-index:998;
+    }
+
+
+    .tweet-profile-img {
+      grid-column: 1/2;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+    }
+
+    .tweet-user-name {
+      grid-column: 2/3;
+    }
+
+    .tweet-date {
+      font-size: 8px;
+      text-align: right;
+      grid-column: 3/4;
+    }
+
+    .contents>twitter-widget {
+      overflow: auto;
+      max-height: 960px;
+      position: absolute;
+    }
+
+    .contents>article>section>.tweet-text {
+      display: block;
+      padding: 4px;
+      word-break: break-all;
+      font-size: 12px;
+    }
+
+    .contents>article>h3 {
+      font-size: 12px;
+    }
+
+    blockquote.card {
+      margin:4px;
+      padding:4px;
+      font-size:12px;
+      background:white;
+      border-radius: 4px;
+    }
+
+    blockquote.card > header {
+      display:grid;
+      grid-gap:4px;
+      gap:4px;
+    }
+
+    blockquote.card-default > header {
+      grid-template-columns:64px 1fr;
+    }
+
+    blockquote.card-large > header {
+      grid-template-columns:1fr;
+    }
+
+    blockquote.card > header > img {
+      width:100%;
+    }
+
+
+    div.no-image {
+      display: block;
+      width:64px;
+      height:64px;
+      background:gray;
+      color:white;
+      text-align: center;
+      line-height: 64px;
+    }
+
+  </style>
+</head>
+
+<body>
+  <div class="loading" id="loading">Loading</div>
+  <header class="top-nav">
+    <h1>S.F. Info.</h1>
+  </header>
+  <div class="contents" id="contents" rendersubtree="invisible skip-activation"> 
+    
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1087681509782245382"
+            target="_blank">2019/1/22 21:00:54</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ゲームってプログラミングだけではできない。ゲームデザインを考えないといけないし、絵も描かないといけないし、データ作りもしないといけない。私はいつもそこで挫折する。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1087682798389886976"
+            target="_blank">2019/1/22 21:06:01</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">こんな簡素でレトロなシューティングゲームでも、敵の配置位置や移動パターンを考え、それをデータ化しなくてはいけない。<br/><br/><blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="https://www.sfpgmr.net/test/webgl/0009/webgl0009.html" target="_blank">Galaxy Fight Game</a></header><div></div></blockquote><br/><br/>敵の動きや配置データを一面分作るだけでヘロヘロになってしまう。アイデア・キャラデザインを某ゲームから拝借してるにも関わらずである。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1087682800835190785"
+            target="_blank">2019/1/22 21:06:02</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">しかもあまり面白くない。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1087682987569770496"
+            target="_blank">2019/1/22 21:06:47</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">いや、あまりというか全然面白くない。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1087683495466459136"
+            target="_blank">2019/1/22 21:08:48</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ギャラガのような爽快感のあるシューティングを作ってみたいと思ってスタートしたと思うのだが、劣化コピーに成り下がってしまっている。。個人の趣味でゲーム作りを完遂できる人というのはリスペクトするしかないよな。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1087684430674579457"
+            target="_blank">2019/1/22 21:12:31</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">これでもゲーム会社に3年ちょっといて、いくつかは完成までこぎつけたが、それはゲームデザイナー・グラフィックデザイナー・サウンドデザイナーという強い味方がいたからだろうな。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1087685726269915137"
+            target="_blank">2019/1/22 21:17:40</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">まあそれでもいつかはオリジナルのゲームを完成させたいとは思うが。。しかし個人の趣味でゲームを作り始めたのはいつ頃だったかな。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1087686348134182913"
+            target="_blank">2019/1/22 21:20:08</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">私の場合1980年代前半のパソコンブームで一度オリジナルゲームを作ろうとして完成できることができなくて、ゲーム会社に就職してる間は個人のゲーム作りはお休み、そして今の会社で趣味のゲーム製作を再開したことになるな。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1087687803905822720"
+            target="_blank">2019/1/22 21:25:55</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">そのゲームを再開したタイミングというのはおそらくIBMのAptivaというPCを買ってからだろうと思うな。とすると1996年くらいではなかろうかと思う。たしかWinGLかなあと思うんだよなあ。それとVC++4.0だったような。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1087687805097005059"
+            target="_blank">2019/1/22 21:25:55</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">WinGLというのはドワンゴにいる恋塚さんという方が作られたゲーム用のライブラリであった。それで横スクロールのシューティングを作ろうとしたんだよな。確か。。もう20年以上前なのか。。Windows Game SDKとかもあったよなあ。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1087688258350272512"
+            target="_blank">2019/1/22 21:27:43</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">このIBMのAptivaに積まれている波形メモリ音源はなかなかいい音ががしたような記憶があるんだよな。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1087688259159773185"
+            target="_blank">2019/1/22 21:27:43</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">それはさておき、しばらくするとDirectXが登場するのですわ。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1087688730431741952"
+            target="_blank">2019/1/22 21:29:36</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">WinGLのネタとしてCarax’95がCマガに載ってて、それにつられて作り始めたような気がするぜ！！！<br/><blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="http://bio100.jp/game_review/game17.html" target="_blank">Bio_100%｜GAME REVIEW｜Carax'95</a></header><div></div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1087689132132974592"
+            target="_blank">2019/1/22 21:31:12</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">このゲームはタイムトライアル・シューティングという変わったジャンルのゲームだった。でも動きがスムーズで感動したわ。当時。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1087689463856156673"
+            target="_blank">2019/1/22 21:32:31</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">そうだ。このBio100%ちゅうグループにあこがれを抱いておった。おそらく若い子がアイドルに熱をあげるようにね。。<br/><blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="http://bio100.jp/" target="_blank">Bio_100%</a></header><div></div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1087690118750597120"
+            target="_blank">2019/1/22 21:35:07</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">DirectXの初期って清水亮さんだよなあ。。面識はありませんが。。確かDirectXのエバンジェリストだったような記憶も。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1087690535790202880"
+            target="_blank">2019/1/22 21:36:46</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">まあ初期のDirectXというのは2DのグラフィックAPIであった。しかもかなり原始的なものだったよなあ。ハードウェアアクセラレーションを使った矩形描画エンジンだもんな。基本。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1087691596215152640"
+            target="_blank">2019/1/22 21:40:59</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">DirectDrawちゅう名前でしたな。カラーキーを使ったBitBltというのが目玉。ダブル・バッファ、アルファ・ブレンドなんちゅうキーワードもこのころからだったよなあ。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1087691992094498816"
+            target="_blank">2019/1/22 21:42:33</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">APIがどんなだったかも全く記憶にないなあ。。あれだけハマってたというのに。。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1087670314090164226"
+            target="_blank">2019/1/22 20:16:25</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">旋盤？ボール盤？ <blockquote class="card card-default"><header><img loading="lazy" src="https://pbs.twimg.com/media/DxgfEeRUcAAT9mY.jpg:large" /><a href="https://twitter.com/PreferredNetJP/status/1087653525964746752" target="_blank">Preferred Networks JPさんのツイート: "PFNが東京の中心部に建設中の ”秘密の工房” をチラッとお見せします。… "</a></header><div>“PFNが東京の中心部に建設中の ”秘密の工房” をチラッとお見せします。”</div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1087670603308457984"
+            target="_blank">2019/1/22 20:17:34</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">旋盤はワシノ製か。まにあですな。。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1087641175899615232"
+            target="_blank">2019/1/22 18:20:38</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">テトリスはPCでカーソルキーかテンキーで遊ぶものだというイメージが強い。コラムスと記憶が混濁してるかもしれないなあ。。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1087640094737985536"
+            target="_blank">2019/1/22 18:16:20</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">テトリスを私が最初に見たのはIBM-PC版だった気がします。私もPC版のイメージが強くて、ゲーセンで見かけたときかなり違和感を覚えたのを記憶しています。 <blockquote class="card card-default"><header><img loading="lazy" src="https://pbs.twimg.com/profile_images/895659663676514304/yNASbxMr_400x400.jpg" /><a href="https://twitter.com/VGL_JP/status/1087296936573526016" target="_blank">究極VGL@ゲーレジェお疲れさまさんのツイート: "なんか「テトリスブームはゲームボーイからはじまった」みたいな話題がTLに流れてるんだけど、テトリスはソ連でうまれPCで流行し88年12月のセガ版アーケードで火がつきました。アタリのAC版やBPSのファミコン版もありました。 テトリスブーム30周年ですし大事なことなので何度でも書きます。 #テトリス… https://t.co/AvNeCYGwS8"</a></header><div>“なんか「テトリスブームはゲームボーイからはじまった」みたいな話題がTLに流れてるんだけど、テトリスはソ連でうまれPCで流行し88年12月のセガ版アーケードで火がつきました。アタリのAC版やBPSのファミコン版もありました。<br/>テトリスブーム30周年ですし大事なことなので何度でも書きます。<br/>#テトリス https://t.co/LfqLtoSlNl”</div></blockquote></p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1087470693854269440"
+            target="_blank">2019/1/22 7:03:12</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">そうなんですよねえ。。いえてるなあ。。 <blockquote class="card card-default"><header><img loading="lazy" src="https://pbs.twimg.com/profile_images/1148860451549147137/pvcubB43_400x400.png" /><a href="https://twitter.com/EzoeRyou/status/1087335233895116800" target="_blank">Ryou Ezoe(江添 亮)さんのツイート: "ゲームを作りたいという気持ちはあるしこの辺の知識を学ぶのは楽しいのだが、肝心のゲームを作るという作業はつまらない。"</a></header><div>“ゲームを作りたいという気持ちはあるしこの辺の知識を学ぶのは楽しいのだが、肝心のゲームを作るという作業はつまらない。”</div></blockquote></p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1086931347153739778"
+            target="_blank">2019/1/20 19:20:02</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">TLにGLSLスクールの作品流れてくるんだけど、どれもレベル高いなあ。。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/1101154812261883904/1w6MoxSD_normal.png" />
+        <p class="tweet-user-name">ヒガ@ashguyz</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/ashguyz/status/1086927355300392960"
+            target="_blank">2019/1/20 19:04:10</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">GLSLシェーダスクールでの発表作品『Guzzle』です。レイマーチングをつかった2分間の作品で、ストーリーも楽しめるようにと考えました。全編はVimeoにアップしています。<a href="https://vimeo.com/312352845" target="_blank">vimeo.com/312352845</a> https://t.co/zpOvNEOASk</p>
+        
+        <video class="tweet-img" controls src="https://video.twimg.com/ext_tw_video/1086926931600101376/pu/vid/320x180/fBfHf7V4t0vIHC6G.mp4?tag=6" />
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/1014478434070769666/4RxZhYQi_normal.jpg" />
+        <p class="tweet-user-name">Yohei Tsubuku@y_tsubuku</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/y_tsubuku/status/1086420537608306688"
+            target="_blank">2019/1/19 9:30:15</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">サーバサイドエンジニア https://t.co/RXjXKSf4SH</p>
+        
+        <img loading="lazy" class="tweet-img" src="https://pbs.twimg.com/media/DxO9uGlV4AAR6hz.jpg" />
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1086413052482703361"
+            target="_blank">2019/1/19 9:00:30</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">「若い」ってすごいアドバンテージだ！と感じるのは多分老いてからなんだろうな。私はまさに今実感してるところ。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1086413339389906944"
+            target="_blank">2019/1/19 9:01:39</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">継続するパワーとかまさにそう。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/2198042994/DSC02173_normal.jpg" />
+        <p class="tweet-user-name">Shinji Kono@shinji_kono</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/shinji_kono/status/1086411061916401664"
+            target="_blank">2019/1/19 8:52:36</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">Apple嫌う人多いけど、良いものなら多少高くても良いという人が使ってるだけ。ダメになれば使わない。安さ絶対みたいな人は少し残念だな。Mojave お前はダメだ。</p>
+        
+      </section>
+      
+    </article>
+    
+  </div>
+  <footer>
+    CopyLight 2019 Satoshi Fujiwara
+  </footer>
+  <script async src="https://platform.twitter.com/widgets.js"></script>
+
+  <script async src="./index.js"></script>
+
+</body>
+
+</html>

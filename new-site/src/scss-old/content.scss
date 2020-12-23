@@ -1,0 +1,80 @@
+@import './style.scss';
+
+$font-color:black;
+
+body {
+  background-color:white;
+}
+
+@media screen and (max-aspect-ratio:3/2) { 
+  body {
+    background-size: auto;
+  }
+}
+
+
+header.header {
+  padding:8px;
+  text-decoration: none;
+  color:$font-color;
+  display:flex;
+  flex-direction: column;
+  text-align:center;
+  justify-content: center;
+  h1 {
+    font-size:2.0rem;
+  }
+  /*transition: background-color 1s;*/
+  // &:hover {
+  //   background-color:#ffffff20;
+  // }
+}
+
+footer {
+  text-align: center;
+  color:$font-color;
+}
+
+
+
+.sf {
+  &.container {
+    padding:32px;
+    display:grid;
+    justify-items: center;
+    align-items:center;
+    max-width:1000px;
+    height:100vh;
+    grid-template-rows: 2rem 1fr 5fr 320px 2rem;
+    grid-template-columns: 1fr;
+    main {
+      width:100%;
+      height:100%;
+      display: flex;
+      flex-direction: column;
+      align-items:  flex-start;
+      align-content: flex-start;
+      section {
+        width:inherit;
+        display: block;
+        h1 {
+          width:inherit;
+        }
+      }
+      
+    }
+    nav.nav {
+      font-size:1.5rem;
+      color:$font-color;
+      width:100%;
+      display:flex;
+      flex-direction: row;
+      justify-content: flex-start;
+      align-content: center;
+      div {
+        padding:0px 0.5rem;
+      }
+    }
+  
+  }
+}

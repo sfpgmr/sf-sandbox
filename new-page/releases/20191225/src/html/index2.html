@@ -1,0 +1,705 @@
+<!DOCTYPE html>
+
+<html lang="ja" prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb# article: http://ogp.me/ns/article#">
+
+<head>
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-15457703-9"></script>
+  <script>
+    if (!location.hostname.match(/localhost/)) {
+      window.dataLayer = window.dataLayer || [];
+      function gtag() { dataLayer.push(arguments); }
+      gtag('js', new Date());
+      gtag('config', 'UA-15457703-9');
+    }
+  </script>
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>トップページをリニューアルする</title>
+  <meta name="description" content="リニューアル用のトップページデザインを考えて実装する" />
+  <meta name="keywords" content="Programming,Music,HTML5,WebGL,javascript,WebAudio" /> 	
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <meta itemprop="image" content="https://www.sfpgmr.net/img/sfweb.png" />
+  <meta itemprop="name" content="S.F. Web" />
+  
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:site" content="S.F. Web" />
+  <meta name="twitter:url" content="./index2.html" />
+  <meta name="twitter:title" content="リニューアル用のトップページデザイン" />
+  <meta name="twitter:description" content="リニューアル用のトップページデザインを考えて実装する" />
+  <meta name="twitter:image" content="https://www.sfpgmr.net/img/sfweb.png" />
+  
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="./index2.html" />
+  <meta property="og:title" content="リニューアル用のトップページデザイン"/>
+  <meta property="og:site_name" content="S.F. Web" />
+  <meta property="og:description" content="Programming,Music,HTML5,WebGL,javascript,WebAudio">
+  <meta property="og:image" content="https://www.sfpgmr.net/img/sfweb.png">
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    html {
+      margin: 0;
+      padding: 0;
+      font-size:10px;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      background: black;
+      color: white;
+    }
+
+    .top-nav {
+      position:fixed;
+      z-index:99999;
+      background: rgba(0,0,0,0.5);
+      display: block;
+      width:100%;
+      height:32px;
+      color:white;
+    }
+    #sentinel {
+      width:0px;
+      height:0px;
+    }
+    .contents {
+      padding-top:32px;
+      width: 100%;
+      position: relative;
+      content: strict;
+    }
+
+    @keyframes blinking {
+      0% {
+        color: black;
+      }
+
+      50% {
+        color: white;
+      }
+
+      100% {
+        color: black;
+      }
+    }
+
+    .loading {
+      font-family: monospace;
+      font-size: 24px;
+      position: fixed;
+      width: 100vw;
+      height: 100vh;
+      text-align: center;
+      padding-top: 50vh;
+      z-index: 32768;
+      background: black;
+      animation: blinking 2s infinite;
+      content: strict;
+    }
+
+
+    .contents > article {
+      background: #f0f0f0;
+      color: #202020;
+      position: absolute;
+      max-height: 960px;
+      overflow: auto;
+      border-radius: 3px;
+     /* transition: opacity 1s linear;*/
+      opacity: 1.0;
+    }
+
+    .tweet-header {
+      display: grid;
+      align-items: end;
+      grid-template-columns: 40px 2fr 1fr;
+      grid-template-rows: 1fr;
+      font-size: 12px;
+      font-weight: bold;
+    }
+
+
+    .tweet-img {
+      width: 100%;
+      object-fit: cover;
+    }
+
+    .youtube {
+      position: relative;
+      cursor: pointer;
+    }
+
+    .youtube > img {
+      width: 100%;
+      object-fit: cover;
+    }
+
+    .youtube > svg.player-play {
+      width:64px;
+      height:64px;
+      left:calc(50% - 32px);
+      top:calc(50% - 32px);
+      position:absolute;
+      z-index: 1000;
+      opacity: 0.5;
+    }
+    
+    .youtube:hover > svg.player-play {
+      opacity: 1.0;
+    }
+
+    .youtube:hover .player-play-1 {
+      stroke:#80808080;
+    }
+
+    
+    .youtube > div.yt-title {
+      /*text-shadow: #fff 1px 1px 0;*/
+      font-size: 1.2rem;
+      color:white;
+      background:rgba(0, 0,0,0.5);
+      position:absolute;
+      left:0;
+      top:0;
+      overflow: auto;
+      z-index:998;
+    }
+
+
+    .tweet-profile-img {
+      grid-column: 1/2;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+    }
+
+    .tweet-user-name {
+      grid-column: 2/3;
+    }
+
+    .tweet-date {
+      font-size: 8px;
+      text-align: right;
+      grid-column: 3/4;
+    }
+
+    .contents>twitter-widget {
+      overflow: auto;
+      max-height: 960px;
+      position: absolute;
+    }
+
+    .contents>article>section>.tweet-text {
+      display: block;
+      padding: 4px;
+      word-break: break-all;
+      font-size: 12px;
+    }
+
+    .contents>article>h3 {
+      font-size: 12px;
+    }
+
+    blockquote.card {
+      margin:4px;
+      padding:4px;
+      font-size:12px;
+      background:white;
+      border-radius: 4px;
+    }
+
+    blockquote.card > header {
+      display:grid;
+      grid-gap:4px;
+      gap:4px;
+    }
+
+    blockquote.card-default > header {
+      grid-template-columns:64px 1fr;
+    }
+
+    blockquote.card-large > header {
+      grid-template-columns:1fr;
+    }
+
+    blockquote.card > header > img {
+      width:100%;
+    }
+
+
+    div.no-image {
+      display: block;
+      width:64px;
+      height:64px;
+      background:gray;
+      color:white;
+      text-align: center;
+      line-height: 64px;
+    }
+
+  </style>
+</head>
+
+<body>
+  <div class="loading" id="loading">Loading</div>
+  <header class="top-nav">
+    <h1>S.F. Info.</h1>
+  </header>
+  <div class="contents" id="contents" rendersubtree="invisible skip-activation"> 
+    
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/951224654957502465/4z36RIbq_normal.jpg" />
+        <p class="tweet-user-name">カヂロ♨️原稿@kadikadisake</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/kadikadisake/status/1196047294505684992"
+            target="_blank">2019/11/17 21:47:51</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">にんげんってなんだ https://t.co/05XcMpqjAi</p>
+        
+        <img  class="tweet-img" src="https://pbs.twimg.com/media/EJk2q89U0AMOelB.png" />
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1195843115136864256"
+            target="_blank">2019/11/17 8:16:30</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">最近この「ろっか・ばい・まい・べいびい」がとても気に入っていて、よく聴く。ギターとベースのシンプルなバッキング。ギターの音が心の琴線に触れているような感じ。デモをそのままミックスしたらしいね。。<br/><br/><div class="youtube" data-type="yt" id="I8ms09u55Mk"><div class="yt-title">Youtube - 細野晴臣 - ろっか・ばい・まい・べいびい</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img  data-href="https://youtu.be/I8ms09u55Mk" class="youtube" src="https://i.ytimg.com/vi/I8ms09u55Mk/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1195843846749356033"
+            target="_blank">2019/11/17 8:19:25</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">細野さんの曲で一番好きなのは「夏なんです」だ。これもアコギの音が耳に心地よいし、凝ってるなあという印象。。<br/><br/><div class="youtube" data-type="yt" id="DpnSNRvG6rw"><div class="yt-title">Youtube - Happy End - 風街ろまん - 07. 夏なんです</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img  data-href="https://youtu.be/DpnSNRvG6rw" class="youtube" src="https://i.ytimg.com/vi/DpnSNRvG6rw/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1195844256855777280"
+            target="_blank">2019/11/17 8:21:03</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">「夏なんです」に匹敵するくらい好きなのが「L.D.K.」なんですわ。これが。<br/><br/><div class="youtube" data-type="yt" id="EWdo78lckoI"><div class="yt-title">Youtube - Haruomi Hosono - Living Dining Kitchen</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img  data-href="https://youtu.be/EWdo78lckoI" class="youtube" src="https://i.ytimg.com/vi/EWdo78lckoI/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1195844812777279488"
+            target="_blank">2019/11/17 8:23:15</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">「灰色の段階」。いっときこればかり聴いてたときもある。ヤオヤのリズムってほんといいなあと思わせる一曲。<br/><br/><div class="youtube" data-type="yt" id="0PtYGJhrXZo"><div class="yt-title">Youtube - Gradated Grey - YMO</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img  data-href="https://youtu.be/0PtYGJhrXZo" class="youtube" src="https://i.ytimg.com/vi/0PtYGJhrXZo/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1195826306761408512"
+            target="_blank">2019/11/17 7:09:43</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">タイムラインで流れてきたので知った、dwitterなるサービスもなかなか面白いよねぇ。。<br/><br/><blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="https://www.dwitter.net/" target="_blank">Dwitter - javascript demos in 140 characters</a></header><div></div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1195826737910730753"
+            target="_blank">2019/11/17 7:11:26</a></p>
+      </header>
+      <section>
+        <p class="tweet-text"><blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="https://www.dwitter.net/d/16630" target="_blank">fleur v2 by netule | Dwitter</a></header><div></div></blockquote></p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1192411182251954181"
+            target="_blank">2019/11/7 20:59:14</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">のどの痛みがようやく引いてきた感じ。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1195088260877283328"
+            target="_blank">2019/11/15 6:16:59</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">まだ咳は出ている。痰の粘度が高く、のどにへばりついてとても気持ちが悪い。それで咳が止まらないようだ。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1193742211126452224"
+            target="_blank">2019/11/11 13:08:16</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">久しぶりにゲームをSTEAMで購入。<br/>セール品だけどね。前から欲しかったやつを3つほど。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1193742403221344256"
+            target="_blank">2019/11/11 13:09:02</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">しかしやる時間があまりない。tomb raider も途中までで放置してるし。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1193844874262372353"
+            target="_blank">2019/11/11 19:56:13</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">今年買ったゲームは（全部STEAM）、<br/><br/>・Shadow Of The Tomb Raider<br/><div class="youtube" data-type="yt" id="Dr4PWgh5FXI"><div class="yt-title">Youtube - シャドウ オブ ザ トゥームレイダー ”Launch"トレーラー 日本語吹き替え版</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img  data-href="https://youtu.be/Dr4PWgh5FXI" class="youtube" src="https://i.ytimg.com/vi/Dr4PWgh5FXI/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1193847549532065793"
+            target="_blank">2019/11/11 20:06:51</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">・コナミ アーケード・クラシックス<br/><br/>これはサンダークロスやりたさに衝動買い。。<br/><br/><div class="youtube" data-type="yt" id="yiYPZHOtteI"><div class="yt-title">Youtube - 「アーケードクラシックス アニバーサリーコレクション」ローンチトレーラー</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img  data-href="https://youtu.be/yiYPZHOtteI" class="youtube" src="https://i.ytimg.com/vi/yiYPZHOtteI/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1193847550928801792"
+            target="_blank">2019/11/11 20:06:51</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">・Cities Skylines<br/>以外にシム・シティみたいなやつ好きなんだよね。。<br/><br/><div class="youtube" data-type="yt" id="0gI2N10QyRA"><div class="yt-title">Youtube - Cities: Skylines - Release Trailer</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img  data-href="https://youtu.be/0gI2N10QyRA" class="youtube" src="https://i.ytimg.com/vi/0gI2N10QyRA/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1193847552069685251"
+            target="_blank">2019/11/11 20:06:51</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">・Call Of Duty WW2<br/>まあこれは昔好きだったFPSが、WW2に回帰したバージョンである。。<br/><br/><div class="youtube" data-type="yt" id="D4Q_XYVescc"><div class="yt-title">Youtube - Official Call of Duty®: WWII Reveal Trailer</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img  data-href="https://youtu.be/D4Q_XYVescc" class="youtube" src="https://i.ytimg.com/vi/D4Q_XYVescc/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1193848185606660096"
+            target="_blank">2019/11/11 20:09:22</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">そしてこれ。。R-TYPE Dimensions。これもちょっとやりたくてね。。3D &lt;--&gt; 2Dがシームレスに切り替わるのがちょっとすごいですわ。。<br/><br/><div class="youtube" data-type="yt" id="g0K-4f6KNlw"><div class="yt-title">Youtube - R-Type Dimensions　プロモーションムービー</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img  data-href="https://youtu.be/g0K-4f6KNlw" class="youtube" src="https://i.ytimg.com/vi/g0K-4f6KNlw/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1193848503442657285"
+            target="_blank">2019/11/11 20:10:38</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">セール品も含んでるので全部で10Kくらいですわ。STEAMのセールはちょっとやばい。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1193859141132898304"
+            target="_blank">2019/11/11 20:52:54</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ゲームの振り幅が大きいのはまあしょうがない。風船割りゲームくらいからのお付き合いですからなあ。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1193859876306345984"
+            target="_blank">2019/11/11 20:55:50</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">何年も心待ちにしてるゲームは１つだけあって。「Half-Life 2 Episode Three」なんだけどね。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1193860746020442115"
+            target="_blank">2019/11/11 20:59:17</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">FPSはWolfenstein 3Dからだけなんだけど、あんまり面白いとは思わんかったんだよね。<br/><br/><div class="youtube" data-type="yt" id="x8o0a5ntxfc"><div class="yt-title">Youtube - PC Longplay [563] Wolfenstein 3D</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img  data-href="https://youtu.be/x8o0a5ntxfc" class="youtube" src="https://i.ytimg.com/vi/x8o0a5ntxfc/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1193861040313733123"
+            target="_blank">2019/11/11 21:00:27</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">DOOMが出てそのグラフィックに「すげえ。」とは思ったものの、これもそんなに面白いとは思わんかった。。<br/><div class="youtube" data-type="yt" id="iFnOLFd_ByQ"><div class="yt-title">Youtube - [60FPS] DOOM (1993) LONGPLAY</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img  data-href="https://youtu.be/iFnOLFd_ByQ" class="youtube" src="https://i.ytimg.com/vi/iFnOLFd_ByQ/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1193861304689102849"
+            target="_blank">2019/11/11 21:01:30</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">FPSにハマったのは「Half-Life」からであろう。やはり。<br/><div class="youtube" data-type="yt" id="JoV9o6b91Sc"><div class="yt-title">Youtube - Half-Life:  Full Game Walkthrough</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img  data-href="https://youtu.be/JoV9o6b91Sc" class="youtube" src="https://i.ytimg.com/vi/JoV9o6b91Sc/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1193862056090324993"
+            target="_blank">2019/11/11 21:04:29</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">なんちゅうかもう、イントロから映画的で。そして謎ときも少しあったり、エイリアンだけでなく第3の存在が現れて3つ巴の争いになったりするとことか。単なるFPSではないところがいいんだよな。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1193862483179491329"
+            target="_blank">2019/11/11 21:06:11</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">「Half-Life 2」もその路線で、期待を裏切らない出来だった。パッケージで持ってたのにまた「オレンジ・ボックス」を買いなおしたくらいですからな。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1193863088409214977"
+            target="_blank">2019/11/11 21:08:35</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">EPISODE 2がなんか尻切れなというか、続編を匂わすようなエンディングだったような気がするんだな。なんか忘れてるなあ。。もう一回やるか。。 https://t.co/6CwQC0rwrQ</p>
+        
+        <img  class="tweet-img" src="https://pbs.twimg.com/media/EJF0JhuU8AAvZeN.jpg" />
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1193863750232621056"
+            target="_blank">2019/11/11 21:11:13</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">なんかファン・メイドのEpisode 3とかあったりして。<br/><div class="youtube" data-type="yt" id="DAQucLUFOm4"><div class="yt-title">Youtube - Boreal Alyph Mini Update: October 2019</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img  data-href="https://youtu.be/DAQucLUFOm4" class="youtube" src="https://i.ytimg.com/vi/DAQucLUFOm4/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1193864905356533760"
+            target="_blank">2019/11/11 21:15:49</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">Half-Lifeをリメイクした「Black Mesa」もXenまでできとるということは完成が近いのかいな。。<br/><div class="youtube" data-type="yt" id="IzR3vllw6O0"><div class="yt-title">Youtube - Black Mesa: Xen - Opening Minutes (HALF-LIFE 1 REMAKE)</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img  data-href="https://youtu.be/IzR3vllw6O0" class="youtube" src="https://i.ytimg.com/vi/IzR3vllw6O0/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1193866760501383168"
+            target="_blank">2019/11/11 21:23:11</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">しかし「Black Mesa」も相当な期間経ってるから、グラフィック見る限り時代遅れ感が半端ないような気もするな。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1193868610206232576"
+            target="_blank">2019/11/11 21:30:32</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">このような「Half-Life」ネタをtweetしてしまうということは、何年かに一度訪れる「Half Lifeしたい発作」かもしれんな。。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/778946041416605696/TnrttgMm_normal.jpg" />
+        <p class="tweet-user-name">D.S.A.@ym2413</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/ym2413/status/1193660174382198784"
+            target="_blank">2019/11/11 7:42:17</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">Comparing YM2413 sounds between:<br/>- Real YM2413 chip<br/>- New emu2413 1.0.0-alpha5<br/>- Old emu2413 v0.61 https://t.co/53fZB8oNFK</p>
+        
+        <video class="tweet-img" controls src="https://video.twimg.com/ext_tw_video/1193660130585276416/pu/vid/450x270/CnT0TEh3-vqwtKHI.mp4?tag=10" />
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/931137746936086529/74wzjygZ_normal.jpg" />
+        <p class="tweet-user-name">うつぼかずら@vstcpp</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/vstcpp/status/1193729163410038784"
+            target="_blank">2019/11/11 12:16:25</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">VST自作の断念要因<br/><br/>第１位：C++<br/><br/>(当社調べ) <a href="https://twitter.com/jscmla1118/status/1193380065892941825" target="_blank">twitter.com/jscmla1118/sta…</a></p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/931630233236643840/HQAly_QL_normal.jpg" />
+        <p class="tweet-user-name">ataritoobin@ataritoobin</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/ataritoobin/status/1193598037890781184"
+            target="_blank">2019/11/11 3:35:22</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ALERT! ALERT! <br/>#ナムコ #ボスコニアン https://t.co/Y72ANZAPZn</p>
+        
+        <img  class="tweet-img" src="https://pbs.twimg.com/media/EJCDE-XU4AEvR-T.jpg" />
+        
+        <img  class="tweet-img" src="https://pbs.twimg.com/media/EJCDE-XU0AAF6cl.jpg" />
+        
+        <img  class="tweet-img" src="https://pbs.twimg.com/media/EJCDE-WVUAAJRAx.jpg" />
+        
+        <img  class="tweet-img" src="https://pbs.twimg.com/media/EJCDE-YUYAA-PNa.jpg" />
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1192929571810660352"
+            target="_blank">2019/11/9 7:19:08</a></p>
+      </header>
+      <section>
+        <p class="tweet-text"><blockquote class="card card-default"><header><img  src="https://developer.twitter.com/content/dam/developer-twitter/icons/twitter.png" /><a href="https://developer.twitter.com/en/developer-terms/display-requirements.html" target="_blank">Display requirements – Twitter Developers</a></header><div>Tweets are one of our most visible brand elements, so it’s important that they are presented correctly. You should comply with the display requirements below when you display Tweets, timelines, and other Twitter content.  </div></blockquote></p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1192207233607557120"
+            target="_blank">2019/11/7 7:28:49</a></p>
+      </header>
+      <section>
+        <p class="tweet-text"><blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="https://triple-underscore.github.io/css-contain-ja.html" target="_blank">CSS Containment Module Level 2 （日本語訳）</a></header><div></div></blockquote></p>
+        
+      </section>
+      
+    </article>
+    
+  </div>
+  <footer>
+    CopyLight 2019 Satoshi Fujiwara
+  </footer>
+  <script async src="https://platform.twitter.com/widgets.js"></script>
+
+  <script async src="./index.js"></script>
+
+</body>
+
+</html>

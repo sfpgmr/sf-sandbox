@@ -1,0 +1,41 @@
+
+<!DOCTYPE html>
+<html amp xmlns:sf="https://sfpgmr.net/sftemplate">
+  <head sf:if="data" >
+    <sf:code>
+      let title = 'title'; 
+    </sf:code>
+      <sf:style>
+      sf:* {
+        display:none;
+      }
+      </sf:style>
+    </sf:style>
+    <script run-at="local">
+      {
+        let a = 1;
+      }
+    </script>
+<sf:code>
+
+
+</sf:code>
+  </head>
+  <body>
+<div sf:if="title" alt="${alt}">
+  title${alt}
+</div>
+<p>
+  ${title} ${title} ${title}
+</p>
+<sf:md>
+# aaaaaaa
+これはこれは
+</sf:md>
+<sf:code>
+  if(aaa = bb) { 
+    let a = 10;
+  }
+</sf:code>
+  </body>
+</html>

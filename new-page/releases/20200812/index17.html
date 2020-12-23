@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+
+<html lang="ja" prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb# article: http://ogp.me/ns/article#">
+
+<head>
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-15457703-9"></script>
+  <script>
+    if (!location.hostname.match(/localhost/)) {
+      window.dataLayer = window.dataLayer || [];
+      function gtag() { dataLayer.push(arguments); }
+      gtag('js', new Date());
+      gtag('config', 'UA-15457703-9');
+    }
+  </script>
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>トップページをリニューアルする</title>
+  <meta name="description" content="リニューアル用のトップページデザインを考えて実装する" />
+  <meta name="keywords" content="Programming,Music,HTML5,WebGL,javascript,WebAudio" /> 	
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <meta itemprop="image" content="https://www.sfpgmr.net/img/sfweb.png" />
+  <meta itemprop="name" content="S.F. Web" />
+  
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:site" content="S.F. Web" />
+  <meta name="twitter:url" content="./index17.html" />
+  <meta name="twitter:title" content="リニューアル用のトップページデザイン" />
+  <meta name="twitter:description" content="リニューアル用のトップページデザインを考えて実装する" />
+  <meta name="twitter:image" content="https://www.sfpgmr.net/img/sfweb.png" />
+  
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="./index17.html" />
+  <meta property="og:title" content="リニューアル用のトップページデザイン"/>
+  <meta property="og:site_name" content="S.F. Web" />
+  <meta property="og:description" content="Programming,Music,HTML5,WebGL,javascript,WebAudio">
+  <meta property="og:image" content="https://www.sfpgmr.net/img/sfweb.png">
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    html {
+      margin: 0;
+      padding: 0;
+      font-size:10px;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      background: black;
+      color: white;
+    }
+
+    .top-nav {
+      position:fixed;
+      z-index:99999;
+      background: rgba(0,0,0,0.5);
+      display: block;
+      width:100%;
+      height:32px;
+      color:white;
+    }
+    #sentinel {
+      width:0px;
+      height:0px;
+    }
+    .contents {
+      padding-top:32px;
+      width: 100%;
+      position: relative;
+      content: strict;
+    }
+
+    @keyframes blinking {
+      0% {
+        color: black;
+      }
+
+      50% {
+        color: white;
+      }
+
+      100% {
+        color: black;
+      }
+    }
+
+    .loading {
+      font-family: monospace;
+      font-size: 24px;
+      position: fixed;
+      width: 100vw;
+      height: 100vh;
+      text-align: center;
+      padding-top: 50vh;
+      z-index: 32768;
+      background: black;
+      animation: blinking 2s infinite;
+      content: strict;
+    }
+
+
+    .contents > article {
+      background: #f0f0f0;
+      color: #202020;
+      position: absolute;
+      max-height: 960px;
+      overflow: auto;
+      border-radius: 3px;
+     /* transition: opacity 1s linear;*/
+      opacity: 1.0;
+    }
+
+    .tweet-header {
+      display: grid;
+      align-items: end;
+      grid-template-columns: 40px 2fr 1fr;
+      grid-template-rows: 1fr;
+      font-size: 12px;
+      font-weight: bold;
+    }
+
+
+    .tweet-img {
+      width: 100%;
+      object-fit: cover;
+    }
+
+    .youtube {
+      position: relative;
+      cursor: pointer;
+    }
+
+    .youtube > img {
+      width: 100%;
+      object-fit: cover;
+    }
+
+    .youtube > svg.player-play {
+      width:64px;
+      height:64px;
+      left:calc(50% - 32px);
+      top:calc(50% - 32px);
+      position:absolute;
+      z-index: 1000;
+      opacity: 0.5;
+    }
+    
+    .youtube:hover > svg.player-play {
+      opacity: 1.0;
+    }
+
+    .youtube:hover .player-play-1 {
+      stroke:#80808080;
+    }
+
+    
+    .youtube > div.yt-title {
+      /*text-shadow: #fff 1px 1px 0;*/
+      font-size: 1.2rem;
+      color:white;
+      background:rgba(0, 0,0,0.5);
+      position:absolute;
+      left:0;
+      top:0;
+      overflow: auto;
+      z-index:998;
+    }
+
+
+    .tweet-profile-img {
+      grid-column: 1/2;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+    }
+
+    .tweet-user-name {
+      grid-column: 2/3;
+    }
+
+    .tweet-date {
+      font-size: 8px;
+      text-align: right;
+      grid-column: 3/4;
+    }
+
+    .contents>twitter-widget {
+      overflow: auto;
+      max-height: 960px;
+      position: absolute;
+    }
+
+    .contents>article>section>.tweet-text {
+      display: block;
+      padding: 4px;
+      word-break: break-all;
+      font-size: 12px;
+    }
+
+    .contents>article>h3 {
+      font-size: 12px;
+    }
+
+    blockquote.card {
+      margin:4px;
+      padding:4px;
+      font-size:12px;
+      background:white;
+      border-radius: 4px;
+    }
+
+    blockquote.card > header {
+      display:grid;
+      grid-gap:4px;
+      gap:4px;
+    }
+
+    blockquote.card-default > header {
+      grid-template-columns:64px 1fr;
+    }
+
+    blockquote.card-large > header {
+      grid-template-columns:1fr;
+    }
+
+    blockquote.card > header > img {
+      width:100%;
+    }
+
+
+    div.no-image {
+      display: block;
+      width:64px;
+      height:64px;
+      background:gray;
+      color:white;
+      text-align: center;
+      line-height: 64px;
+    }
+
+  </style>
+</head>
+
+<body>
+  <div class="loading" id="loading">Loading</div>
+  <header class="top-nav">
+    <h1>S.F. Info.</h1>
+  </header>
+  <div class="contents" id="contents" rendersubtree="invisible skip-activation"> 
+    
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1212701145379946496/pSDVrvWj_normal.png" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1261914320960581633"
+            target="_blank">2020/5/17 15:59:54</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">え...。あのシーンってそうなんだ。。すごいな。。 <blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="https://twitter.com/kst050z/status/1261611279724146689" target="_blank"></a></header><div></div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1261914456310681600"
+            target="_blank">2020/5/17 16:00:26</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">インターステラはいい映画でしたなあ。。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1212701145379946496/pSDVrvWj_normal.png" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1261907593867350016"
+            target="_blank">2020/5/17 15:33:10</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ubuntuのLTSのバージョンが４月に上がったのでクラウドとwsl2のバージョンをあげるかどうか悩むなあ。。もうちょっとあとでいいか。。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1765729789/image1326952644_normal.png" />
+        <p class="tweet-user-name">Robᵉʳᵗ Graham😷, provocateur@ErrataRob</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/ErrataRob/status/1261749915727867904"
+            target="_blank">2020/5/17 5:06:36</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">The date when the next generation's Edward Gibbon will point to as when it began. <a href="https://twitter.com/BrendanEich/status/1261388748991811585" target="_blank">twitter.com/BrendanEich/st…</a></p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://abs.twimg.com/sticky/default_profile_images/default_profile_normal.png" />
+        <p class="tweet-user-name">s45e_mid@s45e_m</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/s45e_m/status/1261250116926636032"
+            target="_blank">2020/5/15 20:00:35</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">このMV-30にはいろいろなバンク(音色マップ)があるのですが、この中の「Bank 5 (と6)」が興味深い。今の目で見ると何の変哲もないGM音色配列なのですが、この機材の発売時期はたぶん1990年で、初代SC-55が出た1991年よりも前。もちろんGM規格よりも前。<br/><a href="http://lib.roland.co.jp/support/jp/manuals/res/1809942/MV-30_j.pdf#page=245" target="_blank">lib.roland.co.jp/support/jp/man…</a> https://t.co/eiosgllofs</p>
+        
+        <img  class="tweet-img" src="https://pbs.twimg.com/media/EYDbGgeUMAEt252.png" />
+        
+        <img  class="tweet-img" src="https://pbs.twimg.com/media/EYDbq7EU4AA-8Uo.png" />
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1194045320566628353/XEgm1OcZ_normal.jpg" />
+        <p class="tweet-user-name">Frank Force 🇺🇸✊✊🏿✊🏾✊🏼✊🏽✊🏻🏳️‍🌈@KilledByAPixel</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/KilledByAPixel/status/1261343368086355969"
+            target="_blank">2020/5/16 2:11:08</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">Tiny Forrest 🌳 <a href="https://www.dwitter.net/d/18806" target="_blank">dwitter.net/d/18806</a><br/><br/>for(k=i=800;i--;x.fillRect(b?0:960+r*S(j*j)*39-w/2*r,r*(64-(h=b?0:9+j%9)*!a)-k,w*r+b,b-h*r))j=i+t*120|0,b=i%2*1e4,a=j%16==8,x.fillStyle=R(v=j%16&lt;2?64:i/3-a*i,v/(!b*S(j&gt;&gt;=4)+2)*2),r=1e4/i,w=a?2:9<br/><br/>#javascript #tinycode #tweetcart #loop https://t.co/OCZ7bN9OYo</p>
+        
+        <video class="tweet-img" controls src="https://video.twimg.com/tweet_video/EYEw88YWoAIL9iK.mp4" />
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1212701145379946496/pSDVrvWj_normal.png" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1261232126466256897"
+            target="_blank">2020/5/15 18:49:06</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">これをちょっと読もうとしている。。<br/><blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="http://troubles.md/posts/wasm-is-not-a-stack-machine/" target="_blank">WebAssembly Troubles part 1: WebAssembly Is Not a Stack Machine</a></header><div></div></blockquote></p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1212701145379946496/pSDVrvWj_normal.png" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1261231266914955265"
+            target="_blank">2020/5/15 18:45:41</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">なんかちょっと、rustに興味がわいてきたなあ。前から興味がなかったかといえばそうではないけど。denoがrustで作られてると聞いたりbinaryenもrustのbindingがあると聞くとねえ。。<br/><br/><blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="https://deno.land/" target="_blank">Deno</a></header><div></div></blockquote></p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1212701145379946496/pSDVrvWj_normal.png" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1261038007856984064"
+            target="_blank">2020/5/15 5:57:44</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">deno 1.0かあ。これ面白いよなあ。<br/><br/><blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="https://deno.land/" target="_blank">Deno</a></header><div></div></blockquote></p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1212701145379946496/pSDVrvWj_normal.png" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1260839103429373952"
+            target="_blank">2020/5/14 16:47:22</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">この曲のサンプリング・ボイスはコルグSDD 1000あたりが使われてるらしいね。これはデジタル・ディレイで２秒くらいサンプリングできるもの。トリガーで鳴らすことができたようだ。<br/><br/>Haruomi Hosono - S-F-X - 01 - Body Snatchers<br/><div class="youtube" data-type="yt" id="d4gypiuQt5E"><div class="yt-title">Youtube - Haruomi Hosono - S-F-X - 01 - Body Snatchers</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img  data-href="https://youtu.be/d4gypiuQt5E" class="youtube" src="https://i.ytimg.com/vi/d4gypiuQt5E/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1267819337026420739/GBuq7wjs_normal.jpg" />
+        <p class="tweet-user-name">Deno@deno_land</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/deno_land/status/1260199156037169153"
+            target="_blank">2020/5/12 22:24:26</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">v1.0.0-rc3 released with some last minute changes. v1.0.0 will be released tomorrow.<br/><a href="https://github.com/denoland/deno/releases/tag/v1.0.0-rc3" target="_blank">github.com/denoland/deno/…</a></p>
+        
+      </section>
+      
+    </article>
+    
+  </div>
+  <footer>
+    CopyLight 2019 Satoshi Fujiwara
+  </footer>
+  <script async src="https://platform.twitter.com/widgets.js"></script>
+
+  <script async src="./index.js"></script>
+
+</body>
+
+</html>

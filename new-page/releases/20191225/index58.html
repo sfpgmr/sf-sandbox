@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+
+<html lang="ja" prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb# article: http://ogp.me/ns/article#">
+
+<head>
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-15457703-9"></script>
+  <script>
+    if (!location.hostname.match(/localhost/)) {
+      window.dataLayer = window.dataLayer || [];
+      function gtag() { dataLayer.push(arguments); }
+      gtag('js', new Date());
+      gtag('config', 'UA-15457703-9');
+    }
+  </script>
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>トップページをリニューアルする</title>
+  <meta name="description" content="リニューアル用のトップページデザインを考えて実装する" />
+  <meta name="keywords" content="Programming,Music,HTML5,WebGL,javascript,WebAudio" /> 	
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <meta itemprop="image" content="https://www.sfpgmr.net/img/sfweb.png" />
+  <meta itemprop="name" content="S.F. Web" />
+  
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:site" content="S.F. Web" />
+  <meta name="twitter:url" content="./index58.html" />
+  <meta name="twitter:title" content="リニューアル用のトップページデザイン" />
+  <meta name="twitter:description" content="リニューアル用のトップページデザインを考えて実装する" />
+  <meta name="twitter:image" content="https://www.sfpgmr.net/img/sfweb.png" />
+  
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="./index58.html" />
+  <meta property="og:title" content="リニューアル用のトップページデザイン"/>
+  <meta property="og:site_name" content="S.F. Web" />
+  <meta property="og:description" content="Programming,Music,HTML5,WebGL,javascript,WebAudio">
+  <meta property="og:image" content="https://www.sfpgmr.net/img/sfweb.png">
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    html {
+      margin: 0;
+      padding: 0;
+      font-size:10px;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      background: black;
+      color: white;
+    }
+
+    .top-nav {
+      position:fixed;
+      z-index:99999;
+      background: rgba(0,0,0,0.5);
+      display: block;
+      width:100%;
+      height:32px;
+      color:white;
+    }
+    #sentinel {
+      width:0px;
+      height:0px;
+    }
+    .contents {
+      padding-top:32px;
+      width: 100%;
+      position: relative;
+      content: strict;
+    }
+
+    @keyframes blinking {
+      0% {
+        color: black;
+      }
+
+      50% {
+        color: white;
+      }
+
+      100% {
+        color: black;
+      }
+    }
+
+    .loading {
+      font-family: monospace;
+      font-size: 24px;
+      position: fixed;
+      width: 100vw;
+      height: 100vh;
+      text-align: center;
+      padding-top: 50vh;
+      z-index: 32768;
+      background: black;
+      animation: blinking 2s infinite;
+      content: strict;
+    }
+
+
+    .contents > article {
+      background: #f0f0f0;
+      color: #202020;
+      position: absolute;
+      max-height: 960px;
+      overflow: auto;
+      border-radius: 3px;
+     /* transition: opacity 1s linear;*/
+      opacity: 1.0;
+    }
+
+    .tweet-header {
+      display: grid;
+      align-items: end;
+      grid-template-columns: 40px 2fr 1fr;
+      grid-template-rows: 1fr;
+      font-size: 12px;
+      font-weight: bold;
+    }
+
+
+    .tweet-img {
+      width: 100%;
+      object-fit: cover;
+    }
+
+    .youtube {
+      position: relative;
+      cursor: pointer;
+    }
+
+    .youtube > img {
+      width: 100%;
+      object-fit: cover;
+    }
+
+    .youtube > svg.player-play {
+      width:64px;
+      height:64px;
+      left:calc(50% - 32px);
+      top:calc(50% - 32px);
+      position:absolute;
+      z-index: 1000;
+      opacity: 0.5;
+    }
+    
+    .youtube:hover > svg.player-play {
+      opacity: 1.0;
+    }
+
+    .youtube:hover .player-play-1 {
+      stroke:#80808080;
+    }
+
+    
+    .youtube > div.yt-title {
+      /*text-shadow: #fff 1px 1px 0;*/
+      font-size: 1.2rem;
+      color:white;
+      background:rgba(0, 0,0,0.5);
+      position:absolute;
+      left:0;
+      top:0;
+      overflow: auto;
+      z-index:998;
+    }
+
+
+    .tweet-profile-img {
+      grid-column: 1/2;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+    }
+
+    .tweet-user-name {
+      grid-column: 2/3;
+    }
+
+    .tweet-date {
+      font-size: 8px;
+      text-align: right;
+      grid-column: 3/4;
+    }
+
+    .contents>twitter-widget {
+      overflow: auto;
+      max-height: 960px;
+      position: absolute;
+    }
+
+    .contents>article>section>.tweet-text {
+      display: block;
+      padding: 4px;
+      word-break: break-all;
+      font-size: 12px;
+    }
+
+    .contents>article>h3 {
+      font-size: 12px;
+    }
+
+    blockquote.card {
+      margin:4px;
+      padding:4px;
+      font-size:12px;
+      background:white;
+      border-radius: 4px;
+    }
+
+    blockquote.card > header {
+      display:grid;
+      grid-gap:4px;
+      gap:4px;
+    }
+
+    blockquote.card-default > header {
+      grid-template-columns:64px 1fr;
+    }
+
+    blockquote.card-large > header {
+      grid-template-columns:1fr;
+    }
+
+    blockquote.card > header > img {
+      width:100%;
+    }
+
+
+    div.no-image {
+      display: block;
+      width:64px;
+      height:64px;
+      background:gray;
+      color:white;
+      text-align: center;
+      line-height: 64px;
+    }
+
+  </style>
+</head>
+
+<body>
+  <div class="loading" id="loading">Loading</div>
+  <header class="top-nav">
+    <h1>S.F. Info.</h1>
+  </header>
+  <div class="contents" id="contents" rendersubtree="invisible skip-activation"> 
+    
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1081318605612969984"
+            target="_blank">2019/1/5 7:37:00</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">Windows + VC++で遊んでた時はUnicode = wchar_t使うという感じだったよな。確かに。wchar_tは２バイトで、１単位でUnicodeの任意の一文字を表すことができると。でもサロゲート・ペアを知るとそれは無理筋なんだよな。<br/><br/><blockquote class="card card-large"><header><img  src="https://qiita-user-contents.imgix.net/https%3A%2F%2Fcdn.qiita.com%2Fassets%2Fpublic%2Fogp-background-1150d8b18a7c15795b701a55ae908f94.png?ixlib=rb-1.2.2&w=1200&mark=https%3A%2F%2Fqiita-user-contents.imgix.net%2F~text%3Fixlib%3Drb-1.2.2%26w%3D840%26h%3D380%26txt%3DC%252B%252B%25E6%25A8%2599%25E6%25BA%2596%25E5%258C%2596%25E5%25A7%2594%25E5%2593%25A1%25E4%25BC%259A%25E3%2580%2581%25E3%2581%25A4%25E3%2581%2584%25E3%2581%25AB%25E6%2596%2587%25E5%25AD%2597%25E3%2581%25A8%25E3%2581%25AF%25E4%25BD%2595%25E3%2581%258B%25E3%2582%2592%25E7%2590%2586%25E8%25A7%25A3%25E3%2581%2599%25E3%2582%258B%253A%2520char8_t%26txt-color%3D%2523333%26txt-font%3DAvenir-Black%26txt-size%3D54%26txt-clip%3Dellipsis%26txt-align%3Dcenter%252Cmiddle%26s%3D78852f8567057283945a455d37f2a5ff&mark-align=center%2Cmiddle&blend=https%3A%2F%2Fqiita-user-contents.imgix.net%2F~text%3Fixlib%3Drb-1.2.2%26w%3D840%26h%3D500%26txt%3D%2540yumetodo%26txt-color%3D%2523333%26txt-font%3DAvenir-Black%26txt-size%3D45%26txt-align%3Dright%252Cbottom%26s%3D1de8834ab2cb7d3b8121a7072a5a6536&blend-align=center%2Cmiddle&blend-mode=normal&s=880d167da8d001b66adb45d32fc1f3ce" /><a href="https://qiita.com/yumetodo/items/54e1a8230dbf513ea85b#%E5%B4%A9%E5%A3%8A%E3%81%97%E3%81%9Fwchar_t%E5%9E%8B" target="_blank">C++標準化委員会、ついに文字とは何かを理解する: char8_t - Qiita</a></header><div># C++ Advent Calendar 2018<br/><br/>この記事は[C++ Advent Calendar 2018](https://qiita.com/advent-calendar/2018/cpp) 15日目の記事です。<br/><br/>-...</div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1081320757060284416"
+            target="_blank">2019/1/5 7:45:33</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">wchar_t自体UTF-16だと言えるのはWindowsの世界だけなんだなあ。。そもそもwchar_tはエンコードや文字コードが規定されてないということか。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1081321260494147584"
+            target="_blank">2019/1/5 7:47:33</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">UTF-32であっても、結合文字だったっけ？があるからもはや固定長で文字を表すということ自体が幻想であるのですな。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1081323700769574912"
+            target="_blank">2019/1/5 7:57:14</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">そういえばWindowsではTCHARなるマクロがあったよなあ。。Unicodeビルド/マルチバイトビルドを切り替えできるように文字列はすべてこのマクロで指定しておくと。_T("ABCDEF")なんちゅうリテラル用のマクロもあったなあ。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1081324319739760640"
+            target="_blank">2019/1/5 7:59:42</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">C++11には、char16_t/char32_tなる型があるのか。バイト長は決めたけど、相変わらずエンコード方式の規定はないのですな。<br/><br/><blockquote class="card card-large"><header><img  src="https://qiita-user-contents.imgix.net/https%3A%2F%2Fcdn.qiita.com%2Fassets%2Fpublic%2Fogp-background-1150d8b18a7c15795b701a55ae908f94.png?ixlib=rb-1.2.2&w=1200&mark=https%3A%2F%2Fqiita-user-contents.imgix.net%2F~text%3Fixlib%3Drb-1.2.2%26w%3D840%26h%3D380%26txt%3DC%252B%252B%25E6%25A8%2599%25E6%25BA%2596%25E5%258C%2596%25E5%25A7%2594%25E5%2593%25A1%25E4%25BC%259A%25E3%2580%2581%25E3%2581%25A4%25E3%2581%2584%25E3%2581%25AB%25E6%2596%2587%25E5%25AD%2597%25E3%2581%25A8%25E3%2581%25AF%25E4%25BD%2595%25E3%2581%258B%25E3%2582%2592%25E7%2590%2586%25E8%25A7%25A3%25E3%2581%2599%25E3%2582%258B%253A%2520char8_t%26txt-color%3D%2523333%26txt-font%3DAvenir-Black%26txt-size%3D54%26txt-clip%3Dellipsis%26txt-align%3Dcenter%252Cmiddle%26s%3D78852f8567057283945a455d37f2a5ff&mark-align=center%2Cmiddle&blend=https%3A%2F%2Fqiita-user-contents.imgix.net%2F~text%3Fixlib%3Drb-1.2.2%26w%3D840%26h%3D500%26txt%3D%2540yumetodo%26txt-color%3D%2523333%26txt-font%3DAvenir-Black%26txt-size%3D45%26txt-align%3Dright%252Cbottom%26s%3D1de8834ab2cb7d3b8121a7072a5a6536&blend-align=center%2Cmiddle&blend-mode=normal&s=880d167da8d001b66adb45d32fc1f3ce" /><a href="https://qiita.com/yumetodo/items/54e1a8230dbf513ea85b#char16_tchar32_t%E5%9E%8B%E3%81%AE%E8%BF%BD%E5%8A%A0" target="_blank">C++標準化委員会、ついに文字とは何かを理解する: char8_t - Qiita</a></header><div># C++ Advent Calendar 2018<br/><br/>この記事は[C++ Advent Calendar 2018](https://qiita.com/advent-calendar/2018/cpp) 15日目の記事です。<br/><br/>-...</div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1081325472158343168"
+            target="_blank">2019/1/5 8:04:17</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">と思ったらUTF-8だけはエンコードが保証されてるのかいな。。<br/><br/>・UTF-8文字列リテラル<br/><br/>u8"このリテラルはUTF-8でエンコードされることが保証される";<br/><br/><blockquote class="card card-large"><header><img  src="https://qiita-user-contents.imgix.net/https%3A%2F%2Fcdn.qiita.com%2Fassets%2Fpublic%2Fogp-background-1150d8b18a7c15795b701a55ae908f94.png?ixlib=rb-1.2.2&w=1200&mark=https%3A%2F%2Fqiita-user-contents.imgix.net%2F~text%3Fixlib%3Drb-1.2.2%26w%3D840%26h%3D380%26txt%3DC%252B%252B%25E6%25A8%2599%25E6%25BA%2596%25E5%258C%2596%25E5%25A7%2594%25E5%2593%25A1%25E4%25BC%259A%25E3%2580%2581%25E3%2581%25A4%25E3%2581%2584%25E3%2581%25AB%25E6%2596%2587%25E5%25AD%2597%25E3%2581%25A8%25E3%2581%25AF%25E4%25BD%2595%25E3%2581%258B%25E3%2582%2592%25E7%2590%2586%25E8%25A7%25A3%25E3%2581%2599%25E3%2582%258B%253A%2520char8_t%26txt-color%3D%2523333%26txt-font%3DAvenir-Black%26txt-size%3D54%26txt-clip%3Dellipsis%26txt-align%3Dcenter%252Cmiddle%26s%3D78852f8567057283945a455d37f2a5ff&mark-align=center%2Cmiddle&blend=https%3A%2F%2Fqiita-user-contents.imgix.net%2F~text%3Fixlib%3Drb-1.2.2%26w%3D840%26h%3D500%26txt%3D%2540yumetodo%26txt-color%3D%2523333%26txt-font%3DAvenir-Black%26txt-size%3D45%26txt-align%3Dright%252Cbottom%26s%3D1de8834ab2cb7d3b8121a7072a5a6536&blend-align=center%2Cmiddle&blend-mode=normal&s=880d167da8d001b66adb45d32fc1f3ce" /><a href="https://qiita.com/yumetodo/items/54e1a8230dbf513ea85b#utf-8%E6%96%87%E5%AD%97%E5%88%97%E3%83%AA%E3%83%86%E3%83%A9%E3%83%AB" target="_blank">C++標準化委員会、ついに文字とは何かを理解する: char8_t - Qiita</a></header><div># C++ Advent Calendar 2018<br/><br/>この記事は[C++ Advent Calendar 2018](https://qiita.com/advent-calendar/2018/cpp) 15日目の記事です。<br/><br/>-...</div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1081328946925322240"
+            target="_blank">2019/1/5 8:18:05</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">UTF-8文字を表す型であるchar8_tはC++20で採用なのですな。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1081329272856297472"
+            target="_blank">2019/1/5 8:19:23</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">「ワイド文字はなぜいけてないか」がよくわかるなあ。。<br/><br/>・「char8_tによせて」<br/><blockquote class="card card-large"><header><img  src="https://ogimage.blog.st-hatena.com/12704346814673878668/10257846132689255924/1545582886" /><a href="https://naruse.hateblo.jp/entry/2018/12/24/013446" target="_blank">char8_tによせて - なるせにっき</a></header><div>C++標準化委員会、ついに文字とは何かを理解する: char8_tという記事が話題だってので、つらつらと書いてみました。 「グリフ」について グリフ（glyph）という言葉の定義をめぐって でも触れられていますが、「グリフ」という言葉が「字体」を指すのか「字形」を指すのかってのは議論がありますね。文字コードの文脈では普通「字形」の意味だとして話を進めることが多いように思います。 CJK統合漢字について Wikipediaの記事にまとまっていますが、実際に推進していたのは中国みたいですね。うまくやればあんまり問題なかったんでしょうが、あんまりうまく行かなかったんですが、それでも国ごとにその国の過…</div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1081329969769242625"
+            target="_blank">2019/1/5 8:22:09</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">char8_tはUTF-8であることが保証されるから、まあライブラリも作りやすくなるんだろうな。文字列を長さを求めるやつとかね。。長さ＝コードポイント数であってほしいからね。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1081332019794079744"
+            target="_blank">2019/1/5 8:30:18</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">Unicodeの複雑さの１つに合成済み文字というのがあってですな。<br/><blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="https://ja.wikipedia.org/wiki/%E5%90%88%E6%88%90%E6%B8%88%E3%81%BF%E6%96%87%E5%AD%97" target="_blank">合成済み文字 - Wikipedia</a></header><div></div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1081335076774805504"
+            target="_blank">2019/1/5 8:42:27</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">これに対して結合文字ちゅうのもあってですな。。<br/><blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="https://ja.wikipedia.org/wiki/%E7%B5%90%E5%90%88%E6%96%87%E5%AD%97" target="_blank">結合文字 - Wikipedia</a></header><div></div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1081336729305370624"
+            target="_blank">2019/1/5 8:49:01</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">例えば「ぱ」という文字はUnicodeでは2通りあるんですな<br/><br/>結合文字を使う：「は」＋「゜」...  "\u306F\u309A"<br/>合成済み文字を使う：「ぱ」 ... "\u3071"<br/><br/>実際に実行してみるとこんな感じ。。<br/><blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="https://wandbox.org/permlink/gdlVR71EJQITsmA8" target="_blank">[Wandbox]三へ( へ՞ਊ ՞)へ ﾊｯﾊｯ</a></header><div></div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1081337283972784128"
+            target="_blank">2019/1/5 8:51:13</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">なので同じ文字だけど比較すると偽と出る場合があるので、比較する場合は正規化を行わないといけないんだよなあ。。<br/><blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="https://ja.wikipedia.org/wiki/Unicode%E6%AD%A3%E8%A6%8F%E5%8C%96" target="_blank">Unicode正規化 - Wikipedia</a></header><div></div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1081337915525844992"
+            target="_blank">2019/1/5 8:53:44</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">でこの正規化にはUnicodeで定められた形式（NFD/NFC/NFKD/NFKC）があるんだよな。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1081338438480146433"
+            target="_blank">2019/1/5 8:55:48</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">もうUnicodeに触れるのはやめておこう。。肩凝ってきたわ。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1081339883900157952"
+            target="_blank">2019/1/5 9:01:33</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ああ、正準等価と互換等価ちゅうのもあるんだよなあ。。等価性だけとってみても面倒なんですわ。。<br/><a href="http://tech.albert2005.co.jp/501/" target="_blank">tech.albert2005.co.jp/501/</a></p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1080967306333700097"
+            target="_blank">2019/1/4 8:21:03</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">@syntaxerrors72 よろしくお願いいたします。<br/>ゲイラカイトはまだ現役なのですね！しかし思い返すと勉強はほぼせず、外で遊びまくった小学生時代だったような気がします。。</p>
+        
+      </section>
+      
+    </article>
+    
+  </div>
+  <footer>
+    CopyLight 2019 Satoshi Fujiwara
+  </footer>
+  <script async src="https://platform.twitter.com/widgets.js"></script>
+
+  <script async src="./index.js"></script>
+
+</body>
+
+</html>

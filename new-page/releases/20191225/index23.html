@@ -1,0 +1,693 @@
+<!DOCTYPE html>
+
+<html lang="ja" prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb# article: http://ogp.me/ns/article#">
+
+<head>
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-15457703-9"></script>
+  <script>
+    if (!location.hostname.match(/localhost/)) {
+      window.dataLayer = window.dataLayer || [];
+      function gtag() { dataLayer.push(arguments); }
+      gtag('js', new Date());
+      gtag('config', 'UA-15457703-9');
+    }
+  </script>
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>トップページをリニューアルする</title>
+  <meta name="description" content="リニューアル用のトップページデザインを考えて実装する" />
+  <meta name="keywords" content="Programming,Music,HTML5,WebGL,javascript,WebAudio" /> 	
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <meta itemprop="image" content="https://www.sfpgmr.net/img/sfweb.png" />
+  <meta itemprop="name" content="S.F. Web" />
+  
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:site" content="S.F. Web" />
+  <meta name="twitter:url" content="./index23.html" />
+  <meta name="twitter:title" content="リニューアル用のトップページデザイン" />
+  <meta name="twitter:description" content="リニューアル用のトップページデザインを考えて実装する" />
+  <meta name="twitter:image" content="https://www.sfpgmr.net/img/sfweb.png" />
+  
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="./index23.html" />
+  <meta property="og:title" content="リニューアル用のトップページデザイン"/>
+  <meta property="og:site_name" content="S.F. Web" />
+  <meta property="og:description" content="Programming,Music,HTML5,WebGL,javascript,WebAudio">
+  <meta property="og:image" content="https://www.sfpgmr.net/img/sfweb.png">
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    html {
+      margin: 0;
+      padding: 0;
+      font-size:10px;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      background: black;
+      color: white;
+    }
+
+    .top-nav {
+      position:fixed;
+      z-index:99999;
+      background: rgba(0,0,0,0.5);
+      display: block;
+      width:100%;
+      height:32px;
+      color:white;
+    }
+    #sentinel {
+      width:0px;
+      height:0px;
+    }
+    .contents {
+      padding-top:32px;
+      width: 100%;
+      position: relative;
+      content: strict;
+    }
+
+    @keyframes blinking {
+      0% {
+        color: black;
+      }
+
+      50% {
+        color: white;
+      }
+
+      100% {
+        color: black;
+      }
+    }
+
+    .loading {
+      font-family: monospace;
+      font-size: 24px;
+      position: fixed;
+      width: 100vw;
+      height: 100vh;
+      text-align: center;
+      padding-top: 50vh;
+      z-index: 32768;
+      background: black;
+      animation: blinking 2s infinite;
+      content: strict;
+    }
+
+
+    .contents > article {
+      background: #f0f0f0;
+      color: #202020;
+      position: absolute;
+      max-height: 960px;
+      overflow: auto;
+      border-radius: 3px;
+     /* transition: opacity 1s linear;*/
+      opacity: 1.0;
+    }
+
+    .tweet-header {
+      display: grid;
+      align-items: end;
+      grid-template-columns: 40px 2fr 1fr;
+      grid-template-rows: 1fr;
+      font-size: 12px;
+      font-weight: bold;
+    }
+
+
+    .tweet-img {
+      width: 100%;
+      object-fit: cover;
+    }
+
+    .youtube {
+      position: relative;
+      cursor: pointer;
+    }
+
+    .youtube > img {
+      width: 100%;
+      object-fit: cover;
+    }
+
+    .youtube > svg.player-play {
+      width:64px;
+      height:64px;
+      left:calc(50% - 32px);
+      top:calc(50% - 32px);
+      position:absolute;
+      z-index: 1000;
+      opacity: 0.5;
+    }
+    
+    .youtube:hover > svg.player-play {
+      opacity: 1.0;
+    }
+
+    .youtube:hover .player-play-1 {
+      stroke:#80808080;
+    }
+
+    
+    .youtube > div.yt-title {
+      /*text-shadow: #fff 1px 1px 0;*/
+      font-size: 1.2rem;
+      color:white;
+      background:rgba(0, 0,0,0.5);
+      position:absolute;
+      left:0;
+      top:0;
+      overflow: auto;
+      z-index:998;
+    }
+
+
+    .tweet-profile-img {
+      grid-column: 1/2;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+    }
+
+    .tweet-user-name {
+      grid-column: 2/3;
+    }
+
+    .tweet-date {
+      font-size: 8px;
+      text-align: right;
+      grid-column: 3/4;
+    }
+
+    .contents>twitter-widget {
+      overflow: auto;
+      max-height: 960px;
+      position: absolute;
+    }
+
+    .contents>article>section>.tweet-text {
+      display: block;
+      padding: 4px;
+      word-break: break-all;
+      font-size: 12px;
+    }
+
+    .contents>article>h3 {
+      font-size: 12px;
+    }
+
+    blockquote.card {
+      margin:4px;
+      padding:4px;
+      font-size:12px;
+      background:white;
+      border-radius: 4px;
+    }
+
+    blockquote.card > header {
+      display:grid;
+      grid-gap:4px;
+      gap:4px;
+    }
+
+    blockquote.card-default > header {
+      grid-template-columns:64px 1fr;
+    }
+
+    blockquote.card-large > header {
+      grid-template-columns:1fr;
+    }
+
+    blockquote.card > header > img {
+      width:100%;
+    }
+
+
+    div.no-image {
+      display: block;
+      width:64px;
+      height:64px;
+      background:gray;
+      color:white;
+      text-align: center;
+      line-height: 64px;
+    }
+
+  </style>
+</head>
+
+<body>
+  <div class="loading" id="loading">Loading</div>
+  <header class="top-nav">
+    <h1>S.F. Info.</h1>
+  </header>
+  <div class="contents" id="contents" rendersubtree="invisible skip-activation"> 
+    
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1147370275278741504"
+            target="_blank">2019/7/6 14:02:45</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">wsl2を試したいのだが、なぜかInsider Buildのアップデートが途中でコケてしまう。。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1145115319926587393"
+            target="_blank">2019/6/30 8:42:22</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">「自作WASMプリプロセッサとWeb要素技術を使ってレトロ・シューティングを作る」をトゥギャりました。 <blockquote class="card card-default"><header><img  src="https://pimg.togetter.com/09ceedf135d8d4f510f373ce4668453a9a9051dd/68747470733a2f2f692e7974696d672e636f6d2f76692f513578536878556b6264452f687164656661756c742e6a7067" /><a href="https://togetter.com/li/1371369" target="_blank">自作WASMプリプロセッサとWeb要素技術を使ってレトロ・シューティングを作る - Togetter</a></header><div>自作WASMプリプロセッサとWeb要素技術を使ってPSGエミュレータを軽く作ってみた。そしていまレトロ・シューティングを作っている（進行中）。</div></blockquote></p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1144868498264350721"
+            target="_blank">2019/6/29 16:21:35</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">Soulflex。いいなあ。。<br/><br/><div class="youtube" data-type="yt" id="hyF-DaZqRjs"><div class="yt-title">Youtube - Soulflex - All Good (Moving Jacket) [Lyric Video]</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img  data-href="https://youtu.be/hyF-DaZqRjs" class="youtube" src="https://i.ytimg.com/vi/hyF-DaZqRjs/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1144868827018088448"
+            target="_blank">2019/6/29 16:22:53</a></p>
+      </header>
+      <section>
+        <p class="tweet-text"><div class="youtube" data-type="yt" id="SgUYPp7NU2I"><div class="yt-title">Youtube - addiction</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img  data-href="https://youtu.be/SgUYPp7NU2I" class="youtube" src="https://i.ytimg.com/vi/SgUYPp7NU2I/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1144861113089024000"
+            target="_blank">2019/6/29 15:52:14</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">途中で放置した縦スクロール・シューティングの画面。Win98のころ作ってたやつ。C++とDirectXで作ってた。キャラはBlenderでモデリング。背景はterragen。 https://t.co/69RPUosvek</p>
+        
+        <img  class="tweet-img" src="https://pbs.twimg.com/media/D-NdHN8VAAAYoc2.png" />
+        
+        <img  class="tweet-img" src="https://pbs.twimg.com/media/D-NdHN_UYAErsB1.png" />
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1144861686446211072"
+            target="_blank">2019/6/29 15:54:31</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">キャラや背景の配置エディタまでは作ってたが、リソースを揃えたり、敵の動きを考えるのが面倒になり放置。。 https://t.co/hkX6aiuNI1</p>
+        
+        <img  class="tweet-img" src="https://pbs.twimg.com/media/D-Ndol1UIAAzBCD.png" />
+        
+        <img  class="tweet-img" src="https://pbs.twimg.com/media/D-NdoluUIAAqTPN.png" />
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1144864382213488645"
+            target="_blank">2019/6/29 16:05:13</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">Direct2D+Box2Dで作ったデモ。当たり判定が厳密だしリアルな動きなので当時はちょっと感動。<br/><div class="youtube" data-type="yt" id="YCzKmp9W3DE"><div class="yt-title">Youtube - Box2Dの処理結果をDirect2Dで描画する</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img  data-href="https://youtu.be/YCzKmp9W3DE" class="youtube" src="https://i.ytimg.com/vi/YCzKmp9W3DE/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1144864770652139521"
+            target="_blank">2019/6/29 16:06:46</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">これ使って横スクロールゲーム作れんかな。。とか思ってた頃のやつ。これ以上発展することはなく放置。。<br/><div class="youtube" data-type="yt" id="W_RfyU5c8CM"><div class="yt-title">Youtube - Box2D + WinRTでゲームを作る (10) -- Direct3DよるBox2Dオブジェクトの表示</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img  data-href="https://youtu.be/W_RfyU5c8CM" class="youtube" src="https://i.ytimg.com/vi/W_RfyU5c8CM/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1144865466764017664"
+            target="_blank">2019/6/29 16:09:32</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">シューティング・ゲームを作ろうと過去何度かチャレンジしてるけれども、テクノロジーをいじってなんとか使えるところまで来ると飽きて放置というのを繰り返しとるわ。。<br/><br/><blockquote class="card card-default"><header><img  src="https://www.sfpgmr.net/img/sf.png" /><a href="https://www.sfpgmr.net/blog/archive/category/%E3%82%B7%E3%83%A5%E3%83%BC%E3%83%86%E3%82%A3%E3%83%B3%E3%82%B0%E3%82%B2%E3%83%BC%E3%83%A0.html" target="_blank">S.F. Blog:キーワード「シューティングゲーム」 のアーカイブ</a></header><div>キーワード「シューティングゲーム」 のアーカイブ</div></blockquote></p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1120253661647474688/xCS8YVY7_normal.jpg" />
+        <p class="tweet-user-name">BUZZtube@kuj1rakun</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/kuj1rakun/status/1144809368027688960"
+            target="_blank">2019/6/29 12:26:37</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">いや、切れすぎやろw<br/><a href="https://twitter.com/UniqueAgeCom/status/1102649391456743424/video/1" target="_blank">twitter.com/UniqueAgeCom/s…</a></p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1144776174981111808"
+            target="_blank">2019/6/29 10:14:43</a></p>
+      </header>
+      <section>
+        <p class="tweet-text"><blockquote class="card card-default"><header><img  src="https://www.sfpgmr.net/img/sf.png" /><a href="https://www.sfpgmr.net/blog/entry/mos-sid-6581%E3%82%92%E8%AA%BF%E3%81%B9%E3%81%9F.html" target="_blank">S.F. Blog:Commodore 64 の音源チップMOS SID 6581を調べた</a></header><div>はじめにMOSのSIDチップは性能で他のPSGとは一線を画していた。当時の私のあこがれの的だった。今回チップの詳細について調べてみた。 内容は『Commodore SID 6581 Datasheet - http://www.waitingforfriday.com/?p=661』・『MOS Technology SID - http://en.wikipedia.org/wiki/6581 』...</div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1144776484214603776"
+            target="_blank">2019/6/29 10:15:57</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">これは自分で調べたやつだが、SIDはほんとによくできたサウンド・ジェネレータだと思う。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1143476112309096449"
+            target="_blank">2019/6/25 20:08:44</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ここではボクセルを立方体として扱うのではなく、ピクセルの拡縮で表そうとしている。1x1pxのビルボードですな。そのピクセルのライティングをどうするかの話。内部的には立方体として取り扱って、その点のライティング処理をそれなりに行おうとしてるんだな。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1143476358070226950"
+            target="_blank">2019/6/25 20:09:43</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ボクセルは小さな立方体なのだから、各面の法線も簡単に求めることができるよなあ。あとは隣接面によって無効となる法線をあらかじめ調べておいて、ボクセルが視点から見てどの面を向いているか判定できればなんとか所望のものができそうな気がしている。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1143476858094153729"
+            target="_blank">2019/6/25 20:11:42</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">頂点シェーダーでどの面を向いているかは頂点データとuniform変数でうまく判定できるんではないかなと。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1143477243202527232"
+            target="_blank">2019/6/25 20:13:14</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ボクセルを立方体でレンダリングするとちょっとコストが気になるんでね。また、この方法でレンダリングするとちょっと面白い表現になるかなと思ってるんだよね。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1143477523491119104"
+            target="_blank">2019/6/25 20:14:21</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">MagicaVoxelのデータをレンダリングするライブラリ。<br/>私もパーサ部分を使わせていただいてる。<br/><blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="http://github.dev7.jp/vox.js/" target="_blank"></a></header><div></div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1143477802479443968"
+            target="_blank">2019/6/25 20:15:27</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">よくできてるよなあ。MagicaVoxelってマイクラが華やかりしころできたツールっぽいねぇ。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1143485244370145285"
+            target="_blank">2019/6/25 20:45:01</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">しかしこのところシェーダーコードばかりを書いてるからwasmを忘れつつあるなあ。JSとシェーダーで画面周りのインターフェースを作って、それをメモリにマップしてそれ経由でWASMと会話することを目論んでるわけだけどね。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1143485813063204864"
+            target="_blank">2019/6/25 20:47:17</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ArrayBufferやDataViewについての理解度はかなり増してきた気がする。しかしもう爺の領域に差し掛かりつつあるので、すぐ忘れてしまうんだよなあ。爺だからと言って新しいことにチャレンジできないわけではないが、脳の可塑性はやっぱり落ちるんでそこはどうしようもないんだよな。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1143842209470406656"
+            target="_blank">2019/6/26 20:23:28</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">まああの「なんちゃってライティング」の改良案はようやくまとまり、実装をはじめたところ。さてどうなることやら。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1144218371417767936"
+            target="_blank">2019/6/27 21:18:12</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ちょっとエッジの処理が？だが大体思い通りの感じになった。<br/><blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="https://www.youtube.com/watch?v=VslBksaMDMY&feature=youtu.be" target="_blank">40×40x40ボクセルの立方体のライティング - YouTube</a></header><div></div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1144218977742143491"
+            target="_blank">2019/6/27 21:20:37</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">1ボクセル=1ピクセル（1ポイントスプライト）、そして「なんちゃってライティング」での描画はなんとかいけそうな感じですな。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1144219483055120385"
+            target="_blank">2019/6/27 21:22:37</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">これでMagicaVoxelをキャラクタ・エディタとして使うめどはついたかもですな。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1144335234449563649"
+            target="_blank">2019/6/28 5:02:35</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">8x8x8ボクセルデータを4倍に拡大して表示。1ボクセル=1ポイントスプライトという処理なのでこのような独特な表現になる。正確にボクセルをレンダリングするというわけではない。<br/><blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="https://www.youtube.com/watch?v=Q5xShxUkbdE&feature=youtu.be" target="_blank">8x8x8Voxelの表示 - YouTube</a></header><div></div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1144341922242150401"
+            target="_blank">2019/6/28 5:29:09</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">これが一応動くバージョン。<br/><blockquote class="card card-large"><header><img  src="https://www.sfpgmr.net/sandbox/vox/common/icon.png" /><a href="https://www.sfpgmr.net/sandbox/vox/20190628/" target="_blank">voxファイルの表示</a></header><div>voxファイルの表示</div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1144749561337958400"
+            target="_blank">2019/6/29 8:28:58</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">Uniform Bufferの価値が今になって理解できた。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1144768903731527680"
+            target="_blank">2019/6/29 9:45:50</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">知る人ぞ知るニチブツ「チューブパニック」。こういう粗いピクセルの3Dグラフィックをイメージしている。<br/><blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="https://www.youtube.com/watch?v=q58XNh1Sm2o" target="_blank">YouTube</a></header><div></div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1144768905304346624"
+            target="_blank">2019/6/29 9:45:50</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">今作ってるのとはゲームシステムも表現方法もまるで違って見た目のイメージ「だけ」だけどね。しかし当時ににしては非常に良くできたグラフィックだよなあ。内容が単調だからはやらなかったんだろうなあ。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1144769256489230336"
+            target="_blank">2019/6/29 9:47:14</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">PSGによるBGMも適度な音圧があって言い音してるよなあ。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1390057677/name2_normal.jpg" />
+        <p class="tweet-user-name">バカ・アフターの中の人@BaKaAfter</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/BaKaAfter/status/1144238297721393152"
+            target="_blank">2019/6/27 22:37:23</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">初めてのUnityで作った「激走！便座レース」がようやく完成に近づいた。 https://t.co/PiZTfgZots</p>
+        
+        <video class="tweet-img" controls src="https://video.twimg.com/ext_tw_video/1144237672136708096/pu/vid/480x270/etlgCHI9EKzVvW5d.mp4?tag=10" />
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1143955359704338432"
+            target="_blank">2019/6/27 3:53:06</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">これすごいな。。 <blockquote class="card card-default"><header><img  src="https://pbs.twimg.com/profile_images/1200160166760435712/sEhgqRkE_400x400.jpg" /><a href="https://twitter.com/daily_gadget_jp/status/1143775575154122752" target="_blank">デイリーガジェットさんのツイート: "日本でファミコンやPC-88が圧倒的なパワーを持っていた時代に、欧州や北米市場で人気を博したホビーパソコンのコモドール64復刻版「The C64」が今年12月に登場 小型化でなくフル機能フルキーボード搭載で、素晴らしいことに当時のままプログラミングもできます #コモドール64 https://t.co/jW7SiH8HWR"</a></header><div>“日本でファミコンやPC-88が圧倒的なパワーを持っていた時代に、欧州や北米市場で人気を博したホビーパソコンのコモドール64復刻版「The C64」が今年12月に登場<br/>小型化でなくフル機能フルキーボード搭載で、素晴らしいことに当時のままプログラミングもできます<br/>#コモドール64<br/>https://t.co/jW7SiH8HWR”</div></blockquote></p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/973551872010215424/FxbboEeW_normal.jpg" />
+        <p class="tweet-user-name">しろ@siro700</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/siro700/status/1143499331632156672"
+            target="_blank">2019/6/25 21:41:00</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">木曽駒ヶ岳から見下ろす夜の街、夜、こっそり山小屋から出て徘徊するの面白いですよ https://t.co/43JMONZF31</p>
+        
+        <img  class="tweet-img" src="https://pbs.twimg.com/media/D96GkoCUYAABlyu.jpg" />
+        
+      </section>
+      
+    </article>
+    
+  </div>
+  <footer>
+    CopyLight 2019 Satoshi Fujiwara
+  </footer>
+  <script async src="https://platform.twitter.com/widgets.js"></script>
+
+  <script async src="./index.js"></script>
+
+</body>
+
+</html>

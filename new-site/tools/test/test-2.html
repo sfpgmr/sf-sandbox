@@ -1,0 +1,59 @@
+<sf:include src='./test-2-include.html'>
+  <sf:meta>
+    {
+
+    }
+  </sf:meta>
+  <sf:script>
+    const title = 'test title';
+    const alt = 'test alt';
+  </sf:script>
+  <!DOCTYPE html>
+  <html amp xmlns:sf="https://sfpgmr.net/sf-template">
+
+  <head sf:if="alt">
+  </head>
+
+  <body>
+    <div sf:if="title" alt="alt">
+      title${alt}
+    </div>
+    <p>
+      ${title} ${title} ${title}
+    </p>
+    <sf:if value="title == 'test title'">
+    <sf:script>
+      for (let i = 0;i < 10;++i) {
+    </sf:script>
+      <div>${i}</div>
+
+    <sf:script>
+      }
+    </sf:script>
+      <div>if</div>
+      <sf:else>
+        <div>else</div>
+        <hr>
+    </sf:if>
+    <hr>
+    <div>
+      <div>
+        <sf:md>
+
+        </sf:md>
+
+        <sf:script>
+          const c = 'aa<aa></aa>';
+          let a = 'aa';
+          if(c.match(/aa/)) {
+          a = 10;
+          }
+        </sf:script>
+        <p>a = ${a}</p>
+        <p>c = ${d}</p>
+        <sf:script>
+          output(c);
+        </sf:script>
+  </body>
+
+  </html>

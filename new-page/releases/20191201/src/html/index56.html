@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="ja" prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb# article: http://ogp.me/ns/article#">
+
+<head>
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-15457703-9"></script>
+  <script>
+    if (!location.hostname.match(/localhost/)) {
+      window.dataLayer = window.dataLayer || [];
+      function gtag() { dataLayer.push(arguments); }
+      gtag('js', new Date());
+      gtag('config', 'UA-15457703-9');
+    }
+  </script>
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>トップページをリニューアルする</title>
+  <meta name="description" content="リニューアル用のトップページデザインを考えて実装する" />
+  <meta name="keywords" content="Programming,Music,HTML5,WebGL,javascript,WebAudio" /> 	
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <meta itemprop="image" content="https://www.sfpgmr.net/img/sfweb.png" />
+  <meta itemprop="name" content="S.F. Web" />
+  
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:site" content="S.F. Web" />
+  <meta name="twitter:url" content="./index56.html" />
+  <meta name="twitter:title" content="リニューアル用のトップページデザイン" />
+  <meta name="twitter:description" content="リニューアル用のトップページデザインを考えて実装する" />
+  <meta name="twitter:image" content="https://www.sfpgmr.net/img/sfweb.png" />
+  
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="./index56.html" />
+  <meta property="og:title" content="リニューアル用のトップページデザイン"/>
+  <meta property="og:site_name" content="S.F. Web" />
+  <meta property="og:description" content="Programming,Music,HTML5,WebGL,javascript,WebAudio">
+  <meta property="og:image" content="https://www.sfpgmr.net/img/sfweb.png">
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    html {
+      margin: 0;
+      padding: 0;
+      font-size:10px;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      background: black;
+      color: white;
+    }
+
+    .top-nav {
+      position:fixed;
+      z-index:99999;
+      background: rgba(0,0,0,0.5);
+      display: block;
+      width:100%;
+      height:32px;
+      color:white;
+    }
+    #sentinel {
+      width:0px;
+      height:0px;
+    }
+    .contents {
+      padding-top:32px;
+      width: 100%;
+      position: relative;
+      content: strict;
+    }
+
+    @keyframes blinking {
+      0% {
+        color: black;
+      }
+
+      50% {
+        color: white;
+      }
+
+      100% {
+        color: black;
+      }
+    }
+
+    .loading {
+      font-family: monospace;
+      font-size: 24px;
+      position: fixed;
+      width: 100vw;
+      height: 100vh;
+      text-align: center;
+      padding-top: 50vh;
+      z-index: 32768;
+      background: black;
+      animation: blinking 2s infinite;
+      content: strict;
+    }
+
+
+    .contents > article {
+      background: #f0f0f0;
+      color: #202020;
+      position: absolute;
+      max-height: 960px;
+      overflow: auto;
+      border-radius: 3px;
+      transition: opacity 1s linear;
+      opacity: 0.0;
+    }
+
+    .tweet-header {
+      display: grid;
+      align-items: end;
+      grid-template-columns: 40px 2fr 1fr;
+      grid-template-rows: 1fr;
+      font-size: 12px;
+      font-weight: bold;
+    }
+
+
+    .tweet-img {
+      width: 100%;
+      object-fit: cover;
+    }
+
+    .youtube {
+      position: relative;
+      cursor: pointer;
+    }
+
+    .youtube > img {
+      width: 100%;
+      object-fit: cover;
+    }
+
+    .youtube > svg.player-play {
+      width:64px;
+      height:64px;
+      left:calc(50% - 32px);
+      top:calc(50% - 32px);
+      position:absolute;
+      z-index: 1000;
+      opacity: 0.5;
+    }
+    
+    .youtube:hover > svg.player-play {
+      opacity: 1.0;
+    }
+
+    .youtube:hover .player-play-1 {
+      stroke:#80808080;
+    }
+
+    
+    .youtube > div.yt-title {
+      /*text-shadow: #fff 1px 1px 0;*/
+      font-size: 1.2rem;
+      color:white;
+      background:rgba(0, 0,0,0.5);
+      position:absolute;
+      left:0;
+      top:0;
+      overflow: auto;
+      z-index:998;
+    }
+
+
+    .tweet-profile-img {
+      grid-column: 1/2;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+    }
+
+    .tweet-user-name {
+      grid-column: 2/3;
+    }
+
+    .tweet-date {
+      font-size: 8px;
+      text-align: right;
+      grid-column: 3/4;
+    }
+
+    .contents>twitter-widget {
+      overflow: auto;
+      max-height: 960px;
+      position: absolute;
+    }
+
+    .contents>article>section>.tweet-text {
+      display: block;
+      padding: 4px;
+      word-break: break-all;
+      font-size: 12px;
+    }
+
+    .contents>article>h3 {
+      font-size: 12px;
+    }
+
+    blockquote.card {
+      margin:4px;
+      padding:4px;
+      font-size:12px;
+      background:white;
+      border-radius: 4px;
+    }
+
+    blockquote.card > header {
+      display:grid;
+      grid-gap:4px;
+      gap:4px;
+    }
+
+    blockquote.card-default > header {
+      grid-template-columns:64px 1fr;
+    }
+
+    blockquote.card-large > header {
+      grid-template-columns:1fr;
+    }
+
+    blockquote.card > header > img {
+      width:100%;
+    }
+
+
+    div.no-image {
+      display: block;
+      width:64px;
+      height:64px;
+      background:gray;
+      color:white;
+      text-align: center;
+      line-height: 64px;
+    }
+
+  </style>
+</head>
+
+<body>
+  <div class="loading" id="loading">Loading</div>
+  <header class="top-nav">
+    <h1>S.F. Info.</h1>
+  </header>
+  <div class="contents" id="contents" rendersubtree="invisible skip-activation"> 
+    
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1080945750605889536"
+            target="_blank">2019/1/4 6:55:24</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">小学生のころこれ買ってもらってほぼ毎日遊んでたな。。冬の遊びの定番でしたわ。。 <blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="https://twitter.com/Showa__Shojo/status/1080790793139281920" target="_blank">Twitter / アカウント凍結</a></header><div></div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1080946730466570241"
+            target="_blank">2019/1/4 6:59:18</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">これ用のタコ糸ってのがあった。ナイロンかなんかでできてて、それ以前の凧用とは明らかに違うしろもので、それ自体珍しかった。これを２-３本繋いで上げたりしたんだな。でまあ途中で切れたりするんだけど回収が大変だった。電柱にこれがよく引っかかってたりもしたよな。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1080947744917794816"
+            target="_blank">2019/1/4 7:03:20</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">そのタコ糸ってのが棒にきれいに巻かれていて、幾何学模様のような感じなんだけど、飛ばすとそれが紐解かれていく様を見てちょっと感動したりとか。凧もそうだけど紐に興味をそそられるという。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1080948275027468289"
+            target="_blank">2019/1/4 7:05:26</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">風が弱くても上がるんだけど、逆に風が強いとちょっとコントロールが難しいし、落ちるときの衝撃が強くて道路に激突して壊れたりもした記憶もあるなあ。何回か買いなおしたような記憶も。。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/917625215043194880/DB-47z5l_normal.jpg" />
+        <p class="tweet-user-name">WebAssemblyWeekly@WasmWeekly</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/WasmWeekly/status/1080839619602714625"
+            target="_blank">2019/1/3 23:53:40</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">Doom 3 running in the browser using Emscripten / WebAssembly <a href="http://continuation-labs.com/d3wasm/" target="_blank">continuation-labs.com/d3wasm/</a> https://t.co/1HtX6OgJ2w</p>
+        
+        <img loading="lazy" class="tweet-img" src="https://pbs.twimg.com/media/Dv_p3klWkAAn4Gq.jpg" />
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1080661190647246848"
+            target="_blank">2019/1/3 12:04:40</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">1/1-2は熱海・伊豆にいた。<br/>これは1/2の日の出。。 https://t.co/OfUwtbPqTg</p>
+        
+        <img loading="lazy" class="tweet-img" src="https://pbs.twimg.com/media/Dv9Hke8UcAEwvnt.jpg" />
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1080662578794180609"
+            target="_blank">2019/1/3 12:10:11</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">大室山はちょっとすごかったんだよなあ。これは下からとったんだけど、すり鉢を伏せたような形をしててね。。山焼きをしてるから木が生えてないんだよな。なので山の形がはっきりわかるんだよね。。 https://t.co/uM8F6QL7uF</p>
+        
+        <img loading="lazy" class="tweet-img" src="https://pbs.twimg.com/media/Dv9ISwEUYAIojth.jpg" />
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1080663524093747200"
+            target="_blank">2019/1/3 12:13:56</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">頂上まではリフトで登るんだけど、周りに高い山がないので見晴らしが最高に良い。 https://t.co/kos55ECnSQ</p>
+        
+        <img loading="lazy" class="tweet-img" src="https://pbs.twimg.com/media/Dv9JuTAV4AAmmy9.jpg" />
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1080664261737631744"
+            target="_blank">2019/1/3 12:16:52</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">火口の周りをぐるっと１周できる。周囲は1キロくらいあるみたい。 https://t.co/BhEJZGEVQ8</p>
+        
+        <img loading="lazy" class="tweet-img" src="https://pbs.twimg.com/media/Dv9KMUIV4AE9Bcs.jpg" />
+        
+        <img loading="lazy" class="tweet-img" src="https://pbs.twimg.com/media/Dv9KaLOUYAAm8Go.jpg" />
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1080664844158754816"
+            target="_blank">2019/1/3 12:19:11</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">遠くから見るとこんな形をしてるらしいね。。この写真はWikipediaのものですが。。<br/><blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="https://upload.wikimedia.org/wikipedia/commons/9/94/Mount_Omuro_%28Izu_Peninsula%29_20100426_%28B%29.jpg" target="_blank">Mount_Omuro_(Izu_Peninsula)_20100426_(B).jpg (1024×768)</a></header><div></div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1080665331020877824"
+            target="_blank">2019/1/3 12:21:07</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">これは元旦の初日の「入り」でございます。。それでは今年もよろしくお願いします。。 https://t.co/gGE9O6ZMDR</p>
+        
+        <img loading="lazy" class="tweet-img" src="https://pbs.twimg.com/media/Dv9LYbOUYAAa8RL.jpg" />
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1080666183567736835"
+            target="_blank">2019/1/3 12:24:30</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">しかし謎なのは大室山の火口にあるアーチェリー場なんだよな。。どういういきさつであそこでアーチェリーをすることになったのか。。 https://t.co/EOU8tlXUAm</p>
+        
+        <img loading="lazy" class="tweet-img" src="https://pbs.twimg.com/media/Dv9MFWKUUAA-KNF.jpg" />
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1080657857647849472"
+            target="_blank">2019/1/3 11:51:25</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">何故か風船が！！！！と思って調べたら、誕生日だと風船が飛ぶらしい。。 https://t.co/OmXFNqxuUq</p>
+        
+        <img loading="lazy" class="tweet-img" src="https://pbs.twimg.com/media/Dv9EldxVsAA6t1k.jpg" />
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1080647443241263105"
+            target="_blank">2019/1/3 11:10:02</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">今年こそオレオレ言語が完成するだろうか。。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1078975527371689985"
+            target="_blank">2018/12/29 20:26:26</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">このベースの音とベースラインですわなあ。。ハウス。。<br/><div class="youtube" data-type="yt" id="3tQDiSbhV0s"><div class="yt-title">Youtube - Adeva, Respect - 1989</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/3tQDiSbhV0s" class="youtube" src="https://i.ytimg.com/vi/3tQDiSbhV0s/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1078975913511940096"
+            target="_blank">2018/12/29 20:27:58</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ベースメント・ボーイズが絡んだやつも好んで聴きましたわ。このバスドラとベースが特徴的ですわな。。<br/><div class="youtube" data-type="yt" id="_KztNIg4cvE"><div class="yt-title">Youtube - Crystal Waters - Gypsy Woman (She's Homeless) [Official Video]</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/_KztNIg4cvE" class="youtube" src="https://i.ytimg.com/vi/_KztNIg4cvE/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1078765280057118720"
+            target="_blank">2018/12/29 6:30:59</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">Observableというサービスがなかなか興味深い。。<br/><blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="https://beta.observablehq.com/" target="_blank">The magic notebook for exploring data / Observable</a></header><div></div></blockquote></p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1077894115331694593"
+            target="_blank">2018/12/26 20:49:18</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">まじか。。この時代にカセットテープでソフトウェアの新製品が販売されるとは。。 <blockquote class="card card-default"><header><img loading="lazy" src="https://pbs.twimg.com/media/DvVUz_mUwAEECml.jpg:large" /><a href="https://twitter.com/BEEP_SHOP/status/1077860946503028736" target="_blank">BEEPさんのツイート: "第1回BEEPレトロホビーゲームプログラムコンテストの8ビット部門金賞作品が遂に販売開始です〜！P6ユーザーの方は要チェックですね。作品はこちらでご紹介しておりますhttps://t.co/FhywtahHjY… "</a></header><div>“第1回BEEPレトロホビーゲームプログラムコンテストの8ビット部門金賞作品が遂に販売開始です〜！P6ユーザーの方は要チェックですね。作品はこちらでご紹介しておりますhttps://t.co/FhywtahHjY”</div></blockquote></p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/858308632785559553/Jbzn5SfT_normal.jpg" />
+        <p class="tweet-user-name">鉄拳@Tekken_omachi</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/Tekken_omachi/status/1077425611726077952"
+            target="_blank">2018/12/25 13:47:38</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">子供の頃はクリスマスのおもちゃ屋さんのチラシを見るのが好きでした。特に買って貰えるわけではないんですが、ゲームウォッチ、超合金、ボードゲームなど眺めているだけでワクワク夢の世界にいられるチラシでした。<br/><br/>今はお正月のチラシが楽しみです笑。☺️ https://t.co/gdU5fs7E6k</p>
+        
+        <img loading="lazy" class="tweet-img" src="https://pbs.twimg.com/media/DvPI4SiVsAAZCA7.jpg" />
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1077865617791696896"
+            target="_blank">2018/12/26 18:56:03</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">すごい時代になったものですね。。 <blockquote class="card card-default"><header><img loading="lazy" src="https://pbs.twimg.com/profile_images/673911244064075776/i9iNiAp6_400x400.png" /><a href="https://twitter.com/cpp_akira/status/1077791327620722689" target="_blank">Akira Takahashiさんのツイート: "std::arrayがfillとswap以外全部constexprになった https://t.co/6E00JIo9om"</a></header><div>“std::arrayがfillとswap以外全部constexprになった https://t.co/6E00JIo9om”</div></blockquote></p>
+        
+      </section>
+      
+    </article>
+    
+  </div>
+  <footer>
+    CopyLight 2019 Satoshi Fujiwara
+  </footer>
+  <script async src="https://platform.twitter.com/widgets.js"></script>
+
+  <script async src="./index.js"></script>
+
+</body>
+
+</html>

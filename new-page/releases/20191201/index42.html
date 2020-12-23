@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="ja" prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb# article: http://ogp.me/ns/article#">
+
+<head>
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-15457703-9"></script>
+  <script>
+    if (!location.hostname.match(/localhost/)) {
+      window.dataLayer = window.dataLayer || [];
+      function gtag() { dataLayer.push(arguments); }
+      gtag('js', new Date());
+      gtag('config', 'UA-15457703-9');
+    }
+  </script>
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>トップページをリニューアルする</title>
+  <meta name="description" content="リニューアル用のトップページデザインを考えて実装する" />
+  <meta name="keywords" content="Programming,Music,HTML5,WebGL,javascript,WebAudio" /> 	
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <meta itemprop="image" content="https://www.sfpgmr.net/img/sfweb.png" />
+  <meta itemprop="name" content="S.F. Web" />
+  
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:site" content="S.F. Web" />
+  <meta name="twitter:url" content="./index42.html" />
+  <meta name="twitter:title" content="リニューアル用のトップページデザイン" />
+  <meta name="twitter:description" content="リニューアル用のトップページデザインを考えて実装する" />
+  <meta name="twitter:image" content="https://www.sfpgmr.net/img/sfweb.png" />
+  
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="./index42.html" />
+  <meta property="og:title" content="リニューアル用のトップページデザイン"/>
+  <meta property="og:site_name" content="S.F. Web" />
+  <meta property="og:description" content="Programming,Music,HTML5,WebGL,javascript,WebAudio">
+  <meta property="og:image" content="https://www.sfpgmr.net/img/sfweb.png">
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    html {
+      margin: 0;
+      padding: 0;
+      font-size:10px;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      background: black;
+      color: white;
+    }
+
+    .top-nav {
+      position:fixed;
+      z-index:99999;
+      background: rgba(0,0,0,0.5);
+      display: block;
+      width:100%;
+      height:32px;
+      color:white;
+    }
+    #sentinel {
+      width:0px;
+      height:0px;
+    }
+    .contents {
+      padding-top:32px;
+      width: 100%;
+      position: relative;
+      content: strict;
+    }
+
+    @keyframes blinking {
+      0% {
+        color: black;
+      }
+
+      50% {
+        color: white;
+      }
+
+      100% {
+        color: black;
+      }
+    }
+
+    .loading {
+      font-family: monospace;
+      font-size: 24px;
+      position: fixed;
+      width: 100vw;
+      height: 100vh;
+      text-align: center;
+      padding-top: 50vh;
+      z-index: 32768;
+      background: black;
+      animation: blinking 2s infinite;
+      content: strict;
+    }
+
+
+    .contents > article {
+      background: #f0f0f0;
+      color: #202020;
+      position: absolute;
+      max-height: 960px;
+      overflow: auto;
+      border-radius: 3px;
+      transition: opacity 1s linear;
+      opacity: 0.0;
+    }
+
+    .tweet-header {
+      display: grid;
+      align-items: end;
+      grid-template-columns: 40px 2fr 1fr;
+      grid-template-rows: 1fr;
+      font-size: 12px;
+      font-weight: bold;
+    }
+
+
+    .tweet-img {
+      width: 100%;
+      object-fit: cover;
+    }
+
+    .youtube {
+      position: relative;
+      cursor: pointer;
+    }
+
+    .youtube > img {
+      width: 100%;
+      object-fit: cover;
+    }
+
+    .youtube > svg.player-play {
+      width:64px;
+      height:64px;
+      left:calc(50% - 32px);
+      top:calc(50% - 32px);
+      position:absolute;
+      z-index: 1000;
+      opacity: 0.5;
+    }
+    
+    .youtube:hover > svg.player-play {
+      opacity: 1.0;
+    }
+
+    .youtube:hover .player-play-1 {
+      stroke:#80808080;
+    }
+
+    
+    .youtube > div.yt-title {
+      /*text-shadow: #fff 1px 1px 0;*/
+      font-size: 1.2rem;
+      color:white;
+      background:rgba(0, 0,0,0.5);
+      position:absolute;
+      left:0;
+      top:0;
+      overflow: auto;
+      z-index:998;
+    }
+
+
+    .tweet-profile-img {
+      grid-column: 1/2;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+    }
+
+    .tweet-user-name {
+      grid-column: 2/3;
+    }
+
+    .tweet-date {
+      font-size: 8px;
+      text-align: right;
+      grid-column: 3/4;
+    }
+
+    .contents>twitter-widget {
+      overflow: auto;
+      max-height: 960px;
+      position: absolute;
+    }
+
+    .contents>article>section>.tweet-text {
+      display: block;
+      padding: 4px;
+      word-break: break-all;
+      font-size: 12px;
+    }
+
+    .contents>article>h3 {
+      font-size: 12px;
+    }
+
+    blockquote.card {
+      margin:4px;
+      padding:4px;
+      font-size:12px;
+      background:white;
+      border-radius: 4px;
+    }
+
+    blockquote.card > header {
+      display:grid;
+      grid-gap:4px;
+      gap:4px;
+    }
+
+    blockquote.card-default > header {
+      grid-template-columns:64px 1fr;
+    }
+
+    blockquote.card-large > header {
+      grid-template-columns:1fr;
+    }
+
+    blockquote.card > header > img {
+      width:100%;
+    }
+
+
+    div.no-image {
+      display: block;
+      width:64px;
+      height:64px;
+      background:gray;
+      color:white;
+      text-align: center;
+      line-height: 64px;
+    }
+
+  </style>
+</head>
+
+<body>
+  <div class="loading" id="loading">Loading</div>
+  <header class="top-nav">
+    <h1>S.F. Info.</h1>
+  </header>
+  <div class="contents" id="contents" rendersubtree="invisible skip-activation"> 
+    
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/455934939234451456/gJW7YnRx_normal.png" />
+        <p class="tweet-user-name">窓の杜@madonomori</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/madonomori/status/1099829095620239360"
+            target="_blank">2019/2/25 9:31:04</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">GPUのディスプレイドライバーに複数の脆弱性、問題を修正した最新版が公開／ービス拒否（DoS）や特権の昇格、任意コードの実行、情報漏洩などにつながる恐れ <a href="https://forest.watch.impress.co.jp/docs/news/1171348.html" target="_blank">forest.watch.impress.co.jp/docs/news/1171…</a> https://t.co/r0YnQ0R1f9</p>
+        
+        <img loading="lazy" class="tweet-img" src="https://pbs.twimg.com/media/D0Ngu89V4AEfolI.jpg" />
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/1149273826888339456/gtnVYXpQ_normal.png" />
+        <p class="tweet-user-name">uint256_t@uint256_t</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/uint256_t/status/1100030392336244736"
+            target="_blank">2019/2/25 22:50:57</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">参考 : <a href="https://twitter.com/uint256_t/status/1100027852576051200?s=19" target="_blank">twitter.com/uint256_t/stat…</a></p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/1185983851669139456/IxzqV8gX_normal.jpg" />
+        <p class="tweet-user-name">pinkertons invective agency@mcmillen</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/mcmillen/status/1099639117548265472"
+            target="_blank">2019/2/24 20:56:10</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">free idea: have Marie Kondo work on the next C++ language spec <a href="https://twitter.com/jfbastien/status/1099420319847145473" target="_blank">twitter.com/jfbastien/stat…</a></p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1099956084796575744"
+            target="_blank">2019/2/25 17:55:41</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">これかな？<br/><a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2018/n4736.pdf" target="_blank">open-std.org/jtc1/sc22/wg21…</a></p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/1148860451549147137/pvcubB43_normal.png" />
+        <p class="tweet-user-name">Ryou Ezoe(江添 亮)@EzoeRyou</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/EzoeRyou/status/1099920341286019073"
+            target="_blank">2019/2/25 15:33:39</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">C++20にRange, Module, Coroutine, Contractが入ったのでC++20本を書くのがつらそう。一冊に収まるのかな。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/1192843149569167362/-G5G84-h_normal.jpg" />
+        <p class="tweet-user-name">しんやさん＠檸檬堂友の会@shinya_eafffffe</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/shinya_eafffffe/status/1099945700710703104"
+            target="_blank">2019/2/25 17:14:25</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">スマホがない時代って、関東圏のみなさんはどうやって電車で目的地までたどり着いてたの？<br/>無理やろこんなん。。。複雑すぎる。。。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/757454769938051072/n9Jxwlc0_normal.jpg" />
+        <p class="tweet-user-name">おさーま@73170932184</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/73170932184/status/1099617598797271040"
+            target="_blank">2019/2/24 19:30:40</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">流石700さんだ、16*24個のあたり判定ぐらいじゃへこたれないぜ https://t.co/2QYp5dw3Ha</p>
+        
+        <video class="tweet-img" controls src="https://video.twimg.com/ext_tw_video/1099617343263596545/pu/vid/320x180/2JuOKdjXl3suthEr.mp4?tag=6" />
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/1148860451549147137/pvcubB43_normal.png" />
+        <p class="tweet-user-name">Ryou Ezoe(江添 亮)@EzoeRyou</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/EzoeRyou/status/1099596073054531585"
+            target="_blank">2019/2/24 18:05:07</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">2泊3日のスノーボード旅行に言っている間にC++がすごいことになっているんだが。モジュールとコルーチンが採用されただと。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1099773147232923648"
+            target="_blank">2019/2/25 5:48:45</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ffmpegのフィルター・グラフのコマンドラインでの記述法はなかなか面白いですな。。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/875608588458131456/bTSQG-Qy_normal.jpg" />
+        <p class="tweet-user-name">がたろう TTLでCPUを作る爺（コンパイラやOSも手作りです）@duo6750</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/duo6750/status/1099119274885447680"
+            target="_blank">2019/2/23 10:30:30</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">【思い出の良書（5）】<br/>　 <br/>生物・地学・天文・電気・機械・模型などを幅広くカバーした小学校高学年～中学生向けの月刊誌。<br/>この本がキッカケでそれぞれの専門分野に進んだ方も多いと思う。<br/>　<br/>今だとNewtonや日経サイエンスが類書だが、いずれも（特に後者は）小学生には難しすぎると思う。<br/><br/>＼^o^／ https://t.co/qUknZn1Uro</p>
+        
+        <img loading="lazy" class="tweet-img" src="https://pbs.twimg.com/media/D0DaxqVVYAAotsk.jpg" />
+        
+      </section>
+      
+    </article>
+    
+  </div>
+  <footer>
+    CopyLight 2019 Satoshi Fujiwara
+  </footer>
+  <script async src="https://platform.twitter.com/widgets.js"></script>
+
+  <script async src="./index.js"></script>
+
+</body>
+
+</html>

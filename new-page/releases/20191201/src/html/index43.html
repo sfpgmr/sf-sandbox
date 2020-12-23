@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="ja" prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb# article: http://ogp.me/ns/article#">
+
+<head>
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-15457703-9"></script>
+  <script>
+    if (!location.hostname.match(/localhost/)) {
+      window.dataLayer = window.dataLayer || [];
+      function gtag() { dataLayer.push(arguments); }
+      gtag('js', new Date());
+      gtag('config', 'UA-15457703-9');
+    }
+  </script>
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>トップページをリニューアルする</title>
+  <meta name="description" content="リニューアル用のトップページデザインを考えて実装する" />
+  <meta name="keywords" content="Programming,Music,HTML5,WebGL,javascript,WebAudio" /> 	
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <meta itemprop="image" content="https://www.sfpgmr.net/img/sfweb.png" />
+  <meta itemprop="name" content="S.F. Web" />
+  
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:site" content="S.F. Web" />
+  <meta name="twitter:url" content="./index43.html" />
+  <meta name="twitter:title" content="リニューアル用のトップページデザイン" />
+  <meta name="twitter:description" content="リニューアル用のトップページデザインを考えて実装する" />
+  <meta name="twitter:image" content="https://www.sfpgmr.net/img/sfweb.png" />
+  
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="./index43.html" />
+  <meta property="og:title" content="リニューアル用のトップページデザイン"/>
+  <meta property="og:site_name" content="S.F. Web" />
+  <meta property="og:description" content="Programming,Music,HTML5,WebGL,javascript,WebAudio">
+  <meta property="og:image" content="https://www.sfpgmr.net/img/sfweb.png">
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    html {
+      margin: 0;
+      padding: 0;
+      font-size:10px;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      background: black;
+      color: white;
+    }
+
+    .top-nav {
+      position:fixed;
+      z-index:99999;
+      background: rgba(0,0,0,0.5);
+      display: block;
+      width:100%;
+      height:32px;
+      color:white;
+    }
+    #sentinel {
+      width:0px;
+      height:0px;
+    }
+    .contents {
+      padding-top:32px;
+      width: 100%;
+      position: relative;
+      content: strict;
+    }
+
+    @keyframes blinking {
+      0% {
+        color: black;
+      }
+
+      50% {
+        color: white;
+      }
+
+      100% {
+        color: black;
+      }
+    }
+
+    .loading {
+      font-family: monospace;
+      font-size: 24px;
+      position: fixed;
+      width: 100vw;
+      height: 100vh;
+      text-align: center;
+      padding-top: 50vh;
+      z-index: 32768;
+      background: black;
+      animation: blinking 2s infinite;
+      content: strict;
+    }
+
+
+    .contents > article {
+      background: #f0f0f0;
+      color: #202020;
+      position: absolute;
+      max-height: 960px;
+      overflow: auto;
+      border-radius: 3px;
+      transition: opacity 1s linear;
+      opacity: 0.0;
+    }
+
+    .tweet-header {
+      display: grid;
+      align-items: end;
+      grid-template-columns: 40px 2fr 1fr;
+      grid-template-rows: 1fr;
+      font-size: 12px;
+      font-weight: bold;
+    }
+
+
+    .tweet-img {
+      width: 100%;
+      object-fit: cover;
+    }
+
+    .youtube {
+      position: relative;
+      cursor: pointer;
+    }
+
+    .youtube > img {
+      width: 100%;
+      object-fit: cover;
+    }
+
+    .youtube > svg.player-play {
+      width:64px;
+      height:64px;
+      left:calc(50% - 32px);
+      top:calc(50% - 32px);
+      position:absolute;
+      z-index: 1000;
+      opacity: 0.5;
+    }
+    
+    .youtube:hover > svg.player-play {
+      opacity: 1.0;
+    }
+
+    .youtube:hover .player-play-1 {
+      stroke:#80808080;
+    }
+
+    
+    .youtube > div.yt-title {
+      /*text-shadow: #fff 1px 1px 0;*/
+      font-size: 1.2rem;
+      color:white;
+      background:rgba(0, 0,0,0.5);
+      position:absolute;
+      left:0;
+      top:0;
+      overflow: auto;
+      z-index:998;
+    }
+
+
+    .tweet-profile-img {
+      grid-column: 1/2;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+    }
+
+    .tweet-user-name {
+      grid-column: 2/3;
+    }
+
+    .tweet-date {
+      font-size: 8px;
+      text-align: right;
+      grid-column: 3/4;
+    }
+
+    .contents>twitter-widget {
+      overflow: auto;
+      max-height: 960px;
+      position: absolute;
+    }
+
+    .contents>article>section>.tweet-text {
+      display: block;
+      padding: 4px;
+      word-break: break-all;
+      font-size: 12px;
+    }
+
+    .contents>article>h3 {
+      font-size: 12px;
+    }
+
+    blockquote.card {
+      margin:4px;
+      padding:4px;
+      font-size:12px;
+      background:white;
+      border-radius: 4px;
+    }
+
+    blockquote.card > header {
+      display:grid;
+      grid-gap:4px;
+      gap:4px;
+    }
+
+    blockquote.card-default > header {
+      grid-template-columns:64px 1fr;
+    }
+
+    blockquote.card-large > header {
+      grid-template-columns:1fr;
+    }
+
+    blockquote.card > header > img {
+      width:100%;
+    }
+
+
+    div.no-image {
+      display: block;
+      width:64px;
+      height:64px;
+      background:gray;
+      color:white;
+      text-align: center;
+      line-height: 64px;
+    }
+
+  </style>
+</head>
+
+<body>
+  <div class="loading" id="loading">Loading</div>
+  <header class="top-nav">
+    <h1>S.F. Info.</h1>
+  </header>
+  <div class="contents" id="contents" rendersubtree="invisible skip-activation"> 
+    
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/992084088965103616/r0LHYOdO_normal.jpg" />
+        <p class="tweet-user-name">日笠雅水@maaco3</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/maaco3/status/1099318157993336832"
+            target="_blank">2019/2/23 23:40:47</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">幸宏さま！<br/>なんと！<br/>こたつみかんのお部屋の写真が発掘されていました！ <a href="https://twitter.com/XXXYYYZZZQQQQ/status/1098984457204203520" target="_blank">twitter.com/XXXYYYZZZQQQQ/…</a></p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/1199635724493918208/3W1O-H82_normal.png" />
+        <p class="tweet-user-name">くいなちゃん@kuina_ch</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/kuina_ch/status/1099108160369901569"
+            target="_blank">2019/2/23 9:46:20</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">わたしは自作プログラミング言語を、コンパイラ・アセンブラ含め一から作りましたが、始めた当時は完成させられる確証はなく、また何百回も行き詰まり挫折しそうになって、わたしの中の信念のみで達成した感じでした。 映画化したら、感動ものというより、ジャンルはホラーになるかもしれません。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/1077910416947273728/OEo_LobF_normal.jpg" />
+        <p class="tweet-user-name">エキゾチカ・ララバイ@XXXYYYZZZQQQQ</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/XXXYYYZZZQQQQ/status/1098984457204203520"
+            target="_blank">2019/2/23 1:34:47</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">YMO 細野晴臣　白金台の自宅マンション https://t.co/h04NPMEpPy</p>
+        
+        <img loading="lazy" class="tweet-img" src="https://pbs.twimg.com/media/D0BgK10U0AAW91E.jpg" />
+        
+        <img loading="lazy" class="tweet-img" src="https://pbs.twimg.com/media/D0BgNK7V4AAYvEF.jpg" />
+        
+        <img loading="lazy" class="tweet-img" src="https://pbs.twimg.com/media/D0BgOf6VsAAoKbS.jpg" />
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/1145860469388791808/kK1Y-Xo2_normal.jpg" />
+        <p class="tweet-user-name">シロネコランド・サガ@sync_sting</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/sync_sting/status/1098703631744872448"
+            target="_blank">2019/2/22 6:58:53</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ダムカレーが話題ですが、たまには古墳カレーに目を向けてやってください https://t.co/ymBCnXRPvN</p>
+        
+        <img loading="lazy" class="tweet-img" src="https://pbs.twimg.com/media/Dz9hIDrUYAIuqi6.jpg" />
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/421959794/TQ_LOGO_normal.png" />
+        <p class="tweet-user-name">Takuto Wada@t_wada</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/t_wada/status/1098485221731647489"
+            target="_blank">2019/2/21 16:31:00</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">dankogai さんの「一生プログラマーでいれるかどうかは、言い換えれば年下から学べるか否か」という言葉が好きで、ときどき講演で引用します。若手とペアプロしているとたくさんの学びがあります。 / “30代後半からは、意図的に「教えてもらう側」に回り続けないと、学びが…” <a href="http://htn.to/beak9beQCui" target="_blank">htn.to/beak9beQCui</a></p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1098350457846558720"
+            target="_blank">2019/2/21 7:35:30</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">実行時の時間短縮のために、コンパイル時にその時間を消費する言語であるとも言えますな。。 <blockquote class="card card-default"><header><img loading="lazy" src="https://cdn.qiita.com/assets/qiita-fb-2887e7b4aad86fd8c25cea84846f2236.png" /><a href="https://qiita.com/Kogia_sima/items/2ef4e1a8223662335866#%E6%A8%99%E6%BA%96%E3%83%A9%E3%82%A4%E3%83%96%E3%83%A9%E3%83%AA%E3%81%AB%E5%98%98%E3%82%92%E3%81%A4%E3%81%8F" target="_blank">モダンなC++におけるコンパイル時間削減のテクニック - Qiita</a></header><div># はじめに<br/><br/>C++は他の高級言語と比べると、run-time性能で優れています。C++11、C++14ではテンプレートを使ったテクニックが多く登場し、静的型言語特有のデメリットを大きく解消することとなりました。<br/><br/>しかし...<br/><br/>...</div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1098350867722383360"
+            target="_blank">2019/2/21 7:37:07</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">pimplイディオム久し振りに見たな。利用目的が違うが。。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/767656285/kame_normal.png" />
+        <p class="tweet-user-name">yoh@yohhoy</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/yohhoy/status/1098160348169789442"
+            target="_blank">2019/2/20 19:00:04</a></p>
+      </header>
+      <section>
+        <p class="tweet-text"><a href="https://qiita.com/Kogia_sima/items/2ef4e1a8223662335866#%E6%A8%99%E6%BA%96%E3%83%A9%E3%82%A4%E3%83%96%E3%83%A9%E3%83%AA%E3%81%AB%E5%98%98%E3%82%92%E3%81%A4%E3%81%8F" target="_blank">qiita.com/Kogia_sima/ite…</a> 「モダンなC++におけるコンパイル時間削減のテクニック &gt; 標準ライブラリに嘘をつく」 斬新すぎるがなるほど一理ある</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/502198382853500928/gU-9VqSU_normal.jpeg" />
+        <p class="tweet-user-name">Jr200Okada@Jr200Okada</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/Jr200Okada/status/1098235212306079747"
+            target="_blank">2019/2/20 23:57:33</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">JR-200。我が愛する消しゴムキーボード機、お年玉をつぎ込んだ小学5年の友。<br/>やる気のあるうちに、コイツも全コンデンサを交換して復活させようではないか…‼ https://t.co/Is4a22dQLz</p>
+        
+        <img loading="lazy" class="tweet-img" src="https://pbs.twimg.com/media/Dz23GJHVYAAMERq.jpg" />
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/603918430639521792/zZNtUnXN_normal.png" />
+        <p class="tweet-user-name">Hideyuki Tanaka@tanakh</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/tanakh/status/1098241328561807360"
+            target="_blank">2019/2/21 0:21:51</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">1コアCPUで動かすならどっちも10行程度のCのコードで書けるものです。並列化する際にボトルネックになるところが違ってくるので、計算機のどの辺が一番先に問題になってくるのかを測る指標の一つとして使われとるっちゅー話ですよ。Graph500が一番ボトルネックになるのはネットワークですね。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/1149176758710632449/3Xjp540V_normal.jpg" />
+        <p class="tweet-user-name">sgΛ@sgmyzbh</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/sgmyzbh/status/1098156321700900864"
+            target="_blank">2019/2/20 18:44:04</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">セガサターン、公称1057タイトルがついに揃った…長かった…ラスト三本ほんと遠かった…コンプには良い面、悪い面があるんだけれど、とにかく今は無事ここまで辿り着けたことに安堵したい😌自分には無理かとも思ったけれど、なんとかなった…夢叶った^_^て、天丼でもとろうかな🍤🤤 https://t.co/muhQr9iSIF</p>
+        
+        <img loading="lazy" class="tweet-img" src="https://pbs.twimg.com/media/Dz1vR6vUYAAXxJ4.jpg" />
+        
+      </section>
+      
+    </article>
+    
+  </div>
+  <footer>
+    CopyLight 2019 Satoshi Fujiwara
+  </footer>
+  <script async src="https://platform.twitter.com/widgets.js"></script>
+
+  <script async src="./index.js"></script>
+
+</body>
+
+</html>

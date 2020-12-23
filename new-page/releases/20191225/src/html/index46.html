@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+
+<html lang="ja" prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb# article: http://ogp.me/ns/article#">
+
+<head>
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-15457703-9"></script>
+  <script>
+    if (!location.hostname.match(/localhost/)) {
+      window.dataLayer = window.dataLayer || [];
+      function gtag() { dataLayer.push(arguments); }
+      gtag('js', new Date());
+      gtag('config', 'UA-15457703-9');
+    }
+  </script>
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>トップページをリニューアルする</title>
+  <meta name="description" content="リニューアル用のトップページデザインを考えて実装する" />
+  <meta name="keywords" content="Programming,Music,HTML5,WebGL,javascript,WebAudio" /> 	
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <meta itemprop="image" content="https://www.sfpgmr.net/img/sfweb.png" />
+  <meta itemprop="name" content="S.F. Web" />
+  
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:site" content="S.F. Web" />
+  <meta name="twitter:url" content="./index46.html" />
+  <meta name="twitter:title" content="リニューアル用のトップページデザイン" />
+  <meta name="twitter:description" content="リニューアル用のトップページデザインを考えて実装する" />
+  <meta name="twitter:image" content="https://www.sfpgmr.net/img/sfweb.png" />
+  
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="./index46.html" />
+  <meta property="og:title" content="リニューアル用のトップページデザイン"/>
+  <meta property="og:site_name" content="S.F. Web" />
+  <meta property="og:description" content="Programming,Music,HTML5,WebGL,javascript,WebAudio">
+  <meta property="og:image" content="https://www.sfpgmr.net/img/sfweb.png">
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    html {
+      margin: 0;
+      padding: 0;
+      font-size:10px;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      background: black;
+      color: white;
+    }
+
+    .top-nav {
+      position:fixed;
+      z-index:99999;
+      background: rgba(0,0,0,0.5);
+      display: block;
+      width:100%;
+      height:32px;
+      color:white;
+    }
+    #sentinel {
+      width:0px;
+      height:0px;
+    }
+    .contents {
+      padding-top:32px;
+      width: 100%;
+      position: relative;
+      content: strict;
+    }
+
+    @keyframes blinking {
+      0% {
+        color: black;
+      }
+
+      50% {
+        color: white;
+      }
+
+      100% {
+        color: black;
+      }
+    }
+
+    .loading {
+      font-family: monospace;
+      font-size: 24px;
+      position: fixed;
+      width: 100vw;
+      height: 100vh;
+      text-align: center;
+      padding-top: 50vh;
+      z-index: 32768;
+      background: black;
+      animation: blinking 2s infinite;
+      content: strict;
+    }
+
+
+    .contents > article {
+      background: #f0f0f0;
+      color: #202020;
+      position: absolute;
+      max-height: 960px;
+      overflow: auto;
+      border-radius: 3px;
+     /* transition: opacity 1s linear;*/
+      opacity: 1.0;
+    }
+
+    .tweet-header {
+      display: grid;
+      align-items: end;
+      grid-template-columns: 40px 2fr 1fr;
+      grid-template-rows: 1fr;
+      font-size: 12px;
+      font-weight: bold;
+    }
+
+
+    .tweet-img {
+      width: 100%;
+      object-fit: cover;
+    }
+
+    .youtube {
+      position: relative;
+      cursor: pointer;
+    }
+
+    .youtube > img {
+      width: 100%;
+      object-fit: cover;
+    }
+
+    .youtube > svg.player-play {
+      width:64px;
+      height:64px;
+      left:calc(50% - 32px);
+      top:calc(50% - 32px);
+      position:absolute;
+      z-index: 1000;
+      opacity: 0.5;
+    }
+    
+    .youtube:hover > svg.player-play {
+      opacity: 1.0;
+    }
+
+    .youtube:hover .player-play-1 {
+      stroke:#80808080;
+    }
+
+    
+    .youtube > div.yt-title {
+      /*text-shadow: #fff 1px 1px 0;*/
+      font-size: 1.2rem;
+      color:white;
+      background:rgba(0, 0,0,0.5);
+      position:absolute;
+      left:0;
+      top:0;
+      overflow: auto;
+      z-index:998;
+    }
+
+
+    .tweet-profile-img {
+      grid-column: 1/2;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+    }
+
+    .tweet-user-name {
+      grid-column: 2/3;
+    }
+
+    .tweet-date {
+      font-size: 8px;
+      text-align: right;
+      grid-column: 3/4;
+    }
+
+    .contents>twitter-widget {
+      overflow: auto;
+      max-height: 960px;
+      position: absolute;
+    }
+
+    .contents>article>section>.tweet-text {
+      display: block;
+      padding: 4px;
+      word-break: break-all;
+      font-size: 12px;
+    }
+
+    .contents>article>h3 {
+      font-size: 12px;
+    }
+
+    blockquote.card {
+      margin:4px;
+      padding:4px;
+      font-size:12px;
+      background:white;
+      border-radius: 4px;
+    }
+
+    blockquote.card > header {
+      display:grid;
+      grid-gap:4px;
+      gap:4px;
+    }
+
+    blockquote.card-default > header {
+      grid-template-columns:64px 1fr;
+    }
+
+    blockquote.card-large > header {
+      grid-template-columns:1fr;
+    }
+
+    blockquote.card > header > img {
+      width:100%;
+    }
+
+
+    div.no-image {
+      display: block;
+      width:64px;
+      height:64px;
+      background:gray;
+      color:white;
+      text-align: center;
+      line-height: 64px;
+    }
+
+  </style>
+</head>
+
+<body>
+  <div class="loading" id="loading">Loading</div>
+  <header class="top-nav">
+    <h1>S.F. Info.</h1>
+  </header>
+  <div class="contents" id="contents" rendersubtree="invisible skip-activation"> 
+    
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/757454769938051072/n9Jxwlc0_normal.jpg" />
+        <p class="tweet-user-name">おさーま@73170932184</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/73170932184/status/1098002285156691968"
+            target="_blank">2019/2/20 8:31:59</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">（擬似）1ドットゲージと爆発。牛の歩みだけどやってますよ https://t.co/JIPDqUp0O0</p>
+        
+        <video class="tweet-img" controls src="https://video.twimg.com/ext_tw_video/1098002064024645632/pu/vid/640x360/PQ86gOhN9D7ZSn85.mp4?tag=6" />
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/827806020273463296/Xrw0zkDf_normal.jpg" />
+        <p class="tweet-user-name">Masatatsu Nakamura@mattatz</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/mattatz/status/1097662757896314881"
+            target="_blank">2019/2/19 10:02:49</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">質疑応答のときにアルゴリズムとかどうやって探すんですか？って聞かれたときにテンパっちゃって答えられなかったんですが、以前作ったScrapboxプロジェクトにちょこちょこ情報を貯めていっているおかげで検索がスムーズになっている感があるのでオススメです！ #PLGNLNG <a href="https://scrapbox.io/PGBX/" target="_blank">scrapbox.io/PGBX/</a></p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/536802026319929344/lDJlYA17_normal.jpeg" />
+        <p class="tweet-user-name">YMO 今日は何の日？@ymo_anniv_bot</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/ymo_anniv_bot/status/1097614506044215296"
+            target="_blank">2019/2/19 6:51:05</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">1978年の今日、細野の「はらいそ」のレコーディング中、参加していた坂本と高橋の2人が「イエロー・マジック・オーケストラ」の構想に意気投合し、グループとしての「イエロー・マジック・オーケストラ」が誕生しました。<br/>イエロー・マジック・オーケストラ誕生。1978年2月19日。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1082081932853288962/ukoiqF60_normal.jpg" />
+        <p class="tweet-user-name">Teletype Model 33@33asr</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/33asr/status/1097165302125789184"
+            target="_blank">2019/2/18 1:06:07</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">git push so slow https://t.co/2Jy9QiVRJl</p>
+        
+        <video class="tweet-img" controls src="https://video.twimg.com/ext_tw_video/1097163279259045889/pu/vid/640x360/dG5eVgmZmrSWhxel.mp4?tag=6" />
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1189192630506115072/ZXGk_Pv-_normal.jpg" />
+        <p class="tweet-user-name">Dai Tamesue (為末大)@daijapan</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/daijapan/status/1097623042690150406"
+            target="_blank">2019/2/19 7:25:00</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">なぜ期待をしすぎるのか。それは不安だからだと思う。自分の存在は周囲の関係によって成り立っていて、自分自身はいつ崩れるかわからないという不安を抱えている。周囲から見ればそんなはずはないが、本人はそのようなモデルを生きている。だから常に外を監視し自分が崩れないように気を張っている。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1189192630506115072/ZXGk_Pv-_normal.jpg" />
+        <p class="tweet-user-name">Dai Tamesue (為末大)@daijapan</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/daijapan/status/1097615883063574528"
+            target="_blank">2019/2/19 6:56:33</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">失望が多い人は期待している。そのうちに他者に期待をしては勝手に怒って疲弊している人がいる。誰も頼んでいないのに自分はこうあるべきだ、みんなもこうあるべきだと考えていて思い通りにならなくて怒り疲れる。他人は他人なのでコントロールできないだけなのだがそれがわからない。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1097601161836654593"
+            target="_blank">2019/2/19 5:58:04</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">まとめを更新しました。「オレオレ言語を作る」 <blockquote class="card card-default"><header><img  src="https://pimg.togetter.com/c5f6d97ea69f2fcf2cc20bd4924645c864ea1c3c/68747470733a2f2f7062732e7477696d672e636f6d2f6d656469612f44696d73492d4f57734141393232492e6a70673a6c61726765" /><a href="https://togetter.com/li/1266927" target="_blank">オレオレ言語を作る - Togetter</a></header><div>node.jsでWASMを吐くコンパイラを作っています。まだ完成には至っていません。。リポジトリ</div></blockquote></p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/534760468/iYobk_normal.jpg" />
+        <p class="tweet-user-name">masafumi@masafumi</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/masafumi/status/1097501503860797442"
+            target="_blank">2019/2/18 23:22:03</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">C++でSIMDで最適化の話 <a href="http://masafumi.cocolog-nifty.com/masafumis_diary/2019/02/csimd-c8a1.html" target="_blank">masafumi.cocolog-nifty.com/masafumis_diar…</a></p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1097582011462561794"
+            target="_blank">2019/2/19 4:41:58</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">WindowsからLinuxファイルへのアクセスが可能に ～「Windows 10 19H1」におけるWSLの改善 - 窓の杜 <blockquote class="card card-large"><header><img  src="https://forest.watch.impress.co.jp/img/wf/list/1170/221/image1.jpg" /><a href="https://forest.watch.impress.co.jp/docs/news/1170221.html" target="_blank">WindowsからLinuxファイルへのアクセスが可能に ～「Windows 10 19H1」におけるWSLの改善 - 窓の杜</a></header><div>　米Microsoftは2月15日（現地時間）、「Windows 10 バージョン 1903」（19H1）の“Windows Subsystem for Linux（WSL）”に導入される予定の機能を発表した。WindowsからLinuxへのファイルアクセスなどが新たにサポートされている。</div></blockquote> @madonomoriさんから</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/475890350683193345/Ph46nmcY_normal.jpeg" />
+        <p class="tweet-user-name">Oguchi T／小口 高@ogugeo</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/ogugeo/status/1097437691333926912"
+            target="_blank">2019/2/18 19:08:29</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ベゼライト（ベゼリ石）はハンガリーの鉱山技師のベゼリ氏にちなむ銅の二次鉱物で、美しい青色が特徴。日本では秋田県の荒川鉱山や岐阜県の神岡鉱山で見つかり、当初は荒川石や神岡石と呼ばれた。ベゼライトを多く含む球状の石の動画。 <a href="https://imgur.com/gallery/9tSMBtB" target="_blank">imgur.com/gallery/9tSMBtB</a> 外部もかなり青いが内部はさらに青い。 https://t.co/AdIyvlNlh6</p>
+        
+        <video class="tweet-img" controls src="https://video.twimg.com/ext_tw_video/1097437259836444672/pu/vid/360x450/iAenVeH3C3NbPbjG.mp4?tag=6" />
+        
+      </section>
+      
+    </article>
+    
+  </div>
+  <footer>
+    CopyLight 2019 Satoshi Fujiwara
+  </footer>
+  <script async src="https://platform.twitter.com/widgets.js"></script>
+
+  <script async src="./index.js"></script>
+
+</body>
+
+</html>

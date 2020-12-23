@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+
+<html lang="ja" prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb# article: http://ogp.me/ns/article#">
+
+<head>
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-15457703-9"></script>
+  <script>
+    if (!location.hostname.match(/localhost/)) {
+      window.dataLayer = window.dataLayer || [];
+      function gtag() { dataLayer.push(arguments); }
+      gtag('js', new Date());
+      gtag('config', 'UA-15457703-9');
+    }
+  </script>
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>トップページをリニューアルする</title>
+  <meta name="description" content="リニューアル用のトップページデザインを考えて実装する" />
+  <meta name="keywords" content="Programming,Music,HTML5,WebGL,javascript,WebAudio" /> 	
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <meta itemprop="image" content="https://www.sfpgmr.net/img/sfweb.png" />
+  <meta itemprop="name" content="S.F. Web" />
+  
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:site" content="S.F. Web" />
+  <meta name="twitter:url" content="./index39.html" />
+  <meta name="twitter:title" content="リニューアル用のトップページデザイン" />
+  <meta name="twitter:description" content="リニューアル用のトップページデザインを考えて実装する" />
+  <meta name="twitter:image" content="https://www.sfpgmr.net/img/sfweb.png" />
+  
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="./index39.html" />
+  <meta property="og:title" content="リニューアル用のトップページデザイン"/>
+  <meta property="og:site_name" content="S.F. Web" />
+  <meta property="og:description" content="Programming,Music,HTML5,WebGL,javascript,WebAudio">
+  <meta property="og:image" content="https://www.sfpgmr.net/img/sfweb.png">
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    html {
+      margin: 0;
+      padding: 0;
+      font-size:10px;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      background: black;
+      color: white;
+    }
+
+    .top-nav {
+      position:fixed;
+      z-index:99999;
+      background: rgba(0,0,0,0.5);
+      display: block;
+      width:100%;
+      height:32px;
+      color:white;
+    }
+    #sentinel {
+      width:0px;
+      height:0px;
+    }
+    .contents {
+      padding-top:32px;
+      width: 100%;
+      position: relative;
+      content: strict;
+    }
+
+    @keyframes blinking {
+      0% {
+        color: black;
+      }
+
+      50% {
+        color: white;
+      }
+
+      100% {
+        color: black;
+      }
+    }
+
+    .loading {
+      font-family: monospace;
+      font-size: 24px;
+      position: fixed;
+      width: 100vw;
+      height: 100vh;
+      text-align: center;
+      padding-top: 50vh;
+      z-index: 32768;
+      background: black;
+      animation: blinking 2s infinite;
+      content: strict;
+    }
+
+
+    .contents > article {
+      background: #f0f0f0;
+      color: #202020;
+      position: absolute;
+      max-height: 960px;
+      overflow: auto;
+      border-radius: 3px;
+     /* transition: opacity 1s linear;*/
+      opacity: 1.0;
+    }
+
+    .tweet-header {
+      display: grid;
+      align-items: end;
+      grid-template-columns: 40px 2fr 1fr;
+      grid-template-rows: 1fr;
+      font-size: 12px;
+      font-weight: bold;
+    }
+
+
+    .tweet-img {
+      width: 100%;
+      object-fit: cover;
+    }
+
+    .youtube {
+      position: relative;
+      cursor: pointer;
+    }
+
+    .youtube > img {
+      width: 100%;
+      object-fit: cover;
+    }
+
+    .youtube > svg.player-play {
+      width:64px;
+      height:64px;
+      left:calc(50% - 32px);
+      top:calc(50% - 32px);
+      position:absolute;
+      z-index: 1000;
+      opacity: 0.5;
+    }
+    
+    .youtube:hover > svg.player-play {
+      opacity: 1.0;
+    }
+
+    .youtube:hover .player-play-1 {
+      stroke:#80808080;
+    }
+
+    
+    .youtube > div.yt-title {
+      /*text-shadow: #fff 1px 1px 0;*/
+      font-size: 1.2rem;
+      color:white;
+      background:rgba(0, 0,0,0.5);
+      position:absolute;
+      left:0;
+      top:0;
+      overflow: auto;
+      z-index:998;
+    }
+
+
+    .tweet-profile-img {
+      grid-column: 1/2;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+    }
+
+    .tweet-user-name {
+      grid-column: 2/3;
+    }
+
+    .tweet-date {
+      font-size: 8px;
+      text-align: right;
+      grid-column: 3/4;
+    }
+
+    .contents>twitter-widget {
+      overflow: auto;
+      max-height: 960px;
+      position: absolute;
+    }
+
+    .contents>article>section>.tweet-text {
+      display: block;
+      padding: 4px;
+      word-break: break-all;
+      font-size: 12px;
+    }
+
+    .contents>article>h3 {
+      font-size: 12px;
+    }
+
+    blockquote.card {
+      margin:4px;
+      padding:4px;
+      font-size:12px;
+      background:white;
+      border-radius: 4px;
+    }
+
+    blockquote.card > header {
+      display:grid;
+      grid-gap:4px;
+      gap:4px;
+    }
+
+    blockquote.card-default > header {
+      grid-template-columns:64px 1fr;
+    }
+
+    blockquote.card-large > header {
+      grid-template-columns:1fr;
+    }
+
+    blockquote.card > header > img {
+      width:100%;
+    }
+
+
+    div.no-image {
+      display: block;
+      width:64px;
+      height:64px;
+      background:gray;
+      color:white;
+      text-align: center;
+      line-height: 64px;
+    }
+
+  </style>
+</head>
+
+<body>
+  <div class="loading" id="loading">Loading</div>
+  <header class="top-nav">
+    <h1>S.F. Info.</h1>
+  </header>
+  <div class="contents" id="contents" rendersubtree="invisible skip-activation"> 
+    
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/475890350683193345/Ph46nmcY_normal.jpeg" />
+        <p class="tweet-user-name">Oguchi T／小口 高@ogugeo</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/ogugeo/status/1108014291750256640"
+            target="_blank">2019/3/19 23:36:07</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ニュージーランド南島の南部にあるクラウン山脈で撮影された天の川を含む夜景写真。 <a href="https://bit.ly/2JnVrj4" target="_blank">bit.ly/2JnVrj4</a> 雪に覆われた浅い谷の地形と谷の中に立つ人のシルエットが、上の天の川を含む空と構図と色彩の両面で上手く調和している。同国の Jake Gardner 氏と Joanna Scott 氏のコンビの作品。 https://t.co/V1siKy1UnT</p>
+        
+        <img  class="tweet-img" src="https://pbs.twimg.com/media/D2B02lAUkAMHffF.jpg" />
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1058674164997939201/FgIBCqks_normal.jpg" />
+        <p class="tweet-user-name">wanimation@wanimation2910</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/wanimation2910/status/1107856276342505472"
+            target="_blank">2019/3/19 13:08:13</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">落書きが一瞬で風景写真にリアルタイムで変換！？！？「GauGAN」やばばば。。。NVIDIAすげーーー！！<br/><a href="https://blogs.nvidia.com/blog/2019/03/18/gaugan-photorealistic-landscapes-nvidia-research/" target="_blank">blogs.nvidia.com/blog/2019/03/1…</a> https://t.co/RfsblaXYEE</p>
+        
+        <video class="tweet-img" controls src="https://video.twimg.com/ext_tw_video/1107856204397608960/pu/vid/1280x720/wIRQb35HHhiNEbBo.mp4?tag=8" />
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1107196112484470784"
+            target="_blank">2019/3/17 17:24:58</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">なんかffmpegの複合フィルタが面白くていろいろいじってたら1日過ぎてしまった。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1107196464386588672"
+            target="_blank">2019/3/17 17:26:22</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">いじってるうちにwebglでアニメーション作ってやるほうが思い通りのことができる可能性が高いので、久しぶりにthree.js使ってあれこれやってみることにした。サンプルもたくさんあるしね。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1107196565125390336"
+            target="_blank">2019/3/17 17:26:46</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">昔electron使ってthree.jsで描いたものをフレームごとにビットマップに落とすアプリを作ってたのでそれを改造して作っていくことにする。しかし久しぶりに動かしてみるとエラーでまくりで見事に動きませんな。three.jsはAPIが結構変わるのですぐに動かなくなっちゃうんだよなあ。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1107196915274252288"
+            target="_blank">2019/3/17 17:28:09</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">リポジトリはこれなんですがね。。作ったビットマップはffmpegで動画化するんだよね。<br/><br/><blockquote class="card card-default"><header><img  src="https://avatars0.githubusercontent.com/u/3806814?s=400&v=4" /><a href="https://github.com/sfpgmr/rydeen" target="_blank">GitHub - sfpgmr/rydeen: YMO - RYDEENのカバー曲動画をelectronで作ろうかなと思います。</a></header><div>YMO - RYDEENのカバー曲動画をelectronで作ろうかなと思います。. Contribute to sfpgmr/rydeen development by creating an account on GitHub.</div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1107197472412061696"
+            target="_blank">2019/3/17 17:30:22</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">作った時のログはこれか。。<br/><blockquote class="card card-default"><header><img  src="https://www.sfpgmr.net/img/sf.png" /><a href="https://www.sfpgmr.net/blog/archive/category/electron%E3%81%A7rydeen%E3%81%AE%E5%8B%95%E7%94%BB%E3%82%92%E4%BD%9C%E3%82%8B.html" target="_blank">S.F. Blog:キーワード「electronでrydeenの動画を作る」 のアーカイブ</a></header><div>キーワード「electronでrydeenの動画を作る」 のアーカイブ</div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1107198129961492480"
+            target="_blank">2019/3/17 17:32:59</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">まずは動くようにしないといけないよなあ。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1107198373600231424"
+            target="_blank">2019/3/17 17:33:57</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">たぶんelectronも変わっとるだろうからそれもキャッチアップせんといかんわなあ。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1107201182961819648"
+            target="_blank">2019/3/17 17:45:07</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ひょんなことからREAPERのプロジェクト・ファイルはテキストファイルになってて中身が読めることを知った。このデータ使うとアニメーションのエフェクトももっと凝ったものができるんじゃないかと思ったんだよね。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1107417824518000640"
+            target="_blank">2019/3/18 8:05:58</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">あら、R95からwebgl2使えるようになってるのね。。<br/><blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="https://threejs.org/docs/#manual/en/introduction/How-to-use-WebGL2" target="_blank">How to use WebGL 2 – three.js docs</a></header><div></div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1107732348596973568"
+            target="_blank">2019/3/19 4:55:47</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">sharpとelectron@4以降ではsharpが動かない模様。私も同じ現象に遭遇。とりあえずelectron@3だと動く。<br/><br/><blockquote class="card card-default"><header><img  src="https://avatars1.githubusercontent.com/u/210965?s=400&v=4" /><a href="https://github.com/lovell/sharp/issues/1522" target="_blank">The specified module could not be found, with electron v4.0.0. · Issue #1522 · lovell/sharp · GitHub</a></header><div>With electron 3.0.12 everything seems to work fine. Changed version to 4.0.0, removed node_modules, did npm i, all ok. If I run electron-rebuild, the command runs, but it does not rebuild the sharp...</div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1107845896790663169"
+            target="_blank">2019/3/19 12:26:59</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">やはりやはり。three.jsはr102になっててdeprecateになってるプロパティやメソッドがすごく多い。このライブラリはそういうポリシーなんだろうなあ。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1107846142220361729"
+            target="_blank">2019/3/19 12:27:57</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">わたしがライブラリバージョンを固定しとけばいいだけの話だけど。。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/645256958732320768/UO_c7Gyj_normal.jpg" />
+        <p class="tweet-user-name">restot@restot50</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/restot50/status/1107200442419818496"
+            target="_blank">2019/3/17 17:42:10</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">Octavio Ocampo https://t.co/0dStHRQgtL</p>
+        
+        <img  class="tweet-img" src="https://pbs.twimg.com/media/D12Q7y-WkAA7XIk.jpg" />
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1107035386549690368"
+            target="_blank">2019/3/17 6:46:18</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">正直REAPERの機能の1/10くらいしか使えてないような気がする。。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1100785967277854721/z4o64nNG_normal.jpg" />
+        <p class="tweet-user-name">やのけん(や)@yanokendesu</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/yanokendesu/status/1106436289442672645"
+            target="_blank">2019/3/15 15:05:42</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">頑張って描きました。 https://t.co/2awmCEJIYW</p>
+        
+        <img  class="tweet-img" src="https://pbs.twimg.com/media/D1rZ7oaUcAAbCg-.jpg" />
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/528128574897668098/g7K5VZQK_normal.jpeg" />
+        <p class="tweet-user-name">tacamy@tacamy</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/tacamy/status/1106498505491660800"
+            target="_blank">2019/3/15 19:12:56</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">パイドパイパーTが届いた笑 https://t.co/jcb4gTpSdK</p>
+        
+        <img  class="tweet-img" src="https://pbs.twimg.com/media/D1sShk-VAAEBfDP.jpg" />
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1766294729/HuALGO_normal.gif" />
+        <p class="tweet-user-name">Ｏｈ！石@oec_Nibbleslab</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/oec_Nibbleslab/status/1106832368625606656"
+            target="_blank">2019/3/16 17:19:35</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">やったー、CMU-800修理完了！演奏させてるのはカミヤスタジオ編曲の「10番街の殺人」。全パートばっちり鳴ってるぜ！ https://t.co/qinMKW42ko</p>
+        
+        <video class="tweet-img" controls src="https://video.twimg.com/ext_tw_video/1106830611417751557/pu/vid/320x180/SVGg1Y0hWcSx7RtV.mp4?tag=8" />
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/992084088965103616/r0LHYOdO_normal.jpg" />
+        <p class="tweet-user-name">日笠雅水@maaco3</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/maaco3/status/1106167846415929346"
+            target="_blank">2019/3/14 21:19:00</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">YMOの<br/>リアルチルドレン1名と<br/>グランドチルドレンが2名<br/>実に感慨深い3ショットです。<br/>ユータ君は<br/>こっそり観に来たグランパから<br/>「ボクよりベース上手いんじゃないの？」って言われたようですよ😊✌️ https://t.co/JY29rq9Oc8</p>
+        
+        <img  class="tweet-img" src="https://pbs.twimg.com/media/D1nlyXsUkAEIAgy.jpg" />
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1106480284751589381"
+            target="_blank">2019/3/15 18:00:31</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">わたしはslackwareです。。 <blockquote class="card card-default"><header><img  src="https://pbs.twimg.com/profile_images/1210213243114754048/bDhKox0o_400x400.jpg" /><a href="https://twitter.com/__snow_rabbit__/status/1106192364333228032" target="_blank">ゆきうさぎ＠フリーのシステム屋さんのツイート: "初めて触ったLinuxで世代がバレる わ、わたしはTurboLinux。"</a></header><div>“初めて触ったLinuxで世代がバレる<br/><br/>わ、わたしはTurboLinux。”</div></blockquote></p>
+        
+      </section>
+      
+    </article>
+    
+  </div>
+  <footer>
+    CopyLight 2019 Satoshi Fujiwara
+  </footer>
+  <script async src="https://platform.twitter.com/widgets.js"></script>
+
+  <script async src="./index.js"></script>
+
+</body>
+
+</html>

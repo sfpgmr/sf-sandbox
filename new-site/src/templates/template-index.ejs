@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang=ja class="has-navbar-fixed-top">
+
+<head>
+  <%- include('/home/sfpg/pj/sandbox/new-site/src/templates/template-head',{meta:meta}); %>
+</head>
+
+<body>
+  <% if(!meta.debug) { %>
+    <%- include('/home/sfpg/pj/sandbox/new-site/src/templates/template-analytics'); %>
+      <% }%>
+        <%- include('/home/sfpg/pj/sandbox/new-site/src/templates/template-nav'); %>
+          <div class="container">
+
+            <section>
+              <header class="hero is-medium is-primary is-bold">
+                <div class="hero-body">
+                  <div class="container  has-text-centered">
+                    <h1 class="title">
+                      S.F. Page
+                    </h1>
+                    <h2 class="subtitle">
+                      Programming,Music,Game,Etc...
+                    </h2>
+                  </div>
+                </div>
+              </header>
+            </section>
+            <section class="section">
+              <header>
+                <h1 class="title p-1">Contents</h1>
+              </header>
+              <div class="container">
+                <div class="columns">
+                  <div class="column">
+                    <div class="card">
+                      <div class="card-image">
+                        <figure class="image">
+                          <amp-youtube data-videoid="vCdb8oLyLBU" layout="responsive" width="480" height="270">
+                          </amp-youtube>
+                          </iframe>
+                        </figure>
+                      </div>
+                      <div class="card-content">
+                        <h3 class="is-size-5"><a
+                            href="https://www.youtube.com/channel/UCgwM0kBBsDRMZDhhWuTNR-g">YouTubeチャンネル</a></h3>
+                        <div class="content">
+                          私のYouTubeチャンネル。主にYMOのカバー曲を公開しています。
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="column">
+                    <div class="card">
+                      <div class="card-image">
+                        <figure class="image">
+                          <amp-img src="https://github.sfpgmr.net/images/twitter-viewer.png" width="1024" height="580"
+                            layout="responsive" alt="twitter-viewer"></amp-img>
+                        </figure>
+                      </div>
+                      <div class="card-content">
+                        <h3 class="is-size-5"><a href="/twitter/">Twitter Viewer</a></h3>
+                        <div class="content">
+                          <p>masonryデザインと無限スクロールを組み合わせたビューワを作ってみました。</p>
+                          <p>node.js + sqliteで作成してます。ちょっとまだβレベルです。</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                </div>
+              </div>
+            </section>
+            <aside>
+              <%-include('/home/sfpg/pj/sandbox/new-site/src/templates/template-ad',{meta:Object.assign({width:'360px',height:'360px'},meta)})%>
+            </aside>
+            <footer class="footer">
+              <div class="content has-text-centered">
+                <p>&copy;2020 Satoshi Fujiwara</p>
+              </div>
+            </footer>
+          </div>
+</body>
+
+</html>

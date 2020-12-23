@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="ja" prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb# article: http://ogp.me/ns/article#">
+
+<head>
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-15457703-9"></script>
+  <script>
+    if (!location.hostname.match(/localhost/)) {
+      window.dataLayer = window.dataLayer || [];
+      function gtag() { dataLayer.push(arguments); }
+      gtag('js', new Date());
+      gtag('config', 'UA-15457703-9');
+    }
+  </script>
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>トップページをリニューアルする</title>
+  <meta name="description" content="リニューアル用のトップページデザインを考えて実装する" />
+  <meta name="keywords" content="Programming,Music,HTML5,WebGL,javascript,WebAudio" /> 	
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <meta itemprop="image" content="https://www.sfpgmr.net/img/sfweb.png" />
+  <meta itemprop="name" content="S.F. Web" />
+  
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:site" content="S.F. Web" />
+  <meta name="twitter:url" content="./index13.html" />
+  <meta name="twitter:title" content="リニューアル用のトップページデザイン" />
+  <meta name="twitter:description" content="リニューアル用のトップページデザインを考えて実装する" />
+  <meta name="twitter:image" content="https://www.sfpgmr.net/img/sfweb.png" />
+  
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="./index13.html" />
+  <meta property="og:title" content="リニューアル用のトップページデザイン"/>
+  <meta property="og:site_name" content="S.F. Web" />
+  <meta property="og:description" content="Programming,Music,HTML5,WebGL,javascript,WebAudio">
+  <meta property="og:image" content="https://www.sfpgmr.net/img/sfweb.png">
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    html {
+      margin: 0;
+      padding: 0;
+      font-size:10px;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      background: black;
+      color: white;
+    }
+
+    .top-nav {
+      position:fixed;
+      z-index:99999;
+      background: rgba(0,0,0,0.5);
+      display: block;
+      width:100%;
+      height:32px;
+      color:white;
+    }
+    #sentinel {
+      width:0px;
+      height:0px;
+    }
+    .contents {
+      padding-top:32px;
+      width: 100%;
+      position: relative;
+      content: strict;
+    }
+
+    @keyframes blinking {
+      0% {
+        color: black;
+      }
+
+      50% {
+        color: white;
+      }
+
+      100% {
+        color: black;
+      }
+    }
+
+    .loading {
+      font-family: monospace;
+      font-size: 24px;
+      position: fixed;
+      width: 100vw;
+      height: 100vh;
+      text-align: center;
+      padding-top: 50vh;
+      z-index: 32768;
+      background: black;
+      animation: blinking 2s infinite;
+      content: strict;
+    }
+
+
+    .contents > article {
+      background: #f0f0f0;
+      color: #202020;
+      position: absolute;
+      max-height: 960px;
+      overflow: auto;
+      border-radius: 3px;
+      transition: opacity 1s linear;
+      opacity: 0.0;
+    }
+
+    .tweet-header {
+      display: grid;
+      align-items: end;
+      grid-template-columns: 40px 2fr 1fr;
+      grid-template-rows: 1fr;
+      font-size: 12px;
+      font-weight: bold;
+    }
+
+
+    .tweet-img {
+      width: 100%;
+      object-fit: cover;
+    }
+
+    .youtube {
+      position: relative;
+      cursor: pointer;
+    }
+
+    .youtube > img {
+      width: 100%;
+      object-fit: cover;
+    }
+
+    .youtube > svg.player-play {
+      width:64px;
+      height:64px;
+      left:calc(50% - 32px);
+      top:calc(50% - 32px);
+      position:absolute;
+      z-index: 1000;
+      opacity: 0.5;
+    }
+    
+    .youtube:hover > svg.player-play {
+      opacity: 1.0;
+    }
+
+    .youtube:hover .player-play-1 {
+      stroke:#80808080;
+    }
+
+    
+    .youtube > div.yt-title {
+      /*text-shadow: #fff 1px 1px 0;*/
+      font-size: 1.2rem;
+      color:white;
+      background:rgba(0, 0,0,0.5);
+      position:absolute;
+      left:0;
+      top:0;
+      overflow: auto;
+      z-index:998;
+    }
+
+
+    .tweet-profile-img {
+      grid-column: 1/2;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+    }
+
+    .tweet-user-name {
+      grid-column: 2/3;
+    }
+
+    .tweet-date {
+      font-size: 8px;
+      text-align: right;
+      grid-column: 3/4;
+    }
+
+    .contents>twitter-widget {
+      overflow: auto;
+      max-height: 960px;
+      position: absolute;
+    }
+
+    .contents>article>section>.tweet-text {
+      display: block;
+      padding: 4px;
+      word-break: break-all;
+      font-size: 12px;
+    }
+
+    .contents>article>h3 {
+      font-size: 12px;
+    }
+
+    blockquote.card {
+      margin:4px;
+      padding:4px;
+      font-size:12px;
+      background:white;
+      border-radius: 4px;
+    }
+
+    blockquote.card > header {
+      display:grid;
+      grid-gap:4px;
+      gap:4px;
+    }
+
+    blockquote.card-default > header {
+      grid-template-columns:64px 1fr;
+    }
+
+    blockquote.card-large > header {
+      grid-template-columns:1fr;
+    }
+
+    blockquote.card > header > img {
+      width:100%;
+    }
+
+
+    div.no-image {
+      display: block;
+      width:64px;
+      height:64px;
+      background:gray;
+      color:white;
+      text-align: center;
+      line-height: 64px;
+    }
+
+  </style>
+</head>
+
+<body>
+  <div class="loading" id="loading">Loading</div>
+  <header class="top-nav">
+    <h1>S.F. Info.</h1>
+  </header>
+  <div class="contents" id="contents" rendersubtree="invisible skip-activation"> 
+    
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/1047146817622691840/OEfWnvqB_normal.jpg" />
+        <p class="tweet-user-name">千葉県高校野球情報GRAND☆SLAM@chiba5589</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/chiba5589/status/1170296960248532992"
+            target="_blank">2019/9/7 20:25:13</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">【今日(9/7)の試合結果】<br/>☆ナスパ・スタジアム☆<br/>①成田西陵 13-7 佐倉南<br/>② 千葉西 17-10 佐倉東・旭農業・佐原白楊・下総・八街(8C)<br/>③市立銚子 6-5 我孫子二階堂<br/><br/>☆長生の森公園野球場☆<br/>①多古 8-1 姉崎(7C)<br/>②秀明八千代 6-3 匝瑳<br/>③袖ヶ浦 10-6 東総工業(延11)</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1169956797219651590"
+            target="_blank">2019/9/6 21:53:31</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">日本負けてしまった。。エラーが痛かった。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1170230346392096768"
+            target="_blank">2019/9/7 16:00:31</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">オーストラリアに負けて終了。うーんやっぱり投手の出来に比して、打者の振りの大きさが目立つなあ。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1170231048984121345"
+            target="_blank">2019/9/7 16:03:18</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">まあしかし、U-18の選手・スタッフの皆さんはお疲れさまでした。飯塚くんはいいピッチングしてたなあ。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1169586435403309061"
+            target="_blank">2019/9/5 21:21:50</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">そうこうしてるうちに9月6日から千葉県秋季大会の敗者復活戦が始まるなあ。予選の県立船橋と県立船橋東の進学校対決は船橋東が勝利。県立船橋は敗者復活なるか。<br/><br/><blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="https://chbf.or.jp/archives/oshirase2/category/7967" target="_blank">令和元年度第７２回秋季千葉県高等学校野球大会予選の敗者復活戦 | 千葉県高等学校野球連盟</a></header><div></div></blockquote></p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1169355989302169600"
+            target="_blank">2019/9/5 6:06:08</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">今日からスーパーラウンドか。カナダとですな。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1169582202159452160"
+            target="_blank">2019/9/5 21:05:01</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">やっぱり奥川くんはすごいなあ。。ちょっとカナダも振り回しすぎの感はあったが。地味に飯塚くんもランナー出さずしっかり抑えたところはさすが。日本代表のクローザーとして定着した感があるのがうれしいね。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1169583055142440961"
+            target="_blank">2019/9/5 21:08:24</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ただ打線が少し振るわなくなってるのが気になる。少し振りに粗さが出てる気が。明日の韓国戦では丁寧な攻めを心がけてほしいなあ。地力はみんなあるからねえ。。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1168499393806258176"
+            target="_blank">2019/9/2 21:22:19</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">降雨コールドは悔しいなあ。。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1167552157534474240"
+            target="_blank">2019/8/31 6:38:21</a></p>
+      </header>
+      <section>
+        <p class="tweet-text"><blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="http://hackersdelight.org/" target="_blank"></a></header><div></div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1167577229296992257"
+            target="_blank">2019/8/31 8:17:58</a></p>
+      </header>
+      <section>
+        <p class="tweet-text"><blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="http://graphics.stanford.edu/~seander/bithacks.html" target="_blank">Bit Twiddling Hacks</a></header><div></div></blockquote></p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1167425300050800641"
+            target="_blank">2019/8/30 22:14:15</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">今WASMテキストフォーマットでコードを書いてるけど、なんか覚える構文も少なくていいわ。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1167425631841210371"
+            target="_blank">2019/8/30 22:15:35</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">という感覚に襲われており、JSのコード見ると複雑だなあ。と思うようになってきてる。なんかストレスを感じないんだよなあ。watはね。。なぜかわからんが。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1167427001067565056"
+            target="_blank">2019/8/30 22:21:01</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">メモリに対するインダイレクトアドレッシング指定とかも普通に算術演算の結果が指定できたりするとことか。。<br/>(<a href="http://f32.store" target="_blank">f32.store</a><br/>   ;; addressing<br/>   (i32.add<br/>    (i32.const 4)<br/>    (local.get $mem_offset)<br/>  )<br/>  ;; operand<br/>  (f32.const 0) <br/>)</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1167429761636818947"
+            target="_blank">2019/8/30 22:31:59</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">なんか好きだなあ。。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1167414000549711872"
+            target="_blank">2019/8/30 21:29:21</a></p>
+      </header>
+      <section>
+        <p class="tweet-text"><blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="https://www.webaudiomodules.org/wamsynths/" target="_blank">WAM SYNTHS | Web Audio Modules</a></header><div></div></blockquote></p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1167354674946572290"
+            target="_blank">2019/8/30 17:33:37</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">Spain v Japan - U-18 Baseball World Cup 2019 - Opening Round <div class="youtube" data-type="yt" id="PxZFsWarib4"><div class="yt-title">Youtube - Spain v Japan - U-18 Baseball World Cup 2019 - Opening Round</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img loading="lazy" data-href="https://youtu.be/PxZFsWarib4" class="youtube" src="https://i.ytimg.com/vi/PxZFsWarib4/hqdefault.jpg" /></div>   <br/> @YouTubeさんから</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1167354865787404288"
+            target="_blank">2019/8/30 17:34:23</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">@YouTube 飯塚くんが9回抑えで投げた。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1167356711331459073"
+            target="_blank">2019/8/30 17:41:43</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">@YouTube しかしえげつないメンバーだな。U18日本代表。。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/1182687929359056896/nwG6Y9cK_normal.jpg" />
+        <p class="tweet-user-name">Juice@julcreutz</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/julcreutz/status/1165344733213941760"
+            target="_blank">2019/8/25 4:26:50</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">Guess who's back #gamedev #pixelart #indiedev #indiegame #indiegames #libgdx #procgen #screenshotsaturday https://t.co/LCPJKTQDMA</p>
+        
+        <video class="tweet-img" controls src="https://video.twimg.com/ext_tw_video/1165344705065955328/pu/vid/640x360/sXLW7Wr1UBte6eN7.mp4?tag=10" />
+        
+      </section>
+      
+    </article>
+    
+  </div>
+  <footer>
+    CopyLight 2019 Satoshi Fujiwara
+  </footer>
+  <script async src="https://platform.twitter.com/widgets.js"></script>
+
+  <script async src="./index.js"></script>
+
+</body>
+
+</html>

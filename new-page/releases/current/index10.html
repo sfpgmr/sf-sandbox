@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+
+<html lang="ja" prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb# article: http://ogp.me/ns/article#">
+
+<head>
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-15457703-9"></script>
+  <script>
+    if (!location.hostname.match(/localhost/)) {
+      window.dataLayer = window.dataLayer || [];
+      function gtag() { dataLayer.push(arguments); }
+      gtag('js', new Date());
+      gtag('config', 'UA-15457703-9');
+    }
+  </script>
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Twitter Viewer</title>
+  <meta name="description" content="自作Twitter Viewerによる自分のつぶやきの記録。Programming,Music,HTML5,WebGL,javascript,WebAudio,Gameなど" />
+  <meta name="keywords" content="Programming,Music,HTML5,WebGL,javascript,WebAudio" /> 	
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <meta itemprop="image" content="https://www.sfpgmr.net/img/sfweb.png" />
+  <meta itemprop="name" content="S.F. Web" />
+  
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:site" content="S.F. Web" />
+  <meta name="twitter:url" content="./index10.html" />
+  <meta name="twitter:title" content="Twitter Viewer" />
+  <meta name="twitter:description" content="自作Twitter Viewerによる自分のつぶやきの記録。Programming,Music,HTML5,WebGL,javascript,WebAudio,Gameなど" />
+  <meta name="twitter:image" content="https://www.sfpgmr.net/img/sfweb.png" />
+  
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="./index10.html" />
+  <meta property="og:title" content="Twitter Viewer"/>
+  <meta property="og:site_name" content="S.F. Web" />
+  <meta property="og:description" content="Programming,Music,HTML5,WebGL,javascript,WebAudio">
+  <meta property="og:image" content="https://www.sfpgmr.net/img/sfweb.png">
+
+  <style>
+  * {
+  margin: 0;
+  padding: 0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+
+html {
+  margin: 0;
+  padding: 0;
+  font-size: 10px; }
+
+body {
+  margin: 0;
+  padding-left: 8px;
+  padding-right: 8px;
+  background: black;
+  color: white; }
+
+.top-nav {
+  position: fixed;
+  z-index: 99999;
+  background: rgba(0, 0, 0, 0.5);
+  display: block;
+  width: 100%;
+  height: 32px;
+  color: white; }
+
+#sentinel {
+  width: 0px;
+  height: 0px; }
+
+.contents {
+  padding-top: 32px;
+  width: 100%;
+  position: relative;
+  content: strict; }
+
+@keyframes blinking {
+  0% {
+    color: black; }
+  50% {
+    color: white; }
+  100% {
+    color: black; } }
+
+.loading {
+  font-family: monospace;
+  font-size: 24px;
+  position: fixed;
+  width: 100vw;
+  height: 100vh;
+  text-align: center;
+  padding-top: 50vh;
+  z-index: 32768;
+  background: black;
+  animation: blinking 2s infinite;
+  content: strict; }
+
+.contents > article {
+  background: #f0f0f0;
+  color: #202020;
+  position: absolute;
+  max-height: 960px;
+  overflow: auto;
+  border-radius: 3px;
+  /* transition: opacity 1s linear;*/
+  opacity: 1.0; }
+
+.tweet-header {
+  display: grid;
+  align-items: end;
+  grid-template-columns: 40px 2fr 1fr;
+  grid-template-rows: 1fr;
+  font-size: 12px;
+  font-weight: bold; }
+
+.tweet-img {
+  width: 100%;
+  object-fit: cover; }
+
+.youtube {
+  position: relative;
+  cursor: pointer; }
+
+.youtube > img {
+  width: 100%;
+  object-fit: cover; }
+
+.youtube > svg.player-play {
+  width: 64px;
+  height: 64px;
+  left: calc(50% - 32px);
+  top: calc(50% - 32px);
+  position: absolute;
+  z-index: 1000;
+  opacity: 0.5; }
+
+.youtube:hover > svg.player-play {
+  opacity: 1.0; }
+
+.youtube:hover .player-play-1 {
+  stroke: #80808080; }
+
+.youtube > div.yt-title {
+  /*text-shadow: #fff 1px 1px 0;*/
+  font-size: 1.2rem;
+  color: white;
+  background: rgba(0, 0, 0, 0.5);
+  position: absolute;
+  left: 0;
+  top: 0;
+  overflow: auto;
+  z-index: 998; }
+
+.tweet-profile-img {
+  grid-column: 1/2;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%; }
+
+.tweet-user-name {
+  grid-column: 2/3; }
+
+.tweet-date {
+  font-size: 8px;
+  text-align: right;
+  grid-column: 3/4; }
+
+.contents > twitter-widget {
+  overflow: auto;
+  max-height: 960px;
+  position: absolute; }
+
+.contents > article > section > .tweet-text {
+  display: block;
+  padding: 4px;
+  word-break: break-all;
+  font-size: 12px; }
+
+.contents > article > h3 {
+  font-size: 12px; }
+
+blockquote.card {
+  margin: 4px;
+  padding: 4px;
+  font-size: 12px;
+  background: white;
+  border-radius: 4px; }
+
+blockquote.card > header {
+  display: grid;
+  grid-gap: 4px;
+  gap: 4px; }
+
+blockquote.card-default > header {
+  grid-template-columns: 64px 1fr; }
+
+blockquote.card-large > header {
+  grid-template-columns: 1fr; }
+
+blockquote.card > header > img {
+  width: 100%; }
+
+div.no-image {
+  display: block;
+  width: 64px;
+  height: 64px;
+  background: gray;
+  color: white;
+  text-align: center;
+  line-height: 64px; }
+ 
+  </style>
+</head>
+
+<body>
+  <div class="loading" id="loading">Loading</div>
+  <header class="top-nav">
+    <h1>S.F. Info.</h1>
+  </header>
+  <div class="contents" id="contents" rendersubtree="invisible skip-activation"> 
+    
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/991683511571529728/3OdRbxPj_normal.jpg" />
+        <p class="tweet-user-name">日間 陣@HimaDjinn</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/HimaDjinn/status/1270633723575205888"
+            target="_blank">2020/6/10 17:27:41</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">@_lll_ll_l_ 参考になるかは別で放流してみます。自分が聞いた某フライトアクションで東京を作った際の話では、描画負荷等の低減のため、似た建物ばかりに見えない程度に形状を統合したそうです。建物の地域性(湾岸に倉庫やクレーン、オフィス街にビル群など)とランドマークに注意して配置すると「らしく」なるとか</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/943526062905991168/qR5QkENd_normal.jpg" />
+        <p class="tweet-user-name">昭和スポット巡り@showaspotmegri</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/showaspotmegri/status/1272150957174865921"
+            target="_blank">2020/6/14 21:56:38</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">昭和44年　神戸　三ノ宮駅　（絵葉書） https://t.co/67zP30epyk</p>
+        
+        <img  class="tweet-img" src="https://pbs.twimg.com/media/EaeWibmUcAAL9fW.jpg" />
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/460353474174009344/UEB6ADr3_normal.png" />
+        <p class="tweet-user-name">g200kg@g200kg</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/g200kg/status/1271376708776558592"
+            target="_blank">2020/6/12 18:40:03</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">Web Audio API が更新: 昨日6月11日に W3C で公開されている WebAudio API が「W3C Candidate Recommendation, 11 June 2020」として更新されました。 Web Audio API 前回の更新で Working Draft (草案) から初めて Candidate Recommendation (勧告候補)… <a href="http://dlvr.it/RYTxW6" target="_blank">dlvr.it/RYTxW6</a> https://t.co/JAilmdVAEd</p>
+        
+        <img  class="tweet-img" src="https://pbs.twimg.com/media/EaTWYQ2U8AILIBV.png" />
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1289776876815187968/k8NUU0gS_normal.png" />
+        <p class="tweet-user-name">ヤギの人（お盆）@yusai00</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/yusai00/status/1270661483806863360"
+            target="_blank">2020/6/10 19:18:00</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">「急な壁を登るヤギ」<br/>Goats going up a steep wall<br/><a href="https://www.reddit.com/r/blackmagicfuckery/comments/h051qc/goats_going_up_a_steep_wall/?utm_source=share&utm_medium=web2x" target="_blank">reddit.com/r/blackmagicfu…</a><br/>ヤギにとっては、これが楽な近道なんだろうなぁ…<br/><br/>もっと急な壁を登るヤギが見たい方はこちら。こちらはダムの壁に染み出すミネラルを求めて壁を登るヤギ。ヤギの登坂力はハンパないのだ。<br/><a href="https://youtu.be/RG9TMn1FJzc" target="_blank">youtu.be/RG9TMn1FJzc</a> https://t.co/pRy0DqtQg4</p>
+        
+        <video class="tweet-img" controls src="https://video.twimg.com/ext_tw_video/1270660624628908032/pu/vid/344x432/_EKfGr4VDVuFC0UP.mp4?tag=10" />
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/931137746936086529/74wzjygZ_normal.jpg" />
+        <p class="tweet-user-name">うつぼかずら@vstcpp</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/vstcpp/status/1270720489392992258"
+            target="_blank">2020/6/10 23:12:28</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">VSTプラグイン開発の本を執筆させていただきました。<br/>工学社様( @kohgaku )より6月25日発売予定となっております。<br/><br/>内容としてはC++を使って初めてVST開発をする方にむけたものとなっております。<br/><br/><a href="https://www.kohgakusha.co.jp/books/detail/978-4-7775-2108-1" target="_blank">kohgakusha.co.jp/books/detail/9…</a><br/><br/>#VST #開発 #Cpp #工学社</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1212701145379946496/pSDVrvWj_normal.png" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1270702456087777280"
+            target="_blank">2020/6/10 22:00:48</a></p>
+      </header>
+      <section>
+        <p class="tweet-text"><div class="youtube" data-type="yt" id="fI569nw0YUQ"><div class="yt-title">Youtube - Cheryl Lynn - Got To Be Real (Audio)</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img  data-href="https://youtu.be/fI569nw0YUQ" class="youtube" src="https://i.ytimg.com/vi/fI569nw0YUQ/hqdefault.jpg" /></div>   <br/></p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1212701145379946496/pSDVrvWj_normal.png" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1270664395094282240"
+            target="_blank">2020/6/10 19:29:34</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">X1で1画面プログラムでゲームを作り、テクノポリスという雑誌に投稿したら採用されたんだよね。いや、プログラムポシェットだったか。そういうのって記念に取っておいたらよかったなと思う。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1270665495218286595"
+            target="_blank">2020/6/10 19:33:56</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">数少ない学生時代における成果物だからね。あとOh!FMにもFM音源でYMOのファイヤークラッカーのヒップホップ風にアレンジした演奏プログラムもなぜか採用された。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1270665881853386752"
+            target="_blank">2020/6/10 19:35:28</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">国会図書館で過去の雑誌が読めて、コピーが取れるそうなので一度行ってみたいのだが、休みを取ると東京に出るのが面倒でなかなか望みを果たせていない。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1270666637348188160"
+            target="_blank">2020/6/10 19:38:28</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">今日はベーマガの日なんだよね。ベーマガにも一度ゲームを送った記憶がある。それはボツだった。ベーマガは投稿が多く競争が激しかっだのではないかと思われる。なのでベーマガに採用される、された方はリスペクトの対象である。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1270667724008460288"
+            target="_blank">2020/6/10 19:42:47</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">アスキー、マイコン、I/O、ベーマガ、Oh!MZ、Oh!X、Oh!FM、テクノポリス、LOGINはよく読んでた。この雑誌たちのおかげで今のわたしがあるようなものだ。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1270668484507131905"
+            target="_blank">2020/6/10 19:45:49</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">これに少年ジャンプ、サンデー、マガジン、チャンピオン、コロコロコミックが加わるね😄こんなに雑誌は買えんので、友達と分担してましたな。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1270668866012631040"
+            target="_blank">2020/6/10 19:47:20</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">小説とかは皆無ですな（笑）</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1115134657010384897/6AU_raOS_normal.png" />
+        <p class="tweet-user-name">MickyAlbert@MickyAlbert</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/MickyAlbert/status/1270644985046556672"
+            target="_blank">2020/6/10 18:12:26</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">そろそろ、これを持って大橋編集長のご自宅に伺おうかと思います。いよいよ、２０時から放送です！皆様よろしくお願いします。<br/><a href="https://www.youtube.com/watch?v=ktpAA4sUP3M" target="_blank">youtube.com/watch?v=ktpAA4…</a><br/>#ベーマガの日 https://t.co/Onv0xdDpch</p>
+        
+        <img  class="tweet-img" src="https://pbs.twimg.com/media/EaI8sYfVcAAM0aA.jpg" />
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/2592752522/p8sdi7qsxumfzi4hnqoa_normal.png" />
+        <p class="tweet-user-name">タイニーP／四寺儀けんぞう@Kenzoo6601</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/Kenzoo6601/status/1270517413549707265"
+            target="_blank">2020/6/10 9:45:31</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">初めて買ったパソコン雑誌がベーマガ84年5月号、以後刷り込みを受けたように愛読者になり（といっても毎号買えるようになったのは85年から）90年代もいろいろありつつ買い続け本棚半分が埋まった（84年までのはオークションで補完） #ベーマガの日 https://t.co/hKYJIhxU1z</p>
+        
+        <img  class="tweet-img" src="https://pbs.twimg.com/media/EaHIPvyVcAAOkxC.jpg" />
+        
+        <img  class="tweet-img" src="https://pbs.twimg.com/media/EaHIRHWVcAIwmfH.jpg" />
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1285314837354954752/8eL0C-vu_normal.jpg" />
+        <p class="tweet-user-name">YMCAT(迎霧狼慢)@info_ymcat</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/info_ymcat/status/1270493644215054336"
+            target="_blank">2020/6/10 8:11:04</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">【注意とお願い】 迎霧狼慢の特性上、飲酒時及び過度ストレス時には心の声が駄々漏れなため、公式な見解とは必ずしも一致するものではありません。またコミュ能力が欠如しており、言葉遊びが度を越す場合があるため、全てのユーザにご納得いただけない場合がございますのでご了承の上ご利用ください。</p>
+        
+      </section>
+      
+    </article>
+    
+  </div>
+  <footer>
+    CopyLight 2019 Satoshi Fujiwara
+  </footer>
+  <script async src="https://platform.twitter.com/widgets.js"></script>
+
+  <script async src="./index.js"></script>
+
+</body>
+
+</html>

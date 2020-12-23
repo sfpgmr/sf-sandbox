@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+
+<html lang="ja" prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb# article: http://ogp.me/ns/article#">
+
+<head>
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-15457703-9"></script>
+  <script>
+    if (!location.hostname.match(/localhost/)) {
+      window.dataLayer = window.dataLayer || [];
+      function gtag() { dataLayer.push(arguments); }
+      gtag('js', new Date());
+      gtag('config', 'UA-15457703-9');
+    }
+  </script>
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Twitter Viewer</title>
+  <meta name="description" content="自作Twitter Viewerによる自分のつぶやきの記録。Programming,Music,HTML5,WebGL,javascript,WebAudio,Gameなど" />
+  <meta name="keywords" content="Programming,Music,HTML5,WebGL,javascript,WebAudio" /> 	
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <meta itemprop="image" content="https://www.sfpgmr.net/img/sfweb.png" />
+  <meta itemprop="name" content="S.F. Web" />
+  
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:site" content="S.F. Web" />
+  <meta name="twitter:url" content="./index12.html" />
+  <meta name="twitter:title" content="Twitter Viewer" />
+  <meta name="twitter:description" content="自作Twitter Viewerによる自分のつぶやきの記録。Programming,Music,HTML5,WebGL,javascript,WebAudio,Gameなど" />
+  <meta name="twitter:image" content="https://www.sfpgmr.net/img/sfweb.png" />
+  
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="./index12.html" />
+  <meta property="og:title" content="Twitter Viewer"/>
+  <meta property="og:site_name" content="S.F. Web" />
+  <meta property="og:description" content="Programming,Music,HTML5,WebGL,javascript,WebAudio">
+  <meta property="og:image" content="https://www.sfpgmr.net/img/sfweb.png">
+
+  <style>
+  * {
+  margin: 0;
+  padding: 0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+
+html {
+  margin: 0;
+  padding: 0;
+  font-size: 10px; }
+
+body {
+  margin: 0;
+  padding-left: 8px;
+  padding-right: 8px;
+  background: black;
+  color: white; }
+
+.top-nav {
+  position: fixed;
+  z-index: 99999;
+  background: rgba(0, 0, 0, 0.5);
+  display: block;
+  width: 100%;
+  height: 32px;
+  color: white; }
+
+#sentinel {
+  width: 0px;
+  height: 0px; }
+
+.contents {
+  padding-top: 32px;
+  width: 100%;
+  position: relative;
+  content: strict; }
+
+@keyframes blinking {
+  0% {
+    color: black; }
+  50% {
+    color: white; }
+  100% {
+    color: black; } }
+
+.loading {
+  font-family: monospace;
+  font-size: 24px;
+  position: fixed;
+  width: 100vw;
+  height: 100vh;
+  text-align: center;
+  padding-top: 50vh;
+  z-index: 32768;
+  background: black;
+  animation: blinking 2s infinite;
+  content: strict; }
+
+.contents > article {
+  background: #f0f0f0;
+  color: #202020;
+  position: absolute;
+  max-height: 960px;
+  overflow: auto;
+  border-radius: 3px;
+  /* transition: opacity 1s linear;*/
+  opacity: 1.0; }
+
+.tweet-header {
+  display: grid;
+  align-items: end;
+  grid-template-columns: 40px 2fr 1fr;
+  grid-template-rows: 1fr;
+  font-size: 12px;
+  font-weight: bold; }
+
+.tweet-img {
+  width: 100%;
+  object-fit: cover; }
+
+.youtube {
+  position: relative;
+  cursor: pointer; }
+
+.youtube > img {
+  width: 100%;
+  object-fit: cover; }
+
+.youtube > svg.player-play {
+  width: 64px;
+  height: 64px;
+  left: calc(50% - 32px);
+  top: calc(50% - 32px);
+  position: absolute;
+  z-index: 1000;
+  opacity: 0.5; }
+
+.youtube:hover > svg.player-play {
+  opacity: 1.0; }
+
+.youtube:hover .player-play-1 {
+  stroke: #80808080; }
+
+.youtube > div.yt-title {
+  /*text-shadow: #fff 1px 1px 0;*/
+  font-size: 1.2rem;
+  color: white;
+  background: rgba(0, 0, 0, 0.5);
+  position: absolute;
+  left: 0;
+  top: 0;
+  overflow: auto;
+  z-index: 998; }
+
+.tweet-profile-img {
+  grid-column: 1/2;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%; }
+
+.tweet-user-name {
+  grid-column: 2/3; }
+
+.tweet-date {
+  font-size: 8px;
+  text-align: right;
+  grid-column: 3/4; }
+
+.contents > twitter-widget {
+  overflow: auto;
+  max-height: 960px;
+  position: absolute; }
+
+.contents > article > section > .tweet-text {
+  display: block;
+  padding: 4px;
+  word-break: break-all;
+  font-size: 12px; }
+
+.contents > article > h3 {
+  font-size: 12px; }
+
+blockquote.card {
+  margin: 4px;
+  padding: 4px;
+  font-size: 12px;
+  background: white;
+  border-radius: 4px; }
+
+blockquote.card > header {
+  display: grid;
+  grid-gap: 4px;
+  gap: 4px; }
+
+blockquote.card-default > header {
+  grid-template-columns: 64px 1fr; }
+
+blockquote.card-large > header {
+  grid-template-columns: 1fr; }
+
+blockquote.card > header > img {
+  width: 100%; }
+
+div.no-image {
+  display: block;
+  width: 64px;
+  height: 64px;
+  background: gray;
+  color: white;
+  text-align: center;
+  line-height: 64px; }
+ 
+  </style>
+</head>
+
+<body>
+  <div class="loading" id="loading">Loading</div>
+  <header class="top-nav">
+    <h1>S.F. Info.</h1>
+  </header>
+  <div class="contents" id="contents" rendersubtree="invisible skip-activation"> 
+    
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/604577289/clock_normal.jpg" />
+        <p class="tweet-user-name">Katsumi (電子工作好き)@kats_me</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/kats_me/status/1270044730508767240"
+            target="_blank">2020/6/9 2:27:14</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">巷では今、6502が密かに流行しているのか？Apple IをMachiKaniaに移植しようかな。Apple ][は、ROMの著作権の問題があって無理。 <a href="https://twitter.com/wakwak_akizuki/status/1269790345102888960" target="_blank">twitter.com/wakwak_akizuki…</a></p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1115134657010384897/6AU_raOS_normal.png" />
+        <p class="tweet-user-name">MickyAlbert@MickyAlbert</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/MickyAlbert/status/1270111764600872960"
+            target="_blank">2020/6/9 6:53:36</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">昨日の小沢純子さんの生誕を祝い、２９年ぶりに小沢さんが全曲を担当されたエイリアンフィールドを５０％オフセールを開始しました！<br/><a href="https://store.steampowered.com/app/926350/ALIEN_FIELD/" target="_blank">store.steampowered.com/app/926350/ALI…</a><br/>充実のパッケージ版、Ｂ５サイズ７８ページのブックレットが付くサントラについてはこちらをご覧ください。<br/><a href="http://pinball.co.jp/games/AF/" target="_blank">pinball.co.jp/games/AF/</a></p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1212701145379946496/pSDVrvWj_normal.png" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1270111599592800256"
+            target="_blank">2020/6/9 6:52:57</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">BigIntって便利だなあ。。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1212701145379946496/pSDVrvWj_normal.png" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1270088498469457920"
+            target="_blank">2020/6/9 5:21:09</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">まとめを更新しました。「オレオレ言語」 <blockquote class="card card-default"><header><img  src="https://pimg.togetter.com/small_light(sx=0.0p,sy=8.7p,sw=100.0p,sh=82.3p,dw=1212.0,dh=636.3,cw=1200.0,ch=630.0,p=default,da=l,ds=s)/ad3f2fd296c450147daf73a1dfc85411dc14945f/68747470733a2f2f7062732e7477696d672e636f6d2f6d656469612f455a764d3978675663414952747a422e706e67" /><a href="https://togetter.com/li/1266927" target="_blank">オレオレ言語 - Togetter</a></header><div>node.jsでWASMを吐くコンパイラを作っています。まだ完成には至っていません。少々放置していましたがまた新たな言語を作り始めてます。■オレオレ言語の中間成果物として作ったもの■過去の遺物リポ..</div></blockquote></p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1179747158230102017/WTR9tI3P_normal.jpg" />
+        <p class="tweet-user-name">しょーけん@SHOKEN4</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SHOKEN4/status/1269917327295823874"
+            target="_blank">2020/6/8 18:00:59</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">あのグラディウスがアーケード版とほぼ同じ環境でできる事を知ってゲットした68，沙羅曼蛇もグラディウスⅡもアーケード版とほぼ同じなので遊びまくった！素晴らしいマシン！ありがとう68！ #X68の日 https://t.co/uZu56tzDkC</p>
+        
+        <img  class="tweet-img" src="https://pbs.twimg.com/media/EZ-nErHUEAArz25.jpg" />
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1291901811910045696/QMKBM-AO_normal.jpg" />
+        <p class="tweet-user-name">ノズ@halrud</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/halrud/status/1269743780871065600"
+            target="_blank">2020/6/8 6:31:22</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">本日06/08はマイコンBASICマガジンの創刊日らしいですね。懐かしい。<br/>お世話になったなぁ https://t.co/jlypIt4aoh</p>
+        
+        <img  class="tweet-img" src="https://pbs.twimg.com/media/EZ8JPIbUYAAm8hR.jpg" />
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1212701145379946496/pSDVrvWj_normal.png" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269937971932721153"
+            target="_blank">2020/6/8 19:23:01</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">思い出話まとめたらなぜか編集部イチオシになり私にとっては想像を超えるアクセスがあってちょっとビックリした。ようやく落ち着いたみたい。それと30年前以上前の話だという前置きを忘れてました。。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1212701145379946496/pSDVrvWj_normal.png" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269782581328834560"
+            target="_blank">2020/6/8 9:05:33</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">@syntaxerrors72 Fさんはレジェンドですからね。わかります。私は無理ですが。もし会うことができても緊張して何話したらいいかわからないです。（笑）</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269783035915808768"
+            target="_blank">2020/6/8 9:07:21</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">@syntaxerrors72 NHKの新電子立国の番組でお姿を拝見できただけで十分でございます。（笑）</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1212701145379946496/pSDVrvWj_normal.png" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269780771574669312"
+            target="_blank">2020/6/8 8:58:21</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">@syntaxerrors72 大丈夫です。私のツィートも誤字脱字だらけです。訂正できないのが辛いですね。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1212701145379946496/pSDVrvWj_normal.png" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1269780486345248773"
+            target="_blank">2020/6/8 8:57:13</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">マスク忘れて通勤。あわててコンビニに行ってこ購入。なんと3000円近くしてしまった。50枚だけどね。。</p>
+        
+      </section>
+      
+    </article>
+    
+  </div>
+  <footer>
+    CopyLight 2019 Satoshi Fujiwara
+  </footer>
+  <script async src="https://platform.twitter.com/widgets.js"></script>
+
+  <script async src="./index.js"></script>
+
+</body>
+
+</html>

@@ -1,0 +1,10 @@
+@if(!local.debug)
+<amp-ad width="{{ width || '100vw' }}" height="{{ height || '80px'}}"
+  type="{{ local.advertisement.type }}"
+  data-ad-client="{{ local.advertisement['ad-client'] }}"
+  data-ad-slot="{{ local.advertisement['ad-slot'] }}"
+  data-auto-format="{{ local.advertisement['auto-format'] }}"
+  data-full-width="">
+<div overflow=""></div>
+</amp-ad>
+@endif

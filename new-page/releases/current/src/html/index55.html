@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+
+<html lang="ja" prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb# article: http://ogp.me/ns/article#">
+
+<head>
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-15457703-9"></script>
+  <script>
+    if (!location.hostname.match(/localhost/)) {
+      window.dataLayer = window.dataLayer || [];
+      function gtag() { dataLayer.push(arguments); }
+      gtag('js', new Date());
+      gtag('config', 'UA-15457703-9');
+    }
+  </script>
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>トップページをリニューアルする</title>
+  <meta name="description" content="リニューアル用のトップページデザインを考えて実装する" />
+  <meta name="keywords" content="Programming,Music,HTML5,WebGL,javascript,WebAudio" /> 	
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <meta itemprop="image" content="https://www.sfpgmr.net/img/sfweb.png" />
+  <meta itemprop="name" content="S.F. Web" />
+  
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:site" content="S.F. Web" />
+  <meta name="twitter:url" content="./index55.html" />
+  <meta name="twitter:title" content="リニューアル用のトップページデザイン" />
+  <meta name="twitter:description" content="リニューアル用のトップページデザインを考えて実装する" />
+  <meta name="twitter:image" content="https://www.sfpgmr.net/img/sfweb.png" />
+  
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="./index55.html" />
+  <meta property="og:title" content="リニューアル用のトップページデザイン"/>
+  <meta property="og:site_name" content="S.F. Web" />
+  <meta property="og:description" content="Programming,Music,HTML5,WebGL,javascript,WebAudio">
+  <meta property="og:image" content="https://www.sfpgmr.net/img/sfweb.png">
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    html {
+      margin: 0;
+      padding: 0;
+      font-size:10px;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      background: black;
+      color: white;
+    }
+
+    .top-nav {
+      position:fixed;
+      z-index:99999;
+      background: rgba(0,0,0,0.5);
+      display: block;
+      width:100%;
+      height:32px;
+      color:white;
+    }
+    #sentinel {
+      width:0px;
+      height:0px;
+    }
+    .contents {
+      padding-top:32px;
+      width: 100%;
+      position: relative;
+      content: strict;
+    }
+
+    @keyframes blinking {
+      0% {
+        color: black;
+      }
+
+      50% {
+        color: white;
+      }
+
+      100% {
+        color: black;
+      }
+    }
+
+    .loading {
+      font-family: monospace;
+      font-size: 24px;
+      position: fixed;
+      width: 100vw;
+      height: 100vh;
+      text-align: center;
+      padding-top: 50vh;
+      z-index: 32768;
+      background: black;
+      animation: blinking 2s infinite;
+      content: strict;
+    }
+
+
+    .contents > article {
+      background: #f0f0f0;
+      color: #202020;
+      position: absolute;
+      max-height: 960px;
+      overflow: auto;
+      border-radius: 3px;
+     /* transition: opacity 1s linear;*/
+      opacity: 1.0;
+    }
+
+    .tweet-header {
+      display: grid;
+      align-items: end;
+      grid-template-columns: 40px 2fr 1fr;
+      grid-template-rows: 1fr;
+      font-size: 12px;
+      font-weight: bold;
+    }
+
+
+    .tweet-img {
+      width: 100%;
+      object-fit: cover;
+    }
+
+    .youtube {
+      position: relative;
+      cursor: pointer;
+    }
+
+    .youtube > img {
+      width: 100%;
+      object-fit: cover;
+    }
+
+    .youtube > svg.player-play {
+      width:64px;
+      height:64px;
+      left:calc(50% - 32px);
+      top:calc(50% - 32px);
+      position:absolute;
+      z-index: 1000;
+      opacity: 0.5;
+    }
+    
+    .youtube:hover > svg.player-play {
+      opacity: 1.0;
+    }
+
+    .youtube:hover .player-play-1 {
+      stroke:#80808080;
+    }
+
+    
+    .youtube > div.yt-title {
+      /*text-shadow: #fff 1px 1px 0;*/
+      font-size: 1.2rem;
+      color:white;
+      background:rgba(0, 0,0,0.5);
+      position:absolute;
+      left:0;
+      top:0;
+      overflow: auto;
+      z-index:998;
+    }
+
+
+    .tweet-profile-img {
+      grid-column: 1/2;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+    }
+
+    .tweet-user-name {
+      grid-column: 2/3;
+    }
+
+    .tweet-date {
+      font-size: 8px;
+      text-align: right;
+      grid-column: 3/4;
+    }
+
+    .contents>twitter-widget {
+      overflow: auto;
+      max-height: 960px;
+      position: absolute;
+    }
+
+    .contents>article>section>.tweet-text {
+      display: block;
+      padding: 4px;
+      word-break: break-all;
+      font-size: 12px;
+    }
+
+    .contents>article>h3 {
+      font-size: 12px;
+    }
+
+    blockquote.card {
+      margin:4px;
+      padding:4px;
+      font-size:12px;
+      background:white;
+      border-radius: 4px;
+    }
+
+    blockquote.card > header {
+      display:grid;
+      grid-gap:4px;
+      gap:4px;
+    }
+
+    blockquote.card-default > header {
+      grid-template-columns:64px 1fr;
+    }
+
+    blockquote.card-large > header {
+      grid-template-columns:1fr;
+    }
+
+    blockquote.card > header > img {
+      width:100%;
+    }
+
+
+    div.no-image {
+      display: block;
+      width:64px;
+      height:64px;
+      background:gray;
+      color:white;
+      text-align: center;
+      line-height: 64px;
+    }
+
+  </style>
+</head>
+
+<body>
+  <div class="loading" id="loading">Loading</div>
+  <header class="top-nav">
+    <h1>S.F. Info.</h1>
+  </header>
+  <div class="contents" id="contents" rendersubtree="invisible skip-activation"> 
+    
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1086413052482703361"
+            target="_blank">2019/1/19 9:00:30</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">「若い」ってすごいアドバンテージだ！と感じるのは多分老いてからなんだろうな。私はまさに今実感してるところ。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1086413339389906944"
+            target="_blank">2019/1/19 9:01:39</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">継続するパワーとかまさにそう。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/2198042994/DSC02173_normal.jpg" />
+        <p class="tweet-user-name">Shinji Kono@shinji_kono</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/shinji_kono/status/1086411061916401664"
+            target="_blank">2019/1/19 8:52:36</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">Apple嫌う人多いけど、良いものなら多少高くても良いという人が使ってるだけ。ダメになれば使わない。安さ絶対みたいな人は少し残念だな。Mojave お前はダメだ。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1086411378108248064"
+            target="_blank">2019/1/19 8:53:51</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">若いなあ。。うらやましい。。 <blockquote class="card card-default"><header><img  src="https://pbs.twimg.com/profile_images/1170902883589451776/iPdvmJQU_400x400.jpg" /><a href="https://twitter.com/pyama86/status/1086216291000565760" target="_blank">P山さんのツイート: "今日発表した資料です。 「学び続ける努力」 https://t.co/Q9pKCZ8Tuu #forkwell"</a></header><div>“今日発表した資料です。<br/>「学び続ける努力」<br/>https://t.co/Q9pKCZ8Tuu<br/>#forkwell”</div></blockquote></p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/933157350910783488/CiS9AAoQ_normal.jpg" />
+        <p class="tweet-user-name">Evan Balster 🍂@EvanBalster</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/EvanBalster/status/1086390358903263234"
+            target="_blank">2019/1/19 7:30:20</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">MIDI 2.0 has been announced.  <a href="https://www.midi.org/articles-old/the-midi-manufacturers-association-mma-and-the-association-of-music-electronics-industry-amei-announce-midi-2-0tm-prototyping" target="_blank">midi.org/articles-old/t…</a><br/>I've been involved in this project for two years. Please, take my word: It's gonna be a big deal.</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1015898747794907136/baQA-1Wh_normal.jpg" />
+        <p class="tweet-user-name">Kitasenju Design@kitasenjudesign</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/kitasenjudesign/status/1085753599957774336"
+            target="_blank">2019/1/17 13:20:05</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">Make money #arkit https://t.co/Lu9lBQubtm</p>
+        
+        <video class="tweet-img" controls src="https://video.twimg.com/ext_tw_video/1085753522304442368/pu/vid/1280x592/3QvuGKMmnkWyVl6R.mp4?tag=8" />
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1204370979327102976/FIL_m48c_normal.png" />
+        <p class="tweet-user-name">蛙山芳隆＠日曜西A48b@kaeruyama0207</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/kaeruyama0207/status/1085425695205974017"
+            target="_blank">2019/1/16 15:37:06</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">学生の頃ずっと「自分の見てる『赤』と他人の見てる『赤』は本当に同じなの？」って思ってて人に言っても理解されなかったけど、数年前全く同じ内容の『逆転クオリア』という哲学上の思考実験の存在を知って答えは「問うだけ無意味」だと分かって長年の悩みが解決したのでインターネットは偉大</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1209479300199510017/VtzeHkUe_normal.png" />
+        <p class="tweet-user-name">Hideyuki Tanaka@tanakh</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/tanakh/status/1085539748079259654"
+            target="_blank">2019/1/16 23:10:18</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">オープンソースなんか広まったらソフト産業死ぬぞ<br/>↓<br/>これからはサービスで儲ける時代。ライセンスも緩くていいぞ。まだこの時代に適応できてへん企業おる？<br/>↓<br/>結局IaaS持ってるとこしか儲かんないじゃん…<br/>↓<br/>謎ライセンスでクラウド業者の利用を縛るぞ！フリーライドは許さん！<br/><br/>(´･_･`)</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/688238074153713664/ZQZdzRir_normal.jpg" />
+        <p class="tweet-user-name">Sangmin @ChoimiraiSchool@gijigae</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/gijigae/status/1085538787940196352"
+            target="_blank">2019/1/16 23:06:30</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">川（アメリカのメーン州）の水面にできた円盤型の巨大な氷。川の流れの中でゆっくりと回転する円盤がまるで月のようにも見える 🌒。 https://t.co/RHcy9WsbuY</p>
+        
+        <video class="tweet-img" controls src="https://video.twimg.com/ext_tw_video/1085537528952762368/pu/vid/320x320/meSpPlGTRo_pr51x.mp4?tag=8" />
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/852559569104510977/g9x28P8g_normal.jpg" />
+        <p class="tweet-user-name">シスコシステムズ合同会社@Cisco_Japan</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/Cisco_Japan/status/1047745417298030592"
+            target="_blank">2018/10/4 16:09:08</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">鯖もサーバも「鮮度」が大事！すぐに使えてニーズを逃さない。ネットワークも統合したシスコ産のハイパーコンバージド「Cisco HyperFlex」。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1549995796/110919-210443_normal.JPG" />
+        <p class="tweet-user-name">Kei Moroboshi(諸星圭)@kmoroboshi</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/kmoroboshi/status/1085436943951814656"
+            target="_blank">2019/1/16 16:21:48</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">CP/Mは使い込んでいたけど、MS-DOSが完全にCP/Mの8086版みたいなファンクションコールセットになっていたのも移行にすんなり傾いた理由だなぁ。<br/>Intel+MSが描いた戦略に見事にハマったわけだけど、全く後悔はないｗ</p>
+        
+      </section>
+      
+    </article>
+    
+  </div>
+  <footer>
+    CopyLight 2019 Satoshi Fujiwara
+  </footer>
+  <script async src="https://platform.twitter.com/widgets.js"></script>
+
+  <script async src="./index.js"></script>
+
+</body>
+
+</html>

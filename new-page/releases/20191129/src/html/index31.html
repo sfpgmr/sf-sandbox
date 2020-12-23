@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="ja" prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb# article: http://ogp.me/ns/article#">
+
+<head>
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-15457703-9"></script>
+  <script>
+    if (!location.hostname.match(/localhost/)) {
+      window.dataLayer = window.dataLayer || [];
+      function gtag() { dataLayer.push(arguments); }
+      gtag('js', new Date());
+      gtag('config', 'UA-15457703-9');
+    }
+  </script>
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>トップページをリニューアルする</title>
+  <meta name="description" content="リニューアル用のトップページデザインを考えて実装する" />
+  <meta name="keywords" content="Programming,Music,HTML5,WebGL,javascript,WebAudio" /> 	
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <meta itemprop="image" content="https://www.sfpgmr.net/img/sfweb.png" />
+  <meta itemprop="name" content="S.F. Web" />
+  
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:site" content="S.F. Web" />
+  <meta name="twitter:url" content="./index31.html" />
+  <meta name="twitter:title" content="リニューアル用のトップページデザイン" />
+  <meta name="twitter:description" content="リニューアル用のトップページデザインを考えて実装する" />
+  <meta name="twitter:image" content="https://www.sfpgmr.net/img/sfweb.png" />
+  
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="./index31.html" />
+  <meta property="og:title" content="リニューアル用のトップページデザイン"/>
+  <meta property="og:site_name" content="S.F. Web" />
+  <meta property="og:description" content="Programming,Music,HTML5,WebGL,javascript,WebAudio">
+  <meta property="og:image" content="https://www.sfpgmr.net/img/sfweb.png">
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    html {
+      margin: 0;
+      padding: 0;
+      font-size:10px;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      background: black;
+      color: white;
+    }
+
+    #sentinel {
+      width:0px;
+      height:0px;
+    }
+    .contents {
+      width: 100%;
+      position: relative;
+      content: strict;
+    }
+
+    @keyframes blinking {
+      0% {
+        color: black;
+      }
+
+      50% {
+        color: white;
+      }
+
+      100% {
+        color: black;
+      }
+    }
+
+    .loading {
+      font-family: monospace;
+      font-size: 24px;
+      position: fixed;
+      width: 100vw;
+      height: 100vh;
+      text-align: center;
+      padding-top: 50vh;
+      z-index: 32768;
+      background: black;
+      animation: blinking 2s infinite;
+      content: strict;
+    }
+
+
+    .contents>article {
+      background: #f0f0f0;
+      color: #202020;
+      position: absolute;
+      max-height: 960px;
+      overflow: auto;
+      border-radius: 3px;
+    }
+
+    .tweet-header {
+      display: grid;
+      align-items: end;
+      grid-template-columns: 40px 2fr 1fr;
+      grid-template-rows: 1fr;
+      font-size: 12px;
+      font-weight: bold;
+    }
+
+
+    .tweet-img {
+      width: 100%;
+      object-fit: cover;
+    }
+
+    .youtube {
+      position: relative;
+      cursor: pointer;
+    }
+
+    .youtube > img {
+      width: 100%;
+      object-fit: cover;
+    }
+
+    .youtube > svg.player-play {
+      width:64px;
+      height:64px;
+      left:calc(50% - 32px);
+      top:calc(50% - 32px);
+      position:absolute;
+      z-index: 1000;
+      opacity: 0.5;
+    }
+    
+    .youtube:hover > svg.player-play {
+      opacity: 1.0;
+    }
+
+    .youtube:hover .player-play-1 {
+      stroke:#80808080;
+    }
+
+    
+    .youtube > div.yt-title {
+      /*text-shadow: #fff 1px 1px 0;*/
+      font-size: 1.2rem;
+      color:white;
+      background:rgba(0, 0,0,0.5);
+      position:absolute;
+      left:0;
+      top:0;
+      overflow: auto;
+      z-index:998;
+    }
+
+
+    .tweet-profile-img {
+      grid-column: 1/2;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+    }
+
+    .tweet-user-name {
+      grid-column: 2/3;
+    }
+
+    .tweet-date {
+      font-size: 8px;
+      text-align: right;
+      grid-column: 3/4;
+    }
+
+    .contents>twitter-widget {
+      overflow: auto;
+      max-height: 960px;
+      position: absolute;
+    }
+
+    .contents>article>section>.tweet-text {
+      display: block;
+      padding: 4px;
+      word-break: break-all;
+      font-size: 12px;
+    }
+
+    .contents>article>h3 {
+      font-size: 12px;
+    }
+
+    blockquote.card {
+      margin:4px;
+      padding:4px;
+      font-size:12px;
+      background:white;
+      border-radius: 4px;
+    }
+
+    blockquote.card > header {
+      display:grid;
+      grid-gap:4px;
+      gap:4px;
+    }
+
+    blockquote.card-default > header {
+      grid-template-columns:64px 1fr;
+    }
+
+    blockquote.card-large > header {
+      grid-template-columns:1fr;
+    }
+
+    blockquote.card > header > img {
+      width:100%;
+    }
+
+
+    div.no-image {
+      display: block;
+      width:64px;
+      height:64px;
+      background:gray;
+      color:white;
+      text-align: center;
+      line-height: 64px;
+    }
+
+  </style>
+</head>
+
+<body>
+  <div class="loading" id="loading">Loading</div>
+  <header class="top-nav">
+    <h1>S.F. Info.</h1>
+  </header>
+  <div class="contents" id="contents" rendersubtree="invisible skip-activation"> 
+    
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/1198586736453931009/ir4FnfNX_normal.jpg" />
+        <p class="tweet-user-name">三重野 慶art@mienokei</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/mienokei/status/1121336115208658945"
+            target="_blank">2019/4/25 17:52:17</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">これで完成にしました！！木漏れ日難しくて4ヶ月近くかかった🙌🏻<br/>蛍光灯の反射があるので逆さ置きと細部もスレッドで上げます<br/><br/>#油絵  #art #oilpainting #artwork https://t.co/013ImQAVS2</p>
+        
+        <img loading="lazy" class="tweet-img" src="https://pbs.twimg.com/media/D4_JP_RVUAEubug.jpg" />
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/591891622/twitterProfilePhoto_normal.jpg" />
+        <p class="tweet-user-name">yasuho@yasuho68k</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/yasuho68k/status/1121261601561034752"
+            target="_blank">2019/4/25 12:56:12</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ポールポジションって、Z8000使ってたんだ。知らなかった… <a href="https://www.bandainamcoent.co.jp/asobimotto/page/carracinggames1.html" target="_blank">bandainamcoent.co.jp/asobimotto/pag…</a></p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1120808769137471488"
+            target="_blank">2019/4/24 6:56:48</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">--experimental-modules は2019/10のLTSリリースで外れる予定なのね。。<br/>Announcing a new — experimental-modules by @nodejs <blockquote class="card card-large"><header><img loading="lazy" src="https://miro.medium.com/max/1200/1*aomuMRxh1N022IQqzB5YTA.jpeg" /><a href="https://link.medium.com/i7KfQrfO7V" target="_blank">Announcing a new --experimental-modules - Node.js Foundation - Medium</a></header><div>Back in 2017, Node.js 8.9.0 shipped experimental support for ECMAScript modules, known for their import and export statements. This…</div></blockquote></p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/702185727262482432/n1JRsFeB_normal.png" />
+        <p class="tweet-user-name">Node.js@nodejs</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/nodejs/status/1120723261929795590"
+            target="_blank">2019/4/24 1:17:02</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">🎉 Node.js v 12 is here!! Read more at the blog ---&gt; <a href="https://bit.ly/2GCnsA4" target="_blank">bit.ly/2GCnsA4</a></p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1120286350542925824"
+            target="_blank">2019/4/22 20:20:54</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">うーん。なんかちょっとこれは。。 <blockquote class="card card-large"><header><img loading="lazy" src="https://hacks.mozilla.org/files/2019/03/featured_image.png" /><a href="https://hacks.mozilla.org/2019/03/standardizing-wasi-a-webassembly-system-interface/" target="_blank">Standardizing WASI: A system interface to run WebAssembly outside the web - Mozilla Hacks - the Web developer blog</a></header><div>WebAssembly is an assembly language for a conceptual machine, not a physical one. This is why it can be run across a variety of different machine architectures. WebAssembly needs a ...</div></blockquote></p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/817864664851750912/hN2kbele_normal.jpg" />
+        <p class="tweet-user-name">阿部@ave620</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/ave620/status/1119927104840200192"
+            target="_blank">2019/4/21 20:33:23</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">いやだから！！！！！！！筋肉痛が遅れてくるのは加齢が原因じゃないらしいんですよ！！！！！！！！<br/>三日目に筋肉痛になっても！！！！！！<br/>老いとは！！！！関係ないの！！！！！ https://t.co/XlYm6NN0wS</p>
+        
+        <img loading="lazy" class="tweet-img" src="https://pbs.twimg.com/media/D4rHw05UYAAfDx3.jpg" />
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1119587246510751757"
+            target="_blank">2019/4/20 22:02:55</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">@syntaxerrors72 ちょっと変なバイアスがかかってるんですよね。。グラIIなんかもそうなんですね。直接関わったわけでもないのですが（笑）。まあバイアスがあろうがなかろうが面白いですけどね。。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1119583174990807041"
+            target="_blank">2019/4/20 21:46:44</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">@syntaxerrors72 まああのゲームは純粋な（？）スクロール・シューティングを作りたいと願っていたお二方の希望がようやく叶った代物ではなかったかと記憶してるんですね。そういう意味でも思い入れは深いですね。。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1119581504168845313"
+            target="_blank">2019/4/20 21:40:06</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">@syntaxerrors72 ちょっとだけ。やっぱりバグが多い。おそらくコナミのゲームでも一番バグが多かったのではないかと。某PGの技術力が未熟なせいですかね（笑）。それに比べてサンダークロスはかっちりと作ってあっていいですわ（笑）。技術力の差を感じます。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1119581820343820288"
+            target="_blank">2019/4/20 21:41:21</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">@syntaxerrors72 CPUは同じだけど、基板の性能はサンダークロスのほうが低いんじゃないかと思いますね。たぶん。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1119576762399113216"
+            target="_blank">2019/4/20 21:21:15</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">@syntaxerrors72 スクランブル・ツインビー・グラディウス・沙羅曼蛇・グラディウスIIあたりはレジェンドだと思うのですが、サンダークロスとAJaxのようなレアものが入っているのがこの商品の面白いところですね。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1119577403947225088"
+            target="_blank">2019/4/20 21:23:48</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">@syntaxerrors72 対談はもろに懐かしい人が出ていて、ちょっと涙が出そうになりました。私も歳を取って涙もろくなっております（笑）。まああの対談の方からしたら、私などは星の数ほどいるPGの一人で記憶にもないでしょうけど。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1119577988075364354"
+            target="_blank">2019/4/20 21:26:07</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">@syntaxerrors72 久しぶりにシューティングやってみて思うのは今やっても面白いところですね。グラフィックも結構緻密で手書きの味がでてるというか（笑）、今のゲームにはない表現ですよね。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1119580547280293890"
+            target="_blank">2019/4/20 21:36:17</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">@syntaxerrors72 1987年～1990年あたりは多色化は進んだのですがピクセルは粗く、その独特な感じがとても好きなんですよね。</p>
+        
+      </section>
+      
+    </article>
+    
+  </div>
+  <footer>
+    CopyLight 2019 Satoshi Fujiwara
+  </footer>
+  <script async src="https://platform.twitter.com/widgets.js"></script>
+
+  <script async src="./index.js"></script>
+
+</body>
+
+</html>

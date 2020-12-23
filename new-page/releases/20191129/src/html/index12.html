@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="ja" prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb# article: http://ogp.me/ns/article#">
+
+<head>
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-15457703-9"></script>
+  <script>
+    if (!location.hostname.match(/localhost/)) {
+      window.dataLayer = window.dataLayer || [];
+      function gtag() { dataLayer.push(arguments); }
+      gtag('js', new Date());
+      gtag('config', 'UA-15457703-9');
+    }
+  </script>
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>トップページをリニューアルする</title>
+  <meta name="description" content="リニューアル用のトップページデザインを考えて実装する" />
+  <meta name="keywords" content="Programming,Music,HTML5,WebGL,javascript,WebAudio" /> 	
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <meta itemprop="image" content="https://www.sfpgmr.net/img/sfweb.png" />
+  <meta itemprop="name" content="S.F. Web" />
+  
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:site" content="S.F. Web" />
+  <meta name="twitter:url" content="./index12.html" />
+  <meta name="twitter:title" content="リニューアル用のトップページデザイン" />
+  <meta name="twitter:description" content="リニューアル用のトップページデザインを考えて実装する" />
+  <meta name="twitter:image" content="https://www.sfpgmr.net/img/sfweb.png" />
+  
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="./index12.html" />
+  <meta property="og:title" content="リニューアル用のトップページデザイン"/>
+  <meta property="og:site_name" content="S.F. Web" />
+  <meta property="og:description" content="Programming,Music,HTML5,WebGL,javascript,WebAudio">
+  <meta property="og:image" content="https://www.sfpgmr.net/img/sfweb.png">
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    html {
+      margin: 0;
+      padding: 0;
+      font-size:10px;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      background: black;
+      color: white;
+    }
+
+    #sentinel {
+      width:0px;
+      height:0px;
+    }
+    .contents {
+      width: 100%;
+      position: relative;
+      content: strict;
+    }
+
+    @keyframes blinking {
+      0% {
+        color: black;
+      }
+
+      50% {
+        color: white;
+      }
+
+      100% {
+        color: black;
+      }
+    }
+
+    .loading {
+      font-family: monospace;
+      font-size: 24px;
+      position: fixed;
+      width: 100vw;
+      height: 100vh;
+      text-align: center;
+      padding-top: 50vh;
+      z-index: 32768;
+      background: black;
+      animation: blinking 2s infinite;
+      content: strict;
+    }
+
+
+    .contents>article {
+      background: #f0f0f0;
+      color: #202020;
+      position: absolute;
+      max-height: 960px;
+      overflow: auto;
+      border-radius: 3px;
+    }
+
+    .tweet-header {
+      display: grid;
+      align-items: end;
+      grid-template-columns: 40px 2fr 1fr;
+      grid-template-rows: 1fr;
+      font-size: 12px;
+      font-weight: bold;
+    }
+
+
+    .tweet-img {
+      width: 100%;
+      object-fit: cover;
+    }
+
+    .youtube {
+      position: relative;
+      cursor: pointer;
+    }
+
+    .youtube > img {
+      width: 100%;
+      object-fit: cover;
+    }
+
+    .youtube > svg.player-play {
+      width:64px;
+      height:64px;
+      left:calc(50% - 32px);
+      top:calc(50% - 32px);
+      position:absolute;
+      z-index: 1000;
+      opacity: 0.5;
+    }
+    
+    .youtube:hover > svg.player-play {
+      opacity: 1.0;
+    }
+
+    .youtube:hover .player-play-1 {
+      stroke:#80808080;
+    }
+
+    
+    .youtube > div.yt-title {
+      /*text-shadow: #fff 1px 1px 0;*/
+      font-size: 1.2rem;
+      color:white;
+      background:rgba(0, 0,0,0.5);
+      position:absolute;
+      left:0;
+      top:0;
+      overflow: auto;
+      z-index:998;
+    }
+
+
+    .tweet-profile-img {
+      grid-column: 1/2;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+    }
+
+    .tweet-user-name {
+      grid-column: 2/3;
+    }
+
+    .tweet-date {
+      font-size: 8px;
+      text-align: right;
+      grid-column: 3/4;
+    }
+
+    .contents>twitter-widget {
+      overflow: auto;
+      max-height: 960px;
+      position: absolute;
+    }
+
+    .contents>article>section>.tweet-text {
+      display: block;
+      padding: 4px;
+      word-break: break-all;
+      font-size: 12px;
+    }
+
+    .contents>article>h3 {
+      font-size: 12px;
+    }
+
+    blockquote.card {
+      margin:4px;
+      padding:4px;
+      font-size:12px;
+      background:white;
+      border-radius: 4px;
+    }
+
+    blockquote.card > header {
+      display:grid;
+      grid-gap:4px;
+      gap:4px;
+    }
+
+    blockquote.card-default > header {
+      grid-template-columns:64px 1fr;
+    }
+
+    blockquote.card-large > header {
+      grid-template-columns:1fr;
+    }
+
+    blockquote.card > header > img {
+      width:100%;
+    }
+
+
+    div.no-image {
+      display: block;
+      width:64px;
+      height:64px;
+      background:gray;
+      color:white;
+      text-align: center;
+      line-height: 64px;
+    }
+
+  </style>
+</head>
+
+<body>
+  <div class="loading" id="loading">Loading</div>
+  <header class="top-nav">
+    <h1>S.F. Info.</h1>
+  </header>
+  <div class="contents" id="contents" rendersubtree="invisible skip-activation"> 
+    
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/596376750650621952/xThYweep_normal.jpg" />
+        <p class="tweet-user-name">武田@ご当地VTuber運営したり@tamanyo</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/tamanyo/status/1171875173676437504"
+            target="_blank">2019/9/12 4:56:28</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">昨日Sigezoneで買ってきたK210よく見てみる。<br/><br/>スマホのマクロでとってもピント合いにくい位は小さい。重さだって1gなんて全然ない。吹いたらちゃんと飛ぶ🤭<br/><br/>これでAI出来ちゃんうんだから衝撃だよね。<br/><br/>なおも日本はどうしたのかな😪 https://t.co/GTNVBsDfit</p>
+        
+        <video class="tweet-img" controls src="https://video.twimg.com/ext_tw_video/1171875074971815936/pu/vid/480x270/l3sSb0DQOLiBSBhE.mp4?tag=10" />
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1170802528167940096"
+            target="_blank">2019/9/9 5:54:09</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">家が風でミシミシいっててヤバイなこりゃ。。<br/>#台風15号</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1170831577766453248"
+            target="_blank">2019/9/9 7:49:35</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">外に出ると隣家の自転車が飛ばされて道の真ん中に落ちてた。そして植木が飛ばされて割れた鉢が飛散してる。。うちの家は玄関のポストと植栽がアウトですな。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1171887793670279168"
+            target="_blank">2019/9/12 5:46:37</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">台風の東側が通った地域の被害はすごいな。。もう少し西に通ったらうちもこんなくらいでは済まなかっただろうな。とにかく風がいままで聞いたことないようなすごい音をしていたからね。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1171888269837029376"
+            target="_blank">2019/9/12 5:48:30</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">台風の中心からちょっと西側が通ったんだろうと思う。ものすごい風→突然風が止む→反対方向からものすごい風という流れだった。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/1197562361252581378/D3q7FQhX_normal.jpg" />
+        <p class="tweet-user-name">HTMLElemental@dustmop</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/dustmop/status/1171479796703850498"
+            target="_blank">2019/9/11 2:45:23</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">Technical Breakdown of a new NES game written in lisp: <a href="http://www.dustmop.io/blog/2019/09/10/what-remains-technical-breakdown/" target="_blank">dustmop.io/blog/2019/09/1…</a><br/><br/>here's a blog post about @remwhat, a game I worked on that finished up earlier this year</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1171801789722550272"
+            target="_blank">2019/9/12 0:04:52</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">瞬電してたみたいですな。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1171802347619508225"
+            target="_blank">2019/9/12 0:07:05</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">しかしすごい雷だった。。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/1182907607901716481/YjoVtxq0_normal.png" />
+        <p class="tweet-user-name">堂本かおる@nybct</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/nybct/status/1171513675405905921"
+            target="_blank">2019/9/11 5:00:00</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">世界中の声「アップルよ、新しいiPhoneとか要らんから、これ早よなんとかせえ」 <a href="https://twitter.com/nighxcity/status/1171498154442625024" target="_blank">twitter.com/nighxcity/stat…</a></p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1171755657420144641"
+            target="_blank">2019/9/11 21:01:33</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">Impulse Trackerのソースコードって２０１４年に公開されてたのね。。<br/><blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="https://bitbucket.org/jthlim/impulsetracker/src/default/" target="_blank">jthlim / impulsetracker — Bitbucket</a></header><div></div></blockquote></p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1171756064238260224"
+            target="_blank">2019/9/11 21:03:10</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">確かこのトラッカーで、MODで初めてフィルタが実装されたものと聞いている。X86アセンブラで記述されている。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1171756694113619968"
+            target="_blank">2019/9/11 21:05:40</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">Gravis Ultra Sound、Ad Lib、Sound Blasterなどのサウンド・カードがメジャーだったころである。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1171757650557587462"
+            target="_blank">2019/9/11 21:09:28</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">このコードもフィルタ実装の参考にさせていただこう。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1171759136742072320"
+            target="_blank">2019/9/11 21:15:23</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">GUSは波形メモリ・シンセというか、サンプラそのものなのでMODとは相性が良かったのですな。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1171760484711714816"
+            target="_blank">2019/9/11 21:20:44</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">私はGUSを所有することはかなわず、SB16がおそらく最初に所有したオーディオ・インターフェースになるのかなと思う。今はスタインバーグのUR22 mkIIを使っている。一時に比べてオーディオ・インターフェースは構成は簡素になったよな。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1171760485852569601"
+            target="_blank">2019/9/11 21:20:44</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">初期のころはFM音源が載ってたりとか、DSPによる波形メモリ音源とか、サウンド・フォントとかいろいろあったよな。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1171761404707164165"
+            target="_blank">2019/9/11 21:24:23</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">YMF754積んだオーディオ・インターフェースなんかも一時期使ってたな。これはXG音源を積んだオーディオ・インタフェースでしたわ。。</p>
+        
+      </section>
+      
+      <header class="tweet-header">
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1171761645552467970"
+            target="_blank">2019/9/11 21:25:21</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">すごいいい音が出て1万円もしなかったんで、すごい時代になったものだと当時思ったな。。今はもっとすごいことになってますが。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1170867438994378752"
+            target="_blank">2019/9/9 10:12:05</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">JR東のページ死んでるなあ。。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1170493649169203202"
+            target="_blank">2019/9/8 9:26:47</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">あれ、SIMDが有効化できるようになっとるな。。 https://t.co/fIG1rgkznA</p>
+        
+        <img loading="lazy" class="tweet-img" src="https://pbs.twimg.com/media/ED5txQdU4AAFZHe.png" />
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/700357249986752512/RD0WUSUw_normal.jpg" />
+        <p class="tweet-user-name">sakura🌸@sakura_rtd</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/sakura_rtd/status/1170441763107921920"
+            target="_blank">2019/9/8 6:00:36</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">Blender 2.8 基本ショートカット一覧表（日本語）<br/>2019-09-08版<br/><br/>デフォルト版と、業界互換キーマップ版を更新しました🐵<br/><br/>毎回ブログにも置いてますので、最新版を探す時はこちらへどうぞ<br/><a href="https://rt3dcg.blogspot.com/2019/02/blender280-cheatsheet.html" target="_blank">rt3dcg.blogspot.com/2019/02/blende…</a><br/> <br/>#b3d #blender3d #b280 #blender https://t.co/Cdg7hrTjhl</p>
+        
+        <img loading="lazy" class="tweet-img" src="https://pbs.twimg.com/media/ED4-krrVUAAklfF.jpg" />
+        
+        <img loading="lazy" class="tweet-img" src="https://pbs.twimg.com/media/ED4-krtU0AERGMK.jpg" />
+        
+        <img loading="lazy" class="tweet-img" src="https://pbs.twimg.com/media/ED4-krtU4AAR2n6.jpg" />
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img" src="https://pbs.twimg.com/profile_images/899158435194847232/cbkY7XUx_normal.jpg" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1170444509513039872"
+            target="_blank">2019/9/8 6:11:31</a></p>
+      </header>
+      <section>
+        <p class="tweet-text"><blockquote class="card card-default"><header><div class="no-image" >No Image</div><a href="https://chbf.or.jp/archives/oshirase2/category/7967" target="_blank">令和元年度第７２回秋季千葉県高等学校野球大会予選の敗者復活戦 | 千葉県高等学校野球連盟</a></header><div></div></blockquote></p>
+        
+      </section>
+      
+    </article>
+    
+  </div>
+  <footer>
+    CopyLight 2019 Satoshi Fujiwara
+  </footer>
+  <script async src="https://platform.twitter.com/widgets.js"></script>
+
+  <script async src="./index.js"></script>
+
+</body>
+
+</html>

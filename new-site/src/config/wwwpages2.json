@@ -1,0 +1,205 @@
+{
+  "@context": {
+    "@vocab": "http://schema.org/",
+    "@base": "https://www.sfpgmr.net/",
+    "template": null
+  },
+  "@graph": [
+    {
+      "template": "./src/ejs/template.html",
+      "WebPage": {
+        "@type": "WebPage",
+        "@id": "./index.html",
+        "url": "./index.html",
+        "headline": "S.F. Home Page",
+        "image": {
+          "@type": "ImageObject",
+          "url": "https://zwruag-bn1305.files.1drv.com/y3mFBuAXaFp6eZEIswK7KTEL7DTVzrpSxGKqJ7xHWSLwz5MgMJHIM4lvatwuA3gOSZOw_SP2xK_OEpvkHsczcUpmUa-NiWXHZbOgoIMZX7JLAHo2q4wThQrFls8P-uT35rewqyT6GvvsGLzwqDWXunYCUEISi51cCxhE8UTbDiVTtc?width=100&height=100&cropmode=none"
+        },
+        "name": "プログラミング創作物",
+        "author": {
+          "@id": "./profile.html#sfpgmr"
+        },
+        "keywords": "Programming,Music,HTML5,WebGL,javascript,WebAudio",
+        "description": "プログラミング創作物",
+        "about": "1996年ころから趣味でホームーページを公開し始めました。その後、自分でサーバを立ち上げホスティングしたり、フリーのブログサービスへ移行したりした後、現在は仮想サーバ（ServersMan@VPS）で公開しています。<br/>そのほかはてなブログ・twitter・tumblr・Qiitaなどを使用しておもにITに関する情報提供を行っています。またPCを使用したソフトウェア音源による音楽演奏も趣味で、主にYoutubeでYMOのカバー曲なども公開しています。",
+        "relatedLink": [
+          "http://github.sfpgmr.net",
+          "http://blog.sfgpmr.net/"
+        ],
+        "mainEntity": {
+          "@id": "./index.html#contents",
+          "@graph": [
+            {
+              "@type": "WebPageElement",
+              "url": "http://blog.sfpgmr.net/",
+              "name": "Blog",
+              "headline": "Blog",
+              "about": "Programming,Music,etc.いろいろな事を書いています。最近はHTML5,WebGL,JSの話題が多くなっています。"
+            },
+            {
+              "@type": "WebPageElement",
+              "url": "./web.html",
+              "name": "Web技術を使ったコンテンツ",
+              "headline": "Web技術を使ったコンテンツ",
+              "about": "HTML5/WebGL/WebAudioなどを使ったコンテンツ集です。作りかけが結構多いです。"
+            },
+            {
+              "@type": "WebPageElement",
+              "url": "./node.html",
+              "name": "node.js/electron/nw.js",
+              "headline": "node.js/electron/nw.js",
+              "about": "node.js/electron/nw.jsに関するコンテンツです。"
+            },
+            {
+              "@type": "WebPageElement",
+              "url": "./windows.html",
+              "name": "Windows/C++ Programming",
+              "headline": "Windows/C++ Programming",
+              "about": "Windowsプログラミングに関するコンテンツです。"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "WebPage": {
+        "@type": "WebPage",
+        "@id": "./web.html",
+        "url": "./web.html",
+        "headline": "Web技術を使った創作物のページ",
+        "keywords": "Programming,Music,HTML5,WebGL,javascript,WebAudio",
+        "about": "Web技術を使用した創作物の一覧ページです。きちんと作り上げたものはあまりなく、途中で放置しているものが結構多いです。",
+        "author": {
+          "@id": "./profile.html#sfpgmr"
+        },
+        "breadcrumb": {
+          "@type": "BreadcrumbList",
+          "itemListElement": [
+            {
+              "@type": "ListItem",
+              "position": 1,
+              "item": {
+                "url": "./index.html",
+                "name": "S.F. Home Page"
+              }
+            },
+            {
+              "@type": "ListItem",
+              "position": 2,
+              "item": {
+                "url": "./web.html",
+                "name": "Web技術関係の創作物"
+              }
+            }
+          ]
+        },
+        "relatedLink": [
+          "http://github.sfpgmr.net",
+          "http://blog.sfgpmr.net/"
+        ],
+        "mainEntity": {
+          "@id": "./web.html#contents",
+          "@graph": [
+            {
+              "@type": "WebPageElement",
+              "url": "./canvasball.html",
+              "name": "HTML5 Canvas 上でボールを跳ねさせてみる。",
+              "headline": "HTML5 Canvas 上でボールを跳ねさせてみる。",
+              "about": "HTML5 Canvasの学習もかねて、2Dゲームの作成を念頭に置いたコードを書いていました。結局ゲームを作るというところまではいきませんでしたが。"
+            }            
+          ]
+        }
+      }
+    },
+    {
+      "template": "./src/ejs/template.html",
+      "WebPage": {
+        "@type": "WebPage",
+        "@id": "./canvasball.html",
+        "url": "./canvasball.html",
+        "headline": "HTML5 Canvasでボールをはねさせる。",
+        "image": {
+          "@type": "ImageObject",
+          "url": "https://zwruag-bn1305.files.1drv.com/y3mFBuAXaFp6eZEIswK7KTEL7DTVzrpSxGKqJ7xHWSLwz5MgMJHIM4lvatwuA3gOSZOw_SP2xK_OEpvkHsczcUpmUa-NiWXHZbOgoIMZX7JLAHo2q4wThQrFls8P-uT35rewqyT6GvvsGLzwqDWXunYCUEISi51cCxhE8UTbDiVTtc?width=100&height=100&cropmode=none"
+        },
+        "name": "HTML5 Canvas 上でボールを跳ねさせてみる。",
+        "author": {
+          "@id": "./profile.html#sfpgmr"
+        },
+        "breadcrumb": {
+          "@type": "BreadcrumbList",
+          "itemListElement": [
+            {
+              "@type": "ListItem",
+              "position": 1,
+              "item": {
+                "url": "./index.html",
+                "name": "S.F. Home Page"
+              }
+            },
+            {
+              "@type": "ListItem",
+              "position": 2,
+              "item": {
+                "url": "./web.html",
+                "name": "Web技術関係の創作物"
+              }
+            },
+            {
+              "@type": "ListItem",
+              "position": 3,
+              "item": {
+                "url": "./canvasball.html",
+                "name": "HTML Canvasでボールをはねさせる。"
+              }
+            }
+          ]
+        },
+        "keywords": "Programming,Music,HTML5,canvas",
+        "description": "プログラミング創作物",
+        "about": "HTML5 Canvasの学習もかねて、2Dゲームの作成を念頭に置いたコードを書いていました。結局ゲームを作るというところまではいきませんでしたが。",
+        "relatedLink": [
+          "http://github.sfpgmr.net",
+          "http://blog.sfgpmr.net/"
+        ],
+        "mainEntity": {
+          "@id": "./index.html#contents",
+          "@graph": [
+            {
+              "@type": "WebPageElement",
+              "url": "./test/html5test0001.htm",
+              "headline": "Canvas上でボールを跳ねさせてみる",
+              "about": "Canvas上でボールが跳ねるリアルタイムアニメーションを作ってみました。",
+              "thumbnailUrl": "",
+              "author": {
+                "@id": "./profile.html#sfpgmr"
+              },
+              "mentions": [
+                {
+                  "name": "Blog",
+                  "url": "http://blog.sfpgmr.net/entry/html5-canvas-%E3%81%A7%E3%83%9C%E3%83%BC%E3%83%AB%E3%82%92%E5%8B%95%E3%81%8B%E3%81%97%E3%81%A6%E3%81%BF%E3%82%8B%E3%80%82"
+                }
+              ]
+            },
+            {
+              "@type": "WebPageElement",
+              "url": "./test/html5test0003.htm",
+              "headline": "Canvas上でボールを跳ねさせながらスクロールする",
+              "about": "Canvas上でボールを跳ねさせながらスクロールする",
+              "author": {
+                "@id": "./profile.html#sfpgmr"
+              },
+              "mentions": [
+                {
+                  "name": "Blog",
+                  "url": "http://blog.sfpgmr.net/entry/html5-canvas%E3%82%92%E3%81%84%E3%81%98%E3%82%8B-%E6%A8%AA%E3%82%B9%E3%82%AF%E3%83%AD%E3%83%BC%E3%83%AB"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

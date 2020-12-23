@@ -1,0 +1,13 @@
+:root {
+	--button-bg-color: blue;
+	--button-color: white;
+	--button-hover-color: blue;
+	--button-hover-bg-color: white;
+  --default-font: "Yu Gothic","HiraKakuProN-W3",sans-serif;
+	--font-size-base:16px;
+  --default-font-size: 1rem;
+}
+
+@custom-media --smart-phone screen and (max-width:480px);
+@custom-media --tablet screen and (min-width:481px) and (max-width:960px);
+@custom-media --desktop screen and (min-width:961px);

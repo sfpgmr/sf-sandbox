@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+
+<html lang="ja" prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb# article: http://ogp.me/ns/article#">
+
+<head>
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-15457703-9"></script>
+  <script>
+    if (!location.hostname.match(/localhost/)) {
+      window.dataLayer = window.dataLayer || [];
+      function gtag() { dataLayer.push(arguments); }
+      gtag('js', new Date());
+      gtag('config', 'UA-15457703-9');
+    }
+  </script>
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Twitter Viewer</title>
+  <meta name="description" content="自作Twitter Viewerによる自分のつぶやきの記録。Programming,Music,HTML5,WebGL,javascript,WebAudio,Gameなど" />
+  <meta name="keywords" content="Programming,Music,HTML5,WebGL,javascript,WebAudio" /> 	
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <meta itemprop="image" content="https://www.sfpgmr.net/img/sfweb.png" />
+  <meta itemprop="name" content="S.F. Web" />
+  
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:site" content="S.F. Web" />
+  <meta name="twitter:url" content="./index3.html" />
+  <meta name="twitter:title" content="Twitter Viewer" />
+  <meta name="twitter:description" content="自作Twitter Viewerによる自分のつぶやきの記録。Programming,Music,HTML5,WebGL,javascript,WebAudio,Gameなど" />
+  <meta name="twitter:image" content="https://www.sfpgmr.net/img/sfweb.png" />
+  
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="./index3.html" />
+  <meta property="og:title" content="Twitter Viewer"/>
+  <meta property="og:site_name" content="S.F. Web" />
+  <meta property="og:description" content="Programming,Music,HTML5,WebGL,javascript,WebAudio">
+  <meta property="og:image" content="https://www.sfpgmr.net/img/sfweb.png">
+
+  <style>
+  * {
+  margin: 0;
+  padding: 0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+
+html {
+  margin: 0;
+  padding: 0;
+  font-size: 10px; }
+
+body {
+  margin: 0;
+  padding-left: 8px;
+  padding-right: 8px;
+  background: black;
+  color: white; }
+
+.top-nav {
+  position: fixed;
+  z-index: 99999;
+  background: rgba(0, 0, 0, 0.5);
+  display: block;
+  width: 100%;
+  height: 32px;
+  color: white; }
+
+#sentinel {
+  width: 0px;
+  height: 0px; }
+
+.contents {
+  padding-top: 32px;
+  width: 100%;
+  position: relative;
+  content: strict; }
+
+@keyframes blinking {
+  0% {
+    color: black; }
+  50% {
+    color: white; }
+  100% {
+    color: black; } }
+
+.loading {
+  font-family: monospace;
+  font-size: 24px;
+  position: fixed;
+  width: 100vw;
+  height: 100vh;
+  text-align: center;
+  padding-top: 50vh;
+  z-index: 32768;
+  background: black;
+  animation: blinking 2s infinite;
+  content: strict; }
+
+.contents > article {
+  background: #f0f0f0;
+  color: #202020;
+  position: absolute;
+  max-height: 960px;
+  overflow: auto;
+  border-radius: 3px;
+  /* transition: opacity 1s linear;*/
+  opacity: 1.0; }
+
+.tweet-header {
+  display: grid;
+  align-items: end;
+  grid-template-columns: 40px 2fr 1fr;
+  grid-template-rows: 1fr;
+  font-size: 12px;
+  font-weight: bold; }
+
+.tweet-img {
+  width: 100%;
+  object-fit: cover; }
+
+.youtube {
+  position: relative;
+  cursor: pointer; }
+
+.youtube > img {
+  width: 100%;
+  object-fit: cover; }
+
+.youtube > svg.player-play {
+  width: 64px;
+  height: 64px;
+  left: calc(50% - 32px);
+  top: calc(50% - 32px);
+  position: absolute;
+  z-index: 1000;
+  opacity: 0.5; }
+
+.youtube:hover > svg.player-play {
+  opacity: 1.0; }
+
+.youtube:hover .player-play-1 {
+  stroke: #80808080; }
+
+.youtube > div.yt-title {
+  /*text-shadow: #fff 1px 1px 0;*/
+  font-size: 1.2rem;
+  color: white;
+  background: rgba(0, 0, 0, 0.5);
+  position: absolute;
+  left: 0;
+  top: 0;
+  overflow: auto;
+  z-index: 998; }
+
+.tweet-profile-img {
+  grid-column: 1/2;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%; }
+
+.tweet-user-name {
+  grid-column: 2/3; }
+
+.tweet-date {
+  font-size: 8px;
+  text-align: right;
+  grid-column: 3/4; }
+
+.contents > twitter-widget {
+  overflow: auto;
+  max-height: 960px;
+  position: absolute; }
+
+.contents > article > section > .tweet-text {
+  display: block;
+  padding: 4px;
+  word-break: break-all;
+  font-size: 12px; }
+
+.contents > article > h3 {
+  font-size: 12px; }
+
+blockquote.card {
+  margin: 4px;
+  padding: 4px;
+  font-size: 12px;
+  background: white;
+  border-radius: 4px; }
+
+blockquote.card > header {
+  display: grid;
+  grid-gap: 4px;
+  gap: 4px; }
+
+blockquote.card-default > header {
+  grid-template-columns: 64px 1fr; }
+
+blockquote.card-large > header {
+  grid-template-columns: 1fr; }
+
+blockquote.card > header > img {
+  width: 100%; }
+
+div.no-image {
+  display: block;
+  width: 64px;
+  height: 64px;
+  background: gray;
+  color: white;
+  text-align: center;
+  line-height: 64px; }
+ 
+  </style>
+</head>
+
+<body>
+  <div class="loading" id="loading">Loading</div>
+  <header class="top-nav">
+    <h1>S.F. Info.</h1>
+  </header>
+  <div class="contents" id="contents" rendersubtree="invisible skip-activation"> 
+    
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1212701145379946496/pSDVrvWj_normal.png" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1287344791865323520"
+            target="_blank">2020/7/26 20:11:30</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">@voyetrasyn 私もApple IIは詳しくないのですが、色ずれがないとApple IIらしさがなくなる気がしますね。。あの色のあの感じが独特でしたからね。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1212701145379946496/pSDVrvWj_normal.png" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1286615706033823745"
+            target="_blank">2020/7/24 19:54:23</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">@akune69 昔のゲームの大半はアセンブラ・ベースでしたね。パソコン用のコンパイラもまだ黎明期で今のような最適化機能はありませんでしたし、PCの処理速度も厳しくアセンブラで書かざるを得なかったという側面はありましたね。</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1280826850923560962/f2OS7f9p_normal.jpg" />
+        <p class="tweet-user-name">ざきち@zakichi_</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/zakichi_/status/1286220155391860736"
+            target="_blank">2020/7/23 17:42:36</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">#4連休だ俺のフリゲを遊んでくれ<br/><br/>VASTYNEX<br/><br/>#サンダーフォース 関連の動画を見ていたらなぜか急にやる気が出てそれまでいくつか温めていたネタがあったので勢いで作った #STG<br/><br/>他にもあれやこれやが登場するかもしれません<br/><br/>DL:<a href="http://zakichi.ojaru.jp/vastynex.html" target="_blank">zakichi.ojaru.jp/vastynex.html</a> https://t.co/z4jiUNv0EO</p>
+        
+        <video class="tweet-img" controls src="https://video.twimg.com/ext_tw_video/1286219926529650688/pu/vid/432x270/oK4uMgWcS2aeMQaA.mp4?tag=10" />
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1212701145379946496/pSDVrvWj_normal.png" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1286229208046252032"
+            target="_blank">2020/7/23 18:18:34</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">オールアバウトナムコかあ。。持ってたなあ。。XEVIOUSのSEの譜面とかこれに載ってたんだっけかな。。<br/><br/><blockquote class="card card-default"><header><img  src="https://www.dempa.co.jp/img_sns.png" /><a href="https://www.dempa.co.jp/latest_information_2.php" target="_blank">最新情報</a></header><div>株式会社電波新聞社</div></blockquote></p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1235296417650003968/COXanqez_normal.jpg" />
+        <p class="tweet-user-name">p@p_no_shogeki</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/p_no_shogeki/status/1285911112832057344"
+            target="_blank">2020/7/22 21:14:35</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">SS『テラクレスタ3D』<br/>今日のこんばんはSTGは、1997年日本物産より発売、日本物産開発のセガサターン向け縦スクロールSTG！<br/>こんなに迫力のあるテラクレスタはこれだけだ！ https://t.co/y8WAzhka5C</p>
+        
+        <video class="tweet-img" controls src="https://video.twimg.com/ext_tw_video/1285910794190721025/pu/vid/350x270/7ANYvtA5k8y_nC9Y.mp4?tag=10" />
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1212701145379946496/pSDVrvWj_normal.png" />
+        <p class="tweet-user-name">S.F.@SFPGMR</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/SFPGMR/status/1286118064421888000"
+            target="_blank">2020/7/23 10:56:56</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">マジなのか。。<br/>私のコードも北極の地下に保存されとるわ。 https://t.co/ysEHM51SDG</p>
+        
+        <img  class="tweet-img" src="https://pbs.twimg.com/media/Edk1HEVUwAAu1wU.png" />
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/534760468/iYobk_normal.jpg" />
+        <p class="tweet-user-name">masafumi@masafumi</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/masafumi/status/1285748794248663042"
+            target="_blank">2020/7/22 10:29:35</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">RigNet: Neural Rigging for Articulated Characters<br/>Project: <a href="https://zhan-xu.github.io/rig-net/" target="_blank">zhan-xu.github.io/rig-net/</a><br/>GitHub: <a href="https://github.com/zhan-xu/RigNet" target="_blank">github.com/zhan-xu/RigNet</a></p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1115134657010384897/6AU_raOS_normal.png" />
+        <p class="tweet-user-name">MickyAlbert@MickyAlbert</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/MickyAlbert/status/1285950306434441216"
+            target="_blank">2020/7/22 23:50:19</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">ＢＥＥＰさんへの納品の後は、会社で「スペースマウス記念館」(仮)のＨＰの事を中心に芸夢狂人さんと打ち合わせでした。オープンソース化、いくつかのルールを元に移植等の発表の自由化についての骨子はほぼ固まりました。来週にもプレスリリースを発行できそうです。 https://t.co/HfQo0jeyQU</p>
+        
+        <img  class="tweet-img" src="https://pbs.twimg.com/media/Edic-_pUYAIRU97.png" />
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1267501974204760064/uAUTLLC4_normal.jpg" />
+        <p class="tweet-user-name">Sean J. Taylor@seanjtaylor</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/seanjtaylor/status/1169471369685266432"
+            target="_blank">2019/9/5 13:44:36</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">Random geometry problem I think about when I'm wrapping up leftover pizza:<br/><br/>- You have (2D) slice of pizza with radius R with an angle of T radians.<br/>- You have a roll of tin foil with width W &gt; R. <br/>- What's the minimum length L that can cover *both* sides by folding the foil?</p>
+        
+      </section>
+      
+    </article>
+    
+    <article>
+      
+      
+      <header class="tweet-header">
+        
+        <img class="tweet-profile-img"  src="https://pbs.twimg.com/profile_images/1142197940443680768/_hpVLFxk_normal.jpg" />
+        <p class="tweet-user-name">最多情報局@tyomateee</p>
+        
+        <p class="tweet-date"><a href="https://twitter.com/tyomateee/status/1285192948821434368"
+            target="_blank">2020/7/20 21:40:51</a></p>
+      </header>
+      <section>
+        <p class="tweet-text">10円玉を鏡面仕上げにすると… <a href="https://twitter.com/CrezyScience/status/1283702475917332481/video/1" target="_blank">twitter.com/CrezyScience/s…</a></p>
+        
+      </section>
+      
+    </article>
+    
+  </div>
+  <footer>
+    CopyLight 2019 Satoshi Fujiwara
+  </footer>
+  <script async src="https://platform.twitter.com/widgets.js"></script>
+
+  <script async src="./index.js"></script>
+
+</body>
+
+</html>

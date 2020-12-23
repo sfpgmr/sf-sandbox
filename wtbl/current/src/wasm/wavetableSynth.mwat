@@ -1,0 +1,163 @@
+(module
+  (export "setRate" (func $set_rate))
+  (export "init" (func $init))
+  (export "update" (func $update))
+  (export "reset" (func $reset))
+  (import "env" "memory" (memory $memory)
+)
+
+{@
+// 16bitの固定小数点で計算
+$.POINT_BITS = 16;
+$.SHIFT_BITS = 1 << $.POINT_BITS;
+$.SHIFT_BITS_MASK = (1 << $.POINT_BITS) - 1;
+$.DEFAULT_SAMPLE_RATE = 44100 << SHIFT_BITS;
+}
+(;; エンベロープパラメータ;;)
+{@struct Envelope
+  i32 attack;
+  i32 decay;
+  i32 sustain;
+  i32 release;
+}
+
+{@struct Envelope_Work
+  i32 step;
+  i32 speed;
+  i32 value;
+}
+
+(;; LFO パラメータ ;;)
+{@struct LFO
+i32 flag;
+i32 freq;
+i32 depth;
+Enevelope envelope;
+}
+
+{@struct LFO_Work
+  i32 count;
+}
+
+{@struct Filter
+i32 flag_type;
+i32 cutoff_frequency;
+i32 resonance;
+Envelope envelope;
+LFO lfo;
+}
+
+{@struct Filter_Work
+  i32 count;
+}
+
+
+{@struct Sample
+  i32 flag;
+  i32 waveindex;
+  i32 length;
+  i32 loop_start;
+  i32 loop_end;
+}
+
+{@struct Sample_Work
+  i32 count;
+}
+
+{@struct Osciilator
+  i32 type;
+  i32 freq;
+  i32 detune;
+}
+
+{@struct Osciilator_Work
+  i32 count;
+}
+
+{@struct Pitch
+  i32 freq;
+  Envelope envelope;
+  LFO lfo;
+}
+
+{@struct Pitch_Work
+  i32 count;
+}
+
+{@struct Amp
+  i32 volume;
+  LFO lfo;
+  Envelope envelope;
+}
+
+{@struct Amp_Work
+  i32 count;
+}
+
+{@struct Pan
+  i32 balance;
+  Envelope envelope;
+  LFO lfo;
+}
+
+{@struct Pan_Work
+  i32 value;
+  LFO_Work lfo_work;
+}
+
+{@struct Timbre
+Osciilator osciilator;
+Pitch pitch;
+Amp amp;
+Filter filter;
+Pan pan;
+}
+
+{@struct Voice
+  i32 timbre_index;
+  i32 counter;
+  i32 key_on;
+  Osciilator_Work osc;
+  Pitch_Work pitch;
+  Amp_Work amp;
+  Filter_Work filter;
+  Pan_Work pan;
+}
+
+{@map
+  i32 sample_rate;
+  (;; 音色テーブル ;;)
+  Timbre timbre[128];
+  (;; ワーク ;;)
+  Voice voice[16];
+  (;; バッファ ;;)
+  f32 OutputBuffer[128];
+}
+
+  (func $set_rate (param $r i32) 
+    (i32.store (&sample_rate;) 
+     (select (local.get $r) 
+        (i32.const {$.DEFAULT_SAMPLE_RATE}) 
+        (i32.shl (local.get $r) (i32.const {$.SHIFT_BITS}))
+      )
+    )
+    (call $reset)
+  )
+ 
+  (func $init 
+    (nop)
+  )
+
+  (func $reset 
+    (nop)
+  )
+
+  (func $update 
+    (nop)
+  )
+
+  (func $reset 
+    (nop)
+  )
+
+)

@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang=ja class="has-navbar-fixed-top">
+<head>
+@section('head')
+  @include('head')
+@endsection
+</head>
+<body>
+@if(!local.debug)
+@inlcude('analytics')
+@endif
+@section('container')
+<div class="container">
+@include('nav')
+@endsection
+</div>
+</body>
+</html>
