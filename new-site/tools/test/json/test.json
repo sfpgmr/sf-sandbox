@@ -1,0 +1,166 @@
+[
+ {
+  "name": "div",
+  "location": {
+   "start": {
+    "offset": 0,
+    "line": 1,
+    "column": 1
+   },
+   "end": {
+    "offset": 5,
+    "line": 1,
+    "column": 6
+   }
+  },
+  "content": [
+   {
+    "name": "text",
+    "content": "test",
+    "location": {
+     "start": {
+      "offset": 5,
+      "line": 1,
+      "column": 6
+     },
+     "end": {
+      "offset": 9,
+      "line": 1,
+      "column": 10
+     }
+    }
+   }
+  ]
+ },
+ {
+  "name": "div",
+  "location": {
+   "start": {
+    "offset": 16,
+    "line": 2,
+    "column": 1
+   },
+   "end": {
+    "offset": 22,
+    "line": 3,
+    "column": 1
+   }
+  }
+ },
+ {
+  "namespace": "sf",
+  "name": "script",
+  "content": "const c = 'aa<aa>';\n  const a = 2;\n  const b = 10;\n\n",
+  "location": {
+   "start": {
+    "offset": 22,
+    "line": 3,
+    "column": 1
+   },
+   "end": {
+    "offset": 101,
+    "line": 9,
+    "column": 1
+   }
+  }
+ },
+ {
+  "name": "div",
+  "location": {
+   "start": {
+    "offset": 101,
+    "line": 9,
+    "column": 1
+   },
+   "end": {
+    "offset": 106,
+    "line": 9,
+    "column": 6
+   }
+  },
+  "content": [
+   {
+    "name": "text",
+    "content": "${c}",
+    "location": {
+     "start": {
+      "offset": 106,
+      "line": 9,
+      "column": 6
+     },
+     "end": {
+      "offset": 110,
+      "line": 9,
+      "column": 10
+     }
+    }
+   }
+  ]
+ },
+ {
+  "name": "div",
+  "location": {
+   "start": {
+    "offset": 117,
+    "line": 10,
+    "column": 1
+   },
+   "end": {
+    "offset": 122,
+    "line": 10,
+    "column": 6
+   }
+  },
+  "content": [
+   {
+    "name": "text",
+    "content": "@{c}",
+    "location": {
+     "start": {
+      "offset": 122,
+      "line": 10,
+      "column": 6
+     },
+     "end": {
+      "offset": 126,
+      "line": 10,
+      "column": 10
+     }
+    }
+   }
+  ]
+ },
+ {
+  "name": "div",
+  "location": {
+   "start": {
+    "offset": 133,
+    "line": 11,
+    "column": 1
+   },
+   "end": {
+    "offset": 138,
+    "line": 11,
+    "column": 6
+   }
+  },
+  "content": [
+   {
+    "name": "text",
+    "content": "${a*b}",
+    "location": {
+     "start": {
+      "offset": 138,
+      "line": 11,
+      "column": 6
+     },
+     "end": {
+      "offset": 144,
+      "line": 11,
+      "column": 12
+     }
+    }
+   }
+  ]
+ }
+]
