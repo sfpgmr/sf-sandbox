@@ -8,11 +8,11 @@
     "www": "node ./static-server.js &"
   },
   "bin": {
-    "make-proj": "./tools/make.mjs"
+    "make-proj": "tools/make.mjs"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/sfpgmr/sf-sandbox.gt"
+    "url": "git+https://github.com/sfpgmr/sf-sandbox.gt.git"
   },
   "author": "SFPGMR",
   "license": "MIT",
@@ -21,19 +21,19 @@
   },
   "homepage": "https://github.com/sfpgmr/sf-sandbox#readme",
   "devDependencies": {
+    "@rollup/plugin-commonjs": "^18.0.0",
+    "@rollup/plugin-node-resolve": "^11.2.1",
     "node-sass": "^4.14.1",
-    "rollup": "^2.43.0",
-    "rollup-plugin-commonjs": "^9.3.4",
-    "rollup-plugin-node-resolve": "^4.2.4",
-    "rollup-plugin-terser": "^6.1.0"
+    "rollup": "^2.43.1"
   },
   "dependencies": {
     "@ampproject/toolbox-optimizer": "^2.7.1",
+    "@mapbox/node-pre-gyp": "^1.0.1",
     "@types/d3": "^5.7.2",
     "@types/three": "^0.93.31",
     "apac": "^3.0.2",
     "autoprefixer": "^9.8.6",
-    "better-sqlite3": "^7.1.1",
+    "better-sqlite3": "^7.1.2",
     "cross-fetch": "^3.0.6",
     "edge": "^7.10.1",
     "edge.js": "^1.1.4",
@@ -54,7 +54,6 @@
     "marked": "^2.0.1",
     "mathjax-node": "^2.1.1",
     "node-fetch": "^2.6.1",
-    "ogp-parser": "^0.4.4",
     "pegjs": "^0.10.0",
     "postcss": "^7.0.32",
     "postcss-apply": "^0.12.0",
@@ -70,10 +69,8 @@
     "request-promise-native": "^1.0.9",
     "rfdc": "^1.1.4",
     "riot": "^4.14.0",
-    "sharp": "^0.22.1",
+    "sharp": "^0.27.2",
     "sitemap": "^6.3.0",
-    "sqlite": "^4.0.18",
-    "sqlite3": "^4.2.0",
     "three": "^0.126.1",
     "twitter": "^1.7.1",
     "wabt": "^1.0.19",
