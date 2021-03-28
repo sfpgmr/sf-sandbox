@@ -1275,7 +1275,7 @@ export default function marked(src, opt, callback) {
   }
   try {
     if (opt) opt = Object.assign({}, marked.defaults, opt);
-    return Parser.parse(Lexer.lex(src, opt), opt);
+    return parse(lex(src, opt), opt);
   } catch (e) {
     e.message += '\nPlease report this to https://github.com/chjj/marked.';
     if ((opt || marked.defaults).silent) {

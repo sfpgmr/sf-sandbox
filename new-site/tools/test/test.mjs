@@ -1,11 +1,11 @@
-function anonymous(obj
+function anonymous(ast,plugins,pluginsAttr,Location,templates
 ) {
 
-   let location;
-   try {
-   
+  
+
   //buildInAttr.cache = new Map();
   let outputStr = '';
+  let location = new Location();
 
   function output(obj,escapeString = false) {
     if (typeof (obj) == 'string' || obj instanceof String) {
@@ -35,152 +35,188 @@ function anonymous(obj
       }[match];
     });
   }
-location = {"start":{"offset":0,"line":1,"column":1},"end":{"offset":67,"line":5,"column":1}};
+  
+
+   try {
+   location.set(0,1,1,67,5,1);
 const incA = 'aa';
   const incB = 'cc';
 
-location = {"start":{"offset":67,"line":5,"column":1},"end":{"offset":72,"line":5,"column":6}};
+location.set(67,5,1,72,5,6);
 output(`<div>`);
-location = {"start":{"offset":74,"line":6,"column":2},"end":{"offset":77,"line":6,"column":5}};
+location.set(74,6,2,77,6,5);
 output(`<p>`);
-location = {"start":{"offset":81,"line":7,"column":4},"end":{"offset":88,"line":7,"column":11}};
-output(`incA = `);
-location = {"start":{"offset":88,"line":7,"column":11},"end":{"offset":95,"line":7,"column":18}};
-output(`${escapeHtml(incA)}`);
-location = {"start":{"offset":95,"line":7,"column":18},"end":{"offset":103,"line":8,"column":4}};
+location.set(81,7,4,95,7,18);
+output(`incA = ${incA}`);
+location.set(95,7,18,103,8,4);
 output(`<br>`);
-location = {"start":{"offset":103,"line":8,"column":4},"end":{"offset":110,"line":8,"column":11}};
-output(`incB = `);
-location = {"start":{"offset":110,"line":8,"column":11},"end":{"offset":117,"line":8,"column":18}};
-output(`${escapeHtml(incB)}`);
-location = {"start":{"offset":117,"line":8,"column":18},"end":{"offset":119,"line":9,"column":2}};
-output(`
+location.set(103,8,4,119,9,2);
+output(`incB = ${incB}
  `);
-location = {"start":{"offset":74,"line":6,"column":2},"end":{"offset":77,"line":6,"column":5}};
+location.set(74,6,2,77,6,5);
 output(`</p>`);
-location = {"start":{"offset":125,"line":10,"column":1},"end":{"offset":128,"line":10,"column":4}};
+location.set(125,10,1,128,10,4);
 output(`<p>`);
-location = {"start":{"offset":131,"line":11,"column":3},"end":{"offset":146,"line":12,"column":1}};
+location.set(131,11,3,146,12,1);
 output(`test-2-include
 `);
-location = {"start":{"offset":125,"line":10,"column":1},"end":{"offset":128,"line":10,"column":4}};
+location.set(125,10,1,128,10,4);
 output(`</p>`);
-location = {"start":{"offset":67,"line":5,"column":1},"end":{"offset":72,"line":5,"column":6}};
+location.set(67,5,1,72,5,6);
 output(`</div>`);
-undefinedlocation = {"start":{"offset":81,"line":7,"column":3},"end":{"offset":170,"line":11,"column":3}};
+location.set(42,2,1,168,2,127);
+function ad (
+width='100vx',height='80px',type='adsense',client,slot,auto_format='rspv',full_width){location.set(171,3,3,380,8,39);
+output(`<amp-ad width height type data-ad-client data-ad-slot data-auto-format data-full-width>`);
+location.set(385,9,5,402,9,22);
+output(`<div overflow>`);
+location.set(385,9,5,402,9,22);
+output(`</div>`);
+location.set(171,3,3,380,8,39);
+output(`</amp-ad>`);
+};location.set(484,17,3,596,22,3);
 const title = 'test title';
     const alt = 'test alt';
+    const scvar = 'v';
   
-location = {"start":{"offset":170,"line":11,"column":3},"end":{"offset":188,"line":12,"column":3}};
+location.set(596,22,3,614,23,3);
 output(`<!DOCTYPE html>`);
-location = {"start":{"offset":188,"line":12,"column":3},"end":{"offset":240,"line":12,"column":55}};
-output(`<html amp>`);
-location = {"start":{"offset":244,"line":14,"column":3},"end":{"offset":262,"line":14,"column":21}};
-if(alt){
-location = {"start":{"offset":244,"line":14,"column":3},"end":{"offset":262,"line":14,"column":21}};
+location.set(614,23,3,666,23,55);
+output(`<html amp xmlns:sf="https://sfpgmr.net/sf-template">`);
+location.set(670,25,3,700,25,33);
+if(alt) {
+location.set(670,25,3,700,25,33);
+output(`<head alt="title">`);
+location.set(705,27,4,735,28,4);
+output(`<title>`);
+location.set(712,27,11,722,27,21);
+output(`${escapeHtml(title)}`);
+location.set(705,27,4,735,28,4);
+output(`</title>`);
+location.set(735,28,4,815,32,3);
+output(`<script>`);
+output(`const `);
+location.set(755,29,12,765,29,22);
+output(`${escapeHtml(scvar)}`);
+output(` = 1;
+     const sc = \`\${{\$a:1}}\`;
+   `);
+location.set(735,28,4,815,32,3);
+output(`</script>`);
+location.set(670,25,3,700,25,33);
+output(`</head>`);
+location.set(670,25,3,700,25,33);
 }
-
-location = {"start":{"offset":276,"line":17,"column":3},"end":{"offset":282,"line":17,"column":9}};
+location.set(826,34,3,832,34,9);
 output(`<body>`);
-location = {"start":{"offset":287,"line":18,"column":5},"end":{"offset":316,"line":18,"column":34}};
-if(title){
-location = {"start":{"offset":323,"line":19,"column":7},"end":{"offset":328,"line":19,"column":12}};
+location.set(837,35,5,842,35,10);
+output(`<div>`);
+location.set(842,35,10,846,35,14);
+output(`ast:`);
+location.set(846,35,14,861,35,29);
+output(`${escapeHtml(ast.length)}`);
+location.set(837,35,5,842,35,10);
+output(`</div>`);
+location.set(872,36,5,901,36,34);
+if(title) {
+location.set(872,36,5,901,36,34);
+output(`<div alt="alt">`);
+location.set(908,37,7,913,37,12);
 output(`title`);
-location = {"start":{"offset":328,"line":19,"column":12},"end":{"offset":334,"line":19,"column":18}};
+location.set(913,37,12,921,37,20);
 output(`${escapeHtml(alt)}`);
-location = {"start":{"offset":334,"line":19,"column":18},"end":{"offset":339,"line":20,"column":5}};
+location.set(921,37,20,926,38,5);
 output(`
     `);
-location = {"start":{"offset":287,"line":18,"column":5},"end":{"offset":316,"line":18,"column":34}};
+location.set(872,36,5,901,36,34);
+output(`</div>`);
+location.set(872,36,5,901,36,34);
 }
-
-location = {"start":{"offset":350,"line":21,"column":5},"end":{"offset":353,"line":21,"column":8}};
+location.set(937,39,5,940,39,8);
 output(`<p>`);
-location = {"start":{"offset":360,"line":22,"column":7},"end":{"offset":368,"line":22,"column":15}};
+location.set(947,40,7,957,40,17);
 output(`${escapeHtml(title)}`);
-location = {"start":{"offset":368,"line":22,"column":15},"end":{"offset":369,"line":22,"column":16}};
+location.set(957,40,17,958,40,18);
 output(` `);
-location = {"start":{"offset":369,"line":22,"column":16},"end":{"offset":377,"line":22,"column":24}};
+location.set(958,40,18,968,40,28);
 output(`${escapeHtml(title)}`);
-location = {"start":{"offset":377,"line":22,"column":24},"end":{"offset":378,"line":22,"column":25}};
+location.set(968,40,28,969,40,29);
 output(` `);
-location = {"start":{"offset":378,"line":22,"column":25},"end":{"offset":386,"line":22,"column":33}};
+location.set(969,40,29,979,40,39);
 output(`${escapeHtml(title)}`);
-location = {"start":{"offset":386,"line":22,"column":33},"end":{"offset":391,"line":23,"column":5}};
+location.set(979,40,39,984,41,5);
 output(`
     `);
-location = {"start":{"offset":350,"line":21,"column":5},"end":{"offset":353,"line":21,"column":8}};
+location.set(937,39,5,940,39,8);
 output(`</p>`);
-location = {"start":{"offset":400,"line":24,"column":5},"end":{"offset":437,"line":24,"column":42}};
+location.set(993,42,5,1030,42,42);
 if(title == 'test title'){
-location = {"start":{"offset":442,"line":25,"column":5},"end":{"offset":512,"line":28,"column":7}};
+location.set(1035,43,5,1090,44,7);
 for (let i = 0;i < 10;++i) {
-    
-location = {"start":{"offset":512,"line":28,"column":7},"end":{"offset":517,"line":28,"column":12}};
+location.set(1090,44,7,1095,44,12);
 output(`<div>`);
-location = {"start":{"offset":517,"line":28,"column":12},"end":{"offset":521,"line":28,"column":16}};
+location.set(1095,44,12,1101,44,18);
 output(`${escapeHtml(i)}`);
-location = {"start":{"offset":512,"line":28,"column":7},"end":{"offset":517,"line":28,"column":12}};
+location.set(1090,44,7,1095,44,12);
 output(`</div>`);
-location = {"start":{"offset":533,"line":30,"column":5},"end":{"offset":576,"line":33,"column":7}};
+location.set(1112,45,5,1138,46,5);
 }
-    
-location = {"start":{"offset":576,"line":33,"column":7},"end":{"offset":581,"line":33,"column":12}};
+location.set(1138,46,5,1143,46,10);
 output(`<div>`);
-location = {"start":{"offset":581,"line":33,"column":12},"end":{"offset":583,"line":33,"column":14}};
-output(`if`);
-location = {"start":{"offset":576,"line":33,"column":7},"end":{"offset":581,"line":33,"column":12}};
+location.set(1143,46,10,1149,46,16);
+output(`これはこれは`);
+location.set(1138,46,5,1143,46,10);
 output(`</div>`);
-location = {"start":{"offset":596,"line":34,"column":7},"end":{"offset":614,"line":35,"column":9}};
+location.set(1162,47,7,1180,48,9);
 
 } else {
 
-location = {"start":{"offset":614,"line":35,"column":9},"end":{"offset":619,"line":35,"column":14}};
+location.set(1180,48,9,1185,48,14);
 output(`<div>`);
-location = {"start":{"offset":619,"line":35,"column":14},"end":{"offset":623,"line":35,"column":18}};
+location.set(1185,48,14,1189,48,18);
 output(`else`);
-location = {"start":{"offset":614,"line":35,"column":9},"end":{"offset":619,"line":35,"column":14}};
+location.set(1180,48,9,1185,48,14);
 output(`</div>`);
-location = {"start":{"offset":638,"line":36,"column":9},"end":{"offset":647,"line":37,"column":5}};
+location.set(1204,49,9,1213,50,5);
 output(`<hr>`);
-location = {"start":{"offset":400,"line":24,"column":5},"end":{"offset":437,"line":24,"column":42}};
+location.set(993,42,5,1030,42,42);
 }
 
-location = {"start":{"offset":660,"line":38,"column":5},"end":{"offset":669,"line":39,"column":5}};
+location.set(1226,51,5,1235,52,5);
 output(`<hr>`);
-location = {"start":{"offset":669,"line":39,"column":5},"end":{"offset":681,"line":40,"column":7}};
+location.set(1235,52,5,1247,53,7);
 output(`<div>`);
-location = {"start":{"offset":681,"line":40,"column":7},"end":{"offset":695,"line":41,"column":9}};
+location.set(1247,53,7,1253,54,1);
 output(`<div>`);
-location = {"start":{"offset":730,"line":45,"column":9},"end":{"offset":890,"line":52,"column":9}};
-const c = 'aa<aa></aa>';
+location.set(1297,58,9,1449,65,9);
+c = 'aa<aa></aa>';
           let a = 'aa';
           if(c.match(/aa/)) {
           a = 10;
           }
         
-location = {"start":{"offset":890,"line":52,"column":9},"end":{"offset":893,"line":52,"column":12}};
+location.set(1449,65,9,1452,65,12);
 output(`<p>`);
-location = {"start":{"offset":893,"line":52,"column":12},"end":{"offset":897,"line":52,"column":16}};
+location.set(1452,65,12,1456,65,16);
 output(`a = `);
-location = {"start":{"offset":897,"line":52,"column":16},"end":{"offset":901,"line":52,"column":20}};
+location.set(1456,65,16,1462,65,22);
 output(`${escapeHtml(a)}`);
-location = {"start":{"offset":890,"line":52,"column":9},"end":{"offset":893,"line":52,"column":12}};
+location.set(1449,65,9,1452,65,12);
 output(`</p>`);
-location = {"start":{"offset":914,"line":53,"column":9},"end":{"offset":917,"line":53,"column":12}};
+location.set(1475,66,9,1478,66,12);
 output(`<p>`);
-location = {"start":{"offset":917,"line":53,"column":12},"end":{"offset":921,"line":53,"column":16}};
+location.set(1478,66,12,1482,66,16);
 output(`c = `);
-location = {"start":{"offset":921,"line":53,"column":16},"end":{"offset":925,"line":53,"column":20}};
-output(`${escapeHtml(d)}`);
-location = {"start":{"offset":914,"line":53,"column":9},"end":{"offset":917,"line":53,"column":12}};
+location.set(1482,66,16,1488,66,22);
+output(`${escapeHtml(c)}`);
+location.set(1475,66,9,1478,66,12);
 output(`</p>`);
-location = {"start":{"offset":938,"line":54,"column":9},"end":{"offset":994,"line":57,"column":3}};
+location.set(1501,67,9,1557,70,3);
 output(c);
         
-location = {"start":{"offset":276,"line":17,"column":3},"end":{"offset":282,"line":17,"column":9}};
+location.set(826,34,3,832,34,9);
 output(`</body>`);
-location = {"start":{"offset":188,"line":12,"column":3},"end":{"offset":240,"line":12,"column":55}};
+location.set(614,23,3,666,23,55);
 output(`</html>`);
 
    return outputStr;

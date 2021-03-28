@@ -1,7 +1,7 @@
 import parser from '../src/js/html-parser.mjs';
 import fs from 'fs-extra';
 import path from 'path';
-import he from 'he';
+import marked from './marked.mjs';
 
 const needCloseTag = /script|title/i;
 let baseDir;
@@ -14,6 +14,30 @@ const pluginsAttr = [
   ['sf', builtInAttr]
 ];
 
+const templates = new Map();
+
+class Location {
+  constructor(so,sl,sc,eo,el,ec){
+    this.start ={
+      "offset":so,
+      "line":sl,
+      "column":sc
+    };
+    this.end = {
+      "offset":eo,
+      "line":el,
+      "column":ec
+    };
+  }
+  set(so,sl,sc,eo,el,ec){
+    this.start.offset = so;
+    this.start.line = sl;
+    this.start.column = sc;
+    this.end.offset = eo;
+    this.end.line = el;
+    this.end.column = ec;
+  }
+}
 
 
 const namespaceMap = new Map(plugins);
@@ -23,23 +47,33 @@ async function preprocess(json) {
 }
 
 function error(location,msg){
-  console.error(location,msg);
-  process.abort();
+  let errString = `line:${location.start.line}-${location.end.line},column:${location.start.column}-${location.end.column}:${msg}`;
+  throw(errString);
 }
 
-function outputJS(location,src){
-  return `location = ${JSON.stringify(location)};\noutput(\`${src}\`);\n`;
+function outputJS(l,src){
+  return `location.set(${l.start.offset},${l.start.line},${l.start.column},${l.end.offset},${l.end.line},${l.end.column});\noutput(\`${src.replace(/(`|\\\$)/g,'\\$1')}\`);\n`;
 }
-function outputJSSrc(location,src){
-  return `location = ${JSON.stringify(location)};\n${src}\n`;
+function outputJSSrc(l,src){
+  return `location.set(${l.start.offset},${l.start.line},${l.start.column},${l.end.offset},${l.end.line},${l.end.column});\n${src}\n`;
+}
+
+function value(v){
+  if((v instanceof String) || typeof(v) == 'string'){
+    return v;
+  } else if(typeof(v) == 'object'){
+    if(v.name == 'placeholder'){
+      return '${' + v.expression + '}' || '';
+    }
+  }
 }
 
 async function builtIn(obj, render) {
   switch (obj.name) {
     case 'if':{
-      const value = obj.attributes.find(a=>a.value).value;
-      
-      let str = outputJSSrc(obj.location,`if(${value}){`);
+      const value = obj.attributes.find(a=>a.name == 'value');
+      if(value){
+        let str = outputJSSrc(obj.location,`if(${value.value}){`);
         for(const o of obj.content) {
           if(o.name == 'else'){
             str += outputJSSrc(o.location,'\n} else {\n');
@@ -49,12 +83,24 @@ async function builtIn(obj, render) {
         }
         str += outputJSSrc(obj.location,'}\n');
         return str;
-      }
+
+        }
+        break;
+    }
     case 'else':
       throw error(obj.location,'不正なelseです。');
     case 'script':
-      return outputJSSrc(obj.location,obj.content);
+      if(obj.content){
+        return outputJSSrc(obj.location,obj.content);
+      } else {
+        const src = obj.attributes.find(a=>a.name == 'src');
+        if(src){
+          return outputJSSrc(obj.location,src.value);
+        }
+      }
+      break;
     case 'include':
+      // インクルードファイル
       const src = obj.attributes.find(v=>v.name == 'src');
       if(!src){
         error(obj.location,'ソースファイルが見つかりません。');        
@@ -64,9 +110,59 @@ async function builtIn(obj, render) {
         return await render(includeObjs);
       }
       break;
-    case 'md':
+    case 'markdown':
+      return '';//outputJS(obj.location,await marked(obj.content));
+    case 'meta':
       return '';
+    case 'declare-template':
+      {
+        const params = new Map(obj.attributes.map(d=>[d.name,d.value || null]));
+        obj.params = params;
+        const name = params.get('name');
+        let src;
+        if(name){
+          src = outputJSSrc(obj.location,`function ${name} (`);
+        } else {
+          error(obj.location,'name属性が見つかりません。');
+        }
+        params.delete('name');
+        if(params.size){
+          src += [...params].map(d=>(d[1] || d[1] == 0)?`${d[0]}='${d[1]}'`:d[0]).join(',');
+        }
+        src += '){';
+        if(obj.content){
+          src += await render(obj.content);
+        }
+        src += '};';
+        // テンプレートとして検出できるようにする
+        const applyFunc = (()=>{
+          const templateDeclare = obj;
+          return (obj)=>{
+            const tempParams = templateDeclare.attributes  && new Map(templateDeclare.attributes.map(d=>[d.name,d.value || null]));
+            const applyParams = obj.attributes && new Map(obj.attributes.map(d=>[d.name,d.value || null]));
+            applyParams && applyParams.forEach((k,v,m)=>{
+              if(tempParams.get(k)){
+                tempParams.set(k,v);
+              }
+            });
+            tempParams.delete('name');
+            return outputJSSrc(obj.location,`${name}(${[...tempParams].map(d=>(d[1] || d[1] == 0)?`'${d[1]}'`:d[1] === null ? 'null' : 'undefined').join(',')});\n`);
+          }; 
+        })();
+        templates.set(name,applyFunc);
+        return src;
+      }
+    default:
+      {
+        // テンプレートかどうか。そうであれば実行する
+        const tempFunc = templates.get(obj.name);
+        if(tempFunc){
+          return await tempFunc(obj);
+        }
+      }
+      break;
   }
+  throw error(obj.location,`不正なsf:${obj.name}です。`);
 }
 
 function builtInAttr(attr, obj, render_) {
@@ -90,8 +186,10 @@ function stringize(target, stringizeBool = false) {
 }
 
 function module() {
+
   //buildInAttr.cache = new Map();
   let outputStr = '';
+  let location = new Location();
 
   function output(obj,escapeString = false) {
     if (typeof (obj) == 'string' || obj instanceof String) {
@@ -121,6 +219,7 @@ function module() {
       }[match];
     });
   }
+  
 }
 
 
@@ -171,7 +270,8 @@ async function render_(obj) {
       src += await plugin(obj, render_);
     }
   } else if ((typeof (obj) == 'string') || (obj instanceof String)) {
-    src += outputJS(obj.location,`${obj}`);
+    // `と$はエスケープする
+    src += `output(\`${obj.replace(/(`|\$)/g,'\\$1')}\`);\n`;
   } else {
     switch (obj.name) {
       case 'doctype':
@@ -184,7 +284,7 @@ async function render_(obj) {
         // プレースフォルダー
         switch(obj.type){
           // エスケープする
-          case '$':{
+          case '#':{
             src += outputJS(obj.location,`\$\{escapeHtml(${obj.expression})\}`);
           }
           break;
@@ -194,6 +294,7 @@ async function render_(obj) {
           }
         }
         break;
+
       default:
         {
           let temp = '<' + obj.name;
@@ -202,12 +303,20 @@ async function render_(obj) {
             for (const attr of obj.attributes) {
               if (attr.namespace) {
                 if (attr.namespace == 'sf' && attr.name == 'if') {
+                  // sf:if attributeがあるとき
                   condition = attr.value;
-                  src += outputJS(obj.location,`if(${condition}) {`);
-                } 
+                  src += outputJSSrc(obj.location,`if(${condition}) {`);
+                } else {
+                  if(attr.value){
+                    temp += ` ${attr.namespace}:${attr.name}="${attr.value ? value(attr.value) : ''}"`;
+                  } else {
+                    temp += ` ${attr.namespace}:${attr.name}`;
+                  }
+                }
               } else {
-                if (attr.text) {
-                  temp += ` ${attr.name}="${attr.text ? attr.text : ''}"`;
+                if (condition) {
+                  // sf:if attributeがあるとき
+                  temp += ` ${attr.name}="${attr.value ? value(attr.value) : ''}"`;
                 } else {
                   temp += ` ${attr.name}`;
                 }
@@ -227,7 +336,7 @@ async function render_(obj) {
             src += outputJS(obj.location,temp);
           }
           if (condition) {
-            src += outputJS(obj.location,'}');
+            src += outputJSSrc(obj.location,'}');
           }
         }
     }
@@ -236,17 +345,17 @@ async function render_(obj) {
 }
 
 async function render(jsonString, options) {
-  const values = [JSON.parse(jsonString)];
-  const args = ['obj'];
-  let src = module.toString().replace(/function module\s*?\(\)\s*?\{(.*)\}/msg, '$1');
+  const values = [JSON.parse(jsonString),plugins,pluginsAttr,Location,templates];
+  const args = ['ast','plugins','pluginsAttr','Location','templates'];
+  const srcHead = module.toString().replace(/function module\s*?\(\)\s*?\{(.*)\}/msg, '$1');
   if (options) {
     args.push(...Object.keys(options));
-    values.push(...Object.keys(options));
+    values.push(...Object.values(options));
   }
 
-  src += await render_(values[0]);
+  const src = await render_(values[0]);
   const FuncSrc = `
-   let location;
+  ${srcHead}
    try {
    ${src}
    return outputStr;
