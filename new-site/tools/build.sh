@@ -1,6 +1,7 @@
 #!/bin/bash
 # pegjs  --cache -f es ../src/parser/html-parser.pegjs -o ../src/js/html-parser.mjs --trace
-pegjs  --cache -f es ../src/parser/html-parser.pegjs -o ../src/js/html-parser.mjs --trace
+# pegjs  --cache -f es ../src/parser/html-parser.pegjs -o ../src/js/html-parser.mjs --trace
+pegjs  --cache -f es ../src/parser/html-parser.pegjs -o ../src/js/html-parser.mjs
 # node ./build-pages.mjs $1
 
 node ./parse-html.mjs ./test/test-2.html ./test/json/test-2.json > ./test/out/test.out.txt

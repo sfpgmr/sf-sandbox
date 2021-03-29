@@ -23,12 +23,14 @@
   "devDependencies": {
     "@rollup/plugin-commonjs": "^18.0.0",
     "@rollup/plugin-node-resolve": "^11.2.1",
+    "jasmine": "^3.7.0",
     "node-sass": "^4.14.1",
     "rollup": "^2.43.1"
   },
   "dependencies": {
     "@ampproject/toolbox-optimizer": "^2.7.1",
     "@mapbox/node-pre-gyp": "^1.0.1",
+    "@markedjs/html-differ": "^3.0.4",
     "@types/d3": "^5.7.2",
     "@types/three": "^0.93.31",
     "apac": "^3.0.2",
@@ -38,7 +40,9 @@
     "edge": "^7.10.1",
     "edge.js": "^1.1.4",
     "ejs": "^2.7.4",
+    "esm": "^3.2.25",
     "eventemitter3": "^3.1.2",
+    "front-matter": "^4.0.2",
     "fs-extra": "^7.0.1",
     "he": "^1.2.0",
     "highlight.js": "^10.4.1",

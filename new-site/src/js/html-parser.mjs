@@ -125,60 +125,6 @@ peg$SyntaxError.buildMessage = function(expected, found, location) {
   return "Expected " + describeExpected(expected) + " but " + describeFound(found) + " found.";
 };
 
-function peg$DefaultTracer() {
-  this.indentLevel = 0;
-}
-
-peg$DefaultTracer.prototype.trace = function(event) {
-  var that = this;
-
-  function log(event) {
-    function repeat(string, n) {
-       var result = "", i;
-
-       for (i = 0; i < n; i++) {
-         result += string;
-       }
-
-       return result;
-    }
-
-    function pad(string, length) {
-      return string + repeat(" ", length - string.length);
-    }
-
-    if (typeof console === "object") {
-      console.log(
-        event.location.start.line + ":" + event.location.start.column + "-"
-          + event.location.end.line + ":" + event.location.end.column + " "
-          + pad(event.type, 10) + " "
-          + repeat("  ", that.indentLevel) + event.rule
-      );
-    }
-  }
-
-  switch (event.type) {
-    case "rule.enter":
-      log(event);
-      this.indentLevel++;
-      break;
-
-    case "rule.match":
-      this.indentLevel--;
-      log(event);
-      break;
-
-    case "rule.fail":
-      this.indentLevel--;
-      log(event);
-      break;
-
-    // istanbul ignore next
-    default:
-      throw new Error("Invalid event type: " + event.type + ".");
-  }
-};
-
 function peg$parse(input, options) {
   options = options !== undefined ? options : {};
 
@@ -360,8 +306,6 @@ var peg$r21 = /^[^"'<>` ]/;
   var peg$silentFails = 0;
 
   var peg$resultsCache = {};
-
-  var peg$tracer = "tracer" in options ? options.tracer : new peg$DefaultTracer();
 
   var peg$result;
 
@@ -547,18 +491,11 @@ var peg$r21 = /^[^"'<>` ]/;
   }
 
   function peg$parseHTMLDocument() {
-    var startPos = peg$currPos;
     var s0, s1, s2, s3;
 
     var rule$expects = function (expected) {
       if (peg$silentFails === 0) peg$expect(expected);
     }
-
-    peg$tracer.trace({
-      type: "rule.enter",
-      rule: "HTMLDocument",
-      location: peg$computeLocation(startPos, startPos)
-    });
 
     var key = peg$currPos * 46 + 0;
     var cached = peg$resultsCache[key];
@@ -576,21 +513,6 @@ var peg$r21 = /^[^"'<>` ]/;
       if (peg$silentFails === 0) {
         rule$expectations.forEach(peg$expect);
       }
-
-    if (cached.result !== peg$FAILED) {
-      peg$tracer.trace({
-        type: "rule.match",
-        rule: "HTMLDocument",
-        result: cached.result,
-        location: peg$computeLocation(startPos, peg$currPos)
-      });
-    } else {
-      peg$tracer.trace({
-        type: "rule.fail",
-        rule: "HTMLDocument",
-        location: peg$computeLocation(startPos, startPos)
-      });
-    }
 
       return cached.result;
     }
@@ -613,37 +535,15 @@ var peg$r21 = /^[^"'<>` ]/;
       expectations: rule$expectations
     };
 
-    if (s0 !== peg$FAILED) {
-      peg$tracer.trace({
-        type: "rule.match",
-        rule: "HTMLDocument",
-        result: s0,
-        location: peg$computeLocation(startPos, peg$currPos)
-      });
-    } else {
-      peg$tracer.trace({
-        type: "rule.fail",
-        rule: "HTMLDocument",
-        location: peg$computeLocation(startPos, startPos)
-      });
-    }
-
     return s0;
   }
 
   function peg$parseElement() {
-    var startPos = peg$currPos;
     var s0;
 
     var rule$expects = function (expected) {
       if (peg$silentFails === 0) peg$expect(expected);
     }
-
-    peg$tracer.trace({
-      type: "rule.enter",
-      rule: "Element",
-      location: peg$computeLocation(startPos, startPos)
-    });
 
     var key = peg$currPos * 46 + 1;
     var cached = peg$resultsCache[key];
@@ -661,21 +561,6 @@ var peg$r21 = /^[^"'<>` ]/;
       if (peg$silentFails === 0) {
         rule$expectations.forEach(peg$expect);
       }
-
-    if (cached.result !== peg$FAILED) {
-      peg$tracer.trace({
-        type: "rule.match",
-        rule: "Element",
-        result: cached.result,
-        location: peg$computeLocation(startPos, peg$currPos)
-      });
-    } else {
-      peg$tracer.trace({
-        type: "rule.fail",
-        rule: "Element",
-        location: peg$computeLocation(startPos, startPos)
-      });
-    }
 
       return cached.result;
     }
@@ -706,37 +591,15 @@ var peg$r21 = /^[^"'<>` ]/;
       expectations: rule$expectations
     };
 
-    if (s0 !== peg$FAILED) {
-      peg$tracer.trace({
-        type: "rule.match",
-        rule: "Element",
-        result: s0,
-        location: peg$computeLocation(startPos, peg$currPos)
-      });
-    } else {
-      peg$tracer.trace({
-        type: "rule.fail",
-        rule: "Element",
-        location: peg$computeLocation(startPos, startPos)
-      });
-    }
-
     return s0;
   }
 
   function peg$parseRawText() {
-    var startPos = peg$currPos;
     var s0;
 
     var rule$expects = function (expected) {
       if (peg$silentFails === 0) peg$expect(expected);
     }
-
-    peg$tracer.trace({
-      type: "rule.enter",
-      rule: "RawText",
-      location: peg$computeLocation(startPos, startPos)
-    });
 
     var key = peg$currPos * 46 + 2;
     var cached = peg$resultsCache[key];
@@ -754,21 +617,6 @@ var peg$r21 = /^[^"'<>` ]/;
       if (peg$silentFails === 0) {
         rule$expectations.forEach(peg$expect);
       }
-
-    if (cached.result !== peg$FAILED) {
-      peg$tracer.trace({
-        type: "rule.match",
-        rule: "RawText",
-        result: cached.result,
-        location: peg$computeLocation(startPos, peg$currPos)
-      });
-    } else {
-      peg$tracer.trace({
-        type: "rule.fail",
-        rule: "RawText",
-        location: peg$computeLocation(startPos, startPos)
-      });
-    }
 
       return cached.result;
     }
@@ -799,37 +647,15 @@ var peg$r21 = /^[^"'<>` ]/;
       expectations: rule$expectations
     };
 
-    if (s0 !== peg$FAILED) {
-      peg$tracer.trace({
-        type: "rule.match",
-        rule: "RawText",
-        result: s0,
-        location: peg$computeLocation(startPos, peg$currPos)
-      });
-    } else {
-      peg$tracer.trace({
-        type: "rule.fail",
-        rule: "RawText",
-        location: peg$computeLocation(startPos, startPos)
-      });
-    }
-
     return s0;
   }
 
   function peg$parseMeta() {
-    var startPos = peg$currPos;
     var s0, s1, s2, s3, s4, s5, s6, s7, s8, s9, s10, s11, s12;
 
     var rule$expects = function (expected) {
       if (peg$silentFails === 0) peg$expect(expected);
     }
-
-    peg$tracer.trace({
-      type: "rule.enter",
-      rule: "Meta",
-      location: peg$computeLocation(startPos, startPos)
-    });
 
     var key = peg$currPos * 46 + 3;
     var cached = peg$resultsCache[key];
@@ -847,21 +673,6 @@ var peg$r21 = /^[^"'<>` ]/;
       if (peg$silentFails === 0) {
         rule$expectations.forEach(peg$expect);
       }
-
-    if (cached.result !== peg$FAILED) {
-      peg$tracer.trace({
-        type: "rule.match",
-        rule: "Meta",
-        result: cached.result,
-        location: peg$computeLocation(startPos, peg$currPos)
-      });
-    } else {
-      peg$tracer.trace({
-        type: "rule.fail",
-        rule: "Meta",
-        location: peg$computeLocation(startPos, startPos)
-      });
-    }
 
       return cached.result;
     }
@@ -1041,37 +852,15 @@ var peg$r21 = /^[^"'<>` ]/;
       expectations: rule$expectations
     };
 
-    if (s0 !== peg$FAILED) {
-      peg$tracer.trace({
-        type: "rule.match",
-        rule: "Meta",
-        result: s0,
-        location: peg$computeLocation(startPos, peg$currPos)
-      });
-    } else {
-      peg$tracer.trace({
-        type: "rule.fail",
-        rule: "Meta",
-        location: peg$computeLocation(startPos, startPos)
-      });
-    }
-
     return s0;
   }
 
   function peg$parseStaticScript() {
-    var startPos = peg$currPos;
     var s0, s1, s2, s3, s4, s5, s6, s7, s8, s9, s10, s11, s12;
 
     var rule$expects = function (expected) {
       if (peg$silentFails === 0) peg$expect(expected);
     }
-
-    peg$tracer.trace({
-      type: "rule.enter",
-      rule: "StaticScript",
-      location: peg$computeLocation(startPos, startPos)
-    });
 
     var key = peg$currPos * 46 + 4;
     var cached = peg$resultsCache[key];
@@ -1089,21 +878,6 @@ var peg$r21 = /^[^"'<>` ]/;
       if (peg$silentFails === 0) {
         rule$expectations.forEach(peg$expect);
       }
-
-    if (cached.result !== peg$FAILED) {
-      peg$tracer.trace({
-        type: "rule.match",
-        rule: "StaticScript",
-        result: cached.result,
-        location: peg$computeLocation(startPos, peg$currPos)
-      });
-    } else {
-      peg$tracer.trace({
-        type: "rule.fail",
-        rule: "StaticScript",
-        location: peg$computeLocation(startPos, startPos)
-      });
-    }
 
       return cached.result;
     }
@@ -1286,37 +1060,15 @@ var peg$r21 = /^[^"'<>` ]/;
       expectations: rule$expectations
     };
 
-    if (s0 !== peg$FAILED) {
-      peg$tracer.trace({
-        type: "rule.match",
-        rule: "StaticScript",
-        result: s0,
-        location: peg$computeLocation(startPos, peg$currPos)
-      });
-    } else {
-      peg$tracer.trace({
-        type: "rule.fail",
-        rule: "StaticScript",
-        location: peg$computeLocation(startPos, startPos)
-      });
-    }
-
     return s0;
   }
 
   function peg$parseScript() {
-    var startPos = peg$currPos;
     var s0, s1, s2, s3, s4, s5, s6, s7, s8, s9, s10, s11, s12, s13;
 
     var rule$expects = function (expected) {
       if (peg$silentFails === 0) peg$expect(expected);
     }
-
-    peg$tracer.trace({
-      type: "rule.enter",
-      rule: "Script",
-      location: peg$computeLocation(startPos, startPos)
-    });
 
     var key = peg$currPos * 46 + 5;
     var cached = peg$resultsCache[key];
@@ -1334,21 +1086,6 @@ var peg$r21 = /^[^"'<>` ]/;
       if (peg$silentFails === 0) {
         rule$expectations.forEach(peg$expect);
       }
-
-    if (cached.result !== peg$FAILED) {
-      peg$tracer.trace({
-        type: "rule.match",
-        rule: "Script",
-        result: cached.result,
-        location: peg$computeLocation(startPos, peg$currPos)
-      });
-    } else {
-      peg$tracer.trace({
-        type: "rule.fail",
-        rule: "Script",
-        location: peg$computeLocation(startPos, startPos)
-      });
-    }
 
       return cached.result;
     }
@@ -1738,37 +1475,15 @@ var peg$r21 = /^[^"'<>` ]/;
       expectations: rule$expectations
     };
 
-    if (s0 !== peg$FAILED) {
-      peg$tracer.trace({
-        type: "rule.match",
-        rule: "Script",
-        result: s0,
-        location: peg$computeLocation(startPos, peg$currPos)
-      });
-    } else {
-      peg$tracer.trace({
-        type: "rule.fail",
-        rule: "Script",
-        location: peg$computeLocation(startPos, startPos)
-      });
-    }
-
     return s0;
   }
 
   function peg$parseStyle() {
-    var startPos = peg$currPos;
     var s0, s1, s2, s3, s4, s5, s6, s7, s8, s9, s10, s11, s12, s13;
 
     var rule$expects = function (expected) {
       if (peg$silentFails === 0) peg$expect(expected);
     }
-
-    peg$tracer.trace({
-      type: "rule.enter",
-      rule: "Style",
-      location: peg$computeLocation(startPos, startPos)
-    });
 
     var key = peg$currPos * 46 + 6;
     var cached = peg$resultsCache[key];
@@ -1786,21 +1501,6 @@ var peg$r21 = /^[^"'<>` ]/;
       if (peg$silentFails === 0) {
         rule$expectations.forEach(peg$expect);
       }
-
-    if (cached.result !== peg$FAILED) {
-      peg$tracer.trace({
-        type: "rule.match",
-        rule: "Style",
-        result: cached.result,
-        location: peg$computeLocation(startPos, peg$currPos)
-      });
-    } else {
-      peg$tracer.trace({
-        type: "rule.fail",
-        rule: "Style",
-        location: peg$computeLocation(startPos, startPos)
-      });
-    }
 
       return cached.result;
     }
@@ -2190,37 +1890,15 @@ var peg$r21 = /^[^"'<>` ]/;
       expectations: rule$expectations
     };
 
-    if (s0 !== peg$FAILED) {
-      peg$tracer.trace({
-        type: "rule.match",
-        rule: "Style",
-        result: s0,
-        location: peg$computeLocation(startPos, peg$currPos)
-      });
-    } else {
-      peg$tracer.trace({
-        type: "rule.fail",
-        rule: "Style",
-        location: peg$computeLocation(startPos, startPos)
-      });
-    }
-
     return s0;
   }
 
   function peg$parseTextarea() {
-    var startPos = peg$currPos;
     var s0, s1, s2, s3, s4, s5, s6, s7, s8, s9, s10, s11, s12, s13;
 
     var rule$expects = function (expected) {
       if (peg$silentFails === 0) peg$expect(expected);
     }
-
-    peg$tracer.trace({
-      type: "rule.enter",
-      rule: "Textarea",
-      location: peg$computeLocation(startPos, startPos)
-    });
 
     var key = peg$currPos * 46 + 7;
     var cached = peg$resultsCache[key];
@@ -2238,21 +1916,6 @@ var peg$r21 = /^[^"'<>` ]/;
       if (peg$silentFails === 0) {
         rule$expectations.forEach(peg$expect);
       }
-
-    if (cached.result !== peg$FAILED) {
-      peg$tracer.trace({
-        type: "rule.match",
-        rule: "Textarea",
-        result: cached.result,
-        location: peg$computeLocation(startPos, peg$currPos)
-      });
-    } else {
-      peg$tracer.trace({
-        type: "rule.fail",
-        rule: "Textarea",
-        location: peg$computeLocation(startPos, startPos)
-      });
-    }
 
       return cached.result;
     }
@@ -2642,37 +2305,15 @@ var peg$r21 = /^[^"'<>` ]/;
       expectations: rule$expectations
     };
 
-    if (s0 !== peg$FAILED) {
-      peg$tracer.trace({
-        type: "rule.match",
-        rule: "Textarea",
-        result: s0,
-        location: peg$computeLocation(startPos, peg$currPos)
-      });
-    } else {
-      peg$tracer.trace({
-        type: "rule.fail",
-        rule: "Textarea",
-        location: peg$computeLocation(startPos, startPos)
-      });
-    }
-
     return s0;
   }
 
   function peg$parseTitle() {
-    var startPos = peg$currPos;
     var s0, s1, s2, s3, s4, s5, s6, s7, s8, s9, s10, s11, s12, s13;
 
     var rule$expects = function (expected) {
       if (peg$silentFails === 0) peg$expect(expected);
     }
-
-    peg$tracer.trace({
-      type: "rule.enter",
-      rule: "Title",
-      location: peg$computeLocation(startPos, startPos)
-    });
 
     var key = peg$currPos * 46 + 8;
     var cached = peg$resultsCache[key];
@@ -2690,21 +2331,6 @@ var peg$r21 = /^[^"'<>` ]/;
       if (peg$silentFails === 0) {
         rule$expectations.forEach(peg$expect);
       }
-
-    if (cached.result !== peg$FAILED) {
-      peg$tracer.trace({
-        type: "rule.match",
-        rule: "Title",
-        result: cached.result,
-        location: peg$computeLocation(startPos, peg$currPos)
-      });
-    } else {
-      peg$tracer.trace({
-        type: "rule.fail",
-        rule: "Title",
-        location: peg$computeLocation(startPos, startPos)
-      });
-    }
 
       return cached.result;
     }
@@ -3094,37 +2720,15 @@ var peg$r21 = /^[^"'<>` ]/;
       expectations: rule$expectations
     };
 
-    if (s0 !== peg$FAILED) {
-      peg$tracer.trace({
-        type: "rule.match",
-        rule: "Title",
-        result: s0,
-        location: peg$computeLocation(startPos, peg$currPos)
-      });
-    } else {
-      peg$tracer.trace({
-        type: "rule.fail",
-        rule: "Title",
-        location: peg$computeLocation(startPos, startPos)
-      });
-    }
-
     return s0;
   }
 
   function peg$parsePlainText() {
-    var startPos = peg$currPos;
     var s0, s1, s2, s3, s4, s5, s6, s7, s8, s9, s10, s11, s12, s13;
 
     var rule$expects = function (expected) {
       if (peg$silentFails === 0) peg$expect(expected);
     }
-
-    peg$tracer.trace({
-      type: "rule.enter",
-      rule: "PlainText",
-      location: peg$computeLocation(startPos, startPos)
-    });
 
     var key = peg$currPos * 46 + 9;
     var cached = peg$resultsCache[key];
@@ -3142,21 +2746,6 @@ var peg$r21 = /^[^"'<>` ]/;
       if (peg$silentFails === 0) {
         rule$expectations.forEach(peg$expect);
       }
-
-    if (cached.result !== peg$FAILED) {
-      peg$tracer.trace({
-        type: "rule.match",
-        rule: "PlainText",
-        result: cached.result,
-        location: peg$computeLocation(startPos, peg$currPos)
-      });
-    } else {
-      peg$tracer.trace({
-        type: "rule.fail",
-        rule: "PlainText",
-        location: peg$computeLocation(startPos, startPos)
-      });
-    }
 
       return cached.result;
     }
@@ -3546,37 +3135,15 @@ var peg$r21 = /^[^"'<>` ]/;
       expectations: rule$expectations
     };
 
-    if (s0 !== peg$FAILED) {
-      peg$tracer.trace({
-        type: "rule.match",
-        rule: "PlainText",
-        result: s0,
-        location: peg$computeLocation(startPos, peg$currPos)
-      });
-    } else {
-      peg$tracer.trace({
-        type: "rule.fail",
-        rule: "PlainText",
-        location: peg$computeLocation(startPos, startPos)
-      });
-    }
-
     return s0;
   }
 
   function peg$parseNested() {
-    var startPos = peg$currPos;
     var s0, s1, s2, s3, s4, s5, s6, s7;
 
     var rule$expects = function (expected) {
       if (peg$silentFails === 0) peg$expect(expected);
     }
-
-    peg$tracer.trace({
-      type: "rule.enter",
-      rule: "Nested",
-      location: peg$computeLocation(startPos, startPos)
-    });
 
     var key = peg$currPos * 46 + 10;
     var cached = peg$resultsCache[key];
@@ -3594,21 +3161,6 @@ var peg$r21 = /^[^"'<>` ]/;
       if (peg$silentFails === 0) {
         rule$expectations.forEach(peg$expect);
       }
-
-    if (cached.result !== peg$FAILED) {
-      peg$tracer.trace({
-        type: "rule.match",
-        rule: "Nested",
-        result: cached.result,
-        location: peg$computeLocation(startPos, peg$currPos)
-      });
-    } else {
-      peg$tracer.trace({
-        type: "rule.fail",
-        rule: "Nested",
-        location: peg$computeLocation(startPos, startPos)
-      });
-    }
 
       return cached.result;
     }
@@ -3659,37 +3211,15 @@ var peg$r21 = /^[^"'<>` ]/;
       expectations: rule$expectations
     };
 
-    if (s0 !== peg$FAILED) {
-      peg$tracer.trace({
-        type: "rule.match",
-        rule: "Nested",
-        result: s0,
-        location: peg$computeLocation(startPos, peg$currPos)
-      });
-    } else {
-      peg$tracer.trace({
-        type: "rule.fail",
-        rule: "Nested",
-        location: peg$computeLocation(startPos, startPos)
-      });
-    }
-
     return s0;
   }
 
   function peg$parseTagBegin() {
-    var startPos = peg$currPos;
     var s0, s1, s2, s3, s4, s5;
 
     var rule$expects = function (expected) {
       if (peg$silentFails === 0) peg$expect(expected);
     }
-
-    peg$tracer.trace({
-      type: "rule.enter",
-      rule: "TagBegin",
-      location: peg$computeLocation(startPos, startPos)
-    });
 
     var key = peg$currPos * 46 + 11;
     var cached = peg$resultsCache[key];
@@ -3707,21 +3237,6 @@ var peg$r21 = /^[^"'<>` ]/;
       if (peg$silentFails === 0) {
         rule$expectations.forEach(peg$expect);
       }
-
-    if (cached.result !== peg$FAILED) {
-      peg$tracer.trace({
-        type: "rule.match",
-        rule: "TagBegin",
-        result: cached.result,
-        location: peg$computeLocation(startPos, peg$currPos)
-      });
-    } else {
-      peg$tracer.trace({
-        type: "rule.fail",
-        rule: "TagBegin",
-        location: peg$computeLocation(startPos, startPos)
-      });
-    }
 
       return cached.result;
     }
@@ -3769,37 +3284,15 @@ var peg$r21 = /^[^"'<>` ]/;
       expectations: rule$expectations
     };
 
-    if (s0 !== peg$FAILED) {
-      peg$tracer.trace({
-        type: "rule.match",
-        rule: "TagBegin",
-        result: s0,
-        location: peg$computeLocation(startPos, peg$currPos)
-      });
-    } else {
-      peg$tracer.trace({
-        type: "rule.fail",
-        rule: "TagBegin",
-        location: peg$computeLocation(startPos, startPos)
-      });
-    }
-
     return s0;
   }
 
   function peg$parseTagEnd() {
-    var startPos = peg$currPos;
     var s0, s1, s2, s3, s4, s5;
 
     var rule$expects = function (expected) {
       if (peg$silentFails === 0) peg$expect(expected);
     }
-
-    peg$tracer.trace({
-      type: "rule.enter",
-      rule: "TagEnd",
-      location: peg$computeLocation(startPos, startPos)
-    });
 
     var key = peg$currPos * 46 + 12;
     var cached = peg$resultsCache[key];
@@ -3817,21 +3310,6 @@ var peg$r21 = /^[^"'<>` ]/;
       if (peg$silentFails === 0) {
         rule$expectations.forEach(peg$expect);
       }
-
-    if (cached.result !== peg$FAILED) {
-      peg$tracer.trace({
-        type: "rule.match",
-        rule: "TagEnd",
-        result: cached.result,
-        location: peg$computeLocation(startPos, peg$currPos)
-      });
-    } else {
-      peg$tracer.trace({
-        type: "rule.fail",
-        rule: "TagEnd",
-        location: peg$computeLocation(startPos, startPos)
-      });
-    }
 
       return cached.result;
     }
@@ -3879,37 +3357,15 @@ var peg$r21 = /^[^"'<>` ]/;
       expectations: rule$expectations
     };
 
-    if (s0 !== peg$FAILED) {
-      peg$tracer.trace({
-        type: "rule.match",
-        rule: "TagEnd",
-        result: s0,
-        location: peg$computeLocation(startPos, peg$currPos)
-      });
-    } else {
-      peg$tracer.trace({
-        type: "rule.fail",
-        rule: "TagEnd",
-        location: peg$computeLocation(startPos, startPos)
-      });
-    }
-
     return s0;
   }
 
   function peg$parseNameSpace() {
-    var startPos = peg$currPos;
     var s0, s1, s2;
 
     var rule$expects = function (expected) {
       if (peg$silentFails === 0) peg$expect(expected);
     }
-
-    peg$tracer.trace({
-      type: "rule.enter",
-      rule: "NameSpace",
-      location: peg$computeLocation(startPos, startPos)
-    });
 
     var key = peg$currPos * 46 + 13;
     var cached = peg$resultsCache[key];
@@ -3927,21 +3383,6 @@ var peg$r21 = /^[^"'<>` ]/;
       if (peg$silentFails === 0) {
         rule$expectations.forEach(peg$expect);
       }
-
-    if (cached.result !== peg$FAILED) {
-      peg$tracer.trace({
-        type: "rule.match",
-        rule: "NameSpace",
-        result: cached.result,
-        location: peg$computeLocation(startPos, peg$currPos)
-      });
-    } else {
-      peg$tracer.trace({
-        type: "rule.fail",
-        rule: "NameSpace",
-        location: peg$computeLocation(startPos, startPos)
-      });
-    }
 
       return cached.result;
     }
@@ -3972,37 +3413,15 @@ var peg$r21 = /^[^"'<>` ]/;
       expectations: rule$expectations
     };
 
-    if (s0 !== peg$FAILED) {
-      peg$tracer.trace({
-        type: "rule.match",
-        rule: "NameSpace",
-        result: s0,
-        location: peg$computeLocation(startPos, peg$currPos)
-      });
-    } else {
-      peg$tracer.trace({
-        type: "rule.fail",
-        rule: "NameSpace",
-        location: peg$computeLocation(startPos, startPos)
-      });
-    }
-
     return s0;
   }
 
   function peg$parseVoidSymbol() {
-    var startPos = peg$currPos;
     var s0;
 
     var rule$expects = function (expected) {
       if (peg$silentFails === 0) peg$expect(expected);
     }
-
-    peg$tracer.trace({
-      type: "rule.enter",
-      rule: "VoidSymbol",
-      location: peg$computeLocation(startPos, startPos)
-    });
 
     var key = peg$currPos * 46 + 14;
     var cached = peg$resultsCache[key];
@@ -4020,21 +3439,6 @@ var peg$r21 = /^[^"'<>` ]/;
       if (peg$silentFails === 0) {
         rule$expectations.forEach(peg$expect);
       }
-
-    if (cached.result !== peg$FAILED) {
-      peg$tracer.trace({
-        type: "rule.match",
-        rule: "VoidSymbol",
-        result: cached.result,
-        location: peg$computeLocation(startPos, peg$currPos)
-      });
-    } else {
-      peg$tracer.trace({
-        type: "rule.fail",
-        rule: "VoidSymbol",
-        location: peg$computeLocation(startPos, startPos)
-      });
-    }
 
       return cached.result;
     }
@@ -4164,37 +3568,15 @@ var peg$r21 = /^[^"'<>` ]/;
       expectations: rule$expectations
     };
 
-    if (s0 !== peg$FAILED) {
-      peg$tracer.trace({
-        type: "rule.match",
-        rule: "VoidSymbol",
-        result: s0,
-        location: peg$computeLocation(startPos, peg$currPos)
-      });
-    } else {
-      peg$tracer.trace({
-        type: "rule.fail",
-        rule: "VoidSymbol",
-        location: peg$computeLocation(startPos, startPos)
-      });
-    }
-
     return s0;
   }
 
   function peg$parseVoid() {
-    var startPos = peg$currPos;
     var s0, s1, s2, s3, s4, s5, s6;
 
     var rule$expects = function (expected) {
       if (peg$silentFails === 0) peg$expect(expected);
     }
-
-    peg$tracer.trace({
-      type: "rule.enter",
-      rule: "Void",
-      location: peg$computeLocation(startPos, startPos)
-    });
 
     var key = peg$currPos * 46 + 15;
     var cached = peg$resultsCache[key];
@@ -4212,21 +3594,6 @@ var peg$r21 = /^[^"'<>` ]/;
       if (peg$silentFails === 0) {
         rule$expectations.forEach(peg$expect);
       }
-
-    if (cached.result !== peg$FAILED) {
-      peg$tracer.trace({
-        type: "rule.match",
-        rule: "Void",
-        result: cached.result,
-        location: peg$computeLocation(startPos, peg$currPos)
-      });
-    } else {
-      peg$tracer.trace({
-        type: "rule.fail",
-        rule: "Void",
-        location: peg$computeLocation(startPos, startPos)
-      });
-    }
 
       return cached.result;
     }
@@ -4286,37 +3653,15 @@ var peg$r21 = /^[^"'<>` ]/;
       expectations: rule$expectations
     };
 
-    if (s0 !== peg$FAILED) {
-      peg$tracer.trace({
-        type: "rule.match",
-        rule: "Void",
-        result: s0,
-        location: peg$computeLocation(startPos, peg$currPos)
-      });
-    } else {
-      peg$tracer.trace({
-        type: "rule.fail",
-        rule: "Void",
-        location: peg$computeLocation(startPos, startPos)
-      });
-    }
-
     return s0;
   }
 
   function peg$parseComment() {
-    var startPos = peg$currPos;
     var s0, s1, s2, s3, s4;
 
     var rule$expects = function (expected) {
       if (peg$silentFails === 0) peg$expect(expected);
     }
-
-    peg$tracer.trace({
-      type: "rule.enter",
-      rule: "Comment",
-      location: peg$computeLocation(startPos, startPos)
-    });
 
     var key = peg$currPos * 46 + 16;
     var cached = peg$resultsCache[key];
@@ -4334,21 +3679,6 @@ var peg$r21 = /^[^"'<>` ]/;
       if (peg$silentFails === 0) {
         rule$expectations.forEach(peg$expect);
       }
-
-    if (cached.result !== peg$FAILED) {
-      peg$tracer.trace({
-        type: "rule.match",
-        rule: "Comment",
-        result: cached.result,
-        location: peg$computeLocation(startPos, peg$currPos)
-      });
-    } else {
-      peg$tracer.trace({
-        type: "rule.fail",
-        rule: "Comment",
-        location: peg$computeLocation(startPos, startPos)
-      });
-    }
 
       return cached.result;
     }
@@ -4390,37 +3720,15 @@ var peg$r21 = /^[^"'<>` ]/;
       expectations: rule$expectations
     };
 
-    if (s0 !== peg$FAILED) {
-      peg$tracer.trace({
-        type: "rule.match",
-        rule: "Comment",
-        result: s0,
-        location: peg$computeLocation(startPos, peg$currPos)
-      });
-    } else {
-      peg$tracer.trace({
-        type: "rule.fail",
-        rule: "Comment",
-        location: peg$computeLocation(startPos, startPos)
-      });
-    }
-
     return s0;
   }
 
   function peg$parseCommentText() {
-    var startPos = peg$currPos;
     var s0, s1, s2, s3, s4, s5;
 
     var rule$expects = function (expected) {
       if (peg$silentFails === 0) peg$expect(expected);
     }
-
-    peg$tracer.trace({
-      type: "rule.enter",
-      rule: "CommentText",
-      location: peg$computeLocation(startPos, startPos)
-    });
 
     var key = peg$currPos * 46 + 17;
     var cached = peg$resultsCache[key];
@@ -4438,21 +3746,6 @@ var peg$r21 = /^[^"'<>` ]/;
       if (peg$silentFails === 0) {
         rule$expectations.forEach(peg$expect);
       }
-
-    if (cached.result !== peg$FAILED) {
-      peg$tracer.trace({
-        type: "rule.match",
-        rule: "CommentText",
-        result: cached.result,
-        location: peg$computeLocation(startPos, peg$currPos)
-      });
-    } else {
-      peg$tracer.trace({
-        type: "rule.fail",
-        rule: "CommentText",
-        location: peg$computeLocation(startPos, startPos)
-      });
-    }
 
       return cached.result;
     }
@@ -4542,37 +3835,15 @@ var peg$r21 = /^[^"'<>` ]/;
       expectations: rule$expectations
     };
 
-    if (s0 !== peg$FAILED) {
-      peg$tracer.trace({
-        type: "rule.match",
-        rule: "CommentText",
-        result: s0,
-        location: peg$computeLocation(startPos, peg$currPos)
-      });
-    } else {
-      peg$tracer.trace({
-        type: "rule.fail",
-        rule: "CommentText",
-        location: peg$computeLocation(startPos, startPos)
-      });
-    }
-
     return s0;
   }
 
   function peg$parseDocType() {
-    var startPos = peg$currPos;
     var s0, s1, s2, s3, s4, s5, s6, s7, s8, s9;
 
     var rule$expects = function (expected) {
       if (peg$silentFails === 0) peg$expect(expected);
     }
-
-    peg$tracer.trace({
-      type: "rule.enter",
-      rule: "DocType",
-      location: peg$computeLocation(startPos, startPos)
-    });
 
     var key = peg$currPos * 46 + 18;
     var cached = peg$resultsCache[key];
@@ -4590,21 +3861,6 @@ var peg$r21 = /^[^"'<>` ]/;
       if (peg$silentFails === 0) {
         rule$expectations.forEach(peg$expect);
       }
-
-    if (cached.result !== peg$FAILED) {
-      peg$tracer.trace({
-        type: "rule.match",
-        rule: "DocType",
-        result: cached.result,
-        location: peg$computeLocation(startPos, peg$currPos)
-      });
-    } else {
-      peg$tracer.trace({
-        type: "rule.fail",
-        rule: "DocType",
-        location: peg$computeLocation(startPos, startPos)
-      });
-    }
 
       return cached.result;
     }
@@ -4677,37 +3933,15 @@ var peg$r21 = /^[^"'<>` ]/;
       expectations: rule$expectations
     };
 
-    if (s0 !== peg$FAILED) {
-      peg$tracer.trace({
-        type: "rule.match",
-        rule: "DocType",
-        result: s0,
-        location: peg$computeLocation(startPos, peg$currPos)
-      });
-    } else {
-      peg$tracer.trace({
-        type: "rule.fail",
-        rule: "DocType",
-        location: peg$computeLocation(startPos, startPos)
-      });
-    }
-
     return s0;
   }
 
   function peg$parseText() {
-    var startPos = peg$currPos;
     var s0, s1, s2, s3, s4, s5, s6, s7, s8;
 
     var rule$expects = function (expected) {
       if (peg$silentFails === 0) peg$expect(expected);
     }
-
-    peg$tracer.trace({
-      type: "rule.enter",
-      rule: "Text",
-      location: peg$computeLocation(startPos, startPos)
-    });
 
     var key = peg$currPos * 46 + 19;
     var cached = peg$resultsCache[key];
@@ -4725,21 +3959,6 @@ var peg$r21 = /^[^"'<>` ]/;
       if (peg$silentFails === 0) {
         rule$expectations.forEach(peg$expect);
       }
-
-    if (cached.result !== peg$FAILED) {
-      peg$tracer.trace({
-        type: "rule.match",
-        rule: "Text",
-        result: cached.result,
-        location: peg$computeLocation(startPos, peg$currPos)
-      });
-    } else {
-      peg$tracer.trace({
-        type: "rule.fail",
-        rule: "Text",
-        location: peg$computeLocation(startPos, startPos)
-      });
-    }
 
       return cached.result;
     }
@@ -5026,37 +4245,15 @@ var peg$r21 = /^[^"'<>` ]/;
       expectations: rule$expectations
     };
 
-    if (s0 !== peg$FAILED) {
-      peg$tracer.trace({
-        type: "rule.match",
-        rule: "Text",
-        result: s0,
-        location: peg$computeLocation(startPos, peg$currPos)
-      });
-    } else {
-      peg$tracer.trace({
-        type: "rule.fail",
-        rule: "Text",
-        location: peg$computeLocation(startPos, startPos)
-      });
-    }
-
     return s0;
   }
 
   function peg$parsePlaceHolderStart() {
-    var startPos = peg$currPos;
     var s0, s1, s2, s3;
 
     var rule$expects = function (expected) {
       if (peg$silentFails === 0) peg$expect(expected);
     }
-
-    peg$tracer.trace({
-      type: "rule.enter",
-      rule: "PlaceHolderStart",
-      location: peg$computeLocation(startPos, startPos)
-    });
 
     var key = peg$currPos * 46 + 20;
     var cached = peg$resultsCache[key];
@@ -5074,21 +4271,6 @@ var peg$r21 = /^[^"'<>` ]/;
       if (peg$silentFails === 0) {
         rule$expectations.forEach(peg$expect);
       }
-
-    if (cached.result !== peg$FAILED) {
-      peg$tracer.trace({
-        type: "rule.match",
-        rule: "PlaceHolderStart",
-        result: cached.result,
-        location: peg$computeLocation(startPos, peg$currPos)
-      });
-    } else {
-      peg$tracer.trace({
-        type: "rule.fail",
-        rule: "PlaceHolderStart",
-        location: peg$computeLocation(startPos, startPos)
-      });
-    }
 
       return cached.result;
     }
@@ -5145,37 +4327,15 @@ var peg$r21 = /^[^"'<>` ]/;
       expectations: rule$expectations
     };
 
-    if (s0 !== peg$FAILED) {
-      peg$tracer.trace({
-        type: "rule.match",
-        rule: "PlaceHolderStart",
-        result: s0,
-        location: peg$computeLocation(startPos, peg$currPos)
-      });
-    } else {
-      peg$tracer.trace({
-        type: "rule.fail",
-        rule: "PlaceHolderStart",
-        location: peg$computeLocation(startPos, startPos)
-      });
-    }
-
     return s0;
   }
 
   function peg$parsePlaceHolderEnd() {
-    var startPos = peg$currPos;
     var s0, s1, s2;
 
     var rule$expects = function (expected) {
       if (peg$silentFails === 0) peg$expect(expected);
     }
-
-    peg$tracer.trace({
-      type: "rule.enter",
-      rule: "PlaceHolderEnd",
-      location: peg$computeLocation(startPos, startPos)
-    });
 
     var key = peg$currPos * 46 + 21;
     var cached = peg$resultsCache[key];
@@ -5193,21 +4353,6 @@ var peg$r21 = /^[^"'<>` ]/;
       if (peg$silentFails === 0) {
         rule$expectations.forEach(peg$expect);
       }
-
-    if (cached.result !== peg$FAILED) {
-      peg$tracer.trace({
-        type: "rule.match",
-        rule: "PlaceHolderEnd",
-        result: cached.result,
-        location: peg$computeLocation(startPos, peg$currPos)
-      });
-    } else {
-      peg$tracer.trace({
-        type: "rule.fail",
-        rule: "PlaceHolderEnd",
-        location: peg$computeLocation(startPos, startPos)
-      });
-    }
 
       return cached.result;
     }
@@ -5253,37 +4398,15 @@ var peg$r21 = /^[^"'<>` ]/;
       expectations: rule$expectations
     };
 
-    if (s0 !== peg$FAILED) {
-      peg$tracer.trace({
-        type: "rule.match",
-        rule: "PlaceHolderEnd",
-        result: s0,
-        location: peg$computeLocation(startPos, peg$currPos)
-      });
-    } else {
-      peg$tracer.trace({
-        type: "rule.fail",
-        rule: "PlaceHolderEnd",
-        location: peg$computeLocation(startPos, startPos)
-      });
-    }
-
     return s0;
   }
 
   function peg$parsePlaceHolder() {
-    var startPos = peg$currPos;
     var s0, s1, s2, s3, s4, s5, s6;
 
     var rule$expects = function (expected) {
       if (peg$silentFails === 0) peg$expect(expected);
     }
-
-    peg$tracer.trace({
-      type: "rule.enter",
-      rule: "PlaceHolder",
-      location: peg$computeLocation(startPos, startPos)
-    });
 
     var key = peg$currPos * 46 + 22;
     var cached = peg$resultsCache[key];
@@ -5301,21 +4424,6 @@ var peg$r21 = /^[^"'<>` ]/;
       if (peg$silentFails === 0) {
         rule$expectations.forEach(peg$expect);
       }
-
-    if (cached.result !== peg$FAILED) {
-      peg$tracer.trace({
-        type: "rule.match",
-        rule: "PlaceHolder",
-        result: cached.result,
-        location: peg$computeLocation(startPos, peg$currPos)
-      });
-    } else {
-      peg$tracer.trace({
-        type: "rule.fail",
-        rule: "PlaceHolder",
-        location: peg$computeLocation(startPos, startPos)
-      });
-    }
 
       return cached.result;
     }
@@ -5422,37 +4530,15 @@ var peg$r21 = /^[^"'<>` ]/;
       expectations: rule$expectations
     };
 
-    if (s0 !== peg$FAILED) {
-      peg$tracer.trace({
-        type: "rule.match",
-        rule: "PlaceHolder",
-        result: s0,
-        location: peg$computeLocation(startPos, peg$currPos)
-      });
-    } else {
-      peg$tracer.trace({
-        type: "rule.fail",
-        rule: "PlaceHolder",
-        location: peg$computeLocation(startPos, startPos)
-      });
-    }
-
     return s0;
   }
 
   function peg$parseMdSpace() {
-    var startPos = peg$currPos;
     var s0;
 
     var rule$expects = function (expected) {
       if (peg$silentFails === 0) peg$expect(expected);
     }
-
-    peg$tracer.trace({
-      type: "rule.enter",
-      rule: "MdSpace",
-      location: peg$computeLocation(startPos, startPos)
-    });
 
     var key = peg$currPos * 46 + 23;
     var cached = peg$resultsCache[key];
@@ -5470,21 +4556,6 @@ var peg$r21 = /^[^"'<>` ]/;
       if (peg$silentFails === 0) {
         rule$expectations.forEach(peg$expect);
       }
-
-    if (cached.result !== peg$FAILED) {
-      peg$tracer.trace({
-        type: "rule.match",
-        rule: "MdSpace",
-        result: cached.result,
-        location: peg$computeLocation(startPos, peg$currPos)
-      });
-    } else {
-      peg$tracer.trace({
-        type: "rule.fail",
-        rule: "MdSpace",
-        location: peg$computeLocation(startPos, startPos)
-      });
-    }
 
       return cached.result;
     }
@@ -5518,37 +4589,15 @@ var peg$r21 = /^[^"'<>` ]/;
       expectations: rule$expectations
     };
 
-    if (s0 !== peg$FAILED) {
-      peg$tracer.trace({
-        type: "rule.match",
-        rule: "MdSpace",
-        result: s0,
-        location: peg$computeLocation(startPos, peg$currPos)
-      });
-    } else {
-      peg$tracer.trace({
-        type: "rule.fail",
-        rule: "MdSpace",
-        location: peg$computeLocation(startPos, startPos)
-      });
-    }
-
     return s0;
   }
 
   function peg$parseMarkdownTag() {
-    var startPos = peg$currPos;
     var s0, s1, s2, s3, s4, s5, s6, s7, s8, s9, s10;
 
     var rule$expects = function (expected) {
       if (peg$silentFails === 0) peg$expect(expected);
     }
-
-    peg$tracer.trace({
-      type: "rule.enter",
-      rule: "MarkdownTag",
-      location: peg$computeLocation(startPos, startPos)
-    });
 
     var key = peg$currPos * 46 + 24;
     var cached = peg$resultsCache[key];
@@ -5566,21 +4615,6 @@ var peg$r21 = /^[^"'<>` ]/;
       if (peg$silentFails === 0) {
         rule$expectations.forEach(peg$expect);
       }
-
-    if (cached.result !== peg$FAILED) {
-      peg$tracer.trace({
-        type: "rule.match",
-        rule: "MarkdownTag",
-        result: cached.result,
-        location: peg$computeLocation(startPos, peg$currPos)
-      });
-    } else {
-      peg$tracer.trace({
-        type: "rule.fail",
-        rule: "MarkdownTag",
-        location: peg$computeLocation(startPos, startPos)
-      });
-    }
 
       return cached.result;
     }
@@ -5653,37 +4687,15 @@ var peg$r21 = /^[^"'<>` ]/;
       expectations: rule$expectations
     };
 
-    if (s0 !== peg$FAILED) {
-      peg$tracer.trace({
-        type: "rule.match",
-        rule: "MarkdownTag",
-        result: s0,
-        location: peg$computeLocation(startPos, peg$currPos)
-      });
-    } else {
-      peg$tracer.trace({
-        type: "rule.fail",
-        rule: "MarkdownTag",
-        location: peg$computeLocation(startPos, startPos)
-      });
-    }
-
     return s0;
   }
 
   function peg$parseMarkdownElement() {
-    var startPos = peg$currPos;
     var s0;
 
     var rule$expects = function (expected) {
       if (peg$silentFails === 0) peg$expect(expected);
     }
-
-    peg$tracer.trace({
-      type: "rule.enter",
-      rule: "MarkdownElement",
-      location: peg$computeLocation(startPos, startPos)
-    });
 
     var key = peg$currPos * 46 + 25;
     var cached = peg$resultsCache[key];
@@ -5701,21 +4713,6 @@ var peg$r21 = /^[^"'<>` ]/;
       if (peg$silentFails === 0) {
         rule$expectations.forEach(peg$expect);
       }
-
-    if (cached.result !== peg$FAILED) {
-      peg$tracer.trace({
-        type: "rule.match",
-        rule: "MarkdownElement",
-        result: cached.result,
-        location: peg$computeLocation(startPos, peg$currPos)
-      });
-    } else {
-      peg$tracer.trace({
-        type: "rule.fail",
-        rule: "MarkdownElement",
-        location: peg$computeLocation(startPos, startPos)
-      });
-    }
 
       return cached.result;
     }
@@ -5749,37 +4746,15 @@ var peg$r21 = /^[^"'<>` ]/;
       expectations: rule$expectations
     };
 
-    if (s0 !== peg$FAILED) {
-      peg$tracer.trace({
-        type: "rule.match",
-        rule: "MarkdownElement",
-        result: s0,
-        location: peg$computeLocation(startPos, peg$currPos)
-      });
-    } else {
-      peg$tracer.trace({
-        type: "rule.fail",
-        rule: "MarkdownElement",
-        location: peg$computeLocation(startPos, startPos)
-      });
-    }
-
     return s0;
   }
 
   function peg$parseMarkdown() {
-    var startPos = peg$currPos;
     var s0;
 
     var rule$expects = function (expected) {
       if (peg$silentFails === 0) peg$expect(expected);
     }
-
-    peg$tracer.trace({
-      type: "rule.enter",
-      rule: "Markdown",
-      location: peg$computeLocation(startPos, startPos)
-    });
 
     var key = peg$currPos * 46 + 26;
     var cached = peg$resultsCache[key];
@@ -5797,21 +4772,6 @@ var peg$r21 = /^[^"'<>` ]/;
       if (peg$silentFails === 0) {
         rule$expectations.forEach(peg$expect);
       }
-
-    if (cached.result !== peg$FAILED) {
-      peg$tracer.trace({
-        type: "rule.match",
-        rule: "Markdown",
-        result: cached.result,
-        location: peg$computeLocation(startPos, peg$currPos)
-      });
-    } else {
-      peg$tracer.trace({
-        type: "rule.fail",
-        rule: "Markdown",
-        location: peg$computeLocation(startPos, startPos)
-      });
-    }
 
       return cached.result;
     }
@@ -5848,37 +4808,15 @@ var peg$r21 = /^[^"'<>` ]/;
       expectations: rule$expectations
     };
 
-    if (s0 !== peg$FAILED) {
-      peg$tracer.trace({
-        type: "rule.match",
-        rule: "Markdown",
-        result: s0,
-        location: peg$computeLocation(startPos, peg$currPos)
-      });
-    } else {
-      peg$tracer.trace({
-        type: "rule.fail",
-        rule: "Markdown",
-        location: peg$computeLocation(startPos, startPos)
-      });
-    }
-
     return s0;
   }
 
   function peg$parseMdCode() {
-    var startPos = peg$currPos;
     var s0, s1, s2, s3, s4, s5, s6, s7;
 
     var rule$expects = function (expected) {
       if (peg$silentFails === 0) peg$expect(expected);
     }
-
-    peg$tracer.trace({
-      type: "rule.enter",
-      rule: "MdCode",
-      location: peg$computeLocation(startPos, startPos)
-    });
 
     var key = peg$currPos * 46 + 27;
     var cached = peg$resultsCache[key];
@@ -5896,21 +4834,6 @@ var peg$r21 = /^[^"'<>` ]/;
       if (peg$silentFails === 0) {
         rule$expectations.forEach(peg$expect);
       }
-
-    if (cached.result !== peg$FAILED) {
-      peg$tracer.trace({
-        type: "rule.match",
-        rule: "MdCode",
-        result: cached.result,
-        location: peg$computeLocation(startPos, peg$currPos)
-      });
-    } else {
-      peg$tracer.trace({
-        type: "rule.fail",
-        rule: "MdCode",
-        location: peg$computeLocation(startPos, startPos)
-      });
-    }
 
       return cached.result;
     }
@@ -6062,37 +4985,15 @@ var peg$r21 = /^[^"'<>` ]/;
       expectations: rule$expectations
     };
 
-    if (s0 !== peg$FAILED) {
-      peg$tracer.trace({
-        type: "rule.match",
-        rule: "MdCode",
-        result: s0,
-        location: peg$computeLocation(startPos, peg$currPos)
-      });
-    } else {
-      peg$tracer.trace({
-        type: "rule.fail",
-        rule: "MdCode",
-        location: peg$computeLocation(startPos, startPos)
-      });
-    }
-
     return s0;
   }
 
   function peg$parseMdFences() {
-    var startPos = peg$currPos;
     var s0, s1, s2, s3, s4, s5, s6, s7, s8, s9;
 
     var rule$expects = function (expected) {
       if (peg$silentFails === 0) peg$expect(expected);
     }
-
-    peg$tracer.trace({
-      type: "rule.enter",
-      rule: "MdFences",
-      location: peg$computeLocation(startPos, startPos)
-    });
 
     var key = peg$currPos * 46 + 28;
     var cached = peg$resultsCache[key];
@@ -6110,21 +5011,6 @@ var peg$r21 = /^[^"'<>` ]/;
       if (peg$silentFails === 0) {
         rule$expectations.forEach(peg$expect);
       }
-
-    if (cached.result !== peg$FAILED) {
-      peg$tracer.trace({
-        type: "rule.match",
-        rule: "MdFences",
-        result: cached.result,
-        location: peg$computeLocation(startPos, peg$currPos)
-      });
-    } else {
-      peg$tracer.trace({
-        type: "rule.fail",
-        rule: "MdFences",
-        location: peg$computeLocation(startPos, startPos)
-      });
-    }
 
       return cached.result;
     }
@@ -6367,37 +5253,15 @@ var peg$r21 = /^[^"'<>` ]/;
       expectations: rule$expectations
     };
 
-    if (s0 !== peg$FAILED) {
-      peg$tracer.trace({
-        type: "rule.match",
-        rule: "MdFences",
-        result: s0,
-        location: peg$computeLocation(startPos, peg$currPos)
-      });
-    } else {
-      peg$tracer.trace({
-        type: "rule.fail",
-        rule: "MdFences",
-        location: peg$computeLocation(startPos, startPos)
-      });
-    }
-
     return s0;
   }
 
   function peg$parseMdHr() {
-    var startPos = peg$currPos;
     var s0, s1, s2, s3, s4, s5, s6, s7, s8, s9, s10, s11, s12;
 
     var rule$expects = function (expected) {
       if (peg$silentFails === 0) peg$expect(expected);
     }
-
-    peg$tracer.trace({
-      type: "rule.enter",
-      rule: "MdHr",
-      location: peg$computeLocation(startPos, startPos)
-    });
 
     var key = peg$currPos * 46 + 29;
     var cached = peg$resultsCache[key];
@@ -6415,21 +5279,6 @@ var peg$r21 = /^[^"'<>` ]/;
       if (peg$silentFails === 0) {
         rule$expectations.forEach(peg$expect);
       }
-
-    if (cached.result !== peg$FAILED) {
-      peg$tracer.trace({
-        type: "rule.match",
-        rule: "MdHr",
-        result: cached.result,
-        location: peg$computeLocation(startPos, peg$currPos)
-      });
-    } else {
-      peg$tracer.trace({
-        type: "rule.fail",
-        rule: "MdHr",
-        location: peg$computeLocation(startPos, startPos)
-      });
-    }
 
       return cached.result;
     }
@@ -6701,37 +5550,15 @@ var peg$r21 = /^[^"'<>` ]/;
       expectations: rule$expectations
     };
 
-    if (s0 !== peg$FAILED) {
-      peg$tracer.trace({
-        type: "rule.match",
-        rule: "MdHr",
-        result: s0,
-        location: peg$computeLocation(startPos, peg$currPos)
-      });
-    } else {
-      peg$tracer.trace({
-        type: "rule.fail",
-        rule: "MdHr",
-        location: peg$computeLocation(startPos, startPos)
-      });
-    }
-
     return s0;
   }
 
   function peg$parseMdHeading() {
-    var startPos = peg$currPos;
     var s0, s1, s2, s3, s4, s5, s6, s7, s8, s9;
 
     var rule$expects = function (expected) {
       if (peg$silentFails === 0) peg$expect(expected);
     }
-
-    peg$tracer.trace({
-      type: "rule.enter",
-      rule: "MdHeading",
-      location: peg$computeLocation(startPos, startPos)
-    });
 
     var key = peg$currPos * 46 + 30;
     var cached = peg$resultsCache[key];
@@ -6749,21 +5576,6 @@ var peg$r21 = /^[^"'<>` ]/;
       if (peg$silentFails === 0) {
         rule$expectations.forEach(peg$expect);
       }
-
-    if (cached.result !== peg$FAILED) {
-      peg$tracer.trace({
-        type: "rule.match",
-        rule: "MdHeading",
-        result: cached.result,
-        location: peg$computeLocation(startPos, peg$currPos)
-      });
-    } else {
-      peg$tracer.trace({
-        type: "rule.fail",
-        rule: "MdHeading",
-        location: peg$computeLocation(startPos, startPos)
-      });
-    }
 
       return cached.result;
     }
@@ -6906,37 +5718,15 @@ var peg$r21 = /^[^"'<>` ]/;
       expectations: rule$expectations
     };
 
-    if (s0 !== peg$FAILED) {
-      peg$tracer.trace({
-        type: "rule.match",
-        rule: "MdHeading",
-        result: s0,
-        location: peg$computeLocation(startPos, peg$currPos)
-      });
-    } else {
-      peg$tracer.trace({
-        type: "rule.fail",
-        rule: "MdHeading",
-        location: peg$computeLocation(startPos, startPos)
-      });
-    }
-
     return s0;
   }
 
   function peg$parseMdParagraph() {
-    var startPos = peg$currPos;
     var s0, s1, s2, s3, s4, s5, s6, s7, s8, s9;
 
     var rule$expects = function (expected) {
       if (peg$silentFails === 0) peg$expect(expected);
     }
-
-    peg$tracer.trace({
-      type: "rule.enter",
-      rule: "MdParagraph",
-      location: peg$computeLocation(startPos, startPos)
-    });
 
     var key = peg$currPos * 46 + 31;
     var cached = peg$resultsCache[key];
@@ -6954,21 +5744,6 @@ var peg$r21 = /^[^"'<>` ]/;
       if (peg$silentFails === 0) {
         rule$expectations.forEach(peg$expect);
       }
-
-    if (cached.result !== peg$FAILED) {
-      peg$tracer.trace({
-        type: "rule.match",
-        rule: "MdParagraph",
-        result: cached.result,
-        location: peg$computeLocation(startPos, peg$currPos)
-      });
-    } else {
-      peg$tracer.trace({
-        type: "rule.fail",
-        rule: "MdParagraph",
-        location: peg$computeLocation(startPos, startPos)
-      });
-    }
 
       return cached.result;
     }
@@ -7138,37 +5913,15 @@ var peg$r21 = /^[^"'<>` ]/;
       expectations: rule$expectations
     };
 
-    if (s0 !== peg$FAILED) {
-      peg$tracer.trace({
-        type: "rule.match",
-        rule: "MdParagraph",
-        result: s0,
-        location: peg$computeLocation(startPos, peg$currPos)
-      });
-    } else {
-      peg$tracer.trace({
-        type: "rule.fail",
-        rule: "MdParagraph",
-        location: peg$computeLocation(startPos, startPos)
-      });
-    }
-
     return s0;
   }
 
   function peg$parseMdBlockQuote() {
-    var startPos = peg$currPos;
     var s0, s1, s2, s3, s4, s5;
 
     var rule$expects = function (expected) {
       if (peg$silentFails === 0) peg$expect(expected);
     }
-
-    peg$tracer.trace({
-      type: "rule.enter",
-      rule: "MdBlockQuote",
-      location: peg$computeLocation(startPos, startPos)
-    });
 
     var key = peg$currPos * 46 + 32;
     var cached = peg$resultsCache[key];
@@ -7186,21 +5939,6 @@ var peg$r21 = /^[^"'<>` ]/;
       if (peg$silentFails === 0) {
         rule$expectations.forEach(peg$expect);
       }
-
-    if (cached.result !== peg$FAILED) {
-      peg$tracer.trace({
-        type: "rule.match",
-        rule: "MdBlockQuote",
-        result: cached.result,
-        location: peg$computeLocation(startPos, peg$currPos)
-      });
-    } else {
-      peg$tracer.trace({
-        type: "rule.fail",
-        rule: "MdBlockQuote",
-        location: peg$computeLocation(startPos, startPos)
-      });
-    }
 
       return cached.result;
     }
@@ -7250,37 +5988,15 @@ var peg$r21 = /^[^"'<>` ]/;
       expectations: rule$expectations
     };
 
-    if (s0 !== peg$FAILED) {
-      peg$tracer.trace({
-        type: "rule.match",
-        rule: "MdBlockQuote",
-        result: s0,
-        location: peg$computeLocation(startPos, peg$currPos)
-      });
-    } else {
-      peg$tracer.trace({
-        type: "rule.fail",
-        rule: "MdBlockQuote",
-        location: peg$computeLocation(startPos, startPos)
-      });
-    }
-
     return s0;
   }
 
   function peg$parseMdBullet() {
-    var startPos = peg$currPos;
     var s0, s1, s2, s3;
 
     var rule$expects = function (expected) {
       if (peg$silentFails === 0) peg$expect(expected);
     }
-
-    peg$tracer.trace({
-      type: "rule.enter",
-      rule: "MdBullet",
-      location: peg$computeLocation(startPos, startPos)
-    });
 
     var key = peg$currPos * 46 + 33;
     var cached = peg$resultsCache[key];
@@ -7298,21 +6014,6 @@ var peg$r21 = /^[^"'<>` ]/;
       if (peg$silentFails === 0) {
         rule$expectations.forEach(peg$expect);
       }
-
-    if (cached.result !== peg$FAILED) {
-      peg$tracer.trace({
-        type: "rule.match",
-        rule: "MdBullet",
-        result: cached.result,
-        location: peg$computeLocation(startPos, peg$currPos)
-      });
-    } else {
-      peg$tracer.trace({
-        type: "rule.fail",
-        rule: "MdBullet",
-        location: peg$computeLocation(startPos, startPos)
-      });
-    }
 
       return cached.result;
     }
@@ -7363,37 +6064,15 @@ var peg$r21 = /^[^"'<>` ]/;
       expectations: rule$expectations
     };
 
-    if (s0 !== peg$FAILED) {
-      peg$tracer.trace({
-        type: "rule.match",
-        rule: "MdBullet",
-        result: s0,
-        location: peg$computeLocation(startPos, peg$currPos)
-      });
-    } else {
-      peg$tracer.trace({
-        type: "rule.fail",
-        rule: "MdBullet",
-        location: peg$computeLocation(startPos, startPos)
-      });
-    }
-
     return s0;
   }
 
   function peg$parseMdLabel() {
-    var startPos = peg$currPos;
     var s0, s1, s2, s3, s4, s5, s6;
 
     var rule$expects = function (expected) {
       if (peg$silentFails === 0) peg$expect(expected);
     }
-
-    peg$tracer.trace({
-      type: "rule.enter",
-      rule: "MdLabel",
-      location: peg$computeLocation(startPos, startPos)
-    });
 
     var key = peg$currPos * 46 + 34;
     var cached = peg$resultsCache[key];
@@ -7411,21 +6090,6 @@ var peg$r21 = /^[^"'<>` ]/;
       if (peg$silentFails === 0) {
         rule$expectations.forEach(peg$expect);
       }
-
-    if (cached.result !== peg$FAILED) {
-      peg$tracer.trace({
-        type: "rule.match",
-        rule: "MdLabel",
-        result: cached.result,
-        location: peg$computeLocation(startPos, peg$currPos)
-      });
-    } else {
-      peg$tracer.trace({
-        type: "rule.fail",
-        rule: "MdLabel",
-        location: peg$computeLocation(startPos, startPos)
-      });
-    }
 
       return cached.result;
     }
@@ -7554,37 +6218,15 @@ var peg$r21 = /^[^"'<>` ]/;
       expectations: rule$expectations
     };
 
-    if (s0 !== peg$FAILED) {
-      peg$tracer.trace({
-        type: "rule.match",
-        rule: "MdLabel",
-        result: s0,
-        location: peg$computeLocation(startPos, peg$currPos)
-      });
-    } else {
-      peg$tracer.trace({
-        type: "rule.fail",
-        rule: "MdLabel",
-        location: peg$computeLocation(startPos, startPos)
-      });
-    }
-
     return s0;
   }
 
   function peg$parseMdDef() {
-    var startPos = peg$currPos;
     var s0, s1, s2, s3, s4, s5, s6, s7, s8, s9, s10, s11, s12, s13, s14;
 
     var rule$expects = function (expected) {
       if (peg$silentFails === 0) peg$expect(expected);
     }
-
-    peg$tracer.trace({
-      type: "rule.enter",
-      rule: "MdDef",
-      location: peg$computeLocation(startPos, startPos)
-    });
 
     var key = peg$currPos * 46 + 35;
     var cached = peg$resultsCache[key];
@@ -7602,21 +6244,6 @@ var peg$r21 = /^[^"'<>` ]/;
       if (peg$silentFails === 0) {
         rule$expectations.forEach(peg$expect);
       }
-
-    if (cached.result !== peg$FAILED) {
-      peg$tracer.trace({
-        type: "rule.match",
-        rule: "MdDef",
-        result: cached.result,
-        location: peg$computeLocation(startPos, peg$currPos)
-      });
-    } else {
-      peg$tracer.trace({
-        type: "rule.fail",
-        rule: "MdDef",
-        location: peg$computeLocation(startPos, startPos)
-      });
-    }
 
       return cached.result;
     }
@@ -7886,37 +6513,15 @@ var peg$r21 = /^[^"'<>` ]/;
       expectations: rule$expectations
     };
 
-    if (s0 !== peg$FAILED) {
-      peg$tracer.trace({
-        type: "rule.match",
-        rule: "MdDef",
-        result: s0,
-        location: peg$computeLocation(startPos, peg$currPos)
-      });
-    } else {
-      peg$tracer.trace({
-        type: "rule.fail",
-        rule: "MdDef",
-        location: peg$computeLocation(startPos, startPos)
-      });
-    }
-
     return s0;
   }
 
   function peg$parseMdTitle() {
-    var startPos = peg$currPos;
     var s0, s1, s2, s3, s4;
 
     var rule$expects = function (expected) {
       if (peg$silentFails === 0) peg$expect(expected);
     }
-
-    peg$tracer.trace({
-      type: "rule.enter",
-      rule: "MdTitle",
-      location: peg$computeLocation(startPos, startPos)
-    });
 
     var key = peg$currPos * 46 + 36;
     var cached = peg$resultsCache[key];
@@ -7934,21 +6539,6 @@ var peg$r21 = /^[^"'<>` ]/;
       if (peg$silentFails === 0) {
         rule$expectations.forEach(peg$expect);
       }
-
-    if (cached.result !== peg$FAILED) {
-      peg$tracer.trace({
-        type: "rule.match",
-        rule: "MdTitle",
-        result: cached.result,
-        location: peg$computeLocation(startPos, peg$currPos)
-      });
-    } else {
-      peg$tracer.trace({
-        type: "rule.fail",
-        rule: "MdTitle",
-        location: peg$computeLocation(startPos, startPos)
-      });
-    }
 
       return cached.result;
     }
@@ -8121,37 +6711,15 @@ var peg$r21 = /^[^"'<>` ]/;
       expectations: rule$expectations
     };
 
-    if (s0 !== peg$FAILED) {
-      peg$tracer.trace({
-        type: "rule.match",
-        rule: "MdTitle",
-        result: s0,
-        location: peg$computeLocation(startPos, peg$currPos)
-      });
-    } else {
-      peg$tracer.trace({
-        type: "rule.fail",
-        rule: "MdTitle",
-        location: peg$computeLocation(startPos, startPos)
-      });
-    }
-
     return s0;
   }
 
   function peg$parseMdList() {
-    var startPos = peg$currPos;
     var s0, s1, s2, s3, s4, s5;
 
     var rule$expects = function (expected) {
       if (peg$silentFails === 0) peg$expect(expected);
     }
-
-    peg$tracer.trace({
-      type: "rule.enter",
-      rule: "MdList",
-      location: peg$computeLocation(startPos, startPos)
-    });
 
     var key = peg$currPos * 46 + 37;
     var cached = peg$resultsCache[key];
@@ -8169,21 +6737,6 @@ var peg$r21 = /^[^"'<>` ]/;
       if (peg$silentFails === 0) {
         rule$expectations.forEach(peg$expect);
       }
-
-    if (cached.result !== peg$FAILED) {
-      peg$tracer.trace({
-        type: "rule.match",
-        rule: "MdList",
-        result: cached.result,
-        location: peg$computeLocation(startPos, peg$currPos)
-      });
-    } else {
-      peg$tracer.trace({
-        type: "rule.fail",
-        rule: "MdList",
-        location: peg$computeLocation(startPos, startPos)
-      });
-    }
 
       return cached.result;
     }
@@ -8225,37 +6778,15 @@ var peg$r21 = /^[^"'<>` ]/;
       expectations: rule$expectations
     };
 
-    if (s0 !== peg$FAILED) {
-      peg$tracer.trace({
-        type: "rule.match",
-        rule: "MdList",
-        result: s0,
-        location: peg$computeLocation(startPos, peg$currPos)
-      });
-    } else {
-      peg$tracer.trace({
-        type: "rule.fail",
-        rule: "MdList",
-        location: peg$computeLocation(startPos, startPos)
-      });
-    }
-
     return s0;
   }
 
   function peg$parseMdTable() {
-    var startPos = peg$currPos;
     var s0, s1, s2, s3, s4, s5, s6, s7;
 
     var rule$expects = function (expected) {
       if (peg$silentFails === 0) peg$expect(expected);
     }
-
-    peg$tracer.trace({
-      type: "rule.enter",
-      rule: "MdTable",
-      location: peg$computeLocation(startPos, startPos)
-    });
 
     var key = peg$currPos * 46 + 38;
     var cached = peg$resultsCache[key];
@@ -8273,21 +6804,6 @@ var peg$r21 = /^[^"'<>` ]/;
       if (peg$silentFails === 0) {
         rule$expectations.forEach(peg$expect);
       }
-
-    if (cached.result !== peg$FAILED) {
-      peg$tracer.trace({
-        type: "rule.match",
-        rule: "MdTable",
-        result: cached.result,
-        location: peg$computeLocation(startPos, peg$currPos)
-      });
-    } else {
-      peg$tracer.trace({
-        type: "rule.fail",
-        rule: "MdTable",
-        location: peg$computeLocation(startPos, startPos)
-      });
-    }
 
       return cached.result;
     }
@@ -8376,37 +6892,15 @@ var peg$r21 = /^[^"'<>` ]/;
       expectations: rule$expectations
     };
 
-    if (s0 !== peg$FAILED) {
-      peg$tracer.trace({
-        type: "rule.match",
-        rule: "MdTable",
-        result: s0,
-        location: peg$computeLocation(startPos, peg$currPos)
-      });
-    } else {
-      peg$tracer.trace({
-        type: "rule.fail",
-        rule: "MdTable",
-        location: peg$computeLocation(startPos, startPos)
-      });
-    }
-
     return s0;
   }
 
   function peg$parseAttributes() {
-    var startPos = peg$currPos;
     var s0, s1, s2, s3;
 
     var rule$expects = function (expected) {
       if (peg$silentFails === 0) peg$expect(expected);
     }
-
-    peg$tracer.trace({
-      type: "rule.enter",
-      rule: "Attributes",
-      location: peg$computeLocation(startPos, startPos)
-    });
 
     var key = peg$currPos * 46 + 39;
     var cached = peg$resultsCache[key];
@@ -8424,21 +6918,6 @@ var peg$r21 = /^[^"'<>` ]/;
       if (peg$silentFails === 0) {
         rule$expectations.forEach(peg$expect);
       }
-
-    if (cached.result !== peg$FAILED) {
-      peg$tracer.trace({
-        type: "rule.match",
-        rule: "Attributes",
-        result: cached.result,
-        location: peg$computeLocation(startPos, peg$currPos)
-      });
-    } else {
-      peg$tracer.trace({
-        type: "rule.fail",
-        rule: "Attributes",
-        location: peg$computeLocation(startPos, startPos)
-      });
-    }
 
       return cached.result;
     }
@@ -8461,37 +6940,15 @@ var peg$r21 = /^[^"'<>` ]/;
       expectations: rule$expectations
     };
 
-    if (s0 !== peg$FAILED) {
-      peg$tracer.trace({
-        type: "rule.match",
-        rule: "Attributes",
-        result: s0,
-        location: peg$computeLocation(startPos, peg$currPos)
-      });
-    } else {
-      peg$tracer.trace({
-        type: "rule.fail",
-        rule: "Attributes",
-        location: peg$computeLocation(startPos, startPos)
-      });
-    }
-
     return s0;
   }
 
   function peg$parseAttribute() {
-    var startPos = peg$currPos;
     var s0, s1, s2, s3, s4, s5, s6, s7, s8;
 
     var rule$expects = function (expected) {
       if (peg$silentFails === 0) peg$expect(expected);
     }
-
-    peg$tracer.trace({
-      type: "rule.enter",
-      rule: "Attribute",
-      location: peg$computeLocation(startPos, startPos)
-    });
 
     var key = peg$currPos * 46 + 40;
     var cached = peg$resultsCache[key];
@@ -8509,21 +6966,6 @@ var peg$r21 = /^[^"'<>` ]/;
       if (peg$silentFails === 0) {
         rule$expectations.forEach(peg$expect);
       }
-
-    if (cached.result !== peg$FAILED) {
-      peg$tracer.trace({
-        type: "rule.match",
-        rule: "Attribute",
-        result: cached.result,
-        location: peg$computeLocation(startPos, peg$currPos)
-      });
-    } else {
-      peg$tracer.trace({
-        type: "rule.fail",
-        rule: "Attribute",
-        location: peg$computeLocation(startPos, startPos)
-      });
-    }
 
       return cached.result;
     }
@@ -8639,37 +7081,15 @@ var peg$r21 = /^[^"'<>` ]/;
       expectations: rule$expectations
     };
 
-    if (s0 !== peg$FAILED) {
-      peg$tracer.trace({
-        type: "rule.match",
-        rule: "Attribute",
-        result: s0,
-        location: peg$computeLocation(startPos, peg$currPos)
-      });
-    } else {
-      peg$tracer.trace({
-        type: "rule.fail",
-        rule: "Attribute",
-        location: peg$computeLocation(startPos, startPos)
-      });
-    }
-
     return s0;
   }
 
   function peg$parseString() {
-    var startPos = peg$currPos;
     var s0, s1, s2, s3, s4, s5, s6, s7;
 
     var rule$expects = function (expected) {
       if (peg$silentFails === 0) peg$expect(expected);
     }
-
-    peg$tracer.trace({
-      type: "rule.enter",
-      rule: "String",
-      location: peg$computeLocation(startPos, startPos)
-    });
 
     var key = peg$currPos * 46 + 41;
     var cached = peg$resultsCache[key];
@@ -8687,21 +7107,6 @@ var peg$r21 = /^[^"'<>` ]/;
       if (peg$silentFails === 0) {
         rule$expectations.forEach(peg$expect);
       }
-
-    if (cached.result !== peg$FAILED) {
-      peg$tracer.trace({
-        type: "rule.match",
-        rule: "String",
-        result: cached.result,
-        location: peg$computeLocation(startPos, peg$currPos)
-      });
-    } else {
-      peg$tracer.trace({
-        type: "rule.fail",
-        rule: "String",
-        location: peg$computeLocation(startPos, startPos)
-      });
-    }
 
       return cached.result;
     }
@@ -9244,37 +7649,15 @@ var peg$r21 = /^[^"'<>` ]/;
       expectations: rule$expectations
     };
 
-    if (s0 !== peg$FAILED) {
-      peg$tracer.trace({
-        type: "rule.match",
-        rule: "String",
-        result: s0,
-        location: peg$computeLocation(startPos, peg$currPos)
-      });
-    } else {
-      peg$tracer.trace({
-        type: "rule.fail",
-        rule: "String",
-        location: peg$computeLocation(startPos, startPos)
-      });
-    }
-
     return s0;
   }
 
   function peg$parseSymbol() {
-    var startPos = peg$currPos;
     var s0, s1, s2, s3;
 
     var rule$expects = function (expected) {
       if (peg$silentFails === 0) peg$expect(expected);
     }
-
-    peg$tracer.trace({
-      type: "rule.enter",
-      rule: "Symbol",
-      location: peg$computeLocation(startPos, startPos)
-    });
 
     var key = peg$currPos * 46 + 42;
     var cached = peg$resultsCache[key];
@@ -9292,21 +7675,6 @@ var peg$r21 = /^[^"'<>` ]/;
       if (peg$silentFails === 0) {
         rule$expectations.forEach(peg$expect);
       }
-
-    if (cached.result !== peg$FAILED) {
-      peg$tracer.trace({
-        type: "rule.match",
-        rule: "Symbol",
-        result: cached.result,
-        location: peg$computeLocation(startPos, peg$currPos)
-      });
-    } else {
-      peg$tracer.trace({
-        type: "rule.fail",
-        rule: "Symbol",
-        location: peg$computeLocation(startPos, startPos)
-      });
-    }
 
       return cached.result;
     }
@@ -9348,37 +7716,15 @@ var peg$r21 = /^[^"'<>` ]/;
       expectations: rule$expectations
     };
 
-    if (s0 !== peg$FAILED) {
-      peg$tracer.trace({
-        type: "rule.match",
-        rule: "Symbol",
-        result: s0,
-        location: peg$computeLocation(startPos, peg$currPos)
-      });
-    } else {
-      peg$tracer.trace({
-        type: "rule.fail",
-        rule: "Symbol",
-        location: peg$computeLocation(startPos, startPos)
-      });
-    }
-
     return s0;
   }
 
   function peg$parse__() {
-    var startPos = peg$currPos;
     var s0, s1;
 
     var rule$expects = function (expected) {
       if (peg$silentFails === 0) peg$expect(expected);
     }
-
-    peg$tracer.trace({
-      type: "rule.enter",
-      rule: "__",
-      location: peg$computeLocation(startPos, startPos)
-    });
 
     var key = peg$currPos * 46 + 43;
     var cached = peg$resultsCache[key];
@@ -9396,21 +7742,6 @@ var peg$r21 = /^[^"'<>` ]/;
       if (peg$silentFails === 0) {
         rule$expectations.forEach(peg$expect);
       }
-
-    if (cached.result !== peg$FAILED) {
-      peg$tracer.trace({
-        type: "rule.match",
-        rule: "__",
-        result: cached.result,
-        location: peg$computeLocation(startPos, peg$currPos)
-      });
-    } else {
-      peg$tracer.trace({
-        type: "rule.fail",
-        rule: "__",
-        location: peg$computeLocation(startPos, startPos)
-      });
-    }
 
       return cached.result;
     }
@@ -9441,37 +7772,15 @@ var peg$r21 = /^[^"'<>` ]/;
       expectations: rule$expectations
     };
 
-    if (s0 !== peg$FAILED) {
-      peg$tracer.trace({
-        type: "rule.match",
-        rule: "__",
-        result: s0,
-        location: peg$computeLocation(startPos, peg$currPos)
-      });
-    } else {
-      peg$tracer.trace({
-        type: "rule.fail",
-        rule: "__",
-        location: peg$computeLocation(startPos, startPos)
-      });
-    }
-
     return s0;
   }
 
   function peg$parse_() {
-    var startPos = peg$currPos;
     var s0, s1;
 
     var rule$expects = function (expected) {
       if (peg$silentFails === 0) peg$expect(expected);
     }
-
-    peg$tracer.trace({
-      type: "rule.enter",
-      rule: "_",
-      location: peg$computeLocation(startPos, startPos)
-    });
 
     var key = peg$currPos * 46 + 44;
     var cached = peg$resultsCache[key];
@@ -9489,21 +7798,6 @@ var peg$r21 = /^[^"'<>` ]/;
       if (peg$silentFails === 0) {
         rule$expectations.forEach(peg$expect);
       }
-
-    if (cached.result !== peg$FAILED) {
-      peg$tracer.trace({
-        type: "rule.match",
-        rule: "_",
-        result: cached.result,
-        location: peg$computeLocation(startPos, peg$currPos)
-      });
-    } else {
-      peg$tracer.trace({
-        type: "rule.fail",
-        rule: "_",
-        location: peg$computeLocation(startPos, startPos)
-      });
-    }
 
       return cached.result;
     }
@@ -9531,37 +7825,15 @@ var peg$r21 = /^[^"'<>` ]/;
       expectations: rule$expectations
     };
 
-    if (s0 !== peg$FAILED) {
-      peg$tracer.trace({
-        type: "rule.match",
-        rule: "_",
-        result: s0,
-        location: peg$computeLocation(startPos, peg$currPos)
-      });
-    } else {
-      peg$tracer.trace({
-        type: "rule.fail",
-        rule: "_",
-        location: peg$computeLocation(startPos, startPos)
-      });
-    }
-
     return s0;
   }
 
   function peg$parseNL() {
-    var startPos = peg$currPos;
     var s0;
 
     var rule$expects = function (expected) {
       if (peg$silentFails === 0) peg$expect(expected);
     }
-
-    peg$tracer.trace({
-      type: "rule.enter",
-      rule: "NL",
-      location: peg$computeLocation(startPos, startPos)
-    });
 
     var key = peg$currPos * 46 + 45;
     var cached = peg$resultsCache[key];
@@ -9579,21 +7851,6 @@ var peg$r21 = /^[^"'<>` ]/;
       if (peg$silentFails === 0) {
         rule$expectations.forEach(peg$expect);
       }
-
-    if (cached.result !== peg$FAILED) {
-      peg$tracer.trace({
-        type: "rule.match",
-        rule: "NL",
-        result: cached.result,
-        location: peg$computeLocation(startPos, peg$currPos)
-      });
-    } else {
-      peg$tracer.trace({
-        type: "rule.fail",
-        rule: "NL",
-        location: peg$computeLocation(startPos, startPos)
-      });
-    }
 
       return cached.result;
     }
@@ -9618,21 +7875,6 @@ var peg$r21 = /^[^"'<>` ]/;
       result: s0,
       expectations: rule$expectations
     };
-
-    if (s0 !== peg$FAILED) {
-      peg$tracer.trace({
-        type: "rule.match",
-        rule: "NL",
-        result: s0,
-        location: peg$computeLocation(startPos, peg$currPos)
-      });
-    } else {
-      peg$tracer.trace({
-        type: "rule.fail",
-        rule: "NL",
-        location: peg$computeLocation(startPos, startPos)
-      });
-    }
 
     return s0;
   }
@@ -9716,12 +7958,10 @@ var peg$r21 = /^[^"'<>` ]/;
 
 export {
   peg$SyntaxError as SyntaxError,
-  peg$DefaultTracer as DefaultTracer,
   peg$parse as parse
 };
 
 export default {
   SyntaxError: peg$SyntaxError,
-  DefaultTracer: peg$DefaultTracer,
   parse: peg$parse
 };

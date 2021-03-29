@@ -1,7 +1,6 @@
 import parser from '../src/js/html-parser.mjs';
 import fs from 'fs-extra';
 import path from 'path';
-import marked from './marked.mjs';
 
 const needCloseTag = /script|title/i;
 let baseDir;
@@ -345,7 +344,13 @@ async function render_(obj) {
 }
 
 async function render(jsonString, options) {
-  const values = [JSON.parse(jsonString),plugins,pluginsAttr,Location,templates];
+  let ast; 
+  if(jsonString instanceof String || typeof(jsonString) == 'string'){
+    ast = JSON.parse(jsonString);
+  } else {
+    ast = jsonString;
+  }
+  values = [ast,plugins,pluginsAttr,Location,templates];
   const args = ['ast','plugins','pluginsAttr','Location','templates'];
   const srcHead = module.toString().replace(/function module\s*?\(\)\s*?\{(.*)\}/msg, '$1');
   if (options) {
