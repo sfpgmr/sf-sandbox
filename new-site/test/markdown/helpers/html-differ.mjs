@@ -1,6 +1,5 @@
-import HtmlDiffer_ from '@markedjs/html-differ';
+import {HtmlDiffer} from '@markedjs/html-differ';
 
-const HtmlDiffer = HtmlDiffer_.HtmlDiffer;
 const htmlDiffer = new HtmlDiffer({
   ignoreSelfClosingSlash: true,
   ignoreComments: false

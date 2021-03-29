@@ -1,0 +1,113 @@
+
+
+ ** commonmark ** 
+
+
+
+
+ ** gfm ** 
+
+
+
+# Test Result #
+
+ total:673 success:582 fail:91 
+
+# Test End #
+
+
+┌─────────┬────────┬───────────────────────────────────────────┬────────────────────────────────────────────────────────────────┬────────────────────────────────────────────────────────────────┐
+│ (index) │ testno │                  section                  │                            expected                            │                             actual                             │
+├─────────┼────────┼───────────────────────────────────────────┼────────────────────────────────────────────────────────────────┼────────────────────────────────────────────────────────────────┤
+│    0    │   7    │                  'Tabs'                   │            '<ul><li><pre><code>foo</code></pre></l'            │                    '<ul><li>foo</li></ul>'                     │
+│    1    │   49   │              'ATX headings'               │                 '<h2></h2><h1></h1><h3></h3>'                  │                '<h2></h2><p>#</p><h3>###</h3>'                 │
+│    2    │   51   │             'Setext headings'             │                 '<h1>Foo<em>bar baz</em></h1>'                 │                '<p>Foo<em>bar baz</em>====</p>'                │
+│    3    │   52   │             'Setext headings'             │                 '<h1>Foo<em>bar baz</em></h1>'                 │               '<p>Foo<em>bar baz</em><br>====<'                │
+│    4    │   65   │             'Setext headings'             │                       '<h2>Foo Bar</h2>'                       │                      '<p>Foo Bar</p><hr>'                      │
+│    5    │  164   │       'Link reference definitions'        │              '<p><a href="my%20url" title="titl'               │              '<p>[Foo bar]:<my url="">&#39;titl'               │
+│    6    │  169   │       'Link reference definitions'        │                  '<p><a href="">foo</a></p>'                   │                 '<p><a href="%3C">foo</a></p>'                 │
+│    7    │  171   │       'Link reference definitions'        │         '<p><a href="/url%5Cbar*baz" title="foo&quot'          │         '<p><a href="/url%5Cbar%5C*baz" title="foo\\&'         │
+│    8    │  206   │              'Block quotes'               │   '<blockquote><pre><code>foo</code></pre></blockquote><pre'   │   '<blockquote><pre><code>foo bar</code></pre></blockquote>'   │
+│    9    │  207   │              'Block quotes'               │    '<blockquote><pre><code></code></pre></blockquote><p>f'     │    '<blockquote><pre><code>foo</code></pre></blockquote><'     │
+│   10    │  225   │               'List items'                │               '<ul><li>one</li></ul><p>two</p>'                │            '<ul><li><p>one</p><p>two</p></li></ul>'            │
+│   11    │  227   │               'List items'                │            '<ul><li>one</li></ul><pre><code>two</c'            │            '<ul><li><p>one</p><p>two</p></li></ul>'            │
+│   12    │  232   │               'List items'                │            '<ul><li><p>foo</p><p>bar</p></li></ul>'            │               '<ul><li>foo</li></ul><p>bar</p>'                │
+│   13    │  234   │               'List items'                │  'l><li><p>Foo</p><pre><code>bar baz</code></pre></li></ul>'   │ 'l><li><p>Foo</p><pre><code>bar</code></pre></li></ul><pre><c' │
+│   14    │  243   │               'List items'                │           '<ol><li><pre><code>indented code</code>'            │           '<ol><li><p>indented code</p><p>paragrap'            │
+│   15    │  244   │               'List items'                │           '<ol><li><pre><code>indented code</code>'            │           '<ol><li><p>indented code</p><p>paragrap'            │
+│   16    │  246   │               'List items'                │               '<ul><li>foo</li></ul><p>bar</p>'                │            '<ul><li><p>foo</p><p>bar</p></li></ul>'            │
+│   17    │  248   │               'List items'                │               '<ul><li>foo</li><li><pre><code>'                │               '<p>- foo -</p><pre><code>bar</c'                │
+│   18    │  250   │               'List items'                │                 '<ul><li></li></ul><p>foo</p>'                 │                      '<p>-</p><p>foo</p>'                      │
+│   19    │  254   │               'List items'                │                      '<ul><li></li></ul>'                      │                           '<p>*</p>'                           │
+│   20    │  265   │               'List items'                │          '<ul><li>foo</li><li>bar</li><li>baz</li><l'          │          '<ul><li>foo<ul><li>bar</li><li>baz<ul><li>'          │
+│   21    │  267   │               'List items'                │    '<ol start="10"><li>foo</li></ol><ul><li>bar</li></ul>'     │    '<ol start="10"><li>foo<ul><li>bar</li></ul></li></ol>'     │
+│   22    │  271   │                  'Lists'                  │    '<ul><li>foo</li><li>bar</li></ul><ul><li>baz</li></ul>'    │        '<ul><li>foo</li><li>bar</li><li>baz</li></ul>'         │
+│   23    │  276   │                  'Lists'                  │    'o</p></li><li><p>bar</p></li><li><p>baz</p></li></ul>'     │   'o</p></li><li><p>bar</p></li></ul><ul><li>baz</li></ul>'    │
+│   24    │  277   │                  'Lists'                  │ '<ul><li>foo<ul><li>bar<ul><li><p>baz</p><p>bim</p></li></ul>' │ '<ul><li>foo<ul><li>bar<ul><li>baz</li></ul></li></ul></li></' │
+│   25    │  280   │                  'Lists'                  │           '<ul><li>a</li><li>b</li><li>c</li><li>d<'           │           '<ul><li>a<ul><li>b</li><li>c<ul><li>d</l'           │
+│   26    │  281   │                  'Lists'                  │       '<ol><li><p>a</p></li><li><p>b</p></li><li><p>c<'        │       '<ol><li><p>a</p><ol start="2"><li><p>b</p></li>'        │
+│   27    │  282   │                  'Lists'                  │           '<ul><li>a</li><li>b</li><li>c</li><li>d '           │           '<ul><li>a<ul><li>b</li><li>c<ul><li>d</l'           │
+│   28    │  283   │                  'Lists'                  │       '<ol><li><p>a</p></li><li><p>b</p></li></ol><pre'        │       '<ol><li><p>a</p><ol start="2"><li><p>b</p><ol s'        │
+│   29    │  287   │                  'Lists'                  │            '<ul><li><p>a</p></li><li><p>b</p></li>'            │            '<ul><li>a</li><li>b</li></ul><ul><li>d'            │
+│   30    │  288   │                  'Lists'                  │         'pre><code>b</code></pre></li><li>c</li></ul>'         │ 'pre><code>b</code></pre></li></ul><pre><code>- c</code></pre' │
+│   31    │  289   │                  'Lists'                  │            '<ul><li>a<ul><li><p>b</p><p>c</p></li>'            │            '<ul><li><p>a</p><ul><li><p>b</p><p>c</'            │
+│   32    │  309   │            'Backslash escapes'            │         '<p><a href="/bar*" title="ti*tle">foo</a></'          │         '<p><a href="/bar%5C*" title="ti\\*tle">foo</'         │
+│   33    │  310   │            'Backslash escapes'            │       '<pre><code class="language-foo+bar">foo</code></'       │      '<pre><code class="language-foo\\+bar">foo</code><'       │
+│   34    │  314   │ 'Entity and numeric character references' │ 'nbsp &amp;x; &amp;#; &amp;#x; &amp;#987654321; &amp;#abcdef0' │ 'nbsp &amp;x; &amp;#; &amp;#x; � &amp;#abcdef0; &amp;ThisIsNo' │
+│   35    │  318   │ 'Entity and numeric character references' │         '<p><a href="/f%C3%B6%C3%B6" title="föö">foo'          │          '<p><a href="/föö" title="föö">foo</a></p>'           │
+│   36    │  319   │ 'Entity and numeric character references' │         '<p><a href="/f%C3%B6%C3%B6" title="föö">foo'          │          '<p><a href="/föö" title="föö">foo</a></p>'           │
+│   37    │  320   │ 'Entity and numeric character references' │       '<pre><code class="language-föö">foo</code></pre>'       │       '<pre><code class="language-f&amp;ouml;&amp;ouml;'       │
+│   38    │  361   │      'Emphasis and strong emphasis'       │                 '<p>пристаням_стремятся_</p>'                  │              '<p>пристаням<em>стремятся</em></p'               │
+│   39    │  387   │      'Emphasis and strong emphasis'       │                '<p>пристаням__стремятся__</p>'                 │              '<p>пристаням<strong>стремятся</st'               │
+│   40    │  388   │      'Emphasis and strong emphasis'       │        '<p><strong>foo,<strong>bar</strong>, baz</str'         │          '<p><strong>foo, __bar</strong>, baz__</p>'           │
+│   41    │  407   │      'Emphasis and strong emphasis'       │               '<p><em><em>foo</em>bar</em></p>'                │                      '<p>__foo_ bar_</p>'                      │
+│   42    │  412   │      'Emphasis and strong emphasis'       │              '<p><em><strong>foo</strong>bar</e'               │               '<p>*<strong>foo</strong>bar*</p>'               │
+│   43    │  415   │      'Emphasis and strong emphasis'       │             '<p>foo<em><strong>bar</strong></em>b'             │                '<p>foo**<em>bar**</em>baz</p>'                 │
+│   44    │  416   │      'Emphasis and strong emphasis'       │             '<p>foo<strong><strong><strong>bar</s'             │             '<p>foo*<strong><strong><em>bar****</'             │
+│   45    │  424   │      'Emphasis and strong emphasis'       │         '<p><strong>foo<strong>bar</strong>baz</stron'         │            '<p><strong>foo __bar</strong>baz__</p>'            │
+│   46    │  425   │      'Emphasis and strong emphasis'       │          '<p><strong><strong>foo</strong>bar</stron'           │              '<p><strong>__foo</strong>bar__</p>'              │
+│   47    │  442   │      'Emphasis and strong emphasis'       │                     '<p><em>foo</em>*</p>'                     │                        '<p>*foo**</p>'                         │
+│   48    │  445   │      'Emphasis and strong emphasis'       │                 '<p><strong>foo</strong>*</p>'                 │                    '<p>*<em>foo**</em></p>'                    │
+│   49    │  446   │      'Emphasis and strong emphasis'       │                    '<p><em>foo</em>***</p>'                    │                       '<p>*foo****</p>'                        │
+│   50    │  453   │      'Emphasis and strong emphasis'       │                     '<p>_<em>foo</em></p>'                     │                        '<p>__foo_</p>'                         │
+│   51    │  454   │      'Emphasis and strong emphasis'       │                     '<p><em>foo</em>_</p>'                     │                        '<p>_foo__</p>'                         │
+│   52    │  455   │      'Emphasis and strong emphasis'       │                 '<p>_<strong>foo</strong></p>'                 │                       '<p>___foo__</p>'                        │
+│   53    │  456   │      'Emphasis and strong emphasis'       │                    '<p>___<em>foo</em></p>'                    │                       '<p>____foo_</p>'                        │
+│   54    │  457   │      'Emphasis and strong emphasis'       │                 '<p><strong>foo</strong>_</p>'                 │                       '<p>__foo___</p>'                        │
+│   55    │  458   │      'Emphasis and strong emphasis'       │                    '<p><em>foo</em>___</p>'                    │                       '<p>_foo____</p>'                        │
+│   56    │  465   │      'Emphasis and strong emphasis'       │          '<p><strong><strong><strong>foo</strong></'           │             '<p><strong>**</strong>foo******</p>'              │
+│   57    │  466   │      'Emphasis and strong emphasis'       │              '<p><em><strong>foo</strong></em></'              │              '<p><strong><em>foo</em></strong></'              │
+│   58    │  467   │      'Emphasis and strong emphasis'       │              '<p><em><strong><strong>foo</strong'              │              '<p><strong><strong><em>foo</em></s'              │
+│   59    │  470   │      'Emphasis and strong emphasis'       │              '<p>**foo<strong>bar baz</strong><'               │              '<p><strong>foo **bar baz</strong>'               │
+│   60    │  486   │                  'Links'                  │              '<p><a href="/my%20uri">link</a></'               │                '<p>[link](&lt;/my uri&gt;)</p>'                │
+│   61    │  489   │                  'Links'                  │                  '<p><a href="b)c">a</a></p>'                  │              '<p><a href="%3Cb">a</a>c&gt;)</p>'               │
+│   62    │  490   │                  'Links'                  │                  '<p>[link](&lt;foo&gt;)</p>'                  │               '<p><a href="foo%5C">link</a></p>'               │
+│   63    │  491   │                  'Links'                  │              '<p>[a](&lt;b)c [a](&lt;b)c&gt; [a'               │              '<p><a href="%3Cb">a</a>c<a href="'               │
+│   64    │  499   │                  'Links'                  │           '<p><a href="foo%20b%C3%A4">link</a></p>'            │              '<p><a href="foo%20bä">link</a></p>'              │
+│   65    │  503   │                  'Links'                  │         '<p><a href="/url%C2%A0%22title%22">link</a>'          │         '<p><a href="/url" title="title">link</a></p'          │
+│   66    │  508   │                  'Links'                  │              '<p><a href="/uri">link [foo [bar]'               │               '<p>[link [foo [bar]]](/uri)</p>'                │
+│   67    │  514   │                  'Links'                  │              '<p>[foo<a href="/uri">bar</a>](/u'               │              '<p><a href="/uri">foo<a href="/ur'               │
+│   68    │  515   │                  'Links'                  │            '<p>[foo<em>[bar<a href="/uri">baz</a>'             │            '<p>[foo *<a href="/uri">bar<a href="/'             │
+│   69    │  516   │                  'Links'                  │              '<p><img alt="[foo](uri2)" src="ur'               │              '<p>![<a href="uri2"><a href="uri1'               │
+│   70    │  520   │                  'Links'                  │                '<p>[foo<bar attr="](baz)"></p>'                │              '<p><a href="baz">foo &lt;bar attr'               │
+│   71    │  522   │                  'Links'                  │              '<p>[foo<a href="http://example.co'               │              '<p><a href="uri">foo&lt;http://ex'               │
+│   72    │  524   │                  'Links'                  │              '<p><a href="/uri">link [foo [bar]'               │              '<p>[link [foo [bar]]]<a href="/ur'               │
+│   73    │  528   │                  'Links'                  │              '<p>[foo<a href="/uri">bar</a>]<a '               │              '<p><a href="/uri">foo<a href="/ur'               │
+│   74    │  529   │                  'Links'                  │              '<p>[foo<em>bar<a href="/uri">baz<'               │              '<p><a href="/uri">foo<em>bar<a hr'               │
+│   75    │  532   │                  'Links'                  │                '<p>[foo<bar attr="][ref]"></p>'                │              '<p><a href="/uri">foo &lt;bar att'               │
+│   76    │  534   │                  'Links'                  │              '<p>[foo<a href="http://example.co'               │              '<p><a href="/uri">foo&lt;http://e'               │
+│   77    │  569   │                 'Images'                  │       '<p><img alt="foo bar" src="train.jpg" title="tr'        │       '<p><img alt="foo *bar*" src="train.jpg" title="'        │
+│   78    │  570   │                 'Images'                  │            '<p><img alt="foo bar" src="/url2"></p>'            │       '<p><img alt="foo ![bar](/url)" src="/url2"></p>'        │
+│   79    │  571   │                 'Images'                  │            '<p><img alt="foo bar" src="/url2"></p>'            │        '<p><img alt="foo [bar](/url)" src="/url2"></p>'        │
+│   80    │  572   │                 'Images'                  │       '<p><img alt="foo bar" src="train.jpg" title="tr'        │       '<p><img alt="foo *bar*" src="train.jpg" title="'        │
+│   81    │  573   │                 'Images'                  │       '<p><img alt="foo bar" src="train.jpg" title="tr'        │       '<p><img alt="foo *bar*" src="train.jpg" title="'        │
+│   82    │  581   │                 'Images'                  │         '<p><img alt="foo bar" src="/url" title="tit'          │         '<p><img alt="*foo* bar" src="/url" title="t'          │
+│   83    │  585   │                 'Images'                  │         '<p><img alt="foo bar" src="/url" title="tit'          │         '<p><img alt="*foo* bar" src="/url" title="t'          │
+│   84    │  598   │                'Autolinks'                │            '<p>&lt;http://foo.bar/baz bim&gt;</p>'             │            '<p>&lt;<a href="http://foo.bar/baz">h'             │
+│   85    │  604   │                'Autolinks'                │               '<p>&lt; http://foo.bar &gt;</p>'                │            '<p>&lt;<a href="http://foo.bar">http:'             │
+│   86    │  607   │                'Autolinks'                │                  '<p>http://example.com</p>'                   │              '<p><a href="http://example.com">h'               │
+│   87    │  608   │                'Autolinks'                │                  '<p>foo@bar.example.com</p>'                  │              '<p><a href="mailto:foo@bar.exampl'               │
+│   88    │  622   │                'Raw HTML'                 │             '<p>foo &lt;!-- not a comment -- two '             │             '<p>foo<!-- not a comment -- two hyph'             │
+│   89    │  623   │                'Raw HTML'                 │    't;!--&gt; foo --&gt;</p><p>foo &lt;!-- foo---&gt;</p>'     │        't;!--&gt; foo --&gt;</p><p>foo<!-- foo---></p>'        │
+│   90    │  673   │     '[extension] Disallowed Raw HTML'     │          '<p><strong>&lt;title&gt; &lt;style&gt;<em'           │          '<p><strong><title>&lt;style&gt; &lt;em&gt'           │
+└─────────┴────────┴───────────────────────────────────────────┴────────────────────────────────────────────────────────────────┴────────────────────────────────────────────────────────────────┘
