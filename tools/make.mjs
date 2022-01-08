@@ -295,7 +295,7 @@ try {
 
   })();
 } catch (e) {
-  console.log(`Error:`, e);
+  console.log(`Error:`, e.description);
   process.abort();
 }
 
