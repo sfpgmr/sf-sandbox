@@ -23,7 +23,7 @@ const youtube = {
   const update_tweet_stmt = db.prepare("update tweets set tweet = @tweet ,updated_at = datetime('now'),flags = 1 where id = @id;");
 
   const browser = await puppeteer.launch({
-    executablePath: '/usr/bin/chromium-browser',
+    executablePath: '/snap/bin/chromium',
     headless: true,
   });
   const tweets = tweets_stmt.all();
