@@ -226,8 +226,8 @@ try {
         }
       }
       // ソースファイルのコピー
-      fse.copy(currentSrcPath,releaseSrcPath,{preserveTimestamps:true});
-    }
+      await fse.copy(currentSrcPath,releaseSrcPath,{preserveTimestamps:true});
+   }
 
     //fs.constants.S_IFLNK
 
@@ -287,7 +287,9 @@ try {
         }
 
         // ソースコード
-        await fse.copy(releaseSrcPath, deploySrcPath, { overwrite: true, preserveTimestamps: true });
+        if(config.deploySrc){
+          await fse.copy(releaseSrcPath, deploySrcPath, { overwrite: true, preserveTimestamps: true });
+        }
       } else {
         throw new Error('release名の指定がありません。-r <release name>');
       }

@@ -6,6 +6,12 @@ const lazyLoading = '';
 <html lang="ja" prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb# article: http://ogp.me/ns/article#">
 
 <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Twitter Viewer</title>
+  <base href="<%-meta.baseUrl%>" >
+
   <!-- Global site tag (gtag.js) - Google Analytics -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=UA-15457703-9"></script>
   <script>
@@ -17,10 +23,6 @@ const lazyLoading = '';
     }
   </script>
 
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <title>Twitter Viewer</title>
   <meta name="description" content="<%=meta.description%>" />
   <meta name="keywords" content="<%=meta.keywords%>" /> 	
 

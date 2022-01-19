@@ -8,6 +8,7 @@ import Database from 'better-sqlite3';
 (async () => {
   
   let outputPath = '../data/rendered/';
+  const baseUrl = "https://sfpgmr.net/twitter/";
 
   if(process.argv[2]){
     outputPath = process.argv[2];
@@ -87,6 +88,7 @@ import Database from 'better-sqlite3';
       meta:{
         title:'Twitter Viewer',
         description:'自作Twitter Viewerによる自分のつぶやきの記録。Programming,Music,HTML5,WebGL,javascript,WebAudio,Gameなど',
+        baseUrl:baseUrl,
         url:url,
         imageUrl:'https://www.sfpgmr.net/img/sfweb.png',
         siteName:'S.F. Web',
