@@ -1,7 +1,7 @@
 import request from 'request-promise-native';
 import YouTube from 'youtube-node';
 import util from 'util';
-import puppeteer from 'puppeteer';
+import puppeteer from 'puppeteer-core';
 import jsdom from 'jsdom';
 const {JSDOM} = jsdom;
 import Database from 'better-sqlite3';
@@ -22,7 +22,10 @@ const youtube = {
   const tweets_stmt = db.prepare('select * from tweets where flags = 0;');
   const update_tweet_stmt = db.prepare("update tweets set tweet = @tweet ,updated_at = datetime('now'),flags = 1 where id = @id;");
 
-  const browser = await puppeteer.launch();
+  const browser = await puppeteer.launch({
+    executablePath: '/usr/bin/chromium-browser',
+    headless: true,
+  });
   const tweets = tweets_stmt.all();
 
   for(const tweet_row of tweets) {
